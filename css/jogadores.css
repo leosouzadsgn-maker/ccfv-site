@@ -1,0 +1,2166 @@
+/* =========================================================
+   CCFV — JOGADORES
+   PLAYER DIRECTORY + PLAYER CARD
+   ========================================================= */
+
+
+/* =========================================================
+   BASE
+   ========================================================= */
+
+.ccfv-jogadores-hero,
+.ccfv-jogadores-directory,
+.ccfv-jogador-card-viewer {
+
+    position:
+        relative;
+
+    overflow:
+        hidden;
+
+}
+
+
+.ccfv-jogadores-container {
+
+    position:
+        relative;
+
+    width:
+        min(
+            calc(100% - 80px),
+            1400px
+        );
+
+    margin-inline:
+        auto;
+
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.ccfv-jogadores-hero {
+
+    min-height:
+        560px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    padding:
+        150px 0 95px;
+
+    background:
+        radial-gradient(
+            circle at 82% 25%,
+            rgba(67,223,145,.13),
+            transparent 27%
+        ),
+        radial-gradient(
+            circle at 11% 78%,
+            rgba(80,96,255,.08),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #020403,
+            #050914 55%,
+            #020403
+        );
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.05);
+
+}
+
+
+.ccfv-jogadores-hero__bg {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    pointer-events:
+        none;
+
+}
+
+
+.ccfv-jogadores-hero__glow {
+
+    position:
+        absolute;
+
+    width:
+        700px;
+
+    height:
+        700px;
+
+    right:
+        -220px;
+
+    top:
+        -210px;
+
+    border-radius:
+        50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(67,223,145,.13),
+            transparent 68%
+        );
+
+    filter:
+        blur(38px);
+
+    animation:
+        jogadores-glow
+        9s
+        ease-in-out
+        infinite;
+
+}
+
+
+@keyframes jogadores-glow {
+
+    0%,
+    100% {
+
+        transform:
+            scale(1);
+
+    }
+
+    50% {
+
+        transform:
+            scale(1.08);
+
+    }
+
+}
+
+
+.ccfv-jogadores-hero__grid {
+
+    position:
+        absolute;
+
+    left:
+        -10%;
+
+    right:
+        -10%;
+
+    bottom:
+        -50%;
+
+    height:
+        80%;
+
+    transform:
+        perspective(750px)
+        rotateX(64deg);
+
+    background-image:
+        linear-gradient(
+            rgba(67,223,145,.07) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(67,223,145,.07) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        72px 72px;
+
+    opacity:
+        .17;
+
+}
+
+
+.ccfv-jogadores-hero__scan {
+
+    position:
+        absolute;
+
+    left:
+        -35%;
+
+    top:
+        0;
+
+    width:
+        30%;
+
+    height:
+        100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(67,223,145,.04),
+            rgba(67,223,145,.11),
+            transparent
+        );
+
+    filter:
+        blur(12px);
+
+    animation:
+        jogadores-scan
+        8s
+        linear
+        infinite;
+
+}
+
+
+@keyframes jogadores-scan {
+
+    from {
+
+        left:
+            -35%;
+
+    }
+
+    to {
+
+        left:
+            120%;
+
+    }
+
+}
+
+
+/* =========================================================
+   HERO CONTENT
+   ========================================================= */
+
+.ccfv-jogadores-hero__eyebrow {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+    color:
+        #43df91;
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .18em;
+
+}
+
+
+.ccfv-jogadores-hero__eyebrow span {
+
+    width:
+        6px;
+
+    height:
+        6px;
+
+    border-radius:
+        50%;
+
+    background:
+        #43df91;
+
+    box-shadow:
+        0 0 14px
+        rgba(67,223,145,.8);
+
+}
+
+
+.ccfv-jogadores-hero__title {
+
+    max-width:
+        900px;
+
+    margin:
+        20px 0 0;
+
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            58px,
+            7vw,
+            105px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        .81;
+
+    letter-spacing:
+        -.075em;
+
+}
+
+
+.ccfv-jogadores-hero__title strong {
+
+    display:
+        block;
+
+    color:
+        #43df91;
+
+}
+
+
+.ccfv-jogadores-hero__description {
+
+    max-width:
+        590px;
+
+    margin:
+        30px 0 0;
+
+    color:
+        rgba(255,255,255,.37);
+
+    font-size:
+        13px;
+
+    line-height:
+        1.75;
+
+}
+
+
+.ccfv-jogadores-hero__stats {
+
+    display:
+        flex;
+
+    gap:
+        24px;
+
+    margin-top:
+        42px;
+
+}
+
+
+.ccfv-jogadores-hero__stats > div {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        6px;
+
+}
+
+
+.ccfv-jogadores-hero__stats > div:not(:last-child) {
+
+    padding-right:
+        24px;
+
+    border-right:
+        1px solid
+        rgba(255,255,255,.08);
+
+}
+
+
+.ccfv-jogadores-hero__stats span {
+
+    color:
+        rgba(255,255,255,.20);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .13em;
+
+}
+
+
+.ccfv-jogadores-hero__stats strong {
+
+    color:
+        #fff;
+
+    font-size:
+        26px;
+
+    font-weight:
+        950;
+
+}
+
+
+/* =========================================================
+   DIRECTORY
+   ========================================================= */
+
+.ccfv-jogadores-directory {
+
+    padding:
+        105px 0 130px;
+
+    background:
+        #030504;
+
+}
+
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.ccfv-jogadores-toolbar {
+
+    display:
+        flex;
+
+    align-items:
+        flex-end;
+
+    justify-content:
+        space-between;
+
+    gap:
+        35px;
+
+    margin-bottom:
+        45px;
+
+}
+
+
+.ccfv-jogadores-toolbar > div:first-child > span {
+
+    color:
+        #43df91;
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .18em;
+
+}
+
+
+.ccfv-jogadores-toolbar h2 {
+
+    margin:
+        13px 0 0;
+
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            42px,
+            4.5vw,
+            64px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        .88;
+
+    letter-spacing:
+        -.06em;
+
+}
+
+
+.ccfv-jogadores-toolbar h2 strong {
+
+    display:
+        block;
+
+    color:
+        #43df91;
+
+}
+
+
+/* =========================================================
+   CONTROLS
+   ========================================================= */
+
+.ccfv-jogadores-controls {
+
+    display:
+        flex;
+
+    align-items:
+        flex-end;
+
+    gap:
+        12px;
+
+}
+
+
+.ccfv-jogadores-search {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        6px;
+
+}
+
+
+.ccfv-jogadores-search span {
+
+    color:
+        rgba(255,255,255,.20);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .12em;
+
+}
+
+
+.ccfv-jogadores-search input {
+
+    width:
+        220px;
+
+    height:
+        38px;
+
+    padding:
+        0 13px;
+
+    box-sizing:
+        border-box;
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    border-radius:
+        10px;
+
+    outline:
+        none;
+
+    color:
+        #fff;
+
+    background:
+        rgba(255,255,255,.02);
+
+    font-family:
+        inherit;
+
+    font-size:
+        10px;
+
+}
+
+
+.ccfv-jogadores-search input:focus {
+
+    border-color:
+        rgba(67,223,145,.40);
+
+    box-shadow:
+        0 0 25px
+        rgba(67,223,145,.05);
+
+}
+
+
+.ccfv-jogadores-filters {
+
+    display:
+        flex;
+
+    gap:
+        5px;
+
+}
+
+
+.ccfv-jogadores-filters button {
+
+    height:
+        38px;
+
+    padding:
+        0 12px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.07);
+
+    border-radius:
+        999px;
+
+    color:
+        rgba(255,255,255,.28);
+
+    background:
+        rgba(255,255,255,.015);
+
+    font-family:
+        inherit;
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    cursor:
+        pointer;
+
+}
+
+
+.ccfv-jogadores-filters button.is-active {
+
+    color:
+        #031008;
+
+    border-color:
+        #43df91;
+
+    background:
+        #43df91;
+
+}
+
+
+/* =========================================================
+   LIST
+   ========================================================= */
+
+.ccfv-jogadores-list {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        7px;
+
+}
+
+
+/* =========================================================
+   PLAYER ROW
+   ========================================================= */
+
+.ccfv-player-row {
+
+    position:
+        relative;
+
+    display:
+        grid;
+
+    grid-template-columns:
+        70px
+        minmax(260px,1fr)
+        130px
+        110px
+        170px;
+
+    align-items:
+        center;
+
+    min-height:
+        82px;
+
+    padding:
+        0 20px;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid
+        rgba(255,255,255,.055);
+
+    border-radius:
+        15px;
+
+    background:
+        rgba(255,255,255,.015);
+
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        background .25s ease;
+
+}
+
+
+.ccfv-player-row:hover {
+
+    transform:
+        translateX(4px);
+
+    border-color:
+        rgba(67,223,145,.17);
+
+    background:
+        rgba(67,223,145,.025);
+
+}
+
+
+.ccfv-player-row__position {
+
+    color:
+        rgba(67,223,145,.53);
+
+    font-family:
+        monospace;
+
+    font-size:
+        10px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-player-row__identity {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        13px;
+
+    min-width:
+        0;
+
+}
+
+
+.ccfv-player-row__photo {
+
+    width:
+        44px;
+
+    height:
+        44px;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    flex-shrink:
+        0;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid
+        rgba(67,223,145,.13);
+
+    border-radius:
+        12px;
+
+    color:
+        #43df91;
+
+    background:
+        rgba(31,143,95,.035);
+
+    font-size:
+        10px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-player-row__photo img {
+
+    width:
+        100%;
+
+    height:
+        100%;
+
+    object-fit:
+        cover;
+
+}
+
+
+.ccfv-player-row__name {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        5px;
+
+    min-width:
+        0;
+
+}
+
+
+.ccfv-player-row__name strong {
+
+    overflow:
+        hidden;
+
+    color:
+        rgba(255,255,255,.78);
+
+    font-size:
+        10px;
+
+    font-weight:
+        900;
+
+    white-space:
+        nowrap;
+
+    text-overflow:
+        ellipsis;
+
+}
+
+
+.ccfv-player-row__name span {
+
+    color:
+        rgba(255,255,255,.22);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-player-row__platform {
+
+    color:
+        rgba(255,255,255,.36);
+
+    font-family:
+        monospace;
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-player-row__elo {
+
+    color:
+        #43df91;
+
+    font-family:
+        monospace;
+
+    font-size:
+        12px;
+
+    font-weight:
+        950;
+
+}
+
+
+.ccfv-player-row__actions {
+
+    display:
+        flex;
+
+    justify-content:
+        flex-end;
+
+    gap:
+        7px;
+
+}
+
+
+.ccfv-player-row__button {
+
+    height:
+        34px;
+
+    padding:
+        0 12px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    border-radius:
+        9px;
+
+    color:
+        rgba(255,255,255,.48);
+
+    background:
+        rgba(255,255,255,.018);
+
+    font-family:
+        inherit;
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    cursor:
+        pointer;
+
+    transition:
+        .25s ease;
+
+}
+
+
+.ccfv-player-row__button:hover {
+
+    color:
+        #43df91;
+
+    border-color:
+        rgba(67,223,145,.25);
+
+}
+
+
+.ccfv-player-row__button--primary {
+
+    color:
+        #031008;
+
+    border-color:
+        #43df91;
+
+    background:
+        #43df91;
+
+}
+
+
+.ccfv-player-row__button--primary:hover {
+
+    color:
+        #031008;
+
+    box-shadow:
+        0 0 22px
+        rgba(67,223,145,.15);
+
+}
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.ccfv-jogadores-empty {
+
+    min-height:
+        360px;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        13px;
+
+    padding:
+        35px;
+
+    border:
+        1px dashed
+        rgba(67,223,145,.16);
+
+    border-radius:
+        22px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(67,223,145,.035),
+            transparent 55%
+        );
+
+    text-align:
+        center;
+
+}
+
+
+.ccfv-jogadores-empty__icon {
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    width:
+        74px;
+
+    height:
+        74px;
+
+    border:
+        1px solid
+        rgba(67,223,145,.18);
+
+    border-radius:
+        20px;
+
+    color:
+        #43df91;
+
+    font-size:
+        10px;
+
+    font-weight:
+        950;
+
+}
+
+
+.ccfv-jogadores-empty strong {
+
+    color:
+        rgba(255,255,255,.66);
+
+    font-size:
+        13px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-jogadores-empty span {
+
+    max-width:
+        420px;
+
+    color:
+        rgba(255,255,255,.23);
+
+    font-size:
+        9px;
+
+    line-height:
+        1.65;
+
+}
+
+
+/* =========================================================
+   CARD VIEWER
+   ========================================================= */
+
+.ccfv-jogador-card-viewer {
+
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    z-index:
+        9999;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        25px;
+
+    box-sizing:
+        border-box;
+
+    visibility:
+        hidden;
+
+    opacity:
+        0;
+
+    transition:
+        opacity .35s ease,
+        visibility .35s ease;
+
+}
+
+
+.ccfv-jogador-card-viewer.is-open {
+
+    visibility:
+        visible;
+
+    opacity:
+        1;
+
+}
+
+
+.ccfv-jogador-card-viewer__backdrop {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    background:
+        rgba(0,0,0,.82);
+
+    backdrop-filter:
+        blur(18px);
+
+}
+
+
+.ccfv-jogador-card-viewer__panel {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    width:
+        min(
+            100%,
+            1100px
+        );
+
+    max-height:
+        94vh;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    overflow:
+        auto;
+
+    padding:
+        35px;
+
+    box-sizing:
+        border-box;
+
+    border:
+        1px solid
+        rgba(67,223,145,.16);
+
+    border-radius:
+        25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(7,18,12,.97),
+            rgba(2,5,4,.99)
+        );
+
+    box-shadow:
+        0 40px 150px
+        rgba(0,0,0,.45);
+
+}
+
+
+.ccfv-jogador-card-viewer__close {
+
+    position:
+        absolute;
+
+    top:
+        15px;
+
+    right:
+        15px;
+
+    z-index:
+        10;
+
+    width:
+        35px;
+
+    height:
+        35px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    border-radius:
+        50%;
+
+    color:
+        rgba(255,255,255,.50);
+
+    background:
+        rgba(255,255,255,.025);
+
+    font-size:
+        21px;
+
+    cursor:
+        pointer;
+
+}
+
+
+.ccfv-jogador-card-viewer__card {
+
+    width:
+        min(
+            100%,
+            420px
+        );
+
+}
+
+
+/* =========================================================
+   REAL CARD
+   ========================================================= */
+
+.ccfv-real-card {
+
+    --card-accent:
+        #43df91;
+
+    position:
+        relative;
+
+    width:
+        100%;
+
+    aspect-ratio:
+        0.70;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid
+        rgba(67,223,145,.32);
+
+    border-radius:
+        24px;
+
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            rgba(67,223,145,.13),
+            transparent 38%
+        ),
+        linear-gradient(
+            145deg,
+            #07130c,
+            #020504
+        );
+
+    box-shadow:
+        0 25px 90px
+        rgba(31,143,95,.15);
+
+}
+
+
+.ccfv-real-card--amateur {
+
+    --card-accent:
+        #69a8ff;
+
+    border-color:
+        rgba(105,168,255,.32);
+
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            rgba(105,168,255,.13),
+            transparent 38%
+        ),
+        linear-gradient(
+            145deg,
+            #07111d,
+            #020508
+        );
+
+}
+
+
+.ccfv-real-card--legend {
+
+    --card-accent:
+        #ffc252;
+
+    border-color:
+        rgba(255,194,82,.40);
+
+    background:
+        radial-gradient(
+            circle at 50% 18%,
+            rgba(255,194,82,.16),
+            transparent 40%
+        ),
+        radial-gradient(
+            circle at 50% 70%,
+            rgba(144,91,10,.08),
+            transparent 45%
+        ),
+        linear-gradient(
+            145deg,
+            #171005,
+            #050403
+        );
+
+    box-shadow:
+        0 30px 110px
+        rgba(255,194,82,.13),
+        inset 0 0 80px
+        rgba(255,194,82,.025);
+
+}
+
+
+.ccfv-real-card::before {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    inset:
+        12px;
+
+    border:
+        1px solid
+        color-mix(
+            in srgb,
+            var(--card-accent) 17%,
+            transparent
+        );
+
+    border-radius:
+        18px;
+
+    pointer-events:
+        none;
+
+}
+
+
+.ccfv-real-card__grid {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    opacity:
+        .10;
+
+    background-image:
+        linear-gradient(
+            color-mix(
+                in srgb,
+                var(--card-accent) 20%,
+                transparent
+            ) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            color-mix(
+                in srgb,
+                var(--card-accent) 20%,
+                transparent
+            ) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        30px 30px;
+
+}
+
+
+.ccfv-real-card__top {
+
+    position:
+        absolute;
+
+    top:
+        20px;
+
+    left:
+        20px;
+
+    right:
+        20px;
+
+    z-index:
+        4;
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+}
+
+
+.ccfv-real-card__code {
+
+    color:
+        rgba(255,255,255,.28);
+
+    font-family:
+        monospace;
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-real-card__level {
+
+    color:
+        var(--card-accent);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .12em;
+
+}
+
+
+.ccfv-real-card__photo {
+
+    position:
+        absolute;
+
+    left:
+        10%;
+
+    right:
+        10%;
+
+    top:
+        13%;
+
+    height:
+        48%;
+
+    z-index:
+        3;
+
+    display:
+        grid;
+
+    place-items:
+        end
+        center;
+
+    overflow:
+        hidden;
+
+    border-radius:
+        20px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.07);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.02),
+            rgba(0,0,0,.30)
+        );
+
+}
+
+
+.ccfv-real-card__photo img {
+
+    width:
+        100%;
+
+    height:
+        100%;
+
+    object-fit:
+        contain;
+
+    object-position:
+        center bottom;
+
+}
+
+
+.ccfv-real-card__photo-placeholder {
+
+    color:
+        color-mix(
+            in srgb,
+            var(--card-accent) 55%,
+            transparent
+        );
+
+    font-size:
+        44px;
+
+    font-weight:
+        950;
+
+}
+
+
+.ccfv-real-card__badge {
+
+    position:
+        absolute;
+
+    top:
+        10%;
+
+    right:
+        5%;
+
+    width:
+        85px;
+
+    z-index:
+        5;
+
+}
+
+
+.ccfv-real-card__identity {
+
+    position:
+        absolute;
+
+    left:
+        7%;
+
+    right:
+        7%;
+
+    bottom:
+        27%;
+
+    z-index:
+        5;
+
+}
+
+
+.ccfv-real-card__identity span {
+
+    display:
+        block;
+
+    color:
+        var(--card-accent);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .14em;
+
+}
+
+
+.ccfv-real-card__identity strong {
+
+    display:
+        block;
+
+    margin-top:
+        4px;
+
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            20px,
+            5vw,
+            31px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        .9;
+
+}
+
+
+.ccfv-real-card__identity small {
+
+    display:
+        block;
+
+    margin-top:
+        7px;
+
+    color:
+        rgba(255,255,255,.30);
+
+    font-size:
+        7px;
+
+    font-weight:
+        800;
+
+}
+
+
+.ccfv-real-card__stats {
+
+    position:
+        absolute;
+
+    left:
+        7%;
+
+    right:
+        7%;
+
+    bottom:
+        12%;
+
+    z-index:
+        5;
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            1fr
+        );
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid
+        rgba(255,255,255,.07);
+
+    border-radius:
+        10px;
+
+}
+
+
+.ccfv-real-card__stats div {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    gap:
+        4px;
+
+    padding:
+        8px 3px;
+
+    background:
+        rgba(255,255,255,.018);
+
+}
+
+
+.ccfv-real-card__stats span {
+
+    color:
+        rgba(255,255,255,.20);
+
+    font-size:
+        5px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-real-card__stats strong {
+
+    color:
+        var(--card-accent);
+
+    font-family:
+        monospace;
+
+    font-size:
+        9px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-real-card__instagram {
+
+    position:
+        absolute;
+
+    left:
+        7%;
+
+    bottom:
+        5%;
+
+    z-index:
+        5;
+
+    color:
+        rgba(255,255,255,.33);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-real-card__logo {
+
+    position:
+        absolute;
+
+    right:
+        7%;
+
+    bottom:
+        4.5%;
+
+    z-index:
+        5;
+
+    color:
+        var(--card-accent);
+
+    font-size:
+        6px;
+
+    font-weight:
+        950;
+
+    letter-spacing:
+        .10em;
+
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.ccfv-jogador-card-viewer__actions {
+
+    width:
+        min(
+            100%,
+            420px
+        );
+
+    display:
+        grid;
+
+    grid-template-columns:
+        1fr;
+
+    gap:
+        7px;
+
+    margin-top:
+        16px;
+
+}
+
+
+.ccfv-card-action {
+
+    height:
+        42px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    border-radius:
+        10px;
+
+    color:
+        rgba(255,255,255,.42);
+
+    background:
+        rgba(255,255,255,.018);
+
+    font-family:
+        inherit;
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .08em;
+
+    cursor:
+        pointer;
+
+}
+
+
+.ccfv-card-action--primary {
+
+    color:
+        #031008;
+
+    border-color:
+        #43df91;
+
+    background:
+        #43df91;
+
+}
+
+
+.ccfv-card-action:hover {
+
+    border-color:
+        rgba(67,223,145,.30);
+
+}
+
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+    .ccfv-player-row {
+
+        grid-template-columns:
+            55px
+            minmax(220px,1fr)
+            100px
+            100px
+            150px;
+
+    }
+
+}
+
+
+@media (max-width: 850px) {
+
+    .ccfv-jogadores-toolbar {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+    }
+
+
+    .ccfv-jogadores-controls {
+
+        width:
+            100%;
+
+        flex-wrap:
+            wrap;
+
+    }
+
+
+    .ccfv-jogadores-search input {
+
+        width:
+            min(
+                100%,
+                280px
+            );
+
+    }
+
+
+    .ccfv-player-row {
+
+        grid-template-columns:
+            50px
+            minmax(200px,1fr)
+            90px
+            145px;
+
+    }
+
+
+    .ccfv-player-row__platform {
+
+        display:
+            none;
+
+    }
+
+}
+
+
+@media (max-width: 620px) {
+
+    .ccfv-jogadores-container {
+
+        width:
+            calc(100% - 30px);
+
+    }
+
+
+    .ccfv-jogadores-hero {
+
+        min-height:
+            auto;
+
+        padding:
+            115px 0 80px;
+
+    }
+
+
+    .ccfv-jogadores-hero__title {
+
+        font-size:
+            clamp(
+                52px,
+                15vw,
+                80px
+            );
+
+    }
+
+
+    .ccfv-jogadores-hero__stats {
+
+        flex-wrap:
+            wrap;
+
+    }
+
+
+    .ccfv-player-row {
+
+        grid-template-columns:
+            42px
+            minmax(0,1fr)
+            120px;
+
+        min-height:
+            72px;
+
+        padding:
+            0 12px;
+
+    }
+
+
+    .ccfv-player-row__elo {
+
+        display:
+            none;
+
+    }
+
+
+    .ccfv-player-row__actions {
+
+        justify-content:
+            flex-end;
+
+    }
+
+
+    .ccfv-player-row__button {
+
+        padding:
+            0 9px;
+
+    }
+
+
+    .ccfv-player-row__button:not(.ccfv-player-row__button--primary) {
+
+        display:
+            none;
+
+    }
+
+
+    .ccfv-jogador-card-viewer {
+
+        padding:
+            10px;
+
+    }
+
+
+    .ccfv-jogador-card-viewer__panel {
+
+        padding:
+            18px;
+
+        border-radius:
+            18px;
+
+    }
+
+}

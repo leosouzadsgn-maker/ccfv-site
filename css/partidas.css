@@ -1,0 +1,1971 @@
+/* =========================================================
+   CCFV — MATCH CENTER
+   ========================================================= */
+
+.ccfv-partidas-hero,
+.ccfv-partidas-filters,
+.ccfv-partidas-feature,
+.ccfv-partidas-list-section,
+.ccfv-partidas-results {
+
+    position: relative;
+
+    overflow: hidden;
+
+    isolation: isolate;
+
+}
+
+
+.ccfv-partidas-container {
+
+    position: relative;
+
+    width:
+        min(
+            calc(100% - 80px),
+            1400px
+        );
+
+    margin-inline: auto;
+
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.ccfv-partidas-hero {
+
+    min-height: 570px;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 150px 0 95px;
+
+    background:
+        radial-gradient(
+            circle at 78% 28%,
+            rgba(67,223,145,.12),
+            transparent 27%
+        ),
+        radial-gradient(
+            circle at 14% 75%,
+            rgba(75,100,255,.08),
+            transparent 28%
+        ),
+        linear-gradient(
+            135deg,
+            #020403 0%,
+            #050914 55%,
+            #020403 100%
+        );
+
+    border-bottom:
+        1px solid rgba(255,255,255,.06);
+
+}
+
+
+.ccfv-partidas-hero__background {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    z-index:
+        -2;
+
+    pointer-events:
+        none;
+
+}
+
+
+.ccfv-partidas-hero__glow {
+
+    position:
+        absolute;
+
+    width:
+        650px;
+
+    height:
+        650px;
+
+    right:
+        -180px;
+
+    top:
+        -170px;
+
+    border-radius:
+        50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(67,223,145,.11),
+            rgba(78,96,255,.04) 42%,
+            transparent 70%
+        );
+
+    filter:
+        blur(35px);
+
+    animation:
+        partidas-glow
+        9s
+        ease-in-out
+        infinite;
+
+}
+
+
+@keyframes partidas-glow {
+
+    0%,
+    100% {
+
+        transform:
+            scale(1);
+
+        opacity:
+            .75;
+
+    }
+
+    50% {
+
+        transform:
+            scale(1.08);
+
+        opacity:
+            1;
+
+    }
+
+}
+
+
+.ccfv-partidas-hero__grid {
+
+    position:
+        absolute;
+
+    left:
+        -10%;
+
+    right:
+        -10%;
+
+    bottom:
+        -45%;
+
+    height:
+        80%;
+
+    transform:
+        perspective(700px)
+        rotateX(64deg);
+
+    transform-origin:
+        bottom center;
+
+    background-image:
+        linear-gradient(
+            rgba(67,223,145,.08) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(67,223,145,.08) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        70px 70px;
+
+    mask-image:
+        linear-gradient(
+            180deg,
+            transparent,
+            #000 35%,
+            transparent
+        );
+
+    -webkit-mask-image:
+        linear-gradient(
+            180deg,
+            transparent,
+            #000 35%,
+            transparent
+        );
+
+    opacity:
+        .20;
+
+    animation:
+        partidas-grid
+        12s
+        linear
+        infinite;
+
+}
+
+
+@keyframes partidas-grid {
+
+    from {
+
+        background-position:
+            0 0,
+            0 0;
+
+    }
+
+    to {
+
+        background-position:
+            0 70px,
+            70px 0;
+
+    }
+
+}
+
+
+.ccfv-partidas-hero__scan {
+
+    position:
+        absolute;
+
+    top:
+        0;
+
+    left:
+        -35%;
+
+    width:
+        30%;
+
+    height:
+        100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(67,223,145,.02),
+            rgba(67,223,145,.09),
+            transparent
+        );
+
+    filter:
+        blur(12px);
+
+    animation:
+        partidas-scan
+        8s
+        linear
+        infinite;
+
+}
+
+
+@keyframes partidas-scan {
+
+    from {
+        left: -35%;
+    }
+
+    to {
+        left: 120%;
+    }
+
+}
+
+
+/* =========================================================
+   HERO CONTENT
+   ========================================================= */
+
+.ccfv-partidas-hero__container {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    width:
+        min(
+            calc(100% - 80px),
+            1400px
+        );
+
+    margin-inline:
+        auto;
+
+    display:
+        grid;
+
+    grid-template-columns:
+        minmax(0,1fr)
+        auto;
+
+    align-items:
+        end;
+
+    gap:
+        70px;
+
+}
+
+
+.ccfv-partidas-hero__content {
+
+    max-width:
+        800px;
+
+}
+
+
+.ccfv-partidas-hero__eyebrow {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+    color:
+        #43df91;
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .18em;
+
+}
+
+
+.ccfv-partidas-hero__eyebrow span {
+
+    width:
+        6px;
+
+    height:
+        6px;
+
+    border-radius:
+        50%;
+
+    background:
+        #43df91;
+
+    box-shadow:
+        0 0 13px
+        rgba(67,223,145,.8);
+
+}
+
+
+.ccfv-partidas-hero__title {
+
+    margin:
+        20px 0 0;
+
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            58px,
+            7.5vw,
+            105px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        .80;
+
+    letter-spacing:
+        -.075em;
+
+}
+
+
+.ccfv-partidas-hero__title strong {
+
+    display:
+        block;
+
+    color:
+        #43df91;
+
+}
+
+
+.ccfv-partidas-hero__description {
+
+    max-width:
+        520px;
+
+    margin:
+        28px 0 0;
+
+    color:
+        rgba(255,255,255,.38);
+
+    font-size:
+        14px;
+
+    line-height:
+        1.7;
+
+}
+
+
+.ccfv-partidas-hero__stats {
+
+    display:
+        flex;
+
+    align-items:
+        flex-end;
+
+    gap:
+        22px;
+
+    padding-bottom:
+        6px;
+
+}
+
+
+.ccfv-partidas-hero__stats > div {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        7px;
+
+    min-width:
+        90px;
+
+}
+
+
+.ccfv-partidas-hero__stats > div:not(:last-child) {
+
+    padding-right:
+        22px;
+
+    border-right:
+        1px solid rgba(255,255,255,.08);
+
+}
+
+
+.ccfv-partidas-hero__stats span {
+
+    color:
+        rgba(255,255,255,.22);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .14em;
+
+}
+
+
+.ccfv-partidas-hero__stats strong {
+
+    color:
+        #fff;
+
+    font-size:
+        30px;
+
+    font-weight:
+        950;
+
+    line-height:
+        1;
+
+}
+
+
+/* =========================================================
+   FILTROS
+   ========================================================= */
+
+.ccfv-partidas-filters {
+
+    padding:
+        22px 0;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.06);
+
+    background:
+        rgba(3,5,4,.92);
+
+}
+
+
+.ccfv-partidas-filter-bar {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        1fr
+        1fr;
+
+    align-items:
+        center;
+
+    gap:
+        45px;
+
+}
+
+
+.ccfv-partidas-filter-group {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        14px;
+
+    min-width:
+        0;
+
+}
+
+
+.ccfv-partidas-filter-group > span {
+
+    flex-shrink:
+        0;
+
+    color:
+        rgba(255,255,255,.20);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .15em;
+
+}
+
+
+.ccfv-partidas-filter-options {
+
+    display:
+        flex;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        6px;
+
+}
+
+
+.ccfv-partidas-filter {
+
+    min-height:
+        31px;
+
+    padding:
+        0 12px;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius:
+        999px;
+
+    color:
+        rgba(255,255,255,.29);
+
+    background:
+        rgba(255,255,255,.018);
+
+    font-family:
+        inherit;
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .10em;
+
+    cursor:
+        pointer;
+
+    pointer-events:
+        auto;
+
+    position:
+        relative;
+
+    z-index:
+        5;
+
+    transition:
+        color .25s ease,
+        border-color .25s ease,
+        background .25s ease,
+        transform .25s ease;
+
+}
+
+
+.ccfv-partidas-filter:hover {
+
+    color:
+        #fff;
+
+    border-color:
+        rgba(67,223,145,.28);
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+.ccfv-partidas-filter.is-active {
+
+    color:
+        #031008;
+
+    border-color:
+        #43df91;
+
+    background:
+        #43df91;
+
+}
+
+
+/* =========================================================
+   SEÇÕES
+   ========================================================= */
+
+.ccfv-partidas-feature {
+
+    padding:
+        100px 0 70px;
+
+    background:
+        #030504;
+
+}
+
+
+.ccfv-partidas-list-section {
+
+    padding:
+        70px 0 100px;
+
+    background:
+        #030504;
+
+}
+
+
+.ccfv-partidas-results {
+
+    padding:
+        100px 0 120px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #020403,
+            #050908
+        );
+
+    border-top:
+        1px solid rgba(255,255,255,.05);
+
+}
+
+
+/* =========================================================
+   HEADINGS
+   ========================================================= */
+
+.ccfv-partidas-section-heading {
+
+    display:
+        flex;
+
+    align-items:
+        flex-end;
+
+    justify-content:
+        space-between;
+
+    gap:
+        35px;
+
+    margin-bottom:
+        38px;
+
+}
+
+
+.ccfv-partidas-section-heading h2 {
+
+    margin:
+        13px 0 0;
+
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            38px,
+            4.4vw,
+            60px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        .88;
+
+    letter-spacing:
+        -.055em;
+
+    text-transform:
+        uppercase;
+
+}
+
+
+.ccfv-partidas-section-heading > div:first-child > span {
+
+    color:
+        #43df91;
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .18em;
+
+}
+
+
+.ccfv-partidas-section-heading h2 strong {
+
+    display:
+        block;
+
+    color:
+        #43df91;
+
+}
+
+
+.ccfv-partidas-heading-status {
+
+    flex-shrink:
+        0;
+
+    padding:
+        8px 12px;
+
+    border:
+        1px solid rgba(67,223,145,.16);
+
+    border-radius:
+        999px;
+
+    color:
+        rgba(255,255,255,.38);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .12em;
+
+}
+
+
+/* =========================================================
+   PRÓXIMA PARTIDA
+   ========================================================= */
+
+.ccfv-next-match-card {
+
+    position:
+        relative;
+
+    padding:
+        30px;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid rgba(67,223,145,.18);
+
+    border-radius:
+        22px;
+
+    background:
+        radial-gradient(
+            circle at 50% 40%,
+            rgba(31,143,95,.08),
+            transparent 44%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(7,19,13,.90),
+            rgba(3,8,6,.98)
+        );
+
+}
+
+
+.ccfv-next-match-card__competition {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
+
+    padding-bottom:
+        18px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.06);
+
+}
+
+
+.ccfv-next-match-card__competition span {
+
+    color:
+        #43df91;
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .14em;
+
+}
+
+
+.ccfv-next-match-card__competition small {
+
+    color:
+        rgba(255,255,255,.22);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-next-match-card__teams {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        minmax(0,1fr)
+        140px
+        minmax(0,1fr);
+
+    align-items:
+        center;
+
+    gap:
+        20px;
+
+    padding:
+        42px 20px;
+
+}
+
+
+.ccfv-next-team {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+
+    min-width:
+        0;
+
+}
+
+
+.ccfv-next-team__crest {
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    width:
+        78px;
+
+    height:
+        78px;
+
+    border:
+        1px solid rgba(67,223,145,.16);
+
+    border-radius:
+        20px;
+
+    color:
+        #43df91;
+
+    background:
+        rgba(31,143,95,.035);
+
+}
+
+
+.ccfv-next-team__crest img {
+
+    width:
+        56px;
+
+    height:
+        56px;
+
+    object-fit:
+        contain;
+
+}
+
+
+.ccfv-next-team strong {
+
+    max-width:
+        100%;
+
+    overflow:
+        hidden;
+
+    color:
+        rgba(255,255,255,.76);
+
+    font-size:
+        10px;
+
+    font-weight:
+        900;
+
+    text-align:
+        center;
+
+    white-space:
+        nowrap;
+
+    text-overflow:
+        ellipsis;
+
+}
+
+
+.ccfv-next-team span {
+
+    color:
+        rgba(255,255,255,.22);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-next-match-card__vs {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+}
+
+
+.ccfv-next-match-card__vs span {
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    width:
+        46px;
+
+    height:
+        46px;
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    border-radius:
+        50%;
+
+    color:
+        rgba(255,255,255,.28);
+
+    background:
+        rgba(255,255,255,.02);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-next-match-card__vs small {
+
+    color:
+        rgba(255,255,255,.20);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    text-align:
+        center;
+
+}
+
+
+.ccfv-next-match-card__bottom {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    padding-top:
+        17px;
+
+    border-top:
+        1px solid rgba(255,255,255,.06);
+
+}
+
+
+.ccfv-next-match-card__bottom span {
+
+    color:
+        rgba(255,255,255,.21);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-next-match-card__bottom strong {
+
+    color:
+        #43df91;
+
+    font-size:
+        9px;
+
+    font-weight:
+        900;
+
+}
+
+
+/* =========================================================
+   LISTA DE PARTIDAS
+   ========================================================= */
+
+.ccfv-partidas-list {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        7px;
+
+}
+
+
+.ccfv-match-center-card {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        170px
+        minmax(180px,1fr)
+        110px
+        minmax(180px,1fr)
+        150px;
+
+    align-items:
+        center;
+
+    width:
+        100%;
+
+    min-height:
+        82px;
+
+    padding:
+        0 20px;
+
+    box-sizing:
+        border-box;
+
+    border:
+        1px solid rgba(255,255,255,.06);
+
+    border-radius:
+        15px;
+
+    background:
+        rgba(255,255,255,.018);
+
+    transition:
+        background .25s ease,
+        border-color .25s ease,
+        transform .25s ease;
+
+}
+
+
+.ccfv-match-center-card:hover {
+
+    transform:
+        translateX(3px);
+
+    border-color:
+        rgba(67,223,145,.16);
+
+    background:
+        rgba(67,223,145,.025);
+
+}
+
+
+/* =========================================================
+   META
+   ========================================================= */
+
+.ccfv-match-center-card__meta {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    justify-content:
+        center;
+
+    gap:
+        5px;
+
+    min-width:
+        0;
+
+}
+
+
+.ccfv-match-center-card__meta span {
+
+    overflow:
+        hidden;
+
+    color:
+        #43df91;
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .11em;
+
+    white-space:
+        nowrap;
+
+    text-overflow:
+        ellipsis;
+
+}
+
+
+.ccfv-match-center-card__meta small {
+
+    color:
+        rgba(255,255,255,.21);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+}
+
+
+/* =========================================================
+   TIMES
+   ========================================================= */
+
+.ccfv-match-center-card__team {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+
+    min-width:
+        0;
+
+}
+
+
+.ccfv-match-center-card__team--away {
+
+    justify-content:
+        flex-end;
+
+    text-align:
+        right;
+
+}
+
+
+.ccfv-match-center-card__team strong {
+
+    overflow:
+        hidden;
+
+    color:
+        rgba(255,255,255,.72);
+
+    font-size:
+        9px;
+
+    font-weight:
+        900;
+
+    white-space:
+        nowrap;
+
+    text-overflow:
+        ellipsis;
+
+}
+
+
+.ccfv-match-center-card__crest {
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    width:
+        36px;
+
+    height:
+        36px;
+
+    flex-shrink:
+        0;
+
+    border:
+        1px solid rgba(67,223,145,.13);
+
+    border-radius:
+        9px;
+
+    color:
+        #43df91;
+
+    background:
+        rgba(31,143,95,.035);
+
+    font-size:
+        9px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-match-center-card__crest img {
+
+    display:
+        block;
+
+    width:
+        25px;
+
+    height:
+        25px;
+
+    object-fit:
+        contain;
+
+}
+
+
+/* =========================================================
+   PLACAR
+   ========================================================= */
+
+.ccfv-match-center-card__score {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        5px;
+
+    width:
+        110px;
+
+}
+
+
+.ccfv-match-center-card__score strong {
+
+    color:
+        rgba(255,255,255,.82);
+
+    font-family:
+        monospace;
+
+    font-size:
+        11px;
+
+    font-weight:
+        950;
+
+    text-align:
+        center;
+
+}
+
+
+.ccfv-match-center-card__score span {
+
+    color:
+        rgba(255,255,255,.20);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    text-align:
+        center;
+
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.ccfv-match-center-card__status {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        flex-end;
+
+    justify-content:
+        center;
+
+    gap:
+        5px;
+
+    min-width:
+        0;
+
+}
+
+
+.ccfv-match-center-card__status span {
+
+    color:
+        #43df91;
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .10em;
+
+}
+
+
+.ccfv-match-center-card__status small {
+
+    overflow:
+        hidden;
+
+    max-width:
+        100%;
+
+    color:
+        rgba(255,255,255,.20);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    white-space:
+        nowrap;
+
+    text-overflow:
+        ellipsis;
+
+}
+
+
+/* =========================================================
+   RESULTADOS
+   ========================================================= */
+
+.ccfv-partidas-results-list {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        7px;
+
+}
+
+
+.ccfv-partidas-empty {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        22px;
+
+    min-height:
+        150px;
+
+    padding:
+        35px;
+
+    border:
+        1px solid rgba(255,255,255,.06);
+
+    border-radius:
+        18px;
+
+    background:
+        rgba(255,255,255,.018);
+
+}
+
+
+.ccfv-partidas-empty > span {
+
+    color:
+        rgba(67,223,145,.34);
+
+    font-family:
+        monospace;
+
+    font-size:
+        28px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-partidas-empty strong {
+
+    display:
+        block;
+
+    color:
+        rgba(255,255,255,.70);
+
+    font-size:
+        13px;
+
+}
+
+
+.ccfv-partidas-empty small {
+
+    display:
+        block;
+
+    margin-top:
+        7px;
+
+    color:
+        rgba(255,255,255,.26);
+
+    font-size:
+        9px;
+
+}
+
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .ccfv-partidas-hero__container {
+
+        grid-template-columns:
+            1fr;
+
+        align-items:
+            start;
+
+        gap:
+            35px;
+
+    }
+
+
+    .ccfv-partidas-filter-bar {
+
+        grid-template-columns:
+            1fr;
+
+        gap:
+            18px;
+
+    }
+
+
+    .ccfv-match-center-card {
+
+        grid-template-columns:
+            145px
+            minmax(130px,1fr)
+            90px
+            minmax(130px,1fr)
+            120px;
+
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .ccfv-partidas-container,
+    .ccfv-partidas-hero__container {
+
+        width:
+            min(
+                calc(100% - 40px),
+                650px
+            );
+
+    }
+
+
+    .ccfv-next-match-card__teams {
+
+        grid-template-columns:
+            1fr
+            90px
+            1fr;
+
+    }
+
+
+    .ccfv-match-center-card {
+
+        grid-template-columns:
+            105px
+            minmax(100px,1fr)
+            80px
+            minmax(100px,1fr)
+            100px;
+
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .ccfv-partidas-hero {
+
+        min-height:
+            auto;
+
+        padding:
+            115px 0 75px;
+
+    }
+
+
+    .ccfv-partidas-container,
+    .ccfv-partidas-hero__container {
+
+        width:
+            min(
+                calc(100% - 30px),
+                600px
+            );
+
+    }
+
+
+    .ccfv-partidas-hero__title {
+
+        font-size:
+            clamp(
+                52px,
+                16vw,
+                82px
+            );
+
+    }
+
+
+    .ccfv-partidas-hero__stats {
+
+        flex-wrap:
+            wrap;
+
+    }
+
+
+    .ccfv-partidas-feature,
+    .ccfv-partidas-list-section,
+    .ccfv-partidas-results {
+
+        padding:
+            75px 0;
+
+    }
+
+
+    .ccfv-partidas-section-heading {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+    }
+
+
+    .ccfv-next-match-card__teams {
+
+        grid-template-columns:
+            1fr
+            55px
+            1fr;
+
+        gap:
+            5px;
+
+        padding:
+            30px 0;
+
+    }
+
+
+    .ccfv-next-team__crest {
+
+        width:
+            60px;
+
+        height:
+            60px;
+
+    }
+
+
+    .ccfv-match-center-card {
+
+        grid-template-columns:
+            42px
+            minmax(0,1fr)
+            62px
+            minmax(0,1fr);
+
+        min-height:
+            72px;
+
+        padding:
+            0 10px;
+
+    }
+
+
+    .ccfv-match-center-card__meta,
+    .ccfv-match-center-card__status {
+
+        display:
+            none;
+
+    }
+
+
+    .ccfv-match-center-card__score {
+
+        width:
+            62px;
+
+    }
+
+
+    .ccfv-match-center-card__team {
+
+        gap:
+            6px;
+
+    }
+
+
+    .ccfv-match-center-card__team strong {
+
+        font-size:
+            7px;
+
+    }
+
+
+    .ccfv-match-center-card__crest {
+
+        width:
+            28px;
+
+        height:
+            28px;
+
+    }
+
+
+    .ccfv-match-center-card__crest img {
+
+        width:
+            20px;
+
+        height:
+            20px;
+
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .ccfv-partidas-hero__stats {
+
+        gap:
+            14px;
+
+    }
+
+
+    .ccfv-partidas-filter-group {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+    }
+
+
+    .ccfv-partidas-filter-options {
+
+        width:
+            100%;
+
+    }
+
+
+    .ccfv-partidas-filter {
+
+        flex:
+            1 1 auto;
+
+    }
+
+
+    .ccfv-next-match-card__competition {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+    }
+
+
+    .ccfv-next-match-card__bottom {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+        gap:
+            6px;
+
+    }
+
+}

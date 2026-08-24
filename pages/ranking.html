@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#020403"
+    >
+
+    <meta
+        name="description"
+        content="Ranking oficial CCFV — jogadores, Elo e insígnias."
+    >
+
+    <title>
+        Ranking — CCFV
+    </title>
+
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <link
+        rel="stylesheet"
+        href="../css/global.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/header.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/ranking.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/responsive.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header
+        class="ccfv-header"
+        id="site-header"
+    >
+
+        <div class="ccfv-header__inner">
+
+
+            <a
+                href="../index.html"
+                class="ccfv-header__brand"
+            >
+
+                <img
+                    src="../assets/images/logo/ccfv-logo.png"
+                    alt="CCFV"
+                    class="ccfv-header__logo"
+                >
+
+                <span
+                    class="ccfv-header__brand-text"
+                >
+
+                    <span
+                        class="ccfv-header__brand-name"
+                    >
+                        CCFV
+                    </span>
+
+                    <span
+                        class="ccfv-header__brand-subtitle"
+                    >
+                        Confederação Coliseu de Futebol Virtual
+                    </span>
+
+                </span>
+
+            </a>
+
+
+            <nav
+                class="ccfv-header__nav"
+                aria-label="Navegação principal"
+            >
+
+                <a
+                    href="../index.html"
+                    class="ccfv-header__link"
+                >
+                    Início
+                </a>
+
+                <a
+                    href="brasileirao.html"
+                    class="ccfv-header__link"
+                >
+                    Brasileirão
+                </a>
+
+                <a
+                    href="night.html"
+                    class="ccfv-header__link"
+                >
+                    Night Cup
+                </a>
+
+                <a
+                    href="partidas.html"
+                    class="ccfv-header__link"
+                >
+                    Partidas
+                </a>
+
+                <a
+                    href="ranking.html"
+                    class="ccfv-header__link is-active"
+                >
+                    Ranking
+                </a>
+
+            </nav>
+
+
+            <a
+                href="night.html#inscricao"
+                class="ccfv-header__action"
+            >
+                Participar
+            </a>
+
+
+            <button
+                type="button"
+                class="ccfv-header__menu"
+                aria-label="Abrir menu"
+                aria-expanded="false"
+            >
+
+                <span
+                    class="ccfv-header__menu-lines"
+                >
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </span>
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main>
+
+
+        <!-- =================================================
+             HERO
+             ================================================= -->
+
+        <section
+            class="ccfv-ranking-hero"
+        >
+
+            <div
+                class="ccfv-ranking-hero__background"
+                aria-hidden="true"
+            >
+
+                <div
+                    class="ccfv-ranking-hero__glow"
+                ></div>
+
+                <div
+                    class="ccfv-ranking-hero__grid"
+                ></div>
+
+                <div
+                    class="ccfv-ranking-hero__scan"
+                ></div>
+
+            </div>
+
+
+            <div
+                class="ccfv-ranking-container"
+            >
+
+                <div
+                    class="ccfv-ranking-hero__content"
+                >
+
+                    <div
+                        class="ccfv-ranking-hero__eyebrow"
+                    >
+
+                        <span></span>
+
+                        CCFV // OFFICIAL RANKING
+
+                    </div>
+
+
+                    <h1
+                        class="ccfv-ranking-hero__title"
+                    >
+
+                        QUEM É O
+
+                        <strong>
+                            MELHOR?
+                        </strong>
+
+                    </h1>
+
+
+                    <p
+                        class="ccfv-ranking-hero__description"
+                    >
+
+                        O ranking oficial da CCFV reúne
+                        resultados, pontuação, Elo e
+                        evolução competitiva de cada jogador.
+
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="ccfv-ranking-hero__stats"
+                >
+
+                    <div>
+
+                        <span>
+                            JOGADORES
+                        </span>
+
+                        <strong
+                            id="ranking-player-count"
+                        >
+                            08
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            TEMPORADA
+                        </span>
+
+                        <strong>
+                            01
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            RANKING
+                        </span>
+
+                        <strong>
+                            GERAL
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             ELOS
+             ================================================= -->
+
+        <section
+            class="ccfv-ranking-levels"
+        >
+
+            <div
+                class="ccfv-ranking-container"
+            >
+
+                <div
+                    class="ccfv-ranking-section-heading"
+                >
+
+                    <div>
+
+                        <span>
+                            CCFV // ELO SYSTEM
+                        </span>
+
+                        <h2>
+                            CONQUISTE SUA
+                            <strong>INSÍGNIA.</strong>
+                        </h2>
+
+                    </div>
+
+
+                    <p>
+
+                        Todos começam de baixo.
+                        A evolução precisa ser conquistada.
+
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="ccfv-ranking-level-grid"
+                    id="ranking-level-grid"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             TOP PLAYER
+             ================================================= -->
+
+        <section
+            class="ccfv-ranking-feature"
+        >
+
+            <div
+                class="ccfv-ranking-container"
+            >
+
+                <div
+                    class="ccfv-ranking-section-heading"
+                >
+
+                    <div>
+
+                        <span>
+                            CCFV // #01
+                        </span>
+
+                        <h2>
+                            TOPO DO
+                            <strong>RANKING.</strong>
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="ranking-feature-player"
+                    class="ccfv-ranking-feature-player"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             RANKING GERAL
+             ================================================= -->
+
+        <section
+            class="ccfv-ranking-table-section"
+        >
+
+            <div
+                class="ccfv-ranking-container"
+            >
+
+                <div
+                    class="ccfv-ranking-section-heading"
+                >
+
+                    <div>
+
+                        <span>
+                            CCFV // LEADERBOARD
+                        </span>
+
+                        <h2>
+                            RANKING
+                            <strong>GERAL.</strong>
+                        </h2>
+
+                    </div>
+
+
+                    <div
+                        class="ccfv-ranking-filter"
+                    >
+
+                        <button
+                            type="button"
+                            class="is-active"
+                            data-platform="all"
+                        >
+                            TODOS
+                        </button>
+
+                        <button
+                            type="button"
+                            data-platform="pc"
+                        >
+                            PC
+                        </button>
+
+                        <button
+                            type="button"
+                            data-platform="console"
+                        >
+                            CONSOLE
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="ccfv-ranking-list"
+                    id="ranking-list"
+                ></div>
+
+            </div>
+
+            <a
+    href="jogadores.html"
+    class="ccfv-ranking-view-all"
+>
+    VER RANKING COMPLETO
+    <span>→</span>
+</a>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PLAYER CARDS
+             ================================================= -->
+
+        <section
+            class="ccfv-player-cards-section"
+        >
+
+            <div
+                class="ccfv-ranking-container"
+            >
+
+                <div
+                    class="ccfv-ranking-section-heading"
+                >
+
+                    <div>
+
+                        <span>
+                            CCFV // PLAYER CARDS
+                        </span>
+
+                        <h2>
+                            ROSTER DE
+                            <strong>COMPETIDORES.</strong>
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="ccfv-player-card-grid"
+                    id="player-card-grid"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+        <script
+        src="../js/main.js"
+        defer
+    ></script>
+
+    <script
+        src="../js/ranking.js"
+        defer
+    ></script>
+
+</body>
+
+</html>

@@ -1,0 +1,316 @@
+/* =========================================================
+   CCFV — GLOBAL
+   Confederação Coliseu de Futebol Virtual
+   ========================================================= */
+
+:root {
+    /* Cores principais CCFV */
+    --ccfv-green: #1f8f5f;
+    --ccfv-green-light: #32c982;
+    --ccfv-green-dark: #0b4d35;
+
+    --ccfv-gold: #d6b45a;
+    --ccfv-gold-light: #f2d98a;
+
+    /* Base */
+    --ccfv-black: #050706;
+    --ccfv-black-soft: #080d0b;
+    --ccfv-dark: #0c1210;
+    --ccfv-dark-2: #111a16;
+
+    /* Texto */
+    --ccfv-white: #ffffff;
+    --ccfv-white-soft: rgba(255, 255, 255, 0.82);
+    --ccfv-gray: #a8b1ad;
+    --ccfv-gray-dark: #68736e;
+
+    /* Efeitos */
+    --ccfv-border: rgba(255, 255, 255, 0.10);
+    --ccfv-border-green: rgba(31, 143, 95, 0.35);
+
+    --ccfv-glow-green:
+        0 0 20px rgba(31, 143, 95, 0.25),
+        0 0 60px rgba(31, 143, 95, 0.12);
+
+    --ccfv-glow-gold:
+        0 0 20px rgba(214, 180, 90, 0.20),
+        0 0 50px rgba(214, 180, 90, 0.08);
+
+    /* Layout */
+    --container-width: 1440px;
+    --page-padding: clamp(20px, 4vw, 70px);
+
+    /* Transições */
+    --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+html {
+    scroll-behavior: smooth;
+    background: var(--ccfv-black);
+}
+
+
+body {
+    min-height: 100vh;
+
+    background:
+        var(--ccfv-black);
+
+    color: var(--ccfv-white);
+
+    font-family:
+        Inter,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    font-size: 16px;
+    line-height: 1.5;
+
+    overflow-x: hidden;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+body,
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+button {
+    border: 0;
+    background: none;
+    color: inherit;
+}
+
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+
+ul,
+ol {
+    list-style: none;
+}
+
+
+/* =========================================================
+   SELEÇÃO DE TEXTO
+   ========================================================= */
+
+::selection {
+    background: var(--ccfv-green);
+    color: var(--ccfv-white);
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+
+::-webkit-scrollbar-track {
+    background: #050706;
+}
+
+
+::-webkit-scrollbar-thumb {
+    background:
+        linear-gradient(
+            180deg,
+            var(--ccfv-green),
+            var(--ccfv-green-dark)
+        );
+
+    border-radius: 999px;
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--ccfv-green-light);
+}
+
+
+/* =========================================================
+   CONTAINER GLOBAL
+   ========================================================= */
+
+.container {
+    width: min(
+        calc(100% - (var(--page-padding) * 2)),
+        var(--container-width)
+    );
+
+    margin-inline: auto;
+}
+
+
+/* =========================================================
+   ELEMENTOS DE ACESSIBILIDADE
+   ========================================================= */
+
+.sr-only {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    padding: 0;
+    margin: -1px;
+
+    overflow: hidden;
+
+    clip: rect(0, 0, 0, 0);
+
+    white-space: nowrap;
+
+    border: 0;
+}
+
+
+/* =========================================================
+   LINKS / BOTÕES — BASE
+   ========================================================= */
+
+button,
+a {
+    cursor: pointer;
+}
+
+
+button:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--ccfv-green-light);
+    outline-offset: 4px;
+}
+
+
+/* =========================================================
+   UTILITÁRIOS VISUAIS
+   ========================================================= */
+
+.glow-green {
+    box-shadow: var(--ccfv-glow-green);
+}
+
+
+.glow-gold {
+    box-shadow: var(--ccfv-glow-gold);
+}
+
+
+/* =========================================================
+   ANIMAÇÕES GLOBAIS
+   ========================================================= */
+
+@keyframes ccfv-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+@keyframes ccfv-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+@keyframes ccfv-scale-in {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+@keyframes ccfv-pulse {
+    0%,
+    100% {
+        opacity: 0.55;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.04);
+    }
+}
+
+
+/* =========================================================
+   REDUÇÃO DE MOVIMENTO
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

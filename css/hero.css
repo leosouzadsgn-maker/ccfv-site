@@ -1,0 +1,2031 @@
+/* =========================================================
+   CCFV — HERO EXPERIENCE 2.0
+   THE COLOSSEUM IS ONLINE
+   ========================================================= */
+
+.ccfv-hero {
+    position: relative;
+    min-height: 100svh;
+    height: 900px;
+    max-height: 1080px;
+
+    overflow: hidden;
+    isolation: isolate;
+
+    background: #020403;
+
+    --hero-move-x: 0px;
+    --hero-move-y: 0px;
+    --cursor-x: 50%;
+    --cursor-y: 50%;
+    --cursor-opacity: 0;
+}
+
+
+/* =========================================================
+   CINEMATIC BACKGROUND
+   ========================================================= */
+
+.ccfv-hero__background {
+    position: absolute;
+    inset: 0;
+    z-index: -20;
+
+    overflow: hidden;
+
+    transform:
+        translate3d(
+            var(--hero-move-x),
+            var(--hero-move-y),
+            0
+        )
+        scale(1.06);
+
+    transition:
+        transform 1.4s var(--ease-smooth);
+}
+
+.ccfv-hero__stadium {
+    position: absolute;
+    inset: -2%;
+
+    width: 104%;
+    height: 104%;
+
+    object-fit: cover;
+    object-position: center;
+
+    filter:
+        brightness(.43)
+        contrast(1.18)
+        saturate(.82);
+
+    user-select: none;
+    pointer-events: none;
+
+    transform: scale(1.03);
+
+    animation:
+        ccfv-stadium-breathe
+        18s
+        ease-in-out
+        infinite;
+}
+
+@keyframes ccfv-stadium-breathe {
+    0%,
+    100% {
+        transform: scale(1.03);
+    }
+
+    50% {
+        transform: scale(1.055);
+    }
+}
+
+
+/* =========================================================
+   CINEMATIC DARKNESS
+   ========================================================= */
+
+.ccfv-hero__background::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 2;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(1, 4, 3, .94) 0%,
+            rgba(1, 4, 3, .64) 35%,
+            rgba(1, 4, 3, .22) 65%,
+            rgba(1, 4, 3, .82) 100%
+        );
+
+    pointer-events: none;
+}
+
+.ccfv-hero__background::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 3;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            transparent 15%,
+            rgba(0, 0, 0, .15) 48%,
+            rgba(0, 0, 0, .82) 100%
+        );
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   CURSOR SPOTLIGHT
+   ========================================================= */
+
+.ccfv-hero__cursor-light {
+    position: absolute;
+    inset: 0;
+
+    z-index: 5;
+
+    pointer-events: none;
+
+    opacity: var(--cursor-opacity);
+
+    background:
+        radial-gradient(
+            circle 260px at var(--cursor-x) var(--cursor-y),
+            rgba(50, 201, 130, .13),
+            rgba(50, 201, 130, .045) 32%,
+            transparent 70%
+        );
+
+    mix-blend-mode: screen;
+
+    transition:
+        opacity .4s ease;
+}
+
+
+/* =========================================================
+   AMBIENT ENERGY
+   ========================================================= */
+
+.ccfv-hero__ambient {
+    position: absolute;
+    inset: 0;
+
+    z-index: -5;
+
+    overflow: hidden;
+
+    pointer-events: none;
+}
+
+.ccfv-hero__ambient::before,
+.ccfv-hero__ambient::after {
+    content: "";
+
+    position: absolute;
+
+    width: 60vw;
+    height: 60vw;
+
+    min-width: 420px;
+    min-height: 420px;
+
+    max-width: 900px;
+    max-height: 900px;
+
+    border-radius: 50%;
+
+    filter: blur(100px);
+
+    pointer-events: none;
+}
+
+.ccfv-hero__ambient::before {
+    left: -25%;
+    top: 20%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(31, 143, 95, .32),
+            transparent 68%
+        );
+
+    animation:
+        ccfv-energy-float
+        12s
+        ease-in-out
+        infinite;
+}
+
+.ccfv-hero__ambient::after {
+    right: -25%;
+    bottom: -30%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(214, 180, 90, .16),
+            rgba(31, 143, 95, .08) 40%,
+            transparent 70%
+        );
+
+    animation:
+        ccfv-energy-float
+        15s
+        ease-in-out
+        infinite reverse;
+}
+
+@keyframes ccfv-energy-float {
+    0%,
+    100% {
+        transform:
+            translate3d(0, 0, 0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate3d(4%, -3%, 0)
+            scale(1.1);
+    }
+}
+
+
+/* =========================================================
+   LIGHT BEAMS
+   ========================================================= */
+
+.ccfv-hero__beams {
+    position: absolute;
+    inset: -20%;
+
+    z-index: 2;
+
+    overflow: hidden;
+
+    pointer-events: none;
+
+    opacity: .72;
+}
+
+.ccfv-hero__beam {
+    position: absolute;
+
+    top: -20%;
+    width: 15vw;
+    height: 150%;
+
+    background:
+        linear-gradient(
+            180deg,
+            transparent,
+            rgba(255,255,255,.025) 20%,
+            rgba(50,201,130,.13) 48%,
+            transparent 80%
+        );
+
+    filter: blur(17px);
+
+    transform-origin: top center;
+
+    animation:
+        ccfv-beam-sweep
+        10s
+        ease-in-out
+        infinite;
+}
+
+.ccfv-hero__beam:nth-child(1) {
+    left: 4%;
+    transform: rotate(17deg);
+}
+
+.ccfv-hero__beam:nth-child(2) {
+    left: 40%;
+    width: 10vw;
+
+    opacity: .55;
+
+    transform: rotate(-10deg);
+
+    animation-delay: -3s;
+}
+
+.ccfv-hero__beam:nth-child(3) {
+    right: 5%;
+    width: 19vw;
+
+    opacity: .75;
+
+    transform: rotate(-19deg);
+
+    animation-delay: -6s;
+}
+
+@keyframes ccfv-beam-sweep {
+    0%,
+    100% {
+        opacity: .25;
+        transform:
+            translateX(-2vw)
+            rotate(17deg);
+    }
+
+    50% {
+        opacity: .85;
+        transform:
+            translateX(5vw)
+            rotate(22deg);
+    }
+}
+
+
+/* =========================================================
+   DIGITAL GRID
+   ========================================================= */
+
+.ccfv-hero__grid {
+    position: absolute;
+
+    left: -10%;
+    right: -10%;
+    bottom: -28%;
+
+    height: 62%;
+
+    z-index: 3;
+
+    opacity: .30;
+
+    pointer-events: none;
+
+    transform:
+        perspective(600px)
+        rotateX(64deg);
+
+    transform-origin: bottom center;
+
+    background-image:
+        linear-gradient(
+            rgba(50,201,130,.11) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(50,201,130,.11) 1px,
+            transparent 1px
+        );
+
+    background-size: 75px 75px;
+
+    mask-image:
+        linear-gradient(
+            180deg,
+            transparent,
+            #000 40%,
+            transparent
+        );
+
+    -webkit-mask-image:
+        linear-gradient(
+            180deg,
+            transparent,
+            #000 40%,
+            transparent
+        );
+
+    animation:
+        ccfv-grid-move
+        12s
+        linear
+        infinite;
+}
+
+@keyframes ccfv-grid-move {
+    from {
+        background-position:
+            0 0,
+            0 0;
+    }
+
+    to {
+        background-position:
+            0 75px,
+            75px 0;
+    }
+}
+
+
+/* =========================================================
+   PARTICLES
+   ========================================================= */
+
+.ccfv-hero__particles {
+    position: absolute;
+    inset: 0;
+
+    z-index: 7;
+
+    overflow: hidden;
+
+    pointer-events: none;
+}
+
+.ccfv-particle {
+    position: absolute;
+
+    width: 3px;
+    height: 3px;
+
+    border-radius: 50%;
+
+    background: #8fffc5;
+
+    box-shadow:
+        0 0 7px rgba(50,201,130,.9),
+        0 0 18px rgba(50,201,130,.4);
+
+    opacity: 0;
+
+    animation:
+        ccfv-particle-rise
+        var(--particle-duration, 8s)
+        linear
+        infinite;
+
+    animation-delay:
+        var(--particle-delay, 0s);
+}
+
+.ccfv-particle:nth-child(1) {
+    left: 7%;
+    top: 82%;
+    --particle-duration: 8s;
+    --particle-delay: -2s;
+}
+
+.ccfv-particle:nth-child(2) {
+    left: 14%;
+    top: 72%;
+    --particle-duration: 10s;
+    --particle-delay: -6s;
+}
+
+.ccfv-particle:nth-child(3) {
+    left: 23%;
+    top: 86%;
+    --particle-duration: 7s;
+    --particle-delay: -4s;
+}
+
+.ccfv-particle:nth-child(4) {
+    left: 31%;
+    top: 77%;
+    --particle-duration: 11s;
+    --particle-delay: -8s;
+}
+
+.ccfv-particle:nth-child(5) {
+    left: 40%;
+    top: 89%;
+    --particle-duration: 9s;
+    --particle-delay: -3s;
+}
+
+.ccfv-particle:nth-child(6) {
+    left: 50%;
+    top: 76%;
+    --particle-duration: 8s;
+    --particle-delay: -1s;
+}
+
+.ccfv-particle:nth-child(7) {
+    left: 60%;
+    top: 84%;
+    --particle-duration: 11s;
+    --particle-delay: -7s;
+}
+
+.ccfv-particle:nth-child(8) {
+    left: 69%;
+    top: 70%;
+    --particle-duration: 9s;
+    --particle-delay: -5s;
+}
+
+.ccfv-particle:nth-child(9) {
+    left: 79%;
+    top: 86%;
+    --particle-duration: 12s;
+    --particle-delay: -9s;
+}
+
+.ccfv-particle:nth-child(10) {
+    left: 89%;
+    top: 74%;
+    --particle-duration: 8s;
+    --particle-delay: -4s;
+}
+
+@keyframes ccfv-particle-rise {
+    0% {
+        opacity: 0;
+        transform:
+            translate3d(0, 30px, 0)
+            scale(.4);
+    }
+
+    15% {
+        opacity: .9;
+    }
+
+    70% {
+        opacity: .35;
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate3d(25px, -190px, 0)
+            scale(1.2);
+    }
+}
+
+
+/* =========================================================
+   ENERGY LINES
+   ========================================================= */
+
+.ccfv-hero__energy-lines {
+    position: absolute;
+    inset: 0;
+
+    z-index: 6;
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+    opacity: .6;
+}
+
+.ccfv-energy-line {
+    position: absolute;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(50,201,130,.8),
+            transparent
+        );
+
+    box-shadow:
+        0 0 12px rgba(50,201,130,.55);
+
+    animation:
+        ccfv-energy-line
+        var(--line-duration, 7s)
+        linear
+        infinite;
+}
+
+.ccfv-energy-line:nth-child(1) {
+    top: 26%;
+    left: -20%;
+    width: 38%;
+    --line-duration: 8s;
+}
+
+.ccfv-energy-line:nth-child(2) {
+    top: 63%;
+    left: -25%;
+    width: 42%;
+    --line-duration: 10s;
+    animation-delay: -4s;
+}
+
+.ccfv-energy-line:nth-child(3) {
+    top: 76%;
+    right: -20%;
+    width: 34%;
+    --line-duration: 9s;
+    animation-delay: -2s;
+}
+
+@keyframes ccfv-energy-line {
+    0% {
+        opacity: 0;
+        transform: translateX(-20vw);
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    70% {
+        opacity: .55;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(120vw);
+    }
+}
+
+
+/* =========================================================
+   ARENA SCAN
+   ========================================================= */
+
+.ccfv-hero__scan {
+    position: absolute;
+    inset: 0;
+
+    z-index: 8;
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+    opacity: .30;
+
+    mix-blend-mode: screen;
+}
+
+.ccfv-hero__scan::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: -15%;
+
+    width: 100%;
+    height: 2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(50,201,130,.85),
+            rgba(255,255,255,.65),
+            rgba(50,201,130,.85),
+            transparent
+        );
+
+    box-shadow:
+        0 0 18px rgba(50,201,130,.7);
+
+    animation:
+        ccfv-scan
+        7s
+        ease-in-out
+        infinite;
+}
+
+@keyframes ccfv-scan {
+    0% {
+        transform: translateY(0);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: .8;
+    }
+
+    45% {
+        opacity: .25;
+    }
+
+    90% {
+        opacity: .7;
+    }
+
+    100% {
+        transform: translateY(125vh);
+        opacity: 0;
+    }
+}
+
+
+/* =========================================================
+   COORDINATES / HUD
+   ========================================================= */
+
+.ccfv-hero__hud {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 9;
+
+    pointer-events: none;
+
+    color: rgba(255,255,255,.25);
+
+    font-size: 7px;
+
+    font-weight: 800;
+
+    letter-spacing: .16em;
+
+    text-transform: uppercase;
+}
+
+.ccfv-hud-item {
+    position: absolute;
+
+    padding: 7px 9px;
+
+    border-left:
+        1px solid rgba(50,201,130,.25);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(31,143,95,.07),
+            transparent
+        );
+}
+
+.ccfv-hud-item:nth-child(1) {
+    top: 31%;
+    left: 3%;
+}
+
+.ccfv-hud-item:nth-child(2) {
+    top: 38%;
+    right: 3%;
+}
+
+.ccfv-hud-item:nth-child(3) {
+    bottom: 15%;
+    left: 4%;
+}
+
+
+/* =========================================================
+   CURSOR RETICLE
+   ========================================================= */
+
+.ccfv-hero__reticle {
+    position: fixed;
+
+    left: var(--cursor-x);
+    top: var(--cursor-y);
+
+    z-index: 200;
+
+    width: 38px;
+    height: 38px;
+
+    pointer-events: none;
+
+    opacity: var(--cursor-opacity);
+
+    transform:
+        translate(-50%, -50%);
+
+    transition:
+        opacity .25s ease;
+}
+
+.ccfv-hero__reticle::before,
+.ccfv-hero__reticle::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    border:
+        1px solid rgba(50,201,130,.42);
+
+    border-radius: 50%;
+}
+
+.ccfv-hero__reticle::after {
+    inset: 8px;
+
+    border-color:
+        rgba(214,180,90,.42);
+
+    animation:
+        ccfv-reticle-spin
+        8s
+        linear
+        infinite;
+}
+
+.ccfv-reticle-dot {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 3px;
+    height: 3px;
+
+    border-radius: 50%;
+
+    background: #8fffc5;
+
+    box-shadow:
+        0 0 12px rgba(50,201,130,.9);
+
+    transform:
+        translate(-50%, -50%);
+}
+
+@keyframes ccfv-reticle-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   HERO CONTENT
+   ========================================================= */
+
+.ccfv-hero__content {
+    position: relative;
+
+    z-index: 20;
+
+    width: min(
+        calc(100% - (var(--page-padding) * 2)),
+        var(--container-width)
+    );
+
+    min-height: 100svh;
+
+    margin-inline: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.2fr)
+        minmax(320px, .8fr);
+
+    align-items: center;
+
+    gap: clamp(40px, 7vw, 120px);
+
+    padding-top: 80px;
+    padding-bottom: 50px;
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.ccfv-hero__main {
+    max-width: 780px;
+}
+
+.ccfv-hero__eyebrow {
+    display: inline-flex;
+
+    align-items: center;
+    gap: 10px;
+
+    margin-bottom: 24px;
+
+    padding: 8px 12px;
+
+    border:
+        1px solid rgba(50,201,130,.24);
+
+    background:
+        rgba(7,20,14,.48);
+
+    backdrop-filter: blur(14px);
+
+    border-radius: 999px;
+
+    color:
+        rgba(255,255,255,.78);
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: .18em;
+    text-transform: uppercase;
+
+    opacity: 0;
+
+    animation:
+        ccfv-hero-fade-up
+        .8s
+        var(--ease-smooth)
+        .3s
+        forwards;
+}
+
+.ccfv-hero__eyebrow-dot {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background:
+        #43df91;
+
+    box-shadow:
+        0 0 12px rgba(67,223,145,.9);
+
+    animation:
+        ccfv-live-pulse
+        2s
+        ease-in-out
+        infinite;
+}
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.ccfv-hero__title {
+    position: relative;
+
+    margin: 0;
+
+    color: #fff;
+
+    font-size:
+        clamp(
+            68px,
+            9.2vw,
+            148px
+        );
+
+    font-weight: 950;
+
+    line-height: .78;
+
+    letter-spacing: -.065em;
+
+    text-transform: uppercase;
+
+    text-shadow:
+        0 0 30px rgba(50,201,130,.10);
+
+    opacity: 0;
+
+    animation:
+        ccfv-title-entry
+        1.1s
+        var(--ease-smooth)
+        .45s
+        forwards;
+}
+
+.ccfv-hero__title::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 50%;
+
+    width: 100%;
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(50,201,130,.5),
+            transparent
+        );
+
+    opacity: .18;
+
+    transform:
+        translateY(-50%);
+}
+
+.ccfv-hero__title::after {
+    content: "";
+
+    position: absolute;
+
+    left: 4px;
+    bottom: -18px;
+
+    width: 110px;
+    height: 3px;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #43df91,
+            transparent
+        );
+
+    box-shadow:
+        0 0 18px rgba(50,201,130,.55);
+}
+
+@keyframes ccfv-title-entry {
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(40px)
+            scale(.94);
+
+        filter:
+            blur(12px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+        filter:
+            blur(0);
+    }
+}
+
+
+/* =========================================================
+   SUBTITLE
+   ========================================================= */
+
+.ccfv-hero__subtitle {
+    max-width: 680px;
+
+    margin-top: 34px;
+
+    color:
+        rgba(255,255,255,.67);
+
+    font-size:
+        clamp(
+            15px,
+            1.35vw,
+            20px
+        );
+
+    line-height: 1.65;
+
+    opacity: 0;
+
+    animation:
+        ccfv-hero-fade-up
+        .8s
+        var(--ease-smooth)
+        .72s
+        forwards;
+}
+
+
+/* =========================================================
+   COMPETITION
+   ========================================================= */
+
+.ccfv-hero__competition {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    margin-top: 34px;
+
+    opacity: 0;
+
+    animation:
+        ccfv-hero-fade-up
+        .8s
+        var(--ease-smooth)
+        .88s
+        forwards;
+}
+
+.ccfv-hero__competition-mark {
+    position: relative;
+
+    display: grid;
+    place-items: center;
+
+    width: 46px;
+    height: 46px;
+
+    border:
+        1px solid rgba(50,201,130,.3);
+
+    background:
+        rgba(8,22,15,.6);
+
+    border-radius: 12px;
+
+    color:
+        #43df91;
+
+    font-size: 18px;
+
+    box-shadow:
+        0 0 30px rgba(31,143,95,.08);
+}
+
+.ccfv-hero__competition-mark::after {
+    content: "";
+
+    position: absolute;
+    inset: -5px;
+
+    border:
+        1px solid rgba(50,201,130,.14);
+
+    border-radius: 15px;
+
+    animation:
+        ccfv-ring-pulse
+        2.5s
+        ease-in-out
+        infinite;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.ccfv-hero__actions {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    margin-top: 32px;
+
+    opacity: 0;
+
+    animation:
+        ccfv-hero-fade-up
+        .8s
+        var(--ease-smooth)
+        1s
+        forwards;
+}
+
+.ccfv-hero__button {
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 52px;
+
+    padding: 0 22px;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+
+    font-size: 10px;
+    font-weight: 900;
+
+    letter-spacing: .13em;
+
+    text-transform: uppercase;
+
+    transition:
+        transform .35s var(--ease-smooth),
+        box-shadow .35s var(--ease-smooth),
+        border-color .35s var(--ease-smooth);
+}
+
+.ccfv-hero__button::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            110deg,
+            transparent 25%,
+            rgba(255,255,255,.25) 50%,
+            transparent 75%
+        );
+
+    transform:
+        translateX(-120%);
+
+    transition:
+        transform .65s var(--ease-smooth);
+}
+
+.ccfv-hero__button:hover::before {
+    transform:
+        translateX(120%);
+}
+
+.ccfv-hero__button span {
+    position: relative;
+    z-index: 2;
+}
+
+.ccfv-hero__button--primary {
+    color: #041009;
+
+    background:
+        linear-gradient(
+            135deg,
+            #43df91,
+            #1f8f5f
+        );
+
+    box-shadow:
+        0 10px 30px rgba(31,143,95,.2);
+}
+
+.ccfv-hero__button--primary:hover {
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 0 30px rgba(50,201,130,.25),
+        0 18px 40px rgba(31,143,95,.25);
+}
+
+.ccfv-hero__button--secondary {
+    color:
+        rgba(255,255,255,.9);
+
+    background:
+        rgba(255,255,255,.045);
+
+    border:
+        1px solid rgba(255,255,255,.13);
+
+    backdrop-filter: blur(12px);
+}
+
+.ccfv-hero__button--secondary:hover {
+    transform:
+        translateY(-3px);
+
+    border-color:
+        rgba(50,201,130,.38);
+
+    background:
+        rgba(31,143,95,.1);
+}
+
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+.ccfv-hero__stats {
+    display: flex;
+
+    align-items: center;
+
+    gap: 26px;
+
+    margin-top: 42px;
+
+    opacity: 0;
+
+    animation:
+        ccfv-hero-fade-up
+        .8s
+        var(--ease-smooth)
+        1.16s
+        forwards;
+}
+
+.ccfv-hero__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ccfv-hero__stat-value {
+    color: #fff;
+
+    font-size:
+        clamp(
+            24px,
+            2vw,
+            32px
+        );
+
+    font-weight: 900;
+
+    line-height: 1;
+}
+
+.ccfv-hero__stat-label {
+    color:
+        rgba(255,255,255,.4);
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    letter-spacing: .15em;
+
+    text-transform: uppercase;
+}
+
+.ccfv-hero__stat-divider {
+    width: 1px;
+    height: 30px;
+
+    background:
+        rgba(255,255,255,.12);
+}
+
+
+/* =========================================================
+   SEASON PANEL
+   ========================================================= */
+
+.ccfv-hero__side {
+    position: relative;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    align-items: center;
+
+    min-height: 500px;
+}
+
+.ccfv-season-panel {
+    position: relative;
+
+    width: min(100%, 420px);
+
+    padding: 26px;
+
+    overflow: hidden;
+
+    border:
+        1px solid rgba(255,255,255,.11);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(8,16,12,.78),
+            rgba(4,8,6,.54)
+        );
+
+    backdrop-filter: blur(20px);
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 35px 80px rgba(0,0,0,.35),
+        inset 0 1px 0 rgba(255,255,255,.05);
+
+    opacity: 0;
+
+    transform:
+        translateY(30px)
+        rotateY(-7deg);
+
+    animation:
+        ccfv-panel-entry
+        1s
+        var(--ease-smooth)
+        .7s
+        forwards;
+}
+
+.ccfv-season-panel::before {
+    content: "";
+
+    position: absolute;
+
+    top: -100px;
+    right: -80px;
+
+    width: 260px;
+    height: 260px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(31,143,95,.26),
+            transparent 68%
+        );
+
+    filter: blur(10px);
+}
+
+.ccfv-season-panel::after {
+    content: "";
+
+    position: absolute;
+
+    left: -100%;
+    top: 0;
+
+    width: 100%;
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(67,223,145,.9),
+            transparent
+        );
+
+    box-shadow:
+        0 0 16px rgba(50,201,130,.7);
+
+    animation:
+        ccfv-panel-scan
+        4s
+        linear
+        infinite;
+}
+
+@keyframes ccfv-panel-entry {
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(35px)
+            rotateY(-8deg)
+            scale(.96);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            rotateY(0)
+            scale(1);
+    }
+}
+
+@keyframes ccfv-panel-scan {
+    from {
+        left: -100%;
+    }
+
+    to {
+        left: 100%;
+    }
+}
+
+
+/* =========================================================
+   PANEL HEADER
+   ========================================================= */
+
+.ccfv-season-panel__header {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding-bottom: 20px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.08);
+}
+
+.ccfv-season-panel__eyebrow {
+    color:
+        #43df91;
+
+    font-size: 8px;
+
+    font-weight: 900;
+
+    letter-spacing: .18em;
+
+    text-transform: uppercase;
+}
+
+.ccfv-season-panel__title {
+    margin-top: 7px;
+
+    color: #fff;
+
+    font-size: 23px;
+
+    font-weight: 900;
+
+    letter-spacing: -.035em;
+}
+
+.ccfv-season-panel__status {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 7px 9px;
+
+    border:
+        1px solid rgba(50,201,130,.18);
+
+    background:
+        rgba(31,143,95,.08);
+
+    border-radius: 999px;
+
+    color:
+        rgba(255,255,255,.62);
+
+    font-size: 7px;
+
+    font-weight: 900;
+
+    letter-spacing: .11em;
+
+    text-transform: uppercase;
+}
+
+.ccfv-season-panel__status-dot {
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background:
+        #43df91;
+
+    box-shadow:
+        0 0 10px rgba(50,201,130,.75);
+}
+
+
+/* =========================================================
+   PANEL CLUB
+   ========================================================= */
+
+.ccfv-season-panel__club {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 16px;
+
+    margin-top: 22px;
+
+    padding: 16px;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    background:
+        rgba(255,255,255,.025);
+
+    border-radius: 16px;
+}
+
+.ccfv-season-panel__club-info {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+.ccfv-season-panel__club-icon {
+    display: grid;
+
+    place-items: center;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(31,143,95,.25),
+            rgba(31,143,95,.07)
+        );
+
+    border:
+        1px solid rgba(50,201,130,.16);
+}
+
+.ccfv-season-panel__club-label {
+    color:
+        rgba(255,255,255,.4);
+
+    font-size: 7px;
+
+    font-weight: 800;
+
+    letter-spacing: .13em;
+
+    text-transform: uppercase;
+}
+
+.ccfv-season-panel__club-name {
+    margin-top: 3px;
+
+    color: #fff;
+
+    font-size: 13px;
+
+    font-weight: 850;
+}
+
+.ccfv-season-panel__club-value {
+    color:
+        rgba(255,255,255,.65);
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   PANEL METRICS
+   ========================================================= */
+
+.ccfv-season-panel__metrics {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    margin-top: 18px;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius: 16px;
+
+    overflow: hidden;
+}
+
+.ccfv-season-panel__metric {
+    padding: 16px 12px;
+
+    text-align: center;
+
+    background:
+        rgba(255,255,255,.018);
+}
+
+.ccfv-season-panel__metric + .ccfv-season-panel__metric {
+    border-left:
+        1px solid rgba(255,255,255,.07);
+}
+
+.ccfv-season-panel__metric-value {
+    color: #fff;
+
+    font-size: 21px;
+
+    font-weight: 900;
+}
+
+.ccfv-season-panel__metric-label {
+    margin-top: 7px;
+
+    color:
+        rgba(255,255,255,.38);
+
+    font-size: 7px;
+
+    font-weight: 800;
+
+    letter-spacing: .10em;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   PANEL FOOTER
+   ========================================================= */
+
+.ccfv-season-panel__footer {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-top: 20px;
+
+    color:
+        rgba(255,255,255,.38);
+
+    font-size: 8px;
+
+    font-weight: 700;
+}
+
+.ccfv-season-panel__footer strong {
+    color:
+        #43df91;
+}
+
+
+/* =========================================================
+   SCROLL
+   ========================================================= */
+
+.ccfv-hero__scroll {
+    position: absolute;
+
+    left: 50%;
+    bottom: 26px;
+
+    z-index: 30;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    transform:
+        translateX(-50%);
+
+    color:
+        rgba(255,255,255,.38);
+
+    font-size: 7px;
+
+    font-weight: 800;
+
+    letter-spacing: .18em;
+
+    text-transform: uppercase;
+}
+
+.ccfv-hero__scroll-line {
+    position: relative;
+
+    width: 34px;
+    height: 1px;
+
+    overflow: hidden;
+
+    background:
+        rgba(255,255,255,.16);
+}
+
+.ccfv-hero__scroll-line::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 50%;
+    height: 100%;
+
+    background:
+        #43df91;
+
+    box-shadow:
+        0 0 8px rgba(50,201,130,.6);
+
+    animation:
+        ccfv-scroll-line
+        2.2s
+        ease-in-out
+        infinite;
+}
+
+
+/* =========================================================
+   KEYFRAMES
+   ========================================================= */
+
+@keyframes ccfv-hero-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ccfv-live-pulse {
+    0%,
+    100% {
+        opacity: .5;
+        transform: scale(.85);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.15);
+    }
+}
+
+@keyframes ccfv-ring-pulse {
+    0%,
+    100% {
+        opacity: .25;
+        transform: scale(.96);
+    }
+
+    50% {
+        opacity: .7;
+        transform: scale(1.08);
+    }
+}
+
+@keyframes ccfv-scroll-line {
+    0% {
+        transform: translateX(-120%);
+    }
+
+    50% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(220%);
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .ccfv-hero__content {
+        gap: 50px;
+    }
+
+    .ccfv-hero__title {
+        font-size:
+            clamp(
+                64px,
+                10vw,
+                112px
+            );
+    }
+}
+
+
+@media (max-width: 900px) {
+
+    .ccfv-hero {
+        height: auto;
+        min-height: 900px;
+    }
+
+    .ccfv-hero__content {
+        min-height: 900px;
+
+        display: flex;
+
+        flex-direction: column;
+
+        justify-content: center;
+
+        align-items: stretch;
+
+        gap: 40px;
+
+        padding-top: 120px;
+        padding-bottom: 90px;
+    }
+
+    .ccfv-hero__side {
+        min-height: 0;
+
+        justify-content: flex-start;
+    }
+
+    .ccfv-season-panel {
+        width: min(100%, 520px);
+    }
+
+    .ccfv-hero__hud {
+        display: none;
+    }
+
+    .ccfv-hero__reticle,
+    .ccfv-hero__cursor-light {
+        display: none;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .ccfv-hero {
+        min-height: 920px;
+    }
+
+    .ccfv-hero__stadium {
+        object-position: 58% center;
+
+        filter:
+            brightness(.38)
+            contrast(1.12)
+            saturate(.78);
+    }
+
+    .ccfv-hero__content {
+        min-height: 920px;
+
+        padding-top: 115px;
+        padding-bottom: 70px;
+
+        gap: 34px;
+    }
+
+    .ccfv-hero__title {
+        font-size:
+            clamp(
+                56px,
+                18vw,
+                88px
+            );
+    }
+
+    .ccfv-hero__subtitle {
+        font-size: 14px;
+    }
+
+    .ccfv-hero__actions {
+        width: 100%;
+    }
+
+    .ccfv-hero__button {
+        flex: 1;
+
+        min-height: 50px;
+
+        padding-inline: 14px;
+    }
+
+    .ccfv-hero__stats {
+        gap: 15px;
+    }
+
+    .ccfv-season-panel {
+        padding: 20px;
+        border-radius: 20px;
+    }
+
+    .ccfv-hero__grid {
+        opacity: .18;
+    }
+
+    .ccfv-hero__beams {
+        opacity: .35;
+    }
+
+    .ccfv-hero__energy-lines {
+        opacity: .25;
+    }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ccfv-hero *,
+    .ccfv-hero::before,
+    .ccfv-hero::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

@@ -1,0 +1,3467 @@
+/* =========================================================
+   CCFV — NIGHT CUP
+   IDENTIDADE VISUAL DA COMPETIÇÃO
+   ========================================================= */
+
+
+/* =========================================================
+   BASE
+   ========================================================= */
+
+.ccfv-night-hero,
+.ccfv-night-format,
+.ccfv-night-bracket,
+.ccfv-night-entry,
+.ccfv-night-champion,
+.ccfv-night-rules {
+
+    position: relative;
+
+    overflow: hidden;
+
+    isolation: isolate;
+
+}
+
+
+.ccfv-night-section-container {
+
+    position: relative;
+
+    width:
+        min(
+            calc(100% - (var(--page-padding, 40px) * 2)),
+            var(--container-width, 1400px)
+        );
+
+    margin-inline: auto;
+
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.ccfv-night-hero {
+
+    min-height:
+        820px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    padding:
+        150px 0 85px;
+
+    background:
+        radial-gradient(
+            circle at 76% 32%,
+            rgba(77,102,255,.14),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 12% 76%,
+            rgba(31,143,95,.10),
+            transparent 28%
+        ),
+        linear-gradient(
+            135deg,
+            #020304 0%,
+            #050914 52%,
+            #020304 100%
+        );
+
+    border-bottom:
+        1px solid rgba(255,255,255,.07);
+
+}
+
+
+/* =========================================================
+   ATMOSFERA
+   ========================================================= */
+
+.ccfv-night-hero__background {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    z-index:
+        -3;
+
+    pointer-events:
+        none;
+
+}
+
+
+.ccfv-night-hero__moon {
+
+    position:
+        absolute;
+
+    width:
+        420px;
+
+    height:
+        420px;
+
+    top:
+        14%;
+
+    right:
+        -80px;
+
+    border-radius:
+        50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.11),
+            rgba(125,147,255,.06) 40%,
+            transparent 70%
+        );
+
+    filter:
+        blur(18px);
+
+    opacity:
+        .5;
+
+    animation:
+        night-moon
+        9s
+        ease-in-out
+        infinite;
+
+}
+
+
+@keyframes night-moon {
+
+    0%,
+    100% {
+
+        transform:
+            scale(1);
+
+    }
+
+    50% {
+
+        transform:
+            scale(1.08);
+
+    }
+
+}
+
+
+.ccfv-night-hero__glow {
+
+    position:
+        absolute;
+
+    width:
+        760px;
+
+    height:
+        760px;
+
+    right:
+        -220px;
+
+    bottom:
+        -260px;
+
+    border-radius:
+        50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(67,223,145,.12),
+            rgba(85,104,255,.04) 45%,
+            transparent 72%
+        );
+
+    filter:
+        blur(35px);
+
+}
+
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.ccfv-night-hero__grid {
+
+    position:
+        absolute;
+
+    left:
+        -10%;
+
+    right:
+        -10%;
+
+    bottom:
+        -34%;
+
+    height:
+        74%;
+
+    transform:
+        perspective(720px)
+        rotateX(65deg);
+
+    transform-origin:
+        bottom center;
+
+    background-image:
+        linear-gradient(
+            rgba(120,148,255,.10) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(120,148,255,.10) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        70px 70px;
+
+    mask-image:
+        linear-gradient(
+            180deg,
+            transparent,
+            #000 33%,
+            transparent
+        );
+
+    -webkit-mask-image:
+        linear-gradient(
+            180deg,
+            transparent,
+            #000 33%,
+            transparent
+        );
+
+    opacity:
+        .25;
+
+    animation:
+        night-grid
+        12s
+        linear
+        infinite;
+
+}
+
+
+@keyframes night-grid {
+
+    from {
+
+        background-position:
+            0 0,
+            0 0;
+
+    }
+
+    to {
+
+        background-position:
+            0 70px,
+            70px 0;
+
+    }
+
+}
+
+
+/* =========================================================
+   SCAN
+   ========================================================= */
+
+.ccfv-night-hero__scan {
+
+    position:
+        absolute;
+
+    top:
+        0;
+
+    left:
+        -35%;
+
+    width:
+        30%;
+
+    height:
+        100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(96,122,255,.03),
+            rgba(67,223,145,.10),
+            transparent
+        );
+
+    filter:
+        blur(12px);
+
+    animation:
+        night-scan
+        8s
+        linear
+        infinite;
+
+}
+
+
+@keyframes night-scan {
+
+    0% {
+
+        left:
+            -35%;
+
+    }
+
+    100% {
+
+        left:
+            115%;
+
+    }
+
+}
+
+
+/* =========================================================
+   PARTICLES
+   ========================================================= */
+
+.ccfv-night-hero__particles {
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+}
+
+
+.ccfv-night-hero__particles span {
+
+    position:
+        absolute;
+
+    width:
+        3px;
+
+    height:
+        3px;
+
+    border-radius:
+        50%;
+
+    background:
+        #43df91;
+
+    box-shadow:
+        0 0 12px
+        rgba(67,223,145,.8);
+
+    opacity:
+        0;
+
+    animation:
+        night-particle
+        8s
+        linear
+        infinite;
+
+}
+
+
+.ccfv-night-hero__particles span:nth-child(1) {
+    left: 7%;
+    top: 82%;
+    animation-delay: -2s;
+}
+
+.ccfv-night-hero__particles span:nth-child(2) {
+    left: 17%;
+    top: 70%;
+    animation-delay: -5s;
+}
+
+.ccfv-night-hero__particles span:nth-child(3) {
+    left: 27%;
+    top: 88%;
+    animation-delay: -7s;
+}
+
+.ccfv-night-hero__particles span:nth-child(4) {
+    left: 39%;
+    top: 77%;
+    animation-delay: -4s;
+}
+
+.ccfv-night-hero__particles span:nth-child(5) {
+    left: 51%;
+    top: 92%;
+    animation-delay: -1s;
+}
+
+.ccfv-night-hero__particles span:nth-child(6) {
+    left: 63%;
+    top: 73%;
+    animation-delay: -6s;
+}
+
+.ccfv-night-hero__particles span:nth-child(7) {
+    left: 74%;
+    top: 84%;
+    animation-delay: -3s;
+}
+
+.ccfv-night-hero__particles span:nth-child(8) {
+    left: 83%;
+    top: 66%;
+    animation-delay: -8s;
+}
+
+.ccfv-night-hero__particles span:nth-child(9) {
+    left: 90%;
+    top: 86%;
+    animation-delay: -4.5s;
+}
+
+.ccfv-night-hero__particles span:nth-child(10) {
+    left: 95%;
+    top: 72%;
+    animation-delay: -2.5s;
+}
+
+
+@keyframes night-particle {
+
+    0% {
+
+        opacity:
+            0;
+
+        transform:
+            translateY(30px)
+            scale(.4);
+
+    }
+
+    15% {
+
+        opacity:
+            .8;
+
+    }
+
+    70% {
+
+        opacity:
+            .3;
+
+    }
+
+    100% {
+
+        opacity:
+            0;
+
+        transform:
+            translate(
+                20px,
+                -180px
+            )
+            scale(1.2);
+
+    }
+
+}
+
+
+/* =========================================================
+   HERO CONTAINER
+   ========================================================= */
+
+.ccfv-night-hero__container {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    width:
+        min(
+            calc(100% - (var(--page-padding, 40px) * 2)),
+            var(--container-width, 1400px)
+        );
+
+    margin-inline:
+        auto;
+
+    display:
+        grid;
+
+    grid-template-columns:
+        minmax(0, 1.15fr)
+        minmax(350px, .85fr);
+
+    align-items:
+        center;
+
+    gap:
+        clamp(
+            55px,
+            7vw,
+            110px
+        );
+
+}
+
+
+/* =========================================================
+   HERO CONTENT
+   ========================================================= */
+
+.ccfv-night-hero__content {
+
+    max-width:
+        760px;
+
+}
+
+
+.ccfv-night-hero__eyebrow {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+    padding:
+        8px 13px;
+
+    border:
+        1px solid rgba(96,122,255,.18);
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(96,122,255,.05);
+
+    color:
+        rgba(255,255,255,.55);
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .18em;
+
+    text-transform:
+        uppercase;
+
+    opacity:
+        0;
+
+    animation:
+        night-fade-up
+        .8s
+        ease
+        .15s
+        forwards;
+
+}
+
+
+.ccfv-night-hero__live-dot {
+
+    width:
+        6px;
+
+    height:
+        6px;
+
+    border-radius:
+        50%;
+
+    background:
+        #43df91;
+
+    box-shadow:
+        0 0 13px
+        rgba(67,223,145,.9);
+
+    animation:
+        night-pulse
+        2s
+        ease-in-out
+        infinite;
+
+}
+
+
+/* =========================================================
+   SYMBOL
+   ========================================================= */
+
+.ccfv-night-hero__symbol {
+
+    margin-top:
+        31px;
+
+    color:
+        rgba(255,255,255,.18);
+
+    font-size:
+        28px;
+
+    line-height:
+        1;
+
+    text-shadow:
+        0 0 30px
+        rgba(96,122,255,.25);
+
+    opacity:
+        0;
+
+    animation:
+        night-fade-up
+        .8s
+        ease
+        .3s
+        forwards;
+
+}
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.ccfv-night-hero__title {
+
+    margin:
+        18px 0 0;
+
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            62px,
+            8vw,
+            118px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        .78;
+
+    letter-spacing:
+        -.075em;
+
+    text-transform:
+        uppercase;
+
+    text-shadow:
+        0 0 45px
+        rgba(96,122,255,.08);
+
+    opacity:
+        0;
+
+    animation:
+        night-title
+        1s
+        ease
+        .42s
+        forwards;
+
+}
+
+
+.ccfv-night-hero__title span {
+
+    display:
+        block;
+
+    color:
+        #43df91;
+
+    text-shadow:
+        0 0 35px
+        rgba(67,223,145,.18);
+
+}
+
+
+@keyframes night-title {
+
+    from {
+
+        opacity:
+            0;
+
+        transform:
+            translateY(35px)
+            scale(.95);
+
+        filter:
+            blur(10px);
+
+    }
+
+    to {
+
+        opacity:
+            1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+        filter:
+            blur(0);
+
+    }
+
+}
+
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.ccfv-night-hero__description {
+
+    max-width:
+        570px;
+
+    margin:
+        29px 0 0;
+
+    color:
+        rgba(255,255,255,.48);
+
+    font-size:
+        clamp(
+            14px,
+            1.2vw,
+            17px
+        );
+
+    line-height:
+        1.7;
+
+    opacity:
+        0;
+
+    animation:
+        night-fade-up
+        .8s
+        ease
+        .72s
+        forwards;
+
+}
+
+
+/* =========================================================
+   HERO META
+   ========================================================= */
+
+.ccfv-night-hero__meta {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        20px;
+
+    margin-top:
+        30px;
+
+    opacity:
+        0;
+
+    animation:
+        night-fade-up
+        .8s
+        ease
+        .90s
+        forwards;
+
+}
+
+
+.ccfv-night-hero__meta > div:not(
+    .ccfv-night-hero__divider
+) {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        6px;
+
+}
+
+
+.ccfv-night-hero__meta strong {
+
+    color:
+        #fff;
+
+    font-size:
+        27px;
+
+    font-weight:
+        950;
+
+    line-height:
+        1;
+
+}
+
+
+.ccfv-night-hero__meta span {
+
+    color:
+        rgba(255,255,255,.28);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .13em;
+
+}
+
+
+.ccfv-night-hero__divider {
+
+    width:
+        1px;
+
+    height:
+        30px;
+
+    background:
+        rgba(255,255,255,.10);
+
+}
+
+
+/* =========================================================
+   HERO BUTTONS
+   ========================================================= */
+
+.ccfv-night-hero__actions {
+
+    display:
+        flex;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        12px;
+
+    margin-top:
+        31px;
+
+    opacity:
+        0;
+
+    animation:
+        night-fade-up
+        .8s
+        ease
+        1.08s
+        forwards;
+
+}
+
+
+.ccfv-night-button {
+
+    position:
+        relative;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    min-height:
+        50px;
+
+    padding:
+        0 20px;
+
+    border-radius:
+        11px;
+
+    overflow:
+        hidden;
+
+    text-decoration:
+        none;
+
+    font-size:
+        9px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .13em;
+
+    text-transform:
+        uppercase;
+
+    transition:
+        transform .35s ease,
+        border-color .35s ease,
+        box-shadow .35s ease;
+
+}
+
+
+.ccfv-night-button::before {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    top:
+        0;
+
+    left:
+        -120%;
+
+    width:
+        100%;
+
+    height:
+        100%;
+
+    background:
+        linear-gradient(
+            110deg,
+            transparent,
+            rgba(255,255,255,.18),
+            transparent
+        );
+
+    transition:
+        left .65s ease;
+
+}
+
+
+.ccfv-night-button:hover::before {
+
+    left:
+        120%;
+
+}
+
+
+.ccfv-night-button span {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+}
+
+
+.ccfv-night-button--primary {
+
+    color:
+        #031008;
+
+    background:
+        linear-gradient(
+            135deg,
+            #43df91,
+            #1f8f5f
+        );
+
+    box-shadow:
+        0 14px 32px
+        rgba(31,143,95,.18);
+
+}
+
+
+.ccfv-night-button--primary:hover {
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 0 30px
+        rgba(67,223,145,.18),
+        0 18px 40px
+        rgba(31,143,95,.18);
+
+}
+
+
+.ccfv-night-button--secondary {
+
+    color:
+        rgba(255,255,255,.82);
+
+    border:
+        1px solid rgba(255,255,255,.12);
+
+    background:
+        rgba(255,255,255,.035);
+
+    backdrop-filter:
+        blur(10px);
+
+}
+
+
+.ccfv-night-button--secondary:hover {
+
+    transform:
+        translateY(-3px);
+
+    border-color:
+        rgba(96,122,255,.35);
+
+}
+
+
+/* =========================================================
+   NIGHT CARD
+   ========================================================= */
+
+.ccfv-night-card {
+
+    position:
+        relative;
+
+    width:
+        100%;
+
+    max-width:
+        430px;
+
+    margin-left:
+        auto;
+
+    padding:
+        27px;
+
+    border:
+        1px solid rgba(96,122,255,.17);
+
+    border-radius:
+        25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(9,14,28,.90),
+            rgba(3,7,12,.90)
+        );
+
+    backdrop-filter:
+        blur(22px);
+
+    box-shadow:
+        0 40px 100px rgba(0,0,0,.42),
+        inset 0 1px 0
+        rgba(255,255,255,.05);
+
+    opacity:
+        0;
+
+    transform:
+        translateY(35px)
+        rotateY(-8deg);
+
+    animation:
+        night-card-entry
+        1s
+        ease
+        .6s
+        forwards;
+
+}
+
+
+.ccfv-night-card::before {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    border-radius:
+        inherit;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(96,122,255,.07),
+            transparent 35%,
+            transparent 70%,
+            rgba(67,223,145,.05)
+        );
+
+    pointer-events:
+        none;
+
+}
+
+
+.ccfv-night-card::after {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    top:
+        0;
+
+    left:
+        -100%;
+
+    width:
+        100%;
+
+    height:
+        1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #43df91,
+            transparent
+        );
+
+    box-shadow:
+        0 0 14px
+        rgba(67,223,145,.7);
+
+    animation:
+        night-card-scan
+        4s
+        linear
+        infinite;
+
+}
+
+
+@keyframes night-card-entry {
+
+    from {
+
+        opacity:
+            0;
+
+        transform:
+            translateY(45px)
+            rotateY(-8deg)
+            scale(.96);
+
+    }
+
+    to {
+
+        opacity:
+            1;
+
+        transform:
+            translateY(0)
+            rotateY(0)
+            scale(1);
+
+    }
+
+}
+
+
+@keyframes night-card-scan {
+
+    from {
+
+        left:
+            -100%;
+
+    }
+
+    to {
+
+        left:
+            100%;
+
+    }
+
+}
+
+
+/* =========================================================
+   CARD TOP
+   ========================================================= */
+
+.ccfv-night-card__top {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    display:
+        flex;
+
+    align-items:
+        flex-start;
+
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
+
+    padding-bottom:
+        20px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.07);
+
+}
+
+
+.ccfv-night-card__top > div:first-child {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        7px;
+
+}
+
+
+.ccfv-night-card__top span {
+
+    color:
+        #43df91;
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .16em;
+
+}
+
+
+.ccfv-night-card__top strong {
+
+    color:
+        #fff;
+
+    font-size:
+        20px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-night-card__status {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    padding:
+        7px 9px;
+
+    border:
+        1px solid rgba(67,223,145,.14);
+
+    border-radius:
+        999px;
+
+    color:
+        rgba(255,255,255,.40);
+
+    background:
+        rgba(31,143,95,.05);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .10em;
+
+}
+
+
+.ccfv-night-card__status span {
+
+    width:
+        5px;
+
+    height:
+        5px;
+
+    border-radius:
+        50%;
+
+    background:
+        #43df91;
+
+    box-shadow:
+        0 0 10px
+        rgba(67,223,145,.8);
+
+}
+
+
+/* =========================================================
+   CARD MAIN
+   ========================================================= */
+
+.ccfv-night-card__main {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    padding:
+        25px 0;
+
+}
+
+
+.ccfv-night-card__main span {
+
+    color:
+        rgba(255,255,255,.22);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .18em;
+
+}
+
+
+.ccfv-night-card__main strong {
+
+    margin-top:
+        9px;
+
+    color:
+        #43df91;
+
+    font-size:
+        clamp(
+            90px,
+            10vw,
+            125px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        .72;
+
+    letter-spacing:
+        -.08em;
+
+    text-shadow:
+        0 0 35px
+        rgba(67,223,145,.12);
+
+}
+
+
+.ccfv-night-card__main small {
+
+    margin-top:
+        18px;
+
+    color:
+        rgba(255,255,255,.26);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .16em;
+
+}
+
+
+/* =========================================================
+   CARD INFO
+   ========================================================= */
+
+.ccfv-night-card__info {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    display:
+        grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:
+        1px;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid rgba(255,255,255,.06);
+
+    border-radius:
+        15px;
+
+    background:
+        rgba(255,255,255,.06);
+
+}
+
+
+.ccfv-night-card__info div {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        7px;
+
+    padding:
+        16px;
+
+    background:
+        rgba(255,255,255,.02);
+
+}
+
+
+.ccfv-night-card__info span {
+
+    color:
+        rgba(255,255,255,.22);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .14em;
+
+}
+
+
+.ccfv-night-card__info strong {
+
+    color:
+        rgba(255,255,255,.72);
+
+    font-size:
+        10px;
+
+    font-weight:
+        900;
+
+}
+
+
+/* =========================================================
+   CARD DATE
+   ========================================================= */
+
+.ccfv-night-card__date {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    margin-top:
+        16px;
+
+    padding-top:
+        14px;
+
+    border-top:
+        1px solid rgba(255,255,255,.06);
+
+}
+
+
+.ccfv-night-card__date span {
+
+    color:
+        rgba(255,255,255,.22);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .14em;
+
+}
+
+
+.ccfv-night-card__date strong {
+
+    color:
+        rgba(255,255,255,.64);
+
+    font-size:
+        9px;
+
+    font-weight:
+        900;
+
+}
+
+
+/* =========================================================
+   HERO BOTTOM
+   ========================================================= */
+
+.ccfv-night-hero__bottom {
+
+    position:
+        absolute;
+
+    left:
+        0;
+
+    right:
+        0;
+
+    bottom:
+        0;
+
+    display:
+        flex;
+
+    justify-content:
+        center;
+
+    gap:
+        28px;
+
+    padding:
+        13px 20px;
+
+    border-top:
+        1px solid rgba(255,255,255,.06);
+
+    background:
+        rgba(2,3,4,.64);
+
+    backdrop-filter:
+        blur(12px);
+
+    color:
+        rgba(255,255,255,.24);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .14em;
+
+    text-transform:
+        uppercase;
+
+}
+
+
+/* =========================================================
+   HEADINGS
+   ========================================================= */
+
+.ccfv-night-heading {
+
+    display:
+        flex;
+
+    align-items:
+        flex-end;
+
+    justify-content:
+        space-between;
+
+    gap:
+        40px;
+
+    margin-bottom:
+        50px;
+
+}
+
+
+.ccfv-night-heading > div:first-child > span {
+
+    display:
+        block;
+
+    margin-bottom:
+        12px;
+
+    color:
+        #43df91;
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .18em;
+
+}
+
+
+.ccfv-night-heading h2 {
+
+    margin:
+        0;
+
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            38px,
+            4.7vw,
+            64px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        .90;
+
+    letter-spacing:
+        -.055em;
+
+    text-transform:
+        uppercase;
+
+}
+
+
+.ccfv-night-heading h2 strong {
+
+    display:
+        block;
+
+    color:
+        #43df91;
+
+}
+
+
+.ccfv-night-heading > p {
+
+    max-width:
+        430px;
+
+    margin:
+        0;
+
+    color:
+        rgba(255,255,255,.36);
+
+    font-size:
+        13px;
+
+    line-height:
+        1.7;
+
+}
+
+
+.ccfv-night-heading-status {
+
+    padding:
+        9px 12px;
+
+    border:
+        1px solid rgba(67,223,145,.15);
+
+    border-radius:
+        999px;
+
+    color:
+        rgba(255,255,255,.38);
+
+    background:
+        rgba(31,143,95,.04);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .12em;
+
+}
+
+
+/* =========================================================
+   FORMAT
+   ========================================================= */
+
+.ccfv-night-format {
+
+    padding:
+        115px 0;
+
+    background:
+        #030504;
+
+}
+
+
+.ccfv-night-stage-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap:
+        14px;
+
+}
+
+
+.ccfv-night-stage-card {
+
+    position:
+        relative;
+
+    min-height:
+        230px;
+
+    padding:
+        26px;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius:
+        19px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(10,15,26,.90),
+            rgba(4,8,12,.94)
+        );
+
+    transition:
+        transform .35s ease,
+        border-color .35s ease;
+
+}
+
+
+.ccfv-night-stage-card:hover {
+
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(96,122,255,.26);
+
+}
+
+
+.ccfv-night-stage-card--final {
+
+    border-color:
+        rgba(67,223,145,.18);
+
+    background:
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(31,143,95,.10),
+            transparent 45%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(9,24,16,.92),
+            rgba(4,8,12,.96)
+        );
+
+}
+
+
+.ccfv-night-stage-card__number {
+
+    position:
+        absolute;
+
+    top:
+        19px;
+
+    right:
+        20px;
+
+    color:
+        rgba(255,255,255,.12);
+
+    font-family:
+        monospace;
+
+    font-size:
+        28px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-night-stage-card > span {
+
+    color:
+        #43df91;
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .15em;
+
+}
+
+
+.ccfv-night-stage-card strong {
+
+    display:
+        block;
+
+    margin-top:
+        40px;
+
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            24px,
+            2.6vw,
+            34px
+        );
+
+    font-weight:
+        950;
+
+    letter-spacing:
+        -.04em;
+
+}
+
+
+.ccfv-night-stage-card small {
+
+    display:
+        block;
+
+    max-width:
+        230px;
+
+    margin-top:
+        13px;
+
+    color:
+        rgba(255,255,255,.31);
+
+    font-size:
+        10px;
+
+    line-height:
+        1.6;
+
+}
+
+
+/* =========================================================
+   BRACKET
+   ========================================================= */
+
+.ccfv-night-bracket {
+
+    padding:
+        115px 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            #020304,
+            #050812
+        );
+
+}
+
+
+.ccfv-night-bracket-layout {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        1.2fr
+        1fr
+        .9fr;
+
+    gap:
+        18px;
+
+    align-items:
+        stretch;
+
+}
+
+
+.ccfv-night-bracket-column {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        16px;
+
+}
+
+
+/* =========================================================
+   TÍTULOS DAS FASES
+   ========================================================= */
+
+.ccfv-night-bracket-column__title {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        11px;
+
+    min-height:
+        27px;
+
+}
+
+
+.ccfv-night-bracket-column__title span {
+
+    color:
+        rgba(67,223,145,.55);
+
+    font-family:
+        monospace;
+
+    font-size:
+        8px;
+
+}
+
+
+.ccfv-night-bracket-column__title strong {
+
+    color:
+        rgba(255,255,255,.62);
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .14em;
+
+}
+
+
+/* =========================================================
+   QUARTAS
+   ========================================================= */
+
+.ccfv-night-bracket-column--quarters {
+
+    justify-content:
+        flex-start;
+
+}
+
+
+/* =========================================================
+   SEMIFINAL — CENTRALIZAÇÃO DO CHAVEAMENTO
+   =========================================================
+
+   A coluna ganha espaço vertical e os confrontos ficam
+   centralizados entre os blocos das quartas.
+
+   ========================================================= */
+
+.ccfv-night-bracket-column--middle {
+
+    justify-content:
+        center;
+
+    padding-top:
+        58px;
+
+}
+
+
+.ccfv-night-bracket-column--middle
+.ccfv-night-bracket-column__title {
+
+    flex-shrink:
+        0;
+
+}
+
+
+.ccfv-night-bracket-column--middle
+.ccfv-night-bracket-match {
+
+    width:
+        100%;
+
+}
+
+
+.ccfv-night-bracket-column--middle
+.ccfv-night-bracket-match:first-of-type {
+
+    margin-top:
+        4px;
+
+}
+
+
+.ccfv-night-bracket-column--middle
+.ccfv-night-bracket-match:last-child {
+
+    margin-bottom:
+        4px;
+
+}
+
+
+/* =========================================================
+   MATCH DAS QUARTAS / SEMI
+   ========================================================= */
+
+.ccfv-night-bracket-match {
+
+    position:
+        relative;
+
+    padding:
+        12px;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius:
+        14px;
+
+    background:
+        rgba(255,255,255,.018);
+
+    transition:
+        transform .3s ease,
+        border-color .3s ease;
+
+}
+
+
+.ccfv-night-bracket-match:hover {
+
+    transform:
+        translateX(4px);
+
+    border-color:
+        rgba(96,122,255,.23);
+
+}
+
+
+.ccfv-night-bracket-match__number {
+
+    margin-bottom:
+        7px;
+
+    color:
+        rgba(67,223,145,.50);
+
+    font-family:
+        monospace;
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .10em;
+
+}
+
+
+.ccfv-night-bracket-team {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        12px;
+
+    min-height:
+        39px;
+
+    padding:
+        0 9px;
+
+    border:
+        1px solid rgba(255,255,255,.05);
+
+    border-radius:
+        8px;
+
+    background:
+        rgba(255,255,255,.025);
+
+}
+
+
+.ccfv-night-bracket-team + .ccfv-night-bracket-team {
+
+    margin-top:
+        5px;
+
+}
+
+
+.ccfv-night-bracket-team span {
+
+    color:
+        rgba(67,223,145,.45);
+
+    font-family:
+        monospace;
+
+    font-size:
+        7px;
+
+}
+
+
+.ccfv-night-bracket-team strong {
+
+    overflow:
+        hidden;
+
+    color:
+        rgba(255,255,255,.47);
+
+    font-size:
+        8px;
+
+    font-weight:
+        800;
+
+    white-space:
+        nowrap;
+
+    text-overflow:
+        ellipsis;
+
+}
+
+
+/* =========================================================
+   FINAL
+   ========================================================= */
+
+.ccfv-night-bracket-column--final {
+
+    justify-content:
+        center;
+
+    padding-top:
+        44px;
+
+}
+
+
+.ccfv-night-final-match {
+
+    position:
+        relative;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    min-height:
+        390px;
+
+    padding:
+        25px;
+
+    border:
+        1px solid rgba(67,223,145,.22);
+
+    border-radius:
+        22px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(31,143,95,.13),
+            transparent 50%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(8,22,15,.94),
+            rgba(3,8,12,.98)
+        );
+
+    box-shadow:
+        0 30px 70px
+        rgba(0,0,0,.30);
+
+}
+
+
+.ccfv-night-final-match__crown {
+
+    color:
+        #43df91;
+
+    font-size:
+        26px;
+
+    text-shadow:
+        0 0 18px
+        rgba(67,223,145,.35);
+
+}
+
+
+.ccfv-night-final-match__label {
+
+    margin-top:
+        9px;
+
+    color:
+        rgba(255,255,255,.25);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .18em;
+
+}
+
+
+.ccfv-night-final-match__team {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    gap:
+        6px;
+
+    margin-top:
+        27px;
+
+}
+
+
+.ccfv-night-final-match__team strong {
+
+    color:
+        rgba(255,255,255,.78);
+
+    font-size:
+        16px;
+
+    font-weight:
+        950;
+
+}
+
+
+.ccfv-night-final-match__team span {
+
+    color:
+        rgba(255,255,255,.23);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .13em;
+
+}
+
+
+.ccfv-night-final-match__vs {
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    width:
+        38px;
+
+    height:
+        38px;
+
+    margin-top:
+        16px;
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    border-radius:
+        50%;
+
+    color:
+        rgba(255,255,255,.28);
+
+    background:
+        rgba(255,255,255,.025);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-night-final-match__champion {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    margin-top:
+        28px;
+
+    padding:
+        9px 13px;
+
+    border:
+        1px solid rgba(67,223,145,.18);
+
+    border-radius:
+        999px;
+
+    color:
+        #43df91;
+
+    background:
+        rgba(31,143,95,.05);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .12em;
+
+}
+
+
+/* =========================================================
+   ENTRY
+   ========================================================= */
+
+.ccfv-night-entry {
+
+    padding:
+        100px 0;
+
+    background:
+        #030504;
+
+}
+
+
+.ccfv-night-entry-card {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        1fr
+        360px;
+
+    border:
+        1px solid rgba(67,223,145,.15);
+
+    border-radius:
+        21px;
+
+    overflow:
+        hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(9,24,16,.82),
+            rgba(4,9,6,.94)
+        );
+
+}
+
+
+.ccfv-night-entry-card__content {
+
+    padding:
+        42px;
+
+}
+
+
+.ccfv-night-entry-card__content > span {
+
+    color:
+        #43df91;
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .16em;
+
+}
+
+
+.ccfv-night-entry-card__content h2 {
+
+    margin:
+        17px 0 0;
+
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            35px,
+            4vw,
+            56px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        .92;
+
+    letter-spacing:
+        -.05em;
+
+}
+
+
+.ccfv-night-entry-card__content h2 strong {
+
+    display:
+        block;
+
+    color:
+        #43df91;
+
+}
+
+
+.ccfv-night-entry-card__content p {
+
+    max-width:
+        550px;
+
+    margin:
+        20px 0 0;
+
+    color:
+        rgba(255,255,255,.36);
+
+    font-size:
+        12px;
+
+    line-height:
+        1.7;
+
+}
+
+
+.ccfv-night-entry-card__side {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    justify-content:
+        center;
+
+    padding:
+        35px;
+
+    border-left:
+        1px solid rgba(255,255,255,.06);
+
+    background:
+        rgba(255,255,255,.018);
+
+}
+
+
+.ccfv-night-entry-card__side span {
+
+    color:
+        rgba(255,255,255,.23);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .15em;
+
+}
+
+
+.ccfv-night-entry-card__side strong {
+
+    margin-top:
+        10px;
+
+    color:
+        #43df91;
+
+    font-size:
+        27px;
+
+    font-weight:
+        950;
+
+}
+
+
+.ccfv-night-entry-card__side small {
+
+    margin-top:
+        12px;
+
+    color:
+        rgba(255,255,255,.28);
+
+    font-size:
+        9px;
+
+    line-height:
+        1.6;
+
+}
+
+
+/* =========================================================
+   CHAMPION
+   ========================================================= */
+
+.ccfv-night-champion {
+
+    padding:
+        70px 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #020304,
+            #050b08
+        );
+
+    border-top:
+        1px solid rgba(255,255,255,.06);
+
+    border-bottom:
+        1px solid rgba(255,255,255,.06);
+
+}
+
+
+.ccfv-night-champion__inner {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        30px;
+
+}
+
+
+.ccfv-night-champion__inner > div:first-child > span {
+
+    color:
+        #43df91;
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .17em;
+
+}
+
+
+.ccfv-night-champion h2 {
+
+    margin:
+        14px 0 0;
+
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            28px,
+            4vw,
+            46px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        .92;
+
+    letter-spacing:
+        -.05em;
+
+}
+
+
+.ccfv-night-champion h2 strong {
+
+    color:
+        #43df91;
+
+}
+
+
+.ccfv-night-champion__badge {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    width:
+        120px;
+
+    height:
+        120px;
+
+    flex-shrink:
+        0;
+
+    border:
+        1px solid rgba(67,223,145,.22);
+
+    border-radius:
+        50%;
+
+    background:
+        rgba(31,143,95,.05);
+
+    box-shadow:
+        0 0 30px
+        rgba(31,143,95,.08);
+
+}
+
+
+.ccfv-night-champion__badge span {
+
+    color:
+        rgba(255,255,255,.26);
+
+    font-size:
+        5px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .15em;
+
+}
+
+
+.ccfv-night-champion__badge strong {
+
+    margin:
+        5px 0;
+
+    color:
+        #43df91;
+
+    font-size:
+        34px;
+
+    font-weight:
+        950;
+
+    line-height:
+        1;
+
+}
+
+
+.ccfv-night-champion__badge small {
+
+    color:
+        rgba(255,255,255,.25);
+
+    font-size:
+        5px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .14em;
+
+}
+
+
+/* =========================================================
+   RULES
+   ========================================================= */
+
+.ccfv-night-rules {
+
+    padding:
+        110px 0;
+
+    background:
+        #030504;
+
+}
+
+
+.ccfv-night-rules-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap:
+        14px;
+
+}
+
+
+.ccfv-night-rules-grid article {
+
+    min-height:
+        210px;
+
+    padding:
+        25px;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius:
+        17px;
+
+    background:
+        rgba(255,255,255,.018);
+
+    transition:
+        transform .35s ease,
+        border-color .35s ease;
+
+}
+
+
+.ccfv-night-rules-grid article:hover {
+
+    transform:
+        translateY(-4px);
+
+    border-color:
+        rgba(67,223,145,.20);
+
+}
+
+
+.ccfv-night-rules-grid article > span {
+
+    color:
+        rgba(67,223,145,.48);
+
+    font-family:
+        monospace;
+
+    font-size:
+        9px;
+
+}
+
+
+.ccfv-night-rules-grid article strong {
+
+    display:
+        block;
+
+    margin-top:
+        32px;
+
+    color:
+        #fff;
+
+    font-size:
+        16px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-night-rules-grid article p {
+
+    margin:
+        11px 0 0;
+
+    color:
+        rgba(255,255,255,.30);
+
+    font-size:
+        10px;
+
+    line-height:
+        1.65;
+
+}
+
+
+/* =========================================================
+   ANIMAÇÕES
+   ========================================================= */
+
+@keyframes night-fade-up {
+
+    from {
+
+        opacity:
+            0;
+
+        transform:
+            translateY(24px);
+
+    }
+
+    to {
+
+        opacity:
+            1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+
+@keyframes night-pulse {
+
+    0%,
+    100% {
+
+        transform:
+            scale(1);
+
+        opacity:
+            1;
+
+    }
+
+    50% {
+
+        transform:
+            scale(.72);
+
+        opacity:
+            .55;
+
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .ccfv-night-hero__container {
+
+        grid-template-columns:
+            1fr;
+
+        gap:
+            55px;
+
+    }
+
+
+    .ccfv-night-card {
+
+        max-width:
+            600px;
+
+        margin-left:
+            0;
+
+    }
+
+
+    .ccfv-night-bracket-layout {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .ccfv-night-bracket-column--middle {
+
+        margin-top:
+            15px;
+
+        padding-top:
+            0;
+
+        justify-content:
+            flex-start;
+
+    }
+
+
+    .ccfv-night-bracket-column--final {
+
+        margin-top:
+            15px;
+
+        padding-top:
+            0;
+
+    }
+
+
+    .ccfv-night-rules-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .ccfv-night-stage-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .ccfv-night-entry-card {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .ccfv-night-entry-card__side {
+
+        border-left:
+            0;
+
+        border-top:
+            1px solid rgba(255,255,255,.06);
+
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .ccfv-night-hero {
+
+        min-height:
+            auto;
+
+        padding:
+            120px 0 70px;
+
+    }
+
+
+    .ccfv-night-hero__container {
+
+        width:
+            min(
+                calc(100% - 30px),
+                600px
+            );
+
+    }
+
+
+    .ccfv-night-hero__title {
+
+        font-size:
+            clamp(
+                54px,
+                17vw,
+                82px
+            );
+
+    }
+
+
+    .ccfv-night-hero__meta {
+
+        flex-wrap:
+            wrap;
+
+        gap:
+            15px;
+
+    }
+
+
+    .ccfv-night-hero__divider {
+
+        display:
+            none;
+
+    }
+
+
+    .ccfv-night-hero__bottom {
+
+        position:
+            relative;
+
+        margin-top:
+            65px;
+
+        flex-wrap:
+            wrap;
+
+        gap:
+            10px 20px;
+
+        line-height:
+            1.5;
+
+    }
+
+
+    .ccfv-night-section-container {
+
+        width:
+            min(
+                calc(100% - 30px),
+                600px
+            );
+
+    }
+
+
+    .ccfv-night-format,
+    .ccfv-night-bracket,
+    .ccfv-night-entry,
+    .ccfv-night-rules {
+
+        padding:
+            80px 0;
+
+    }
+
+
+    .ccfv-night-heading {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+        gap:
+            20px;
+
+        margin-bottom:
+            35px;
+
+    }
+
+
+    .ccfv-night-bracket-match:hover {
+
+        transform:
+            none;
+
+    }
+
+
+    .ccfv-night-champion {
+
+        padding:
+            48px 0;
+
+    }
+
+
+    .ccfv-night-champion__inner {
+
+        align-items:
+            flex-start;
+
+    }
+
+
+    .ccfv-night-champion__badge {
+
+        width:
+            90px;
+
+        height:
+            90px;
+
+    }
+
+
+    .ccfv-night-champion__badge strong {
+
+        font-size:
+            28px;
+
+    }
+
+
+    .ccfv-night-rules-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .ccfv-night-card {
+
+        padding:
+            21px;
+
+    }
+
+
+    .ccfv-night-card__top {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+    }
+
+
+    .ccfv-night-entry-card__content {
+
+        padding:
+            28px;
+
+    }
+
+
+    .ccfv-night-entry-card__side {
+
+        padding:
+            28px;
+
+    }
+
+
+    .ccfv-night-champion__inner {
+
+        flex-direction:
+            column;
+
+    }
+
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ccfv-night-hero *,
+    .ccfv-night-card,
+    .ccfv-night-stage-card,
+    .ccfv-night-bracket-match {
+
+        animation:
+            none !important;
+
+        transition:
+            none !important;
+
+    }
+
+}

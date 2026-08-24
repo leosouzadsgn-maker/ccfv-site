@@ -1,0 +1,426 @@
+/* =========================================================
+   CCFV — HEADER
+   Confederação Coliseu de Futebol Virtual
+   ========================================================= */
+
+.ccfv-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 92px;
+
+    z-index: 100;
+
+    display: flex;
+    align-items: center;
+
+    pointer-events: none;
+}
+
+
+.ccfv-header__inner {
+    width: min(
+        calc(100% - (var(--page-padding) * 2)),
+        var(--container-width)
+    );
+
+    height: 100%;
+
+    margin-inline: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    pointer-events: auto;
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.ccfv-header__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+.ccfv-header__logo {
+    width: 52px;
+    height: 52px;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(0 0 12px rgba(31, 143, 95, 0.28));
+
+    transition:
+        transform 0.5s var(--ease-smooth),
+        filter 0.5s var(--ease-smooth);
+}
+
+
+.ccfv-header__brand:hover .ccfv-header__logo {
+    transform: scale(1.06) rotate(-2deg);
+
+    filter:
+        drop-shadow(0 0 16px rgba(31, 143, 95, 0.45));
+}
+
+
+/* =========================================================
+   BRAND TEXT
+   ========================================================= */
+
+.ccfv-header__brand-text {
+    display: flex;
+    flex-direction: column;
+
+    line-height: 1;
+}
+
+
+.ccfv-header__brand-name {
+    color: var(--ccfv-white);
+
+    font-size: 15px;
+    font-weight: 800;
+
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+
+.ccfv-header__brand-subtitle {
+    margin-top: 6px;
+
+    color: rgba(255, 255, 255, 0.48);
+
+    font-size: 8px;
+    font-weight: 600;
+
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   DESKTOP NAVIGATION
+   ========================================================= */
+
+.ccfv-header__nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 6px;
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
+    background:
+        rgba(4, 8, 6, 0.38);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    border-radius: 999px;
+
+    box-shadow:
+        0 14px 40px rgba(0, 0, 0, 0.18);
+}
+
+
+.ccfv-header__link {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 42px;
+
+    padding: 0 16px;
+
+    color: rgba(255, 255, 255, 0.68);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+
+    border-radius: 999px;
+
+    transition:
+        color 0.3s var(--ease-standard),
+        background 0.3s var(--ease-standard),
+        transform 0.3s var(--ease-standard);
+}
+
+
+.ccfv-header__link::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 5px;
+
+    width: 0;
+    height: 2px;
+
+    background: var(--ccfv-green-light);
+
+    border-radius: 999px;
+
+    transform: translateX(-50%);
+
+    box-shadow:
+        0 0 10px rgba(50, 201, 130, 0.5);
+
+    transition:
+        width 0.3s var(--ease-smooth);
+}
+
+
+.ccfv-header__link:hover {
+    color: var(--ccfv-white);
+
+    background:
+        rgba(255, 255, 255, 0.055);
+
+    transform: translateY(-1px);
+}
+
+
+.ccfv-header__link:hover::after {
+    width: 18px;
+}
+
+
+.ccfv-header__link.is-active {
+    color: var(--ccfv-white);
+
+    background:
+        rgba(31, 143, 95, 0.16);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(31, 143, 95, 0.16);
+}
+
+
+.ccfv-header__link.is-active::after {
+    width: 18px;
+}
+
+
+/* =========================================================
+   HEADER ACTION
+   ========================================================= */
+
+.ccfv-header__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 44px;
+
+    padding: 0 18px;
+
+    color: #06110c;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--ccfv-green-light),
+            var(--ccfv-green)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.10);
+
+    border-radius: 999px;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+
+    box-shadow:
+        0 0 0 rgba(31, 143, 95, 0),
+        0 10px 30px rgba(31, 143, 95, 0.16);
+
+    transition:
+        transform 0.35s var(--ease-smooth),
+        box-shadow 0.35s var(--ease-smooth),
+        filter 0.35s var(--ease-smooth);
+}
+
+
+.ccfv-header__action:hover {
+    transform: translateY(-2px);
+
+    filter: brightness(1.08);
+
+    box-shadow:
+        0 0 24px rgba(50, 201, 130, 0.22),
+        0 14px 34px rgba(31, 143, 95, 0.24);
+}
+
+
+.ccfv-header__action:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   MOBILE MENU BUTTON
+   ========================================================= */
+
+.ccfv-header__menu {
+    display: none;
+
+    width: 44px;
+    height: 44px;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(255, 255, 255, 0.10);
+
+    background:
+        rgba(4, 8, 6, 0.52);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    border-radius: 50%;
+}
+
+
+.ccfv-header__menu-lines {
+    position: relative;
+
+    width: 18px;
+    height: 12px;
+}
+
+
+.ccfv-header__menu-lines span {
+    position: absolute;
+
+    left: 0;
+
+    width: 100%;
+    height: 1px;
+
+    background: var(--ccfv-white);
+
+    border-radius: 999px;
+
+    transition:
+        transform 0.3s var(--ease-smooth),
+        top 0.3s var(--ease-smooth);
+}
+
+
+.ccfv-header__menu-lines span:nth-child(1) {
+    top: 0;
+}
+
+
+.ccfv-header__menu-lines span:nth-child(2) {
+    top: 5px;
+}
+
+
+.ccfv-header__menu-lines span:nth-child(3) {
+    top: 10px;
+}
+
+
+/* =========================================================
+   HEADER RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .ccfv-header__nav {
+        gap: 2px;
+    }
+
+    .ccfv-header__link {
+        padding: 0 12px;
+    }
+
+    .ccfv-header__action {
+        padding: 0 14px;
+    }
+}
+
+
+@media (max-width: 900px) {
+
+    .ccfv-header {
+        height: 78px;
+    }
+
+    .ccfv-header__nav,
+    .ccfv-header__action {
+        display: none;
+    }
+
+    .ccfv-header__menu {
+        display: flex;
+    }
+
+    .ccfv-header__logo {
+        width: 46px;
+        height: 46px;
+    }
+
+    .ccfv-header__brand-name {
+        font-size: 13px;
+    }
+
+    .ccfv-header__brand-subtitle {
+        font-size: 7px;
+    }
+}
+
+
+@media (max-width: 520px) {
+
+    .ccfv-header__brand {
+        gap: 10px;
+    }
+
+    .ccfv-header__logo {
+        width: 42px;
+        height: 42px;
+    }
+
+    .ccfv-header__brand-name {
+        font-size: 12px;
+        letter-spacing: 0.10em;
+    }
+
+    .ccfv-header__brand-subtitle {
+        max-width: 190px;
+
+        font-size: 6px;
+        letter-spacing: 0.13em;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

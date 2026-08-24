@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#020403"
+    >
+
+    <meta
+        name="description"
+        content="Jogadores oficiais da CCFV."
+    >
+
+    <title>
+        Jogadores — CCFV
+    </title>
+
+
+    <!-- =====================================================
+         FONTES
+         ===================================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         CSS
+         ===================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/global.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/header.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/jogadores.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/responsive.css"
+    >
+
+
+    <!-- =====================================================
+         MOTOR PARA EXPORTAR O CARD REAL DO SITE
+         ===================================================== -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"
+    ></script>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header
+        class="ccfv-header"
+        id="site-header"
+    >
+
+        <div
+            class="ccfv-header__inner"
+        >
+
+            <a
+                href="../index.html"
+                class="ccfv-header__brand"
+            >
+
+                <img
+                    src="../assets/images/logo/ccfv-logo.png"
+                    alt="CCFV"
+                    class="ccfv-header__logo"
+                >
+
+                <span
+                    class="ccfv-header__brand-text"
+                >
+
+                    <span
+                        class="ccfv-header__brand-name"
+                    >
+                        CCFV
+                    </span>
+
+                    <span
+                        class="ccfv-header__brand-subtitle"
+                    >
+                        Confederação Coliseu de Futebol Virtual
+                    </span>
+
+                </span>
+
+            </a>
+
+
+            <nav
+                class="ccfv-header__nav"
+                aria-label="Navegação principal"
+            >
+
+                <a
+                    href="../index.html"
+                    class="ccfv-header__link"
+                >
+                    Início
+                </a>
+
+
+                <a
+                    href="brasileirao.html"
+                    class="ccfv-header__link"
+                >
+                    Brasileirão
+                </a>
+
+
+                <a
+                    href="night.html"
+                    class="ccfv-header__link"
+                >
+                    Night Cup
+                </a>
+
+
+                <a
+                    href="partidas.html"
+                    class="ccfv-header__link"
+                >
+                    Partidas
+                </a>
+
+
+                <a
+                    href="ranking.html"
+                    class="ccfv-header__link"
+                >
+                    Ranking
+                </a>
+
+            </nav>
+
+
+            <a
+                href="night.html"
+                class="ccfv-header__action"
+            >
+                Participar
+            </a>
+
+
+            <button
+                type="button"
+                class="ccfv-header__menu"
+                aria-label="Abrir menu"
+                aria-expanded="false"
+            >
+
+                <span
+                    class="ccfv-header__menu-lines"
+                >
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </span>
+
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main>
+
+
+        <!-- =================================================
+             HERO
+             ================================================= -->
+
+        <section
+            class="ccfv-jogadores-hero"
+        >
+
+            <div
+                class="ccfv-jogadores-hero__bg"
+            >
+
+                <div
+                    class="ccfv-jogadores-hero__glow"
+                ></div>
+
+
+                <div
+                    class="ccfv-jogadores-hero__grid"
+                ></div>
+
+
+                <div
+                    class="ccfv-jogadores-hero__scan"
+                ></div>
+
+            </div>
+
+
+            <div
+                class="ccfv-jogadores-container"
+            >
+
+                <div
+                    class="ccfv-jogadores-hero__eyebrow"
+                >
+
+                    <span></span>
+
+                    CCFV // PLAYER DIRECTORY
+
+                </div>
+
+
+                <h1
+                    class="ccfv-jogadores-hero__title"
+                >
+
+                    TODOS OS
+
+                    <strong>
+                        COMPETIDORES.
+                    </strong>
+
+                </h1>
+
+
+                <p
+                    class="ccfv-jogadores-hero__description"
+                >
+
+                    Consulte os competidores oficiais da CCFV,
+                    veja seu Elo e abra seu Player Card oficial.
+
+                </p>
+
+
+                <div
+                    class="ccfv-jogadores-hero__stats"
+                >
+
+                    <div>
+
+                        <span>
+                            JOGADORES
+                        </span>
+
+                        <strong
+                            id="players-count"
+                        >
+                            00
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            TEMPORADA
+                        </span>
+
+                        <strong>
+                            01
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            STATUS
+                        </span>
+
+                        <strong>
+                            OFICIAL
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             DIRECTORY
+             ================================================= -->
+
+        <section
+            class="ccfv-jogadores-directory"
+        >
+
+            <div
+                class="ccfv-jogadores-container"
+            >
+
+
+                <div
+                    class="ccfv-jogadores-toolbar"
+                >
+
+                    <div>
+
+                        <span>
+                            CCFV // DIRECTORY
+                        </span>
+
+
+                        <h2>
+
+                            RANKING
+
+                            <strong>
+                                COMPLETO.
+                            </strong>
+
+                        </h2>
+
+                    </div>
+
+
+                    <div
+                        class="ccfv-jogadores-controls"
+                    >
+
+                        <label
+                            class="ccfv-jogadores-search"
+                        >
+
+                            <span>
+                                BUSCAR
+                            </span>
+
+
+                            <input
+                                type="search"
+                                id="players-search"
+                                placeholder="Nome do jogador..."
+                                autocomplete="off"
+                            >
+
+                        </label>
+
+
+                        <div
+                            class="ccfv-jogadores-filters"
+                        >
+
+                            <button
+                                type="button"
+                                class="is-active"
+                                data-filter="all"
+                            >
+                                TODOS
+                            </button>
+
+
+                            <button
+                                type="button"
+                                data-filter="PC"
+                            >
+                                PC
+                            </button>
+
+
+                            <button
+                                type="button"
+                                data-filter="CONSOLE"
+                            >
+                                CONSOLE
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div
+                    class="ccfv-jogadores-list"
+                    id="players-list"
+                ></div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PLAYER CARD VIEWER
+             ================================================= -->
+
+        <section
+            class="ccfv-jogador-card-viewer"
+            id="player-card-viewer"
+            aria-hidden="true"
+        >
+
+            <div
+                class="ccfv-jogador-card-viewer__backdrop"
+                data-close-card
+            ></div>
+
+
+            <div
+                class="ccfv-jogador-card-viewer__panel"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Player Card"
+            >
+
+                <button
+                    type="button"
+                    class="ccfv-jogador-card-viewer__close"
+                    data-close-card
+                    aria-label="Fechar card"
+                >
+                    ×
+                </button>
+
+
+                <!-- =========================================
+                     SOMENTE ESTA DIV É CAPTURADA NO PNG
+                     ========================================= -->
+
+                <div
+                    class="ccfv-jogador-card-viewer__card"
+                    id="player-card"
+                ></div>
+
+
+                <!-- =========================================
+                     AÇÕES
+                     ========================================= -->
+
+                <div
+                    class="ccfv-jogador-card-viewer__actions"
+                >
+
+                    <button
+                        type="button"
+                        id="share-card"
+                        class="ccfv-card-action ccfv-card-action--primary"
+                    >
+                        COMPARTILHAR CARD
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="download-card"
+                        class="ccfv-card-action"
+                    >
+                        BAIXAR CARD
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="copy-card-link"
+                        class="ccfv-card-action"
+                    >
+                        COPIAR LINK
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer
+        class="ccfv-footer"
+    >
+
+        <div
+            class="ccfv-footer__inner"
+        >
+
+            <span>
+                CCFV — CONFEDERAÇÃO COLISEU DE FUTEBOL VIRTUAL
+            </span>
+
+
+            <span>
+                PLAYER DIRECTORY
+            </span>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         JS
+         ===================================================== -->
+
+    <script
+        src="../js/main.js"
+        defer
+    ></script>
+
+
+    <script
+        src="../js/jogadores.js"
+        defer
+    ></script>
+
+</body>
+
+</html>

@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#020403"
+    >
+
+    <title>
+        CCFV Admin
+    </title>
+
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <link
+        rel="stylesheet"
+        href="../css/global.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="css/admin.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <div class="ccfv-admin">
+
+
+        <!-- =================================================
+             SIDEBAR
+             ================================================= -->
+
+        <aside
+            class="ccfv-admin-sidebar"
+            id="admin-sidebar"
+        >
+
+            <div
+                class="ccfv-admin-brand"
+            >
+
+                <div
+                    class="ccfv-admin-brand__logo"
+                >
+                    CCFV
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        CCFV
+                    </strong>
+
+                    <span>
+                        PAINEL ADMINISTRATIVO
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="ccfv-admin-sidebar__label"
+            >
+                CENTRAL
+            </div>
+
+
+            <nav
+                class="ccfv-admin-nav"
+            >
+
+                <button
+                    type="button"
+                    class="ccfv-admin-nav__item is-active"
+                    data-section="dashboard"
+                >
+
+                    <span>
+                        ⌂
+                    </span>
+
+                    Dashboard
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="ccfv-admin-nav__item"
+                    data-section="players"
+                >
+
+                    <span>
+                        ◈
+                    </span>
+
+                    Jogadores
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="ccfv-admin-nav__item"
+                    data-section="matches"
+                >
+
+                    <span>
+                        ⚔
+                    </span>
+
+                    Partidas
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="ccfv-admin-nav__item"
+                    data-section="brasileirao"
+                >
+
+                    <span>
+                        ◎
+                    </span>
+
+                    Brasileirão
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="ccfv-admin-nav__item"
+                    data-section="night"
+                >
+
+                    <span>
+                        ✦
+                    </span>
+
+                    Night Cup
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="ccfv-admin-nav__item"
+                    data-section="ranking"
+                >
+
+                    <span>
+                        №
+                    </span>
+
+                    Ranking
+
+                </button>
+
+            </nav>
+
+
+            <div
+                class="ccfv-admin-sidebar__label"
+            >
+                SISTEMA
+            </div>
+
+
+            <nav
+                class="ccfv-admin-nav"
+            >
+
+                <button
+                    type="button"
+                    class="ccfv-admin-nav__item"
+                    data-section="settings"
+                >
+
+                    <span>
+                        ⚙
+                    </span>
+
+                    Configurações
+
+                </button>
+
+            </nav>
+
+
+            <div
+                class="ccfv-admin-sidebar__bottom"
+            >
+
+                <a
+                    href="../index.html"
+                    class="ccfv-admin-back-site"
+                >
+                    ← Ver site
+                </a>
+
+
+                <div
+                    class="ccfv-admin-system-status"
+                >
+
+                    <span></span>
+
+                    SISTEMA LOCAL ATIVO
+
+                </div>
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- =================================================
+             MAIN
+             ================================================= -->
+
+        <main
+            class="ccfv-admin-main"
+        >
+
+
+            <!-- =============================================
+                 TOPBAR
+                 ============================================= -->
+
+            <header
+                class="ccfv-admin-topbar"
+            >
+
+                <div>
+
+                    <button
+                        type="button"
+                        class="ccfv-admin-mobile-menu"
+                        id="admin-mobile-menu"
+                    >
+                        ☰
+                    </button>
+
+
+                    <span
+                        class="ccfv-admin-topbar__eyebrow"
+                    >
+                        CCFV // ADMIN
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="ccfv-admin-topbar__right"
+                >
+
+                    <span>
+                        SEASON 01
+                    </span>
+
+
+                    <span
+                        class="ccfv-admin-topbar__live"
+                    >
+
+                        <i></i>
+
+                        ONLINE
+
+                    </span>
+
+                </div>
+
+            </header>
+
+
+
+            <!-- =============================================
+                 DASHBOARD
+                 ============================================= -->
+
+            <section
+                class="ccfv-admin-section is-active"
+                id="section-dashboard"
+            >
+
+                <div
+                    class="ccfv-admin-heading"
+                >
+
+                    <div>
+
+                        <span>
+                            CCFV // CONTROL CENTER
+                        </span>
+
+                        <h1>
+                            PAINEL
+                            <strong>GERAL.</strong>
+                        </h1>
+
+                        <p>
+                            Central administrativa da Confederação
+                            Coliseu de Futebol Virtual.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="ccfv-admin-heading__status"
+                    >
+
+                        <span>
+                            STATUS
+                        </span>
+
+                        <strong>
+                            OPERACIONAL
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <div
+                    class="ccfv-admin-stats"
+                >
+
+                    <article
+                        class="ccfv-admin-stat"
+                    >
+
+                        <span>
+                            JOGADORES
+                        </span>
+
+                        <strong
+                            id="stat-players"
+                        >
+                            00
+                        </strong>
+
+                        <small>
+                            cadastrados
+                        </small>
+
+                    </article>
+
+
+                    <article
+                        class="ccfv-admin-stat"
+                    >
+
+                        <span>
+                            PARTIDAS
+                        </span>
+
+                        <strong
+                            id="stat-matches"
+                        >
+                            00
+                        </strong>
+
+                        <small>
+                            registradas
+                        </small>
+
+                    </article>
+
+
+                    <article
+                        class="ccfv-admin-stat"
+                    >
+
+                        <span>
+                            TEMPORADA
+                        </span>
+
+                        <strong>
+                            01
+                        </strong>
+
+                        <small>
+                            ativa
+                        </small>
+
+                    </article>
+
+
+                    <article
+                        class="ccfv-admin-stat"
+                    >
+
+                        <span>
+                            STATUS
+                        </span>
+
+                        <strong
+                            class="is-green"
+                        >
+                            LIVE
+                        </strong>
+
+                        <small>
+                            sistema
+                        </small>
+
+                    </article>
+
+                </div>
+
+
+
+                <div
+                    class="ccfv-admin-dashboard-grid"
+                >
+
+                    <article
+                        class="ccfv-admin-panel ccfv-admin-panel--large"
+                    >
+
+                        <div
+                            class="ccfv-admin-panel__heading"
+                        >
+
+                            <div>
+
+                                <span>
+                                    PRÓXIMA ETAPA
+                                </span>
+
+                                <h2>
+                                    GERENCIAR
+                                    <strong>JOGADORES.</strong>
+                                </h2>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="ccfv-admin-button ccfv-admin-button--primary"
+                                data-open-section="players"
+                            >
+                                ABRIR JOGADORES →
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            class="ccfv-admin-quick-grid"
+                        >
+
+                            <div>
+
+                                <span>
+                                    01
+                                </span>
+
+                                <strong>
+                                    CADASTRAR
+                                </strong>
+
+                                <small>
+                                    nome, foto, Instagram,
+                                    plataforma e dados iniciais
+                                </small>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    02
+                                </span>
+
+                                <strong>
+                                    ELO
+                                </strong>
+
+                                <small>
+                                    classificação automática
+                                    pela pontuação
+                                </small>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    03
+                                </span>
+
+                                <strong>
+                                    CARD
+                                </strong>
+
+                                <small>
+                                    card oficial gerado
+                                    automaticamente
+                                </small>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    04
+                                </span>
+
+                                <strong>
+                                    RANKING
+                                </strong>
+
+                                <small>
+                                    posição calculada
+                                    automaticamente
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <article
+                        class="ccfv-admin-panel"
+                    >
+
+                        <div
+                            class="ccfv-admin-panel__heading"
+                        >
+
+                            <div>
+
+                                <span>
+                                    ELO SYSTEM
+                                </span>
+
+                                <h2>
+                                    FAIXAS.
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="ccfv-admin-rank-list"
+                        >
+
+                            <div>
+
+                                <span
+                                    class="rank-dot rank-dot--beginner"
+                                ></span>
+
+                                <strong>
+                                    INICIANTE
+                                </strong>
+
+                                <small>
+                                    0 — 999
+                                </small>
+
+                            </div>
+
+
+                            <div>
+
+                                <span
+                                    class="rank-dot rank-dot--amateur"
+                                ></span>
+
+                                <strong>
+                                    AMADOR
+                                </strong>
+
+                                <small>
+                                    1000 — 1999
+                                </small>
+
+                            </div>
+
+
+                            <div>
+
+                                <span
+                                    class="rank-dot rank-dot--professional"
+                                ></span>
+
+                                <strong>
+                                    PROFISSIONAL
+                                </strong>
+
+                                <small>
+                                    2000 — 2999
+                                </small>
+
+                            </div>
+
+
+                            <div>
+
+                                <span
+                                    class="rank-dot rank-dot--legend"
+                                ></span>
+
+                                <strong>
+                                    LENDA
+                                </strong>
+
+                                <small>
+                                    3000+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =============================================
+                 JOGADORES
+                 ============================================= -->
+
+            <section
+                class="ccfv-admin-section"
+                id="section-players"
+            >
+
+                <div
+                    class="ccfv-admin-heading"
+                >
+
+                    <div>
+
+                        <span>
+                            CCFV // PLAYER MANAGEMENT
+                        </span>
+
+                        <h1>
+                            GERENCIAR
+                            <strong>JOGADORES.</strong>
+                        </h1>
+
+                        <p>
+                            Cadastre e mantenha os competidores
+                            oficiais da CCFV.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="ccfv-admin-button ccfv-admin-button--primary"
+                        id="new-player-button"
+                    >
+                        + NOVO JOGADOR
+                    </button>
+
+                </div>
+
+
+
+                <div
+                    class="ccfv-admin-toolbar"
+                >
+
+                    <div
+                        class="ccfv-admin-search"
+                    >
+
+                        <span>
+                            BUSCAR
+                        </span>
+
+                        <input
+                            type="search"
+                            id="admin-player-search"
+                            placeholder="Nome ou Instagram..."
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <div
+                        class="ccfv-admin-filter-buttons"
+                    >
+
+                        <button
+                            type="button"
+                            class="is-active"
+                            data-admin-filter="all"
+                        >
+                            TODOS
+                        </button>
+
+                        <button
+                            type="button"
+                            data-admin-filter="PC"
+                        >
+                            PC
+                        </button>
+
+                        <button
+                            type="button"
+                            data-admin-filter="CONSOLE"
+                        >
+                            CONSOLE
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <div
+                    class="ccfv-admin-table-wrap"
+                >
+
+                    <table
+                        class="ccfv-admin-table"
+                    >
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    POS
+                                </th>
+
+                                <th>
+                                    JOGADOR
+                                </th>
+
+                                <th>
+                                    PLATAFORMA
+                                </th>
+
+                                <th>
+                                    ELO
+                                </th>
+
+                                <th>
+                                    INSÍGNIA
+                                </th>
+
+                                <th>
+                                    STATUS
+                                </th>
+
+                                <th>
+                                    AÇÕES
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="admin-players-table"
+                        ></tbody>
+
+                    </table>
+
+
+                    <div
+                        class="ccfv-admin-empty"
+                        id="admin-players-empty"
+                    >
+
+                        <div>
+                            ?
+                        </div>
+
+                        <strong>
+                            NENHUM JOGADOR CADASTRADO.
+                        </strong>
+
+                        <span>
+                            Comece cadastrando o primeiro
+                            competidor da CCFV.
+                        </span>
+
+                        <button
+                            type="button"
+                            class="ccfv-admin-button ccfv-admin-button--primary"
+                            data-open-new-player
+                        >
+                            CADASTRAR PRIMEIRO JOGADOR
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =============================================
+                 PARTIDAS
+                 ============================================= -->
+
+            <section
+                class="ccfv-admin-section"
+                id="section-matches"
+            >
+
+                <div
+                    class="ccfv-admin-heading"
+                >
+
+                    <div>
+
+                        <span>
+                            CCFV // MATCH MANAGEMENT
+                        </span>
+
+                        <h1>
+                            REGISTRAR
+                            <strong>PARTIDAS.</strong>
+                        </h1>
+
+                        <p>
+                            O motor de Elo será ligado aqui
+                            aos resultados oficiais.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="ccfv-admin-coming"
+                >
+
+                    <span>
+                        EM CONSTRUÇÃO
+                    </span>
+
+                    <strong>
+                        MOTOR DE PARTIDAS
+                    </strong>
+
+                    <p>
+                        Aqui vamos registrar confronto,
+                        campeonato, fase, resultado e
+                        atualização automática do Elo.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =============================================
+                 BRASILEIRÃO
+                 ============================================= -->
+
+            <section
+                class="ccfv-admin-section"
+                id="section-brasileirao"
+            >
+
+                <div
+                    class="ccfv-admin-heading"
+                >
+
+                    <div>
+
+                        <span>
+                            CCFV // BRASILEIRÃO
+                        </span>
+
+                        <h1>
+                            CONTROLAR
+                            <strong>BRASILEIRÃO.</strong>
+                        </h1>
+
+                        <p>
+                            Rodadas, confrontos, resultados
+                            e destaque da rodada.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="ccfv-admin-coming"
+                >
+
+                    <span>
+                        PRÓXIMO MÓDULO
+                    </span>
+
+                    <strong>
+                        BRASILEIRÃO CCFV
+                    </strong>
+
+                    <p>
+                        Vamos trazer para o Admin os mesmos
+                        20 clubes e as 38 rodadas que já
+                        construímos no site público.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =============================================
+                 NIGHT CUP
+                 ============================================= -->
+
+            <section
+                class="ccfv-admin-section"
+                id="section-night"
+            >
+
+                <div
+                    class="ccfv-admin-heading"
+                >
+
+                    <div>
+
+                        <span>
+                            CCFV // NIGHT CUP
+                        </span>
+
+                        <h1>
+                            CONTROLAR
+                            <strong>NIGHT CUP.</strong>
+                        </h1>
+
+                        <p>
+                            Participantes, quartas, semifinal,
+                            final e campeão.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="ccfv-admin-coming"
+                >
+
+                    <span>
+                        PRÓXIMO MÓDULO
+                    </span>
+
+                    <strong>
+                        NIGHT CUP #01
+                    </strong>
+
+                    <p>
+                        A administração dos oito participantes
+                        e do mata-mata será feita aqui.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =============================================
+                 RANKING
+                 ============================================= -->
+
+            <section
+                class="ccfv-admin-section"
+                id="section-ranking"
+            >
+
+                <div
+                    class="ccfv-admin-heading"
+                >
+
+                    <div>
+
+                        <span>
+                            CCFV // OFFICIAL RANKING
+                        </span>
+
+                        <h1>
+                            CONTROLAR
+                            <strong>RANKING.</strong>
+                        </h1>
+
+                        <p>
+                            Visão administrativa do Elo,
+                            posições e líderes de categoria.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="ccfv-admin-coming"
+                >
+
+                    <span>
+                        AUTOMÁTICO
+                    </span>
+
+                    <strong>
+                        ELO + RANKING
+                    </strong>
+
+                    <p>
+                        O ranking público será alimentado
+                        automaticamente pelos dados dos
+                        jogadores e resultados oficiais.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =============================================
+                 CONFIGURAÇÕES
+                 ============================================= -->
+
+            <section
+                class="ccfv-admin-section"
+                id="section-settings"
+            >
+
+                <div
+                    class="ccfv-admin-heading"
+                >
+
+                    <div>
+
+                        <span>
+                            CCFV // SYSTEM
+                        </span>
+
+                        <h1>
+                            CONFIGURAÇÕES
+                            <strong>DO SISTEMA.</strong>
+                        </h1>
+
+                        <p>
+                            Informações e parâmetros gerais
+                            da operação.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="ccfv-admin-settings-grid"
+                >
+
+                    <article
+                        class="ccfv-admin-setting"
+                    >
+
+                        <span>
+                            TEMPORADA
+                        </span>
+
+                        <strong>
+                            SEASON 01
+                        </strong>
+
+                    </article>
+
+
+                    <article
+                        class="ccfv-admin-setting"
+                    >
+
+                        <span>
+                            ELO INICIAL
+                        </span>
+
+                        <strong>
+                            0
+                        </strong>
+
+                    </article>
+
+
+                    <article
+                        class="ccfv-admin-setting"
+                    >
+
+                        <span>
+                            BASE
+                        </span>
+
+                        <strong>
+                            LOCAL STORAGE
+                        </strong>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         MODAL — JOGADOR
+         ===================================================== -->
+
+    <div
+        class="ccfv-admin-modal"
+        id="player-modal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="ccfv-admin-modal__backdrop"
+            data-close-player-modal
+        ></div>
+
+
+        <div
+            class="ccfv-admin-modal__panel"
+        >
+
+            <button
+                type="button"
+                class="ccfv-admin-modal__close"
+                data-close-player-modal
+            >
+                ×
+            </button>
+
+
+            <div
+                class="ccfv-admin-modal__header"
+            >
+
+                <span>
+                    CCFV // PLAYER
+                </span>
+
+                <h2
+                    id="player-modal-title"
+                >
+                    NOVO JOGADOR.
+                </h2>
+
+            </div>
+
+
+            <form
+                id="player-form"
+                class="ccfv-admin-form"
+            >
+
+                <input
+                    type="hidden"
+                    id="player-id"
+                >
+
+
+                <div
+                    class="ccfv-admin-form-grid"
+                >
+
+                    <label>
+
+                        <span>
+                            NOME COMPLETO
+                        </span>
+
+                        <input
+                            type="text"
+                            id="player-name"
+                            placeholder="Nome do competidor"
+                            required
+                        >
+
+                    </label>
+
+
+                    <label>
+
+                        <span>
+                            @ INSTAGRAM
+                        </span>
+
+                        <input
+                            type="text"
+                            id="player-instagram"
+                            placeholder="ex: ccfv.oficial"
+                        >
+
+                    </label>
+
+
+                    <label>
+
+                        <span>
+                            PLATAFORMA
+                        </span>
+
+                        <select
+                            id="player-platform"
+                        >
+
+                            <option value="PC">
+                                PC
+                            </option>
+
+                            <option value="CONSOLE">
+                                CONSOLE
+                            </option>
+
+                        </select>
+
+                    </label>
+
+
+                    <label>
+
+                        <span>
+                            ELO INICIAL
+                        </span>
+
+                        <input
+                            type="number"
+                            id="player-elo"
+                            min="0"
+                            step="1"
+                            value="0"
+                            required
+                        >
+
+                    </label>
+
+
+                    <label>
+
+                        <span>
+                            VITÓRIAS
+                        </span>
+
+                        <input
+                            type="number"
+                            id="player-wins"
+                            min="0"
+                            step="1"
+                            value="0"
+                        >
+
+                    </label>
+
+
+                    <label>
+
+                        <span>
+                            EMPATES
+                        </span>
+
+                        <input
+                            type="number"
+                            id="player-draws"
+                            min="0"
+                            step="1"
+                            value="0"
+                        >
+
+                    </label>
+
+
+                    <label>
+
+                        <span>
+                            DERROTAS
+                        </span>
+
+                        <input
+                            type="number"
+                            id="player-losses"
+                            min="0"
+                            step="1"
+                            value="0"
+                        >
+
+                    </label>
+
+
+                    <label>
+
+                        <span>
+                            TÍTULOS
+                        </span>
+
+                        <input
+                            type="number"
+                            id="player-titles"
+                            min="0"
+                            step="1"
+                            value="0"
+                        >
+
+                    </label>
+
+                </div>
+
+
+
+                <div
+                    class="ccfv-admin-form-photo"
+                >
+
+                    <div>
+
+                        <span>
+                            FOTO DO JOGADOR
+                        </span>
+
+                        <small>
+                            Para o primeiro teste usamos
+                            uma URL. Depois o Admin terá
+                            upload direto da imagem.
+                        </small>
+
+                    </div>
+
+
+                    <input
+                        type="url"
+                        id="player-photo"
+                        placeholder="https://..."
+                    >
+
+                </div>
+
+
+
+                <div
+                    class="ccfv-admin-preview"
+                >
+
+                    <div>
+
+                        <span>
+                            INSÍGNIA AUTOMÁTICA
+                        </span>
+
+                        <strong
+                            id="player-rank-preview"
+                        >
+                            INICIANTE
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            ELO
+                        </span>
+
+                        <strong
+                            id="player-elo-preview"
+                        >
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <div
+                    class="ccfv-admin-form-actions"
+                >
+
+                    <button
+                        type="button"
+                        class="ccfv-admin-button"
+                        data-close-player-modal
+                    >
+                        CANCELAR
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="ccfv-admin-button ccfv-admin-button--primary"
+                    >
+                        SALVAR JOGADOR
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <div
+        class="ccfv-admin-toast"
+        id="admin-toast"
+    ></div>
+
+
+
+    <script
+        src="js/admin.js"
+        defer
+    ></script>
+
+</body>
+
+</html>

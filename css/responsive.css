@@ -1,0 +1,347 @@
+/* =========================================================
+   CCFV — RESPONSIVE SYSTEM
+   Confederação Coliseu de Futebol Virtual
+   ========================================================= */
+
+
+/* =========================================================
+   LARGE DESKTOP
+   ========================================================= */
+
+@media (min-width: 1600px) {
+
+    :root {
+        --page-padding: 80px;
+    }
+
+    .ccfv-hero__content {
+        max-width: 1520px;
+    }
+}
+
+
+/* =========================================================
+   STANDARD DESKTOP
+   ========================================================= */
+
+@media (max-width: 1400px) {
+
+    .ccfv-hero__content {
+        gap: 70px;
+    }
+
+    .ccfv-hero__main {
+        max-width: 700px;
+    }
+}
+
+
+/* =========================================================
+   LAPTOP
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+    :root {
+        --page-padding: clamp(24px, 4vw, 50px);
+    }
+
+    .ccfv-hero__content {
+        gap: 50px;
+    }
+}
+
+
+/* =========================================================
+   TABLET LANDSCAPE
+   ========================================================= */
+
+@media (max-width: 1024px) {
+
+    :root {
+        --page-padding: 30px;
+    }
+
+    .ccfv-hero {
+        height: auto;
+        min-height: 900px;
+    }
+
+    .ccfv-hero__content {
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(280px, 0.65fr);
+
+        gap: 40px;
+    }
+
+    .ccfv-hero__title {
+        font-size: clamp(62px, 10vw, 108px);
+    }
+
+    .ccfv-season-panel {
+        width: 100%;
+        max-width: 360px;
+    }
+}
+
+
+/* =========================================================
+   TABLET PORTRAIT
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    :root {
+        --page-padding: 24px;
+    }
+
+    .ccfv-hero {
+        min-height: 900px;
+    }
+
+    .ccfv-hero__content {
+        min-height: 900px;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: stretch;
+        justify-content: center;
+
+        gap: 40px;
+
+        padding-top: 110px;
+        padding-bottom: 80px;
+    }
+
+    .ccfv-hero__main {
+        max-width: 760px;
+    }
+
+    .ccfv-hero__side {
+        min-height: 0;
+
+        justify-content: flex-start;
+    }
+
+    .ccfv-season-panel {
+        max-width: 520px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE LANDSCAPE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    :root {
+        --page-padding: 20px;
+    }
+
+    .ccfv-hero__title {
+        font-size: clamp(58px, 14vw, 96px);
+    }
+
+    .ccfv-hero__subtitle {
+        max-width: 600px;
+    }
+
+    .ccfv-hero__actions {
+        flex-wrap: wrap;
+    }
+
+    .ccfv-hero__stats {
+        gap: 20px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    :root {
+        --page-padding: 18px;
+    }
+
+    .ccfv-hero {
+        min-height: 920px;
+    }
+
+    .ccfv-hero__content {
+        min-height: 920px;
+
+        padding-top: 105px;
+        padding-bottom: 70px;
+
+        gap: 34px;
+    }
+
+    .ccfv-hero__title {
+        font-size: clamp(52px, 18vw, 88px);
+    }
+
+    .ccfv-hero__subtitle {
+        font-size: 14px;
+    }
+
+    .ccfv-hero__competition {
+        gap: 12px;
+    }
+
+    .ccfv-hero__actions {
+        width: 100%;
+    }
+
+    .ccfv-hero__button {
+        min-height: 50px;
+    }
+
+    .ccfv-hero__stats {
+        gap: 15px;
+    }
+
+    .ccfv-season-panel {
+        padding: 20px;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .ccfv-hero {
+        min-height: 900px;
+    }
+
+    .ccfv-hero__content {
+        min-height: 900px;
+
+        padding-top: 100px;
+        padding-bottom: 60px;
+    }
+
+    .ccfv-hero__title {
+        font-size: 17vw;
+    }
+
+    .ccfv-hero__eyebrow {
+        max-width: 100%;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .ccfv-hero__actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .ccfv-hero__button {
+        width: 100%;
+    }
+
+    .ccfv-hero__stats {
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .ccfv-hero__stat {
+        min-width: 0;
+    }
+
+    .ccfv-hero__stat-value {
+        font-size: 21px;
+    }
+
+    .ccfv-season-panel__header {
+        gap: 10px;
+    }
+
+    .ccfv-season-panel__status {
+        padding: 6px 7px;
+    }
+
+    .ccfv-season-panel__club {
+        padding: 13px;
+    }
+
+    .ccfv-season-panel__metrics {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    :root {
+        --page-padding: 15px;
+    }
+
+    .ccfv-hero {
+        min-height: 860px;
+    }
+
+    .ccfv-hero__content {
+        min-height: 860px;
+
+        padding-top: 95px;
+        padding-bottom: 50px;
+    }
+
+    .ccfv-hero__title {
+        font-size: 16vw;
+    }
+
+    .ccfv-hero__subtitle {
+        font-size: 13px;
+    }
+
+    .ccfv-hero__competition-name {
+        font-size: 16px;
+    }
+
+    .ccfv-hero__stat-value {
+        font-size: 18px;
+    }
+
+    .ccfv-hero__stat-label {
+        font-size: 5px;
+    }
+
+    .ccfv-season-panel {
+        padding: 16px;
+        border-radius: 17px;
+    }
+
+    .ccfv-season-panel__title {
+        font-size: 18px;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ccfv-hero *,
+    .ccfv-header * {
+        animation: none !important;
+        transition: none !important;
+    }
+}

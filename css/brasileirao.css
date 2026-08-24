@@ -1,0 +1,5723 @@
+/* =========================================================
+   CCFV — BRASILEIRÃO
+   PÁGINA OFICIAL — SEASON 01
+   ========================================================= */
+
+
+/* =========================================================
+   BASE
+   ========================================================= */
+
+.ccfv-brasileirao-hero,
+.ccfv-brasileirao-status,
+.ccfv-brasileirao-table-section,
+.ccfv-brasileirao-rounds,
+.ccfv-brasileirao-results,
+.ccfv-brasileirao-champion,
+.ccfv-brasileirao-rules {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+
+.ccfv-brasileirao-section-container {
+    position: relative;
+
+    width:
+        min(
+            calc(100% - (var(--page-padding, 40px) * 2)),
+            var(--container-width, 1400px)
+        );
+
+    margin-inline: auto;
+}
+
+
+/* =========================================================
+   BRASILEIRÃO HERO
+   ========================================================= */
+
+.ccfv-brasileirao-hero {
+    min-height: 820px;
+
+    display: flex;
+    align-items: center;
+
+    padding:
+        150px 0 85px;
+
+    background:
+        radial-gradient(
+            circle at 70% 40%,
+            rgba(31,143,95,.16),
+            transparent 34%
+        ),
+        radial-gradient(
+            circle at 10% 90%,
+            rgba(214,180,90,.07),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #020403 0%,
+            #06100b 50%,
+            #020403 100%
+        );
+
+    border-bottom:
+        1px solid rgba(255,255,255,.07);
+}
+
+
+/* =========================================================
+   HERO ATMOSPHERE
+   ========================================================= */
+
+.ccfv-brasileirao-hero__background {
+    position: absolute;
+    inset: 0;
+
+    z-index: -3;
+
+    overflow: hidden;
+
+    pointer-events: none;
+}
+
+
+.ccfv-brasileirao-hero__glow {
+    position: absolute;
+
+    width: 720px;
+    height: 720px;
+
+    right: -180px;
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(31,143,95,.22),
+            rgba(31,143,95,.06) 42%,
+            transparent 70%
+        );
+
+    filter: blur(35px);
+
+    animation:
+        brasileirao-glow
+        10s
+        ease-in-out
+        infinite;
+}
+
+
+@keyframes brasileirao-glow {
+
+    0%,
+    100% {
+        transform:
+            translateY(-50%)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translateY(-50%)
+            scale(1.12);
+    }
+}
+
+
+/* =========================================================
+   HERO GRID
+   ========================================================= */
+
+.ccfv-brasileirao-hero__grid {
+    position: absolute;
+
+    left: -10%;
+    right: -10%;
+    bottom: -32%;
+
+    height: 75%;
+
+    transform:
+        perspective(700px)
+        rotateX(65deg);
+
+    transform-origin:
+        bottom center;
+
+    background-image:
+        linear-gradient(
+            rgba(67,223,145,.10) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(67,223,145,.10) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        70px 70px;
+
+    mask-image:
+        linear-gradient(
+            180deg,
+            transparent,
+            #000 35%,
+            transparent
+        );
+
+    -webkit-mask-image:
+        linear-gradient(
+            180deg,
+            transparent,
+            #000 35%,
+            transparent
+        );
+
+    opacity: .32;
+
+    animation:
+        brasileirao-grid
+        12s
+        linear
+        infinite;
+}
+
+
+@keyframes brasileirao-grid {
+
+    from {
+        background-position:
+            0 0,
+            0 0;
+    }
+
+    to {
+        background-position:
+            0 70px,
+            70px 0;
+    }
+}
+
+
+/* =========================================================
+   HERO SCANNER
+   ========================================================= */
+
+.ccfv-brasileirao-hero__scan {
+    position: absolute;
+
+    top: 0;
+    left: -30%;
+
+    width: 30%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(67,223,145,.04),
+            rgba(67,223,145,.12),
+            transparent
+        );
+
+    filter: blur(12px);
+
+    animation:
+        brasileirao-scan
+        8s
+        linear
+        infinite;
+}
+
+
+@keyframes brasileirao-scan {
+
+    0% {
+        left: -35%;
+    }
+
+    100% {
+        left: 110%;
+    }
+}
+
+
+/* =========================================================
+   PARTICLES
+   ========================================================= */
+
+.ccfv-brasileirao-hero__particles {
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+}
+
+
+.ccfv-brasileirao-hero__particles span {
+    position: absolute;
+
+    width: 3px;
+    height: 3px;
+
+    border-radius: 50%;
+
+    background:
+        #43df91;
+
+    box-shadow:
+        0 0 12px rgba(67,223,145,.8);
+
+    opacity: 0;
+
+    animation:
+        brasileirao-particle
+        8s
+        linear
+        infinite;
+}
+
+
+.ccfv-brasileirao-hero__particles span:nth-child(1) {
+    left: 8%;
+    top: 80%;
+    animation-delay: -2s;
+}
+
+.ccfv-brasileirao-hero__particles span:nth-child(2) {
+    left: 18%;
+    top: 70%;
+    animation-delay: -6s;
+}
+
+.ccfv-brasileirao-hero__particles span:nth-child(3) {
+    left: 32%;
+    top: 86%;
+    animation-delay: -4s;
+}
+
+.ccfv-brasileirao-hero__particles span:nth-child(4) {
+    left: 47%;
+    top: 78%;
+    animation-delay: -7s;
+}
+
+.ccfv-brasileirao-hero__particles span:nth-child(5) {
+    left: 59%;
+    top: 90%;
+    animation-delay: -1s;
+}
+
+.ccfv-brasileirao-hero__particles span:nth-child(6) {
+    left: 71%;
+    top: 73%;
+    animation-delay: -5s;
+}
+
+.ccfv-brasileirao-hero__particles span:nth-child(7) {
+    left: 84%;
+    top: 84%;
+    animation-delay: -3s;
+}
+
+.ccfv-brasileirao-hero__particles span:nth-child(8) {
+    left: 93%;
+    top: 68%;
+    animation-delay: -8s;
+}
+
+
+@keyframes brasileirao-particle {
+
+    0% {
+        opacity: 0;
+        transform:
+            translateY(30px)
+            scale(.4);
+    }
+
+    15% {
+        opacity: .8;
+    }
+
+    70% {
+        opacity: .3;
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(
+                20px,
+                -180px
+            )
+            scale(1.2);
+    }
+}
+
+
+/* =========================================================
+   HERO CONTAINER
+   ========================================================= */
+
+.ccfv-brasileirao-hero__container {
+    position: relative;
+
+    width:
+        min(
+            calc(100% - (var(--page-padding, 40px) * 2)),
+            var(--container-width, 1400px)
+        );
+
+    margin-inline: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.2fr)
+        minmax(350px, .8fr);
+
+    align-items: center;
+
+    gap:
+        clamp(
+            50px,
+            7vw,
+            110px
+        );
+}
+
+
+/* =========================================================
+   HERO CONTENT
+   ========================================================= */
+
+.ccfv-brasileirao-hero__content {
+    max-width: 760px;
+}
+
+
+/* =========================================================
+   EYEBROW
+   ========================================================= */
+
+.ccfv-brasileirao-hero__eyebrow {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding:
+        8px 13px;
+
+    border:
+        1px solid rgba(67,223,145,.18);
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(31,143,95,.06);
+
+    color:
+        rgba(255,255,255,.58);
+
+    font-size: 8px;
+
+    font-weight: 900;
+
+    letter-spacing: .18em;
+
+    text-transform: uppercase;
+
+    opacity: 0;
+
+    animation:
+        brasileirao-fade-up
+        .8s
+        var(--ease-smooth, ease)
+        .2s
+        forwards;
+}
+
+
+.ccfv-brasileirao-hero__live-dot {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background:
+        #43df91;
+
+    box-shadow:
+        0 0 13px rgba(67,223,145,.9);
+
+    animation:
+        brasileirao-pulse
+        2s
+        ease-in-out
+        infinite;
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.ccfv-brasileirao-hero__logo {
+    margin-top: 28px;
+
+    width:
+        clamp(
+            130px,
+            15vw,
+            210px
+        );
+
+    opacity: 0;
+
+    transform:
+        translateY(25px)
+        scale(.94);
+
+    animation:
+        brasileirao-logo-entry
+        1s
+        var(--ease-smooth, ease)
+        .35s
+        forwards;
+}
+
+
+.ccfv-brasileirao-hero__logo img {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0 0 28px
+            rgba(50,201,130,.20)
+        );
+}
+
+
+@keyframes brasileirao-logo-entry {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(25px)
+            scale(.88);
+
+        filter:
+            blur(8px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+        filter:
+            blur(0);
+    }
+}
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.ccfv-brasileirao-hero__title {
+    margin:
+        22px 0 0;
+
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            55px,
+            7.2vw,
+            108px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        .80;
+
+    letter-spacing:
+        -.065em;
+
+    text-transform:
+        uppercase;
+
+    text-shadow:
+        0 0 40px
+        rgba(50,201,130,.08);
+
+    opacity: 0;
+
+    animation:
+        brasileirao-title-entry
+        1s
+        var(--ease-smooth, ease)
+        .55s
+        forwards;
+}
+
+
+.ccfv-brasileirao-hero__title span {
+    display: block;
+
+    color:
+        #43df91;
+
+    text-shadow:
+        0 0 35px
+        rgba(67,223,145,.15);
+}
+
+
+@keyframes brasileirao-title-entry {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(35px)
+            scale(.95);
+
+        filter:
+            blur(10px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+        filter:
+            blur(0);
+    }
+}
+
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.ccfv-brasileirao-hero__description {
+    max-width: 650px;
+
+    margin:
+        28px 0 0;
+
+    color:
+        rgba(255,255,255,.52);
+
+    font-size:
+        clamp(
+            14px,
+            1.2vw,
+            17px
+        );
+
+    line-height:
+        1.7;
+
+    opacity: 0;
+
+    animation:
+        brasileirao-fade-up
+        .8s
+        var(--ease-smooth, ease)
+        .85s
+        forwards;
+}
+
+
+/* =========================================================
+   HERO DATA
+   ========================================================= */
+
+.ccfv-brasileirao-hero__data {
+    display: flex;
+
+    align-items: center;
+
+    gap: 22px;
+
+    margin-top: 32px;
+
+    opacity: 0;
+
+    animation:
+        brasileirao-fade-up
+        .8s
+        var(--ease-smooth, ease)
+        1s
+        forwards;
+}
+
+
+.ccfv-brasileirao-hero__data-item {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+
+.ccfv-brasileirao-hero__data-item strong {
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            22px,
+            2.1vw,
+            31px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        1;
+}
+
+
+.ccfv-brasileirao-hero__data-item span {
+    color:
+        rgba(255,255,255,.35);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .15em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.ccfv-brasileirao-hero__data-divider {
+    width: 1px;
+    height: 31px;
+
+    background:
+        rgba(255,255,255,.12);
+}
+
+
+/* =========================================================
+   HERO BUTTONS
+   ========================================================= */
+
+.ccfv-brasileirao-hero__actions {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    margin-top: 32px;
+
+    opacity: 0;
+
+    animation:
+        brasileirao-fade-up
+        .8s
+        var(--ease-smooth, ease)
+        1.15s
+        forwards;
+}
+
+
+.ccfv-brasileirao-button {
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 50px;
+
+    padding:
+        0 20px;
+
+    border-radius:
+        11px;
+
+    overflow: hidden;
+
+    font-size:
+        9px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .13em;
+
+    text-transform:
+        uppercase;
+
+    text-decoration:
+        none;
+
+    transition:
+        transform .35s var(--ease-smooth, ease),
+        border-color .35s ease,
+        box-shadow .35s ease,
+        background .35s ease;
+}
+
+
+.ccfv-brasileirao-button::before {
+    content: "";
+
+    position: absolute;
+
+    left: -120%;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            110deg,
+            transparent,
+            rgba(255,255,255,.22),
+            transparent
+        );
+
+    transition:
+        left .65s ease;
+}
+
+
+.ccfv-brasileirao-button:hover::before {
+    left: 120%;
+}
+
+
+.ccfv-brasileirao-button span {
+    position: relative;
+    z-index: 2;
+}
+
+
+.ccfv-brasileirao-button--primary {
+    color:
+        #031008;
+
+    background:
+        linear-gradient(
+            135deg,
+            #43df91,
+            #1f8f5f
+        );
+
+    box-shadow:
+        0 12px 30px
+        rgba(31,143,95,.18);
+}
+
+
+.ccfv-brasileirao-button--primary:hover {
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 0 30px
+        rgba(67,223,145,.20),
+        0 18px 40px
+        rgba(31,143,95,.18);
+}
+
+
+.ccfv-brasileirao-button--secondary {
+    color:
+        rgba(255,255,255,.82);
+
+    border:
+        1px solid rgba(255,255,255,.13);
+
+    background:
+        rgba(255,255,255,.035);
+
+    backdrop-filter:
+        blur(12px);
+}
+
+
+.ccfv-brasileirao-button--secondary:hover {
+    transform:
+        translateY(-3px);
+
+    border-color:
+        rgba(67,223,145,.35);
+
+    background:
+        rgba(31,143,95,.08);
+}
+
+
+/* =========================================================
+   SEASON PANEL
+   ========================================================= */
+
+.ccfv-brasileirao-season {
+    position: relative;
+
+    width: 100%;
+
+    max-width: 440px;
+
+    margin-left: auto;
+
+    padding:
+        27px;
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    border-radius:
+        24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(10,22,16,.88),
+            rgba(3,8,5,.78)
+        );
+
+    backdrop-filter:
+        blur(22px);
+
+    box-shadow:
+        0 40px 90px
+        rgba(0,0,0,.35),
+        inset 0 1px 0
+        rgba(255,255,255,.05);
+
+    opacity: 0;
+
+    transform:
+        translateY(35px)
+        rotateY(-8deg);
+
+    animation:
+        brasileirao-panel-entry
+        1s
+        var(--ease-smooth, ease)
+        .65s
+        forwards;
+}
+
+
+.ccfv-brasileirao-season::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    border-radius:
+        inherit;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(67,223,145,.08),
+            transparent 30%,
+            transparent 70%,
+            rgba(214,180,90,.05)
+        );
+
+    pointer-events: none;
+}
+
+
+.ccfv-brasileirao-season::after {
+    content: "";
+
+    position: absolute;
+
+    left: -100%;
+    top: 0;
+
+    width: 100%;
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #43df91,
+            transparent
+        );
+
+    box-shadow:
+        0 0 15px
+        rgba(67,223,145,.75);
+
+    animation:
+        brasileirao-panel-scan
+        4s
+        linear
+        infinite;
+}
+
+
+@keyframes brasileirao-panel-entry {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(40px)
+            rotateY(-8deg)
+            scale(.96);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            rotateY(0)
+            scale(1);
+    }
+}
+
+
+@keyframes brasileirao-panel-scan {
+
+    from {
+        left: -100%;
+    }
+
+    to {
+        left: 100%;
+    }
+}
+
+
+/* =========================================================
+   SEASON TOP
+   ========================================================= */
+
+.ccfv-brasileirao-season__top {
+    position: relative;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 20px;
+
+    padding-bottom:
+        20px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.08);
+}
+
+
+.ccfv-brasileirao-season__top > div:first-child {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+
+.ccfv-brasileirao-season__top span:first-child {
+    color:
+        #43df91;
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .18em;
+}
+
+
+.ccfv-brasileirao-season__top strong {
+    color:
+        #fff;
+
+    font-size:
+        22px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        -.03em;
+}
+
+
+.ccfv-brasileirao-season__status {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding:
+        7px 9px;
+
+    border:
+        1px solid rgba(67,223,145,.16);
+
+    border-radius:
+        999px;
+
+    color:
+        rgba(255,255,255,.48);
+
+    background:
+        rgba(31,143,95,.06);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .10em;
+}
+
+
+.ccfv-brasileirao-season__status span {
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background:
+        #43df91;
+
+    box-shadow:
+        0 0 9px
+        rgba(67,223,145,.8);
+}
+
+
+/* =========================================================
+   SEASON NUMBER
+   ========================================================= */
+
+.ccfv-brasileirao-season__number {
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 12px;
+
+    margin-top:
+        27px;
+}
+
+
+.ccfv-brasileirao-season__number span {
+    margin-bottom:
+        10px;
+
+    color:
+        rgba(255,255,255,.28);
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .16em;
+}
+
+
+.ccfv-brasileirao-season__number strong {
+    color:
+        rgba(255,255,255,.95);
+
+    font-size:
+        clamp(
+            80px,
+            9vw,
+            122px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        .72;
+
+    letter-spacing:
+        -.08em;
+
+    text-shadow:
+        0 0 35px
+        rgba(67,223,145,.10);
+}
+
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+
+.ccfv-brasileirao-season__progress {
+    margin-top:
+        38px;
+}
+
+
+.ccfv-brasileirao-season__progress-top,
+.ccfv-brasileirao-season__progress-bottom {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    color:
+        rgba(255,255,255,.34);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .13em;
+}
+
+
+.ccfv-brasileirao-season__progress-top strong {
+    color:
+        #43df91;
+}
+
+
+.ccfv-brasileirao-season__progress-bar {
+    position: relative;
+
+    width: 100%;
+    height: 5px;
+
+    margin:
+        12px 0;
+
+    overflow: hidden;
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(255,255,255,.07);
+}
+
+
+.ccfv-brasileirao-season__progress-bar span {
+    display: block;
+
+    width: 4%;
+
+    height: 100%;
+
+    border-radius:
+        inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            #1f8f5f,
+            #43df91
+        );
+
+    box-shadow:
+        0 0 15px
+        rgba(67,223,145,.5);
+}
+
+
+/* =========================================================
+   NEXT MATCH
+   ========================================================= */
+
+.ccfv-brasileirao-season__next {
+    margin-top:
+        26px;
+
+    padding:
+        18px;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius:
+        17px;
+
+    background:
+        rgba(255,255,255,.025);
+}
+
+
+.ccfv-brasileirao-season__next-label {
+    color:
+        #43df91;
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .16em;
+}
+
+
+.ccfv-brasileirao-season__next-round {
+    margin-top:
+        5px;
+
+    color:
+        rgba(255,255,255,.34);
+
+    font-size:
+        7px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .12em;
+}
+
+
+.ccfv-brasileirao-season__next-match {
+    display: grid;
+
+    grid-template-columns:
+        1fr auto 1fr;
+
+    align-items: center;
+
+    gap: 14px;
+
+    margin-top:
+        20px;
+
+    text-align:
+        center;
+}
+
+
+.ccfv-brasileirao-season__next-match > div {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+.ccfv-team-placeholder {
+    display: grid;
+
+    place-items: center;
+
+    width: 43px;
+    height: 43px;
+
+    border:
+        1px solid rgba(67,223,145,.16);
+
+    border-radius:
+        12px;
+
+    color:
+        #43df91;
+
+    background:
+        rgba(31,143,95,.07);
+
+    font-size:
+        18px;
+
+    font-weight:
+        900;
+}
+
+
+.ccfv-brasileirao-season__next-match small {
+    color:
+        rgba(255,255,255,.25);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .12em;
+}
+
+
+.ccfv-brasileirao-season__next-match > strong {
+    color:
+        rgba(255,255,255,.35);
+
+    font-size:
+        9px;
+
+    letter-spacing:
+        .12em;
+}
+
+
+.ccfv-brasileirao-season__next-date {
+    margin-top:
+        16px;
+
+    padding-top:
+        12px;
+
+    border-top:
+        1px solid rgba(255,255,255,.06);
+
+    color:
+        rgba(255,255,255,.28);
+
+    font-size:
+        7px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .13em;
+
+    text-align:
+        center;
+}
+
+
+/* =========================================================
+   HERO BOTTOM BAR
+   ========================================================= */
+
+.ccfv-brasileirao-hero__bottom {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 30px;
+
+    padding:
+        13px 20px;
+
+    border-top:
+        1px solid rgba(255,255,255,.06);
+
+    background:
+        rgba(2,4,3,.62);
+
+    backdrop-filter:
+        blur(12px);
+
+    color:
+        rgba(255,255,255,.27);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .15em;
+
+    text-transform:
+        uppercase;
+}
+
+
+/* =========================================================
+   SECTION HEADINGS
+   ========================================================= */
+
+.ccfv-brasileirao-section-heading {
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 40px;
+
+    margin-bottom:
+        50px;
+}
+
+
+.ccfv-brasileirao-section-heading > div:first-child > span {
+    display: block;
+
+    margin-bottom:
+        12px;
+
+    color:
+        #43df91;
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .18em;
+}
+
+
+.ccfv-brasileirao-section-heading h2 {
+    margin:
+        0;
+
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            38px,
+            4.8vw,
+            66px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        .92;
+
+    letter-spacing:
+        -.055em;
+
+    text-transform:
+        uppercase;
+}
+
+
+.ccfv-brasileirao-section-heading h2 strong {
+    display: block;
+
+    color:
+        #43df91;
+}
+
+
+.ccfv-brasileirao-section-heading > p {
+    max-width:
+        430px;
+
+    margin:
+        0;
+
+    color:
+        rgba(255,255,255,.40);
+
+    font-size:
+        13px;
+
+    line-height:
+        1.7;
+}
+
+
+.ccfv-brasileirao-heading-status {
+    padding:
+        9px 12px;
+
+    border:
+        1px solid rgba(67,223,145,.16);
+
+    border-radius:
+        999px;
+
+    color:
+        rgba(255,255,255,.48);
+
+    background:
+        rgba(31,143,95,.05);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .13em;
+}
+
+
+/* =========================================================
+   STATUS SECTION
+   ========================================================= */
+
+.ccfv-brasileirao-status {
+    padding:
+        115px 0;
+
+    background:
+        #030604;
+}
+
+
+.ccfv-brasileirao-status-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap:
+        1px;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius:
+        20px;
+
+    background:
+        rgba(255,255,255,.07);
+}
+
+
+.ccfv-brasileirao-status-card {
+    position: relative;
+
+    min-height:
+        205px;
+
+    padding:
+        27px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(11,22,16,.90),
+            rgba(4,9,6,.96)
+        );
+
+    transition:
+        transform .4s var(--ease-smooth, ease),
+        background .4s ease;
+}
+
+
+.ccfv-brasileirao-status-card:hover {
+    transform:
+        translateY(-4px);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,35,24,.96),
+            rgba(4,10,7,.96)
+        );
+}
+
+
+.ccfv-brasileirao-status-card::after {
+    content: "";
+
+    position: absolute;
+
+    left: 27px;
+    bottom: 25px;
+
+    width: 30px;
+    height: 2px;
+
+    background:
+        #43df91;
+
+    box-shadow:
+        0 0 12px
+        rgba(67,223,145,.4);
+}
+
+
+.ccfv-brasileirao-status-card span {
+    color:
+        rgba(255,255,255,.25);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .16em;
+}
+
+
+.ccfv-brasileirao-status-card strong {
+    display: block;
+
+    margin-top:
+        26px;
+
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            20px,
+            2vw,
+            28px
+        );
+
+    font-weight:
+        950;
+
+    letter-spacing:
+        -.035em;
+}
+
+
+.ccfv-brasileirao-status-card small {
+    display: block;
+
+    max-width:
+        230px;
+
+    margin-top:
+        12px;
+
+    color:
+        rgba(255,255,255,.35);
+
+    font-size:
+        10px;
+
+    line-height:
+        1.55;
+}
+
+
+/* =========================================================
+   TABLE SECTION
+   ========================================================= */
+
+.ccfv-brasileirao-table-section {
+    padding:
+        120px 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            #030604,
+            #050907
+        );
+}
+
+
+.ccfv-brasileirao-round {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    gap: 5px;
+
+    padding:
+        13px 17px;
+
+    border:
+        1px solid rgba(67,223,145,.15);
+
+    border-radius:
+        13px;
+
+    background:
+        rgba(31,143,95,.04);
+}
+
+
+.ccfv-brasileirao-round span {
+    color:
+        rgba(255,255,255,.28);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .14em;
+}
+
+
+.ccfv-brasileirao-round strong {
+    color:
+        #43df91;
+
+    font-size:
+        12px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .05em;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.ccfv-brasileirao-table-wrapper {
+    width:
+        100%;
+
+    overflow-x:
+        auto;
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    border-radius:
+        20px;
+
+    background:
+        rgba(4,9,6,.88);
+
+    box-shadow:
+        0 30px 70px
+        rgba(0,0,0,.20);
+}
+
+
+.ccfv-brasileirao-table {
+    width:
+        100%;
+
+    min-width:
+        820px;
+
+    border-collapse:
+        collapse;
+
+    color:
+        rgba(255,255,255,.65);
+}
+
+
+.ccfv-brasileirao-table thead {
+    background:
+        rgba(255,255,255,.025);
+}
+
+
+.ccfv-brasileirao-table th {
+    padding:
+        17px 20px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.07);
+
+    color:
+        rgba(255,255,255,.28);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .14em;
+
+    text-align:
+        left;
+}
+
+
+.ccfv-brasileirao-table th:not(:nth-child(2)) {
+    text-align:
+        center;
+}
+
+
+.ccfv-brasileirao-table td {
+    padding:
+        16px 20px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.045);
+
+    font-size:
+        11px;
+
+    font-weight:
+        700;
+
+    text-align:
+        center;
+
+    transition:
+        background .3s ease,
+        color .3s ease;
+}
+
+
+.ccfv-brasileirao-table td:first-child {
+    width:
+        65px;
+
+    color:
+        rgba(255,255,255,.28);
+
+    font-family:
+        monospace;
+
+    font-size:
+        9px;
+}
+
+
+.ccfv-brasileirao-table td:nth-child(2) {
+    width:
+        42%;
+
+    text-align:
+        left;
+}
+
+
+.ccfv-brasileirao-table tbody tr {
+    transition:
+        background .3s ease;
+}
+
+
+.ccfv-brasileirao-table tbody tr:hover {
+    background:
+        rgba(31,143,95,.055);
+}
+
+
+.ccfv-brasileirao-table tbody tr:last-child td {
+    border-bottom:
+        0;
+}
+
+
+/* =========================================================
+   CLUB CELL
+   ========================================================= */
+
+.ccfv-club-cell {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        13px;
+
+    color:
+        rgba(255,255,255,.78);
+}
+
+
+.ccfv-club-position {
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    width:
+        31px;
+
+    height:
+        31px;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius:
+        9px;
+
+    color:
+        rgba(255,255,255,.28);
+
+    background:
+        rgba(255,255,255,.025);
+
+    font-family:
+        monospace;
+
+    font-size:
+        8px;
+}
+
+
+.ccfv-club-position--champion {
+    color:
+        #07150c;
+
+    border-color:
+        rgba(67,223,145,.5);
+
+    background:
+        #43df91;
+
+    box-shadow:
+        0 0 18px
+        rgba(67,223,145,.14);
+}
+
+
+/* =========================================================
+   ROUNDS
+   ========================================================= */
+
+.ccfv-brasileirao-rounds {
+    padding:
+        115px 0;
+
+    background:
+        #020403;
+}
+
+
+.ccfv-brasileirao-matches {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap:
+        14px;
+}
+
+
+.ccfv-match-card {
+    position:
+        relative;
+
+    padding:
+        21px;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    border-radius:
+        18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(11,20,15,.92),
+            rgba(4,8,6,.94)
+        );
+
+    transition:
+        transform .35s var(--ease-smooth, ease),
+        border-color .35s ease;
+}
+
+
+.ccfv-match-card:hover {
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(67,223,145,.25);
+}
+
+
+.ccfv-match-card__round {
+    color:
+        #43df91;
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .15em;
+}
+
+
+.ccfv-match-card__teams {
+    display:
+        grid;
+
+    grid-template-columns:
+        1fr auto 1fr;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+
+    margin-top:
+        28px;
+
+    text-align:
+        center;
+}
+
+
+.ccfv-match-card__teams div {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+}
+
+
+.ccfv-match-card__teams strong {
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    width:
+        42px;
+
+    height:
+        42px;
+
+    border:
+        1px solid rgba(67,223,145,.15);
+
+    border-radius:
+        12px;
+
+    color:
+        #43df91;
+
+    background:
+        rgba(31,143,95,.06);
+
+    font-size:
+        16px;
+}
+
+
+.ccfv-match-card__teams span {
+    color:
+        rgba(255,255,255,.35);
+
+    font-size:
+        7px;
+
+    font-weight:
+        800;
+}
+
+
+.ccfv-match-card__teams b {
+    color:
+        rgba(255,255,255,.25);
+
+    font-size:
+        8px;
+
+    letter-spacing:
+        .1em;
+}
+
+
+.ccfv-match-card__date {
+    margin-top:
+        23px;
+
+    padding-top:
+        13px;
+
+    border-top:
+        1px solid rgba(255,255,255,.06);
+
+    color:
+        rgba(255,255,255,.24);
+
+    font-size:
+        7px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .12em;
+
+    text-align:
+        center;
+}
+
+
+/* =========================================================
+   RESULTS
+   ========================================================= */
+
+.ccfv-brasileirao-results {
+    padding:
+        115px 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            #020403,
+            #050907
+        );
+}
+
+
+.ccfv-results-list {
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius:
+        20px;
+
+    overflow:
+        hidden;
+
+    background:
+        rgba(4,9,6,.78);
+}
+
+
+.ccfv-result-empty {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        22px;
+
+    padding:
+        35px;
+}
+
+
+.ccfv-result-empty > span {
+    color:
+        rgba(67,223,145,.35);
+
+    font-family:
+        monospace;
+
+    font-size:
+        26px;
+
+    font-weight:
+        900;
+}
+
+
+.ccfv-result-empty div {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        7px;
+}
+
+
+.ccfv-result-empty strong {
+    color:
+        rgba(255,255,255,.75);
+
+    font-size:
+        13px;
+}
+
+
+.ccfv-result-empty small {
+    color:
+        rgba(255,255,255,.30);
+
+    font-size:
+        10px;
+}
+
+
+/* =========================================================
+   CHAMPION
+   ========================================================= */
+
+.ccfv-brasileirao-champion {
+    min-height:
+        610px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    padding:
+        100px 0;
+
+    text-align:
+        center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(31,143,95,.17),
+            transparent 34%
+        ),
+        #020403;
+
+    border-top:
+        1px solid rgba(255,255,255,.06);
+
+    border-bottom:
+        1px solid rgba(255,255,255,.06);
+}
+
+
+.ccfv-brasileirao-champion__container {
+    width:
+        min(
+            calc(100% - 40px),
+            760px
+        );
+
+    margin-inline:
+        auto;
+}
+
+
+.ccfv-brasileirao-champion__container > span {
+    color:
+        #43df91;
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .2em;
+}
+
+
+.ccfv-brasileirao-champion h2 {
+    margin:
+        18px 0 0;
+
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            42px,
+            6vw,
+            76px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        .9;
+
+    letter-spacing:
+        -.06em;
+}
+
+
+.ccfv-brasileirao-champion h2 strong {
+    display:
+        block;
+
+    color:
+        #43df91;
+}
+
+
+.ccfv-brasileirao-champion p {
+    max-width:
+        580px;
+
+    margin:
+        25px auto 0;
+
+    color:
+        rgba(255,255,255,.40);
+
+    font-size:
+        13px;
+
+    line-height:
+        1.7;
+}
+
+
+/* =========================================================
+   CHAMPION SEAL
+   ========================================================= */
+
+.ccfv-brasileirao-champion__seal {
+    position:
+        relative;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    width:
+        155px;
+
+    height:
+        155px;
+
+    margin:
+        45px auto 0;
+
+    border:
+        1px solid rgba(67,223,145,.30);
+
+    border-radius:
+        50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(31,143,95,.14),
+            rgba(31,143,95,.03) 65%,
+            transparent
+        );
+
+    box-shadow:
+        0 0 50px
+        rgba(31,143,95,.10);
+}
+
+
+.ccfv-brasileirao-champion__seal::before {
+    content: "";
+
+    position:
+        absolute;
+
+    inset:
+        9px;
+
+    border:
+        1px dashed rgba(67,223,145,.20);
+
+    border-radius:
+        50%;
+
+    animation:
+        brasileirao-seal-spin
+        18s
+        linear
+        infinite;
+}
+
+
+.ccfv-brasileirao-champion__seal span {
+    color:
+        rgba(255,255,255,.30);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .18em;
+}
+
+
+.ccfv-brasileirao-champion__seal strong {
+    margin:
+        7px 0;
+
+    color:
+        #43df91;
+
+    font-size:
+        43px;
+
+    font-weight:
+        950;
+
+    line-height:
+        1;
+}
+
+
+.ccfv-brasileirao-champion__seal small {
+    color:
+        rgba(255,255,255,.32);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .16em;
+}
+
+
+@keyframes brasileirao-seal-spin {
+
+    to {
+        transform:
+            rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   RULES
+   ========================================================= */
+
+.ccfv-brasileirao-rules {
+    padding:
+        115px 0;
+
+    background:
+        #030604;
+}
+
+
+.ccfv-brasileirao-rules-grid {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap:
+        14px;
+
+    margin-bottom:
+        30px;
+}
+
+
+.ccfv-brasileirao-rules-grid article {
+    min-height:
+        220px;
+
+    padding:
+        25px;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius:
+        17px;
+
+    background:
+        rgba(255,255,255,.018);
+
+    transition:
+        transform .35s var(--ease-smooth, ease),
+        border-color .35s ease;
+}
+
+
+.ccfv-brasileirao-rules-grid article:hover {
+    transform:
+        translateY(-4px);
+
+    border-color:
+        rgba(67,223,145,.22);
+}
+
+
+.ccfv-brasileirao-rules-grid article > span {
+    color:
+        rgba(67,223,145,.45);
+
+    font-family:
+        monospace;
+
+    font-size:
+        9px;
+}
+
+
+.ccfv-brasileirao-rules-grid article strong {
+    display:
+        block;
+
+    margin-top:
+        34px;
+
+    color:
+        #fff;
+
+    font-size:
+        17px;
+
+    font-weight:
+        900;
+}
+
+
+.ccfv-brasileirao-rules-grid article p {
+    margin-top:
+        12px;
+
+    color:
+        rgba(255,255,255,.32);
+
+    font-size:
+        10px;
+
+    line-height:
+        1.65;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .ccfv-brasileirao-hero__container {
+        grid-template-columns:
+            1fr;
+
+        gap:
+            55px;
+    }
+
+
+    .ccfv-brasileirao-season {
+        max-width:
+            600px;
+
+        margin-left:
+            0;
+    }
+
+
+    .ccfv-brasileirao-status-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .ccfv-brasileirao-matches {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .ccfv-brasileirao-rules-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .ccfv-brasileirao-hero {
+        min-height:
+            auto;
+
+        padding:
+            120px 0 70px;
+    }
+
+
+    .ccfv-brasileirao-hero__container {
+        width:
+            min(
+                calc(100% - 30px),
+                600px
+            );
+    }
+
+
+    .ccfv-brasileirao-hero__title {
+        font-size:
+            clamp(
+                50px,
+                16vw,
+                80px
+            );
+    }
+
+
+    .ccfv-brasileirao-hero__data {
+        flex-wrap:
+            wrap;
+
+        gap:
+            15px;
+    }
+
+
+    .ccfv-brasileirao-hero__data-divider {
+        display:
+            none;
+    }
+
+
+    .ccfv-brasileirao-hero__bottom {
+        position:
+            relative;
+
+        margin-top:
+            65px;
+
+        flex-wrap:
+            wrap;
+
+        gap:
+            10px 20px;
+
+        line-height:
+            1.5;
+    }
+
+
+    .ccfv-brasileirao-season {
+        padding:
+            21px;
+
+        border-radius:
+            20px;
+    }
+
+
+    .ccfv-brasileirao-season__number strong {
+        font-size:
+            85px;
+    }
+
+
+    .ccfv-brasileirao-section-container {
+        width:
+            min(
+                calc(100% - 30px),
+                600px
+            );
+    }
+
+
+    .ccfv-brasileirao-status,
+    .ccfv-brasileirao-table-section,
+    .ccfv-brasileirao-rounds,
+    .ccfv-brasileirao-results,
+    .ccfv-brasileirao-rules {
+        padding:
+            80px 0;
+    }
+
+
+    .ccfv-brasileirao-section-heading {
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+        gap:
+            20px;
+
+        margin-bottom:
+            35px;
+    }
+
+
+    .ccfv-brasileirao-round {
+        align-items:
+            flex-start;
+    }
+
+
+    .ccfv-brasileirao-status-grid,
+    .ccfv-brasileirao-matches,
+    .ccfv-brasileirao-rules-grid {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .ccfv-brasileirao-status-card {
+        min-height:
+            180px;
+    }
+
+
+    .ccfv-brasileirao-champion {
+        min-height:
+            540px;
+
+        padding:
+            80px 0;
+    }
+
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    .ccfv-brasileirao-hero *,
+    .ccfv-brasileirao-champion__seal::before {
+        animation:
+            none !important;
+
+        transition:
+            none !important;
+    }
+
+}
+/* =========================================================
+   CCFV — RODADA ATUAL
+   10 CONFRONTOS + DESTAQUE
+   ========================================================= */
+
+.ccfv-round-layout {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.55fr)
+        minmax(340px, .75fr);
+
+    gap: 18px;
+
+    align-items: stretch;
+}
+
+
+/* =========================================================
+   LISTA DE PARTIDAS
+   ========================================================= */
+
+.ccfv-round-matches {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+    padding: 8px;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius: 20px;
+
+    background:
+        rgba(4,9,6,.72);
+}
+
+
+.ccfv-match-row {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        42px
+        minmax(110px, 1fr)
+        100px
+        minmax(110px, 1fr);
+
+    align-items: center;
+
+    min-height: 68px;
+
+    padding:
+        8px 16px;
+
+    border:
+        1px solid transparent;
+
+    border-radius: 13px;
+
+    background:
+        rgba(255,255,255,.018);
+
+    transition:
+        background .3s ease,
+        border-color .3s ease,
+        transform .3s ease;
+}
+
+
+.ccfv-match-row:hover {
+    transform:
+        translateX(4px);
+
+    border-color:
+        rgba(67,223,145,.16);
+
+    background:
+        rgba(31,143,95,.055);
+}
+
+
+.ccfv-match-row__number {
+    color:
+        rgba(67,223,145,.38);
+
+    font-family:
+        monospace;
+
+    font-size:
+        9px;
+
+    font-weight:
+        900;
+}
+
+
+.ccfv-match-row__team {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        11px;
+}
+
+
+.ccfv-match-row__team:last-child {
+    justify-content:
+        flex-end;
+
+    text-align:
+        right;
+}
+
+
+.ccfv-match-row__team strong {
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    flex-shrink:
+        0;
+
+    width:
+        34px;
+
+    height:
+        34px;
+
+    border:
+        1px solid rgba(67,223,145,.14);
+
+    border-radius:
+        9px;
+
+    color:
+        #43df91;
+
+    background:
+        rgba(31,143,95,.05);
+
+    font-size:
+        13px;
+}
+
+
+.ccfv-match-row__team span {
+    overflow:
+        hidden;
+
+    color:
+        rgba(255,255,255,.55);
+
+    font-size:
+        8px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .05em;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
+}
+
+
+.ccfv-match-row__time {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    gap:
+        4px;
+}
+
+
+.ccfv-match-row__time strong {
+    color:
+        rgba(255,255,255,.72);
+
+    font-size:
+        10px;
+
+    font-weight:
+        900;
+}
+
+
+.ccfv-match-row__time span {
+    color:
+        rgba(255,255,255,.22);
+
+    font-size:
+        6px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .08em;
+}
+
+
+/* =========================================================
+   DESTAQUE DA RODADA
+   ========================================================= */
+
+.ccfv-round-feature {
+    position:
+        relative;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    justify-content:
+        space-between;
+
+    min-height:
+        100%;
+
+    padding:
+        27px;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid rgba(67,223,145,.18);
+
+    border-radius:
+        22px;
+
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            rgba(31,143,95,.16),
+            transparent 50%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(11,28,19,.96),
+            rgba(3,8,5,.98)
+        );
+
+    box-shadow:
+        inset 0 1px 0
+        rgba(255,255,255,.05),
+        0 25px 70px
+        rgba(0,0,0,.20);
+}
+
+
+.ccfv-round-feature::before {
+    content:
+        "";
+
+    position:
+        absolute;
+
+    inset:
+        0;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(67,223,145,.08),
+            transparent 35%,
+            transparent 65%,
+            rgba(214,180,90,.05)
+        );
+
+    pointer-events:
+        none;
+}
+
+
+.ccfv-round-feature__scan {
+    position:
+        absolute;
+
+    top:
+        -20%;
+
+    left:
+        -100%;
+
+    width:
+        70%;
+
+    height:
+        140%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(67,223,145,.08),
+            transparent
+        );
+
+    transform:
+        rotate(15deg);
+
+    animation:
+        ccfv-feature-scan
+        6s
+        linear
+        infinite;
+
+    pointer-events:
+        none;
+}
+
+
+@keyframes ccfv-feature-scan {
+
+    from {
+        left:
+            -100%;
+    }
+
+    to {
+        left:
+            150%;
+    }
+
+}
+
+
+/* =========================================================
+   FEATURE TOP
+   ========================================================= */
+
+.ccfv-round-feature__top {
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    gap:
+        10px;
+}
+
+
+.ccfv-round-feature__top span {
+    color:
+        #43df91;
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .13em;
+}
+
+
+.ccfv-round-feature__top small {
+    color:
+        rgba(255,255,255,.28);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .12em;
+}
+
+
+/* =========================================================
+   FEATURE LABEL
+   ========================================================= */
+
+.ccfv-round-feature__label {
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    margin-top:
+        55px;
+
+    color:
+        rgba(255,255,255,.25);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .18em;
+
+    text-align:
+        center;
+}
+
+
+/* =========================================================
+   FEATURE TEAMS
+   ========================================================= */
+
+.ccfv-round-feature__teams {
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    display:
+        grid;
+
+    grid-template-columns:
+        1fr
+        auto
+        1fr;
+
+    align-items:
+        center;
+
+    gap:
+        15px;
+
+    margin-top:
+        18px;
+}
+
+
+.ccfv-round-feature__team {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+    text-align:
+        center;
+}
+
+
+.ccfv-round-feature__crest {
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    width:
+        72px;
+
+    height:
+        72px;
+
+    border:
+        1px solid rgba(67,223,145,.20);
+
+    border-radius:
+        18px;
+
+    color:
+        #43df91;
+
+    background:
+        rgba(31,143,95,.07);
+
+    box-shadow:
+        0 0 25px
+        rgba(31,143,95,.08);
+
+    font-size:
+        22px;
+
+    font-weight:
+        900;
+}
+
+
+.ccfv-round-feature__team strong {
+    color:
+        rgba(255,255,255,.78);
+
+    font-size:
+        9px;
+
+    font-weight:
+        900;
+}
+
+
+.ccfv-round-feature__team span {
+    color:
+        rgba(255,255,255,.25);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .13em;
+}
+
+
+.ccfv-round-feature__versus {
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    width:
+        38px;
+
+    height:
+        38px;
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    border-radius:
+        50%;
+
+    background:
+        rgba(255,255,255,.025);
+}
+
+
+.ccfv-round-feature__versus span {
+    color:
+        rgba(255,255,255,.30);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+}
+
+
+/* =========================================================
+   FEATURE INFO
+   ========================================================= */
+
+.ccfv-round-feature__info {
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    margin-top:
+        35px;
+
+    padding-top:
+        15px;
+
+    border-top:
+        1px solid rgba(255,255,255,.07);
+}
+
+
+.ccfv-round-feature__info span {
+    color:
+        rgba(255,255,255,.25);
+
+    font-size:
+        7px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .08em;
+}
+
+
+.ccfv-round-feature__info strong {
+    color:
+        #43df91;
+
+    font-size:
+        12px;
+
+    font-weight:
+        900;
+}
+
+
+/* =========================================================
+   FEATURE BUTTON
+   ========================================================= */
+
+.ccfv-round-feature__button {
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    width:
+        100%;
+
+    min-height:
+        43px;
+
+    margin-top:
+        18px;
+
+    padding:
+        0 14px;
+
+    border:
+        1px solid rgba(67,223,145,.20);
+
+    border-radius:
+        10px;
+
+    color:
+        #43df91;
+
+    background:
+        rgba(31,143,95,.06);
+
+    font-family:
+        inherit;
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .13em;
+
+    cursor:
+        pointer;
+
+    transition:
+        background .3s ease,
+        border-color .3s ease,
+        transform .3s ease;
+}
+
+
+.ccfv-round-feature__button span {
+    font-size:
+        15px;
+
+    line-height:
+        1;
+}
+
+
+.ccfv-round-feature__button:hover {
+    transform:
+        translateY(-2px);
+
+    border-color:
+        rgba(67,223,145,.45);
+
+    background:
+        rgba(31,143,95,.12);
+}
+
+
+/* =========================================================
+   CAMPEÃO — NOVO FORMATO COMPACTO
+   ========================================================= */
+
+.ccfv-brasileirao-champion {
+    min-height:
+        auto;
+
+    padding:
+        55px 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #030604,
+            #06100b
+        );
+
+    border-top:
+        1px solid rgba(255,255,255,.06);
+
+    border-bottom:
+        1px solid rgba(255,255,255,.06);
+}
+
+
+.ccfv-brasileirao-champion__container {
+    width:
+        min(
+            calc(100% - 40px),
+            1400px
+        );
+
+    margin-inline:
+        auto;
+}
+
+
+.ccfv-brasileirao-champion__identity {
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    gap:
+        20px;
+
+    margin-bottom:
+        25px;
+}
+
+
+.ccfv-brasileirao-champion__identity span {
+    color:
+        #43df91;
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .18em;
+}
+
+
+.ccfv-brasileirao-champion__identity strong {
+    color:
+        rgba(255,255,255,.25);
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .14em;
+}
+
+
+.ccfv-brasileirao-champion__main {
+    display:
+        grid;
+
+    grid-template-columns:
+        auto
+        minmax(0, 1fr)
+        auto;
+
+    align-items:
+        center;
+
+    gap:
+        28px;
+
+    padding:
+        24px 28px;
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    border-radius:
+        20px;
+
+    background:
+        rgba(255,255,255,.018);
+}
+
+
+.ccfv-brasileirao-champion__seal {
+    position:
+        relative;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    width:
+        82px;
+
+    height:
+        82px;
+
+    margin:
+        0;
+
+    border:
+        1px solid rgba(67,223,145,.28);
+
+    border-radius:
+        50%;
+
+    background:
+        rgba(31,143,95,.06);
+
+    box-shadow:
+        0 0 25px
+        rgba(31,143,95,.07);
+}
+
+
+.ccfv-brasileirao-champion__seal::before {
+    content:
+        "";
+
+    position:
+        absolute;
+
+    inset:
+        6px;
+
+    border:
+        1px dashed rgba(67,223,145,.18);
+
+    border-radius:
+        50%;
+}
+
+
+.ccfv-brasileirao-champion__seal span {
+    color:
+        rgba(255,255,255,.28);
+
+    font-size:
+        5px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .16em;
+}
+
+
+.ccfv-brasileirao-champion__seal strong {
+    margin:
+        3px 0;
+
+    color:
+        #43df91;
+
+    font-size:
+        25px;
+
+    font-weight:
+        950;
+
+    line-height:
+        1;
+}
+
+
+.ccfv-brasileirao-champion__seal small {
+    color:
+        rgba(255,255,255,.28);
+
+    font-size:
+        4px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .13em;
+}
+
+
+.ccfv-brasileirao-champion__content > span {
+    color:
+        rgba(255,255,255,.28);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .16em;
+}
+
+
+.ccfv-brasileirao-champion__content h2 {
+    margin:
+        6px 0 5px;
+
+    color:
+        #fff;
+
+    font-size:
+        clamp(
+            24px,
+            3vw,
+            38px
+        );
+
+    font-weight:
+        950;
+
+    line-height:
+        1;
+
+    letter-spacing:
+        -.045em;
+}
+
+
+.ccfv-brasileirao-champion__content p {
+    max-width:
+        650px;
+
+    margin:
+        0;
+
+    color:
+        rgba(255,255,255,.30);
+
+    font-size:
+        10px;
+
+    line-height:
+        1.55;
+}
+
+
+.ccfv-brasileirao-champion__status {
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        flex-end;
+
+    gap:
+        6px;
+
+    padding-left:
+        28px;
+
+    border-left:
+        1px solid rgba(255,255,255,.07);
+}
+
+
+.ccfv-brasileirao-champion__status span {
+    color:
+        rgba(255,255,255,.22);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .15em;
+}
+
+
+.ccfv-brasileirao-champion__status strong {
+    color:
+        #43df91;
+
+    font-size:
+        9px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .10em;
+}
+
+
+/* =========================================================
+   RESPONSIVE — NOVAS ÁREAS
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .ccfv-round-layout {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .ccfv-round-feature {
+        min-height:
+            390px;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .ccfv-round-layout {
+        gap:
+            14px;
+    }
+
+
+    .ccfv-match-row {
+        grid-template-columns:
+            28px
+            minmax(80px, 1fr)
+            65px
+            minmax(80px, 1fr);
+
+        padding:
+            7px 10px;
+    }
+
+
+    .ccfv-match-row__team {
+        gap:
+            7px;
+    }
+
+
+    .ccfv-match-row__team strong {
+        width:
+            28px;
+
+        height:
+            28px;
+
+        font-size:
+            10px;
+    }
+
+
+    .ccfv-match-row__team span {
+        font-size:
+            6px;
+    }
+
+
+    .ccfv-match-row__time strong {
+        font-size:
+            8px;
+    }
+
+
+    .ccfv-match-row__time span {
+        display:
+            none;
+    }
+
+
+    .ccfv-round-feature {
+        min-height:
+            370px;
+
+        padding:
+            22px;
+    }
+
+
+    .ccfv-round-feature__crest {
+        width:
+            60px;
+
+        height:
+            60px;
+    }
+
+
+    .ccfv-brasileirao-champion {
+        padding:
+            35px 0;
+    }
+
+
+    .ccfv-brasileirao-champion__container {
+        width:
+            min(
+                calc(100% - 30px),
+                600px
+            );
+    }
+
+
+    .ccfv-brasileirao-champion__main {
+        grid-template-columns:
+            auto
+            minmax(0, 1fr);
+
+        gap:
+            18px;
+
+        padding:
+            18px;
+    }
+
+
+    .ccfv-brasileirao-champion__status {
+        grid-column:
+            1 / -1;
+
+        align-items:
+            flex-start;
+
+        padding:
+            15px 0 0;
+
+        border-left:
+            0;
+
+        border-top:
+            1px solid rgba(255,255,255,.07);
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .ccfv-match-row {
+        grid-template-columns:
+            24px
+            1fr
+            50px
+            1fr;
+    }
+
+
+    .ccfv-match-row__team span {
+        max-width:
+            55px;
+    }
+
+
+    .ccfv-round-feature__teams {
+        gap:
+            8px;
+    }
+
+}
+/* =========================================================
+   ESCUDOS DOS CLUBES
+   ========================================================= */
+
+.ccfv-match-row__team strong img {
+
+    display: block;
+
+    width: 24px;
+    height: 24px;
+
+    object-fit: contain;
+
+}
+
+
+.ccfv-round-feature__crest img {
+
+    display: block;
+
+    width: 52px;
+    height: 52px;
+
+    object-fit: contain;
+
+}
+
+
+.ccfv-round-feature__crest:has(img) {
+
+    color: transparent;
+
+}
+/* =========================================================
+   CCFV — ALINHAMENTO DOS CONFRONTOS
+   ========================================================= */
+
+.ccfv-match-row {
+    display: grid;
+
+    grid-template-columns:
+        42px
+        minmax(0, 1fr)
+        150px
+        minmax(0, 1fr);
+
+    align-items: center;
+
+    height: 68px;
+    min-height: 68px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   NÚMERO
+   ========================================================= */
+
+.ccfv-match-row__number {
+    width: 42px;
+
+    text-align: left;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   TIMES
+   ========================================================= */
+
+.ccfv-match-row__team {
+
+    display: grid;
+
+    grid-template-columns:
+        36px
+        minmax(0, 1fr);
+
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 0;
+}
+
+
+.ccfv-match-row__team:last-child {
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        36px;
+
+    text-align: right;
+}
+
+
+/* =========================================================
+   ESCUDO
+   ========================================================= */
+
+.ccfv-match-row__team strong {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 36px;
+    height: 36px;
+
+    box-sizing: border-box;
+
+    border:
+        1px solid rgba(67,223,145,.14);
+
+    border-radius: 9px;
+
+    flex-shrink: 0;
+}
+
+
+.ccfv-match-row__team strong img {
+
+    width: 26px;
+    height: 26px;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+/* =========================================================
+   NOME DO TIME
+   ========================================================= */
+
+.ccfv-match-row__team span {
+
+    display: block;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    color:
+        rgba(255,255,255,.62);
+
+    font-size: 9px;
+
+    font-weight: 900;
+
+    line-height: 1;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+}
+
+
+/* TIME DA DIREITA */
+
+.ccfv-match-row__team:last-child span {
+
+    order: 1;
+
+    text-align: right;
+}
+
+
+.ccfv-match-row__team:last-child strong {
+
+    order: 2;
+}
+
+
+/* =========================================================
+   CENTRO DA PARTIDA
+   ========================================================= */
+
+.ccfv-match-row__time {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 150px;
+
+    height: 100%;
+
+    gap: 5px;
+
+    box-sizing: border-box;
+
+    text-align: center;
+}
+
+
+.ccfv-match-row__time strong {
+
+    display: block;
+
+    color:
+        rgba(255,255,255,.82);
+
+    font-size: 9px;
+
+    font-weight: 900;
+
+    line-height: 1;
+}
+
+
+.ccfv-match-row__time span {
+
+    display: block;
+
+    color:
+        rgba(255,255,255,.22);
+
+    font-size: 6px;
+
+    font-weight: 900;
+
+    line-height: 1;
+
+    letter-spacing: .08em;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   DESTAQUE — ESCUDOS
+   ========================================================= */
+
+.ccfv-round-feature__crest {
+
+    display: grid;
+
+    place-items: center;
+
+    width: 72px;
+    height: 72px;
+
+    box-sizing: border-box;
+}
+
+
+.ccfv-round-feature__crest img {
+
+    width: 54px;
+    height: 54px;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .ccfv-match-row {
+
+        grid-template-columns:
+            32px
+            minmax(0, 1fr)
+            100px
+            minmax(0, 1fr);
+
+    }
+
+    .ccfv-match-row__number {
+
+        width: 32px;
+
+    }
+
+    .ccfv-match-row__time {
+
+        width: 100px;
+
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .ccfv-match-row {
+
+        grid-template-columns:
+            25px
+            minmax(0, 1fr)
+            65px
+            minmax(0, 1fr);
+
+        height: 62px;
+        min-height: 62px;
+
+        padding-left: 8px;
+        padding-right: 8px;
+
+    }
+
+
+    .ccfv-match-row__team {
+
+        grid-template-columns:
+            28px
+            minmax(0, 1fr);
+
+        gap: 6px;
+
+    }
+
+
+    .ccfv-match-row__team:last-child {
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            28px;
+
+    }
+
+
+    .ccfv-match-row__team strong {
+
+        width: 28px;
+        height: 28px;
+
+    }
+
+
+    .ccfv-match-row__team strong img {
+
+        width: 21px;
+        height: 21px;
+
+    }
+
+
+    .ccfv-match-row__team span {
+
+        font-size: 7px;
+
+    }
+
+
+    .ccfv-match-row__time {
+
+        width: 65px;
+
+    }
+
+
+    .ccfv-match-row__time strong {
+
+        font-size: 8px;
+
+    }
+
+}
+/* =========================================================
+   CCFV — CLASSIFICAÇÃO BRASILEIRÃO
+   ========================================================= */
+
+.ccfv-brasileirao-table-section {
+
+    position: relative;
+
+    padding:
+        110px 0;
+
+    background:
+        #030705;
+
+    overflow: hidden;
+
+}
+
+
+.ccfv-brasileirao-table-section::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(67,223,145,.25),
+            transparent
+        );
+
+}
+
+
+.ccfv-brasileirao-table-section::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 500px;
+    height: 500px;
+
+    top: 30%;
+    left: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(31,143,95,.06),
+            transparent 70%
+        );
+
+    pointer-events: none;
+
+}
+
+
+/* =========================================================
+   CONTAINER
+   ========================================================= */
+
+.ccfv-table-wrapper {
+
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+
+    overflow-x: auto;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius:
+        20px;
+
+    background:
+        rgba(5,10,7,.78);
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.22);
+
+}
+
+
+/* =========================================================
+   TABELA
+   ========================================================= */
+
+.ccfv-brasileirao-table {
+
+    width: 100%;
+
+    min-width: 850px;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+
+}
+
+
+/* =========================================================
+   CABEÇALHO
+   ========================================================= */
+
+.ccfv-brasileirao-table thead {
+
+    background:
+        rgba(255,255,255,.025);
+
+}
+
+
+.ccfv-brasileirao-table th {
+
+    height: 54px;
+
+    padding:
+        0 12px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.07);
+
+    color:
+        rgba(255,255,255,.24);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .14em;
+
+    text-align:
+        center;
+
+}
+
+
+.ccfv-brasileirao-table th:nth-child(1) {
+
+    width:
+        70px;
+
+}
+
+
+.ccfv-brasileirao-table th:nth-child(2) {
+
+    width:
+        38%;
+
+    text-align:
+        left;
+
+}
+
+
+.ccfv-brasileirao-table th:nth-child(n+3) {
+
+    width:
+        6%;
+
+}
+
+
+/* =========================================================
+   LINHAS
+   ========================================================= */
+
+.ccfv-brasileirao-table tbody tr {
+
+    position:
+        relative;
+
+    height:
+        70px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.045);
+
+    transition:
+        background .25s ease,
+        transform .25s ease;
+
+}
+
+
+.ccfv-brasileirao-table tbody tr:last-child {
+
+    border-bottom:
+        0;
+
+}
+
+
+.ccfv-brasileirao-table tbody tr:hover {
+
+    background:
+        rgba(67,223,145,.035);
+
+}
+
+
+/* =========================================================
+   CÉLULAS
+   ========================================================= */
+
+.ccfv-brasileirao-table td {
+
+    padding:
+        0 12px;
+
+    color:
+        rgba(255,255,255,.48);
+
+    font-size:
+        9px;
+
+    font-weight:
+        800;
+
+    text-align:
+        center;
+
+}
+
+
+.ccfv-brasileirao-table td:first-child {
+
+    color:
+        rgba(67,223,145,.40);
+
+    font-family:
+        monospace;
+
+    font-size:
+        10px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-brasileirao-table td:nth-child(2) {
+
+    text-align:
+        left;
+
+}
+
+
+/* =========================================================
+   CLUBE
+   ========================================================= */
+
+.ccfv-club-cell {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        13px;
+
+}
+
+
+.ccfv-club-cell strong {
+
+    overflow:
+        hidden;
+
+    color:
+        rgba(255,255,255,.78);
+
+    font-size:
+        9px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .01em;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
+
+}
+
+
+.ccfv-club-position {
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    width:
+        30px;
+
+    height:
+        30px;
+
+    flex-shrink:
+        0;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius:
+        8px;
+
+    color:
+        rgba(255,255,255,.28);
+
+    background:
+        rgba(255,255,255,.02);
+
+    font-family:
+        monospace;
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-club-position--champion {
+
+    border-color:
+        rgba(67,223,145,.30);
+
+    color:
+        #43df91;
+
+    background:
+        rgba(31,143,95,.08);
+
+    box-shadow:
+        0 0 18px
+        rgba(31,143,95,.08);
+
+}
+
+
+/* =========================================================
+   PONTOS
+   ========================================================= */
+
+.ccfv-brasileirao-table td:last-child {
+
+    color:
+        #43df91;
+
+    font-size:
+        10px;
+
+    font-weight:
+        950;
+
+}
+
+
+/* =========================================================
+   DESTAQUES POR POSIÇÃO
+   ========================================================= */
+
+/*
+   Linha 1 — campeão
+*/
+
+.ccfv-brasileirao-table tbody tr:nth-child(1) {
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(31,143,95,.07),
+            transparent 60%
+        );
+
+}
+
+
+.ccfv-brasileirao-table tbody tr:nth-child(1) {
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(31,143,95,.07),
+            transparent 60%
+        );
+
+    box-shadow:
+        inset 2px 0 0 #43df91;
+
+}
+
+
+/*
+   Top 4
+*/
+
+.ccfv-brasileirao-table tbody tr:nth-child(-n+4) td:first-child {
+
+    color:
+        rgba(67,223,145,.80);
+
+}
+
+
+/*
+   Últimos 4
+*/
+
+.ccfv-brasileirao-table tbody tr:nth-last-child(-n+4) td:first-child {
+
+    color:
+        rgba(255,95,95,.50);
+
+}
+
+
+/* =========================================================
+   CABEÇALHO DA SEASON
+   ========================================================= */
+
+.ccfv-table-heading-season {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        flex-end;
+
+    gap:
+        6px;
+
+}
+
+
+.ccfv-table-heading-season span {
+
+    color:
+        rgba(255,255,255,.22);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .14em;
+
+}
+
+
+.ccfv-table-heading-season strong {
+
+    color:
+        #43df91;
+
+    font-size:
+        10px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .08em;
+
+}
+
+
+/* =========================================================
+   LEGENDA
+   ========================================================= */
+
+.ccfv-table-legend {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    display:
+        flex;
+
+    justify-content:
+        flex-end;
+
+    align-items:
+        center;
+
+    gap:
+        24px;
+
+    margin-top:
+        18px;
+
+}
+
+
+.ccfv-table-legend > div {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+}
+
+
+.ccfv-table-legend > div > span:last-child {
+
+    color:
+        rgba(255,255,255,.22);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .10em;
+
+}
+
+
+.ccfv-legend-dot {
+
+    display:
+        block;
+
+    width:
+        6px;
+
+    height:
+        6px;
+
+    border-radius:
+        50%;
+
+}
+
+
+.ccfv-legend-dot--champion {
+
+    background:
+        #43df91;
+
+    box-shadow:
+        0 0 10px
+        rgba(67,223,145,.4);
+
+}
+
+
+.ccfv-legend-dot--top {
+
+    background:
+        rgba(67,223,145,.35);
+
+}
+
+
+.ccfv-legend-dot--bottom {
+
+    background:
+        rgba(255,95,95,.45);
+
+}
+
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .ccfv-brasileirao-table-section {
+
+        padding:
+            75px 0;
+
+    }
+
+
+    .ccfv-table-heading-season {
+
+        display:
+            none;
+
+    }
+
+
+    .ccfv-table-wrapper {
+
+        border-radius:
+            15px;
+
+    }
+
+
+    .ccfv-brasileirao-table {
+
+        min-width:
+            780px;
+
+    }
+
+
+    .ccfv-brasileirao-table tbody tr {
+
+        height:
+            64px;
+
+    }
+
+
+    .ccfv-table-legend {
+
+        justify-content:
+            flex-start;
+
+        flex-wrap:
+            wrap;
+
+        gap:
+            14px;
+
+    }
+
+}
+/* =========================================================
+   CCFV — ÚLTIMOS RESULTADOS
+   ========================================================= */
+
+.ccfv-brasileirao-results {
+
+    position: relative;
+
+    padding:
+        115px 0;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            #020403,
+            #050907
+        );
+
+}
+
+
+.ccfv-brasileirao-results::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 10%;
+
+    width: 80%;
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(67,223,145,.22),
+            transparent
+        );
+
+}
+
+
+/* =========================================================
+   LISTA
+   ========================================================= */
+
+.ccfv-results-list {
+
+    position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+    overflow: hidden;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius:
+        20px;
+
+    background:
+        rgba(4,9,6,.78);
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.20);
+
+}
+
+
+/* =========================================================
+   RESULTADO
+   ========================================================= */
+
+.ccfv-result-card {
+
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        80px
+        minmax(0,1fr)
+        120px
+        minmax(0,1fr)
+        110px;
+
+    align-items: center;
+
+    min-height:
+        86px;
+
+    padding:
+        0 24px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.045);
+
+    transition:
+        background .25s ease,
+        transform .25s ease;
+
+}
+
+
+.ccfv-result-card:last-child {
+
+    border-bottom:
+        0;
+
+}
+
+
+.ccfv-result-card:hover {
+
+    background:
+        rgba(67,223,145,.035);
+
+}
+
+
+/* =========================================================
+   RODADA
+   ========================================================= */
+
+.ccfv-result-round {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        5px;
+
+}
+
+
+.ccfv-result-round span {
+
+    color:
+        rgba(67,223,145,.55);
+
+    font-family:
+        monospace;
+
+    font-size:
+        8px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .10em;
+
+}
+
+
+.ccfv-result-round small {
+
+    color:
+        rgba(255,255,255,.20);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .08em;
+
+}
+
+
+/* =========================================================
+   TIMES
+   ========================================================= */
+
+.ccfv-result-team {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        12px;
+
+    min-width:
+        0;
+
+}
+
+
+.ccfv-result-team--away {
+
+    justify-content:
+        flex-end;
+
+    text-align:
+        right;
+
+}
+
+
+.ccfv-result-team__crest {
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    width:
+        38px;
+
+    height:
+        38px;
+
+    flex-shrink:
+        0;
+
+    border:
+        1px solid rgba(67,223,145,.12);
+
+    border-radius:
+        10px;
+
+    background:
+        rgba(31,143,95,.035);
+
+}
+
+
+.ccfv-result-team__crest img {
+
+    width:
+        27px;
+
+    height:
+        27px;
+
+    object-fit:
+        contain;
+
+    display:
+        block;
+
+}
+
+
+.ccfv-result-team strong {
+
+    overflow:
+        hidden;
+
+    color:
+        rgba(255,255,255,.75);
+
+    font-size:
+        9px;
+
+    font-weight:
+        900;
+
+    white-space:
+        nowrap;
+
+    text-overflow:
+        ellipsis;
+
+}
+
+
+/* =========================================================
+   PLACAR
+   ========================================================= */
+
+.ccfv-result-score {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        5px;
+
+}
+
+
+.ccfv-result-score strong {
+
+    color:
+        #fff;
+
+    font-family:
+        monospace;
+
+    font-size:
+        18px;
+
+    font-weight:
+        950;
+
+    letter-spacing:
+        .08em;
+
+}
+
+
+.ccfv-result-score span {
+
+    color:
+        rgba(67,223,145,.65);
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .14em;
+
+}
+
+
+/* =========================================================
+   DATA / STATUS
+   ========================================================= */
+
+.ccfv-result-info {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        flex-end;
+
+    gap:
+        5px;
+
+}
+
+
+.ccfv-result-info strong {
+
+    color:
+        rgba(255,255,255,.32);
+
+    font-size:
+        7px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .08em;
+
+}
+
+
+.ccfv-result-info span {
+
+    color:
+        #43df91;
+
+    font-size:
+        6px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .12em;
+
+}
+
+
+/* =========================================================
+   RESULTADO VAZIO
+   ========================================================= */
+
+.ccfv-result-empty {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        22px;
+
+    min-height:
+        150px;
+
+    padding:
+        35px;
+
+}
+
+
+.ccfv-result-empty > span {
+
+    color:
+        rgba(67,223,145,.35);
+
+    font-family:
+        monospace;
+
+    font-size:
+        26px;
+
+    font-weight:
+        900;
+
+}
+
+
+.ccfv-result-empty div {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        7px;
+
+}
+
+
+.ccfv-result-empty strong {
+
+    color:
+        rgba(255,255,255,.75);
+
+    font-size:
+        13px;
+
+}
+
+
+.ccfv-result-empty small {
+
+    color:
+        rgba(255,255,255,.30);
+
+    font-size:
+        10px;
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .ccfv-brasileirao-results {
+
+        padding:
+            80px 0;
+
+    }
+
+
+    .ccfv-result-card {
+
+        grid-template-columns:
+            45px
+            minmax(0,1fr)
+            75px
+            minmax(0,1fr);
+
+        min-height:
+            78px;
+
+        padding:
+            0 14px;
+
+    }
+
+
+    .ccfv-result-info {
+
+        display:
+            none;
+
+    }
+
+
+    .ccfv-result-team {
+
+        gap:
+            7px;
+
+    }
+
+
+    .ccfv-result-team__crest {
+
+        width:
+            30px;
+
+        height:
+            30px;
+
+    }
+
+
+    .ccfv-result-team__crest img {
+
+        width:
+            21px;
+
+        height:
+            21px;
+
+    }
+
+
+    .ccfv-result-team strong {
+
+        font-size:
+            7px;
+
+    }
+
+
+    .ccfv-result-score strong {
+
+        font-size:
+            15px;
+
+    }
+
+
+    .ccfv-result-round span {
+
+        font-size:
+            7px;
+
+    }
+
+}
