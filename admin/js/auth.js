@@ -1,6 +1,6 @@
 /* =========================================================
    CCFV — AUTHENTICATION
-   SUPABASE LOGIN + PROTEÇÃO DO ADMIN
+   SUPABASE LOGIN + DEBUG
    ========================================================= */
 
 (() => {
@@ -9,7 +9,7 @@
 
 
     /* =====================================================
-       SUPABASE
+       CONFIGURAÇÃO
        ===================================================== */
 
     const SUPABASE_URL =
@@ -17,11 +17,9 @@
 
 
     /*
-     * COLE A SUA CHAVE:
+     * MANTENHA A SUA CHAVE SB_PUBLISHABLE AQUI.
      *
-     * sb_publishable_...
-     *
-     * NÃO use sb_secret_...
+     * NUNCA coloque a sb_secret aqui.
      */
 
     const SUPABASE_PUBLISHABLE_KEY =
@@ -32,12 +30,12 @@
         null;
 
 
-    let authReadyPromise =
+    let clientPromise =
         null;
 
 
     /* =====================================================
-       DETECTAR PÁGINA
+       PÁGINAS
        ===================================================== */
 
     function isLoginPage() {
@@ -64,10 +62,10 @@
 
 
     /* =====================================================
-       ESCONDER INTERFACE ATÉ VALIDAR LOGIN
+       VISIBILIDADE
        ===================================================== */
 
-    function hidePageUntilAuth() {
+    function hidePage() {
 
         document.documentElement.style.visibility =
             "hidden";
@@ -75,7 +73,7 @@
     }
 
 
-    function showPageAfterAuth() {
+    function showPage() {
 
         document.documentElement.style.visibility =
             "visible";
@@ -110,17 +108,17 @@
                 }
 
 
-                const existingScript =
+                const existing =
                     document.querySelector(
                         'script[data-ccfv-supabase]'
                     );
 
 
                 if (
-                    existingScript
+                    existing
                 ) {
 
-                    existingScript.addEventListener(
+                    existing.addEventListener(
                         "load",
                         () => {
 
@@ -132,7 +130,7 @@
                     );
 
 
-                    existingScript.addEventListener(
+                    existing.addEventListener(
                         "error",
                         () => {
 
@@ -182,17 +180,16 @@
                                 window.supabase
                             );
 
-                        }
-
-                        else {
-
-                            reject(
-                                new Error(
-                                    "Supabase não ficou disponível."
-                                )
-                            );
+                            return;
 
                         }
+
+
+                        reject(
+                            new Error(
+                                "Supabase carregou, mas createClient não está disponível."
+                            )
+                        );
 
                     };
 
@@ -202,7 +199,7 @@
 
                         reject(
                             new Error(
-                                "Falha ao carregar a biblioteca do Supabase."
+                                "Não foi possível carregar @supabase/supabase-js."
                             )
                         );
 
@@ -220,10 +217,10 @@
 
 
     /* =====================================================
-       INICIALIZAR CLIENTE
+       CLIENTE
        ===================================================== */
 
-    async function initializeSupabase() {
+    async function getClient() {
 
         if (
             supabaseClient
@@ -235,15 +232,15 @@
 
 
         if (
-            authReadyPromise
+            clientPromise
         ) {
 
-            return authReadyPromise;
+            return clientPromise;
 
         }
 
 
-        authReadyPromise =
+        clientPromise =
             (async () => {
 
                 const supabase =
@@ -257,7 +254,7 @@
                 ) {
 
                     throw new Error(
-                        "A Publishable Key ainda não foi inserida."
+                        "A Publishable Key não foi colocada no auth.js."
                     );
 
                 }
@@ -279,38 +276,7 @@
             })();
 
 
-        return authReadyPromise;
-
-    }
-
-
-    /* =====================================================
-       SESSION
-       ===================================================== */
-
-    async function getSession() {
-
-        const client =
-            await initializeSupabase();
-
-
-        const {
-            data,
-            error
-        } =
-            await client.auth.getSession();
-
-
-        if (
-            error
-        ) {
-
-            throw error;
-
-        }
-
-
-        return data?.session || null;
+        return clientPromise;
 
     }
 
@@ -325,7 +291,13 @@
     ) {
 
         const client =
-            await initializeSupabase();
+            await getClient();
+
+
+        console.log(
+            "CCFV // TENTANDO LOGIN:",
+            email
+        );
 
 
         const {
@@ -343,6 +315,18 @@
             });
 
 
+        console.log(
+            "CCFV // LOGIN DATA:",
+            data
+        );
+
+
+        console.log(
+            "CCFV // LOGIN ERROR:",
+            error
+        );
+
+
         if (
             error
         ) {
@@ -358,13 +342,50 @@
 
 
     /* =====================================================
+       SESSION
+       ===================================================== */
+
+    async function getSession() {
+
+        const client =
+            await getClient();
+
+
+        const {
+            data,
+            error
+        } =
+            await client.auth.getSession();
+
+
+        console.log(
+            "CCFV // SESSION:",
+            data
+        );
+
+
+        if (
+            error
+        ) {
+
+            throw error;
+
+        }
+
+
+        return data?.session || null;
+
+    }
+
+
+    /* =====================================================
        LOGOUT
        ===================================================== */
 
     async function logout() {
 
         const client =
-            await initializeSupabase();
+            await getClient();
 
 
         const {
@@ -376,6 +397,11 @@
         if (
             error
         ) {
+
+            console.error(
+                "CCFV // LOGOUT ERROR:",
+                error
+            );
 
             throw error;
 
@@ -389,7 +415,7 @@
 
 
     /* =====================================================
-       REDIRECIONAR LOGIN
+       REDIRECT
        ===================================================== */
 
     function redirectToLogin() {
@@ -410,10 +436,6 @@
     }
 
 
-    /* =====================================================
-       REDIRECIONAR ADMIN
-       ===================================================== */
-
     function redirectToAdmin() {
 
         window.location.replace(
@@ -424,222 +446,169 @@
 
 
     /* =====================================================
-       PROTEGER ADMIN
+       ERRO HUMANO
        ===================================================== */
 
-    async function protectAdminPage() {
-
-        /*
-         * Se não estamos no Admin,
-         * não faz nada.
-         */
-
-        if (
-            !isAdminPage()
-        ) {
-
-            return;
-
-        }
-
-
-        /*
-         * Esconde a interface enquanto verifica
-         * a sessão.
-         *
-         * Isso evita que alguém veja o painel
-         * por um instante antes do redirect.
-         */
-
-        hidePageUntilAuth();
-
-
-        try {
-
-            const session =
-                await getSession();
-
-
-            /*
-             * SEM SESSÃO
-             */
-
-            if (
-                !session
-            ) {
-
-                redirectToLogin();
-
-                return;
-
-            }
-
-
-            /*
-             * SESSÃO VÁLIDA
-             */
-
-            console.log(
-                "CCFV // ADMIN AUTHENTICATED"
-            );
-
-
-            showPageAfterAuth();
-
-        }
-
-        catch (
-            error
-        ) {
-
-            console.error(
-                "CCFV // ADMIN AUTH ERROR",
-                error
-            );
-
-
-            redirectToLogin();
-
-        }
-
-    }
-
-
-    /* =====================================================
-       PROTEGER LOGIN
-       ===================================================== */
-
-    async function protectLoginPage() {
-
-        if (
-            !isLoginPage()
-        ) {
-
-            return;
-
-        }
-
-
-        hidePageUntilAuth();
-
-
-        try {
-
-            const session =
-                await getSession();
-
-
-            /*
-             * Já está logado.
-             * Não precisa ver o login.
-             */
-
-            if (
-                session
-            ) {
-
-                redirectToAdmin();
-
-                return;
-
-            }
-
-
-            /*
-             * Não está logado.
-             * Pode mostrar o login.
-             */
-
-            showPageAfterAuth();
-
-        }
-
-        catch (
-            error
-        ) {
-
-            console.error(
-                "CCFV // LOGIN AUTH ERROR",
-                error
-            );
-
-
-            showPageAfterAuth();
-
-        }
-
-    }
-
-
-    /* =====================================================
-       ERROS DE LOGIN
-       ===================================================== */
-
-    function translateAuthError(
+    function getFriendlyError(
         error
     ) {
 
         const message =
             String(
-                error?.message || ""
-            )
-            .toLowerCase();
+                error?.message ||
+                ""
+            );
+
+
+        const lower =
+            message.toLowerCase();
 
 
         if (
-            message.includes(
+            lower.includes(
                 "invalid login credentials"
             )
         ) {
 
-            return "EMAIL OU SENHA INCORRETOS.";
+            return (
+                "SUPABASE: EMAIL OU SENHA INCORRETOS."
+            );
 
         }
 
 
         if (
-            message.includes(
+            lower.includes(
                 "email not confirmed"
             )
         ) {
 
-            return "ESTE EMAIL AINDA NÃO FOI CONFIRMADO.";
+            return (
+                "SUPABASE: O EMAIL DO USUÁRIO NÃO ESTÁ CONFIRMADO."
+            );
 
         }
 
 
         if (
-            message.includes(
-                "too many requests"
+            lower.includes(
+                "invalid api key"
             )
         ) {
 
-            return "MUITAS TENTATIVAS. AGUARDE UM POUCO.";
+            return (
+                "SUPABASE: PUBLISHABLE KEY INVÁLIDA."
+            );
 
         }
 
 
         if (
-            message.includes(
-                "network"
+            lower.includes(
+                "jwt"
             )
         ) {
 
-            return "ERRO DE CONEXÃO COM O SERVIDOR.";
+            return (
+                "SUPABASE: PROBLEMA COM A CHAVE/API."
+            );
 
         }
 
 
-        return "NÃO FOI POSSÍVEL REALIZAR O LOGIN.";
+        if (
+            lower.includes(
+                "failed to fetch"
+            )
+        ) {
+
+            return (
+                "SUPABASE: NÃO FOI POSSÍVEL CONECTAR AO SERVIDOR."
+            );
+
+        }
+
+
+        return (
+            "SUPABASE: " +
+            (
+                message ||
+                "ERRO DESCONHECIDO."
+            )
+        );
 
     }
 
 
     /* =====================================================
-       FORMULÁRIO LOGIN
+       ERRO NA TELA
        ===================================================== */
 
-    function setupLoginForm() {
+    function showLoginError(
+        error
+    ) {
+
+        const element =
+            document.querySelector(
+                "#ccfv-login-error"
+            );
+
+
+        if (
+            !element
+        ) {
+
+            return;
+
+        }
+
+
+        element.textContent =
+            getFriendlyError(
+                error
+            );
+
+
+        element.classList.add(
+            "is-visible"
+        );
+
+    }
+
+
+    function clearLoginError() {
+
+        const element =
+            document.querySelector(
+                "#ccfv-login-error"
+            );
+
+
+        if (
+            !element
+        ) {
+
+            return;
+
+        }
+
+
+        element.textContent =
+            "";
+
+
+        element.classList.remove(
+            "is-visible"
+        );
+
+    }
+
+
+    /* =====================================================
+       FORM LOGIN
+       ===================================================== */
+
+    function bindLoginForm() {
 
         const form =
             document.querySelector(
@@ -656,21 +625,15 @@
         }
 
 
-        const emailInput =
+        const email =
             document.querySelector(
                 "#ccfv-login-email"
             );
 
 
-        const passwordInput =
+        const password =
             document.querySelector(
                 "#ccfv-login-password"
-            );
-
-
-        const errorElement =
-            document.querySelector(
-                "#ccfv-login-error"
             );
 
 
@@ -682,29 +645,35 @@
 
         form.addEventListener(
             "submit",
-            async event => {
+            async (
+                event
+            ) => {
 
                 event.preventDefault();
-
-
-                const email =
-                    emailInput?.value.trim() || "";
-
-
-                const password =
-                    passwordInput?.value || "";
 
 
                 clearLoginError();
 
 
+                const emailValue =
+                    email?.value.trim() ||
+                    "";
+
+
+                const passwordValue =
+                    password?.value ||
+                    "";
+
+
                 if (
-                    !email ||
-                    !password
+                    !emailValue ||
+                    !passwordValue
                 ) {
 
                     showLoginError(
-                        "PREENCHA EMAIL E SENHA."
+                        new Error(
+                            "PREENCHA EMAIL E SENHA."
+                        )
                     );
 
                     return;
@@ -712,39 +681,29 @@
                 }
 
 
-                if (
-                    button
-                ) {
-
-                    button.disabled =
-                        true;
+                button.disabled =
+                    true;
 
 
-                    button.textContent =
-                        "AUTENTICANDO...";
-
-                }
+                button.textContent =
+                    "AUTENTICANDO...";
 
 
                 try {
 
                     await login(
-                        email,
-                        password
+                        emailValue,
+                        passwordValue
                     );
 
 
-                    if (
-                        button
-                    ) {
-
-                        button.textContent =
-                            "ACESSO LIBERADO...";
-
-                    }
+                    button.textContent =
+                        "ACESSO LIBERADO...";
 
 
-                    redirectToAdmin();
+                    window.location.replace(
+                        "/admin/"
+                    );
 
                 }
 
@@ -753,79 +712,118 @@
                 ) {
 
                     console.error(
-                        "CCFV // LOGIN ERROR",
+                        "======================================"
+                    );
+
+
+                    console.error(
+                        "CCFV // ERRO REAL DO SUPABASE"
+                    );
+
+
+                    console.error(
                         error
                     );
 
 
-                    showLoginError(
-                        translateAuthError(
-                            error
-                        )
+                    console.error(
+                        "message:",
+                        error?.message
                     );
 
 
-                    if (
-                        button
-                    ) {
-
-                        button.disabled =
-                            false;
+                    console.error(
+                        "status:",
+                        error?.status
+                    );
 
 
-                        button.textContent =
-                            "ENTRAR NO PAINEL";
+                    console.error(
+                        "name:",
+                        error?.name
+                    );
 
-                    }
+
+                    console.error(
+                        "======================================"
+                    );
+
+
+                    showLoginError(
+                        error
+                    );
+
+
+                    button.disabled =
+                        false;
+
+
+                    button.textContent =
+                        "ENTRAR NO PAINEL";
 
                 }
 
             }
         );
 
+    }
 
-        function showLoginError(
-            message
+
+    /* =====================================================
+       PROTEGER ADMIN
+       ===================================================== */
+
+    async function protectAdmin() {
+
+        if (
+            !isAdminPage()
         ) {
 
-            if (
-                !errorElement
-            ) {
-
-                return;
-
-            }
-
-
-            errorElement.textContent =
-                message;
-
-
-            errorElement.classList.add(
-                "is-visible"
-            );
+            return;
 
         }
 
 
-        function clearLoginError() {
+        hidePage();
+
+
+        try {
+
+            const session =
+                await getSession();
+
 
             if (
-                !errorElement
+                !session
             ) {
+
+                redirectToLogin();
 
                 return;
 
             }
 
 
-            errorElement.textContent =
-                "";
-
-
-            errorElement.classList.remove(
-                "is-visible"
+            console.log(
+                "CCFV // ADMIN AUTENTICADO"
             );
+
+
+            showPage();
+
+        }
+
+        catch (
+            error
+        ) {
+
+            console.error(
+                "CCFV // PROTECTION ERROR:",
+                error
+            );
+
+
+            redirectToLogin();
 
         }
 
@@ -833,13 +831,69 @@
 
 
     /* =====================================================
-       LISTENER DE AUTH
+       PROTEGER LOGIN
+       ===================================================== */
+
+    async function protectLogin() {
+
+        if (
+            !isLoginPage()
+        ) {
+
+            return;
+
+        }
+
+
+        hidePage();
+
+
+        try {
+
+            const session =
+                await getSession();
+
+
+            if (
+                session
+            ) {
+
+                redirectToAdmin();
+
+                return;
+
+            }
+
+
+            showPage();
+
+        }
+
+        catch (
+            error
+        ) {
+
+            console.error(
+                "CCFV // LOGIN PAGE CHECK:",
+                error
+            );
+
+
+            showPage();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       AUTH STATE
        ===================================================== */
 
     async function bindAuthState() {
 
         const client =
-            await initializeSupabase();
+            await getClient();
 
 
         client.auth.onAuthStateChange(
@@ -870,7 +924,7 @@
 
 
     /* =====================================================
-       API PÚBLICA
+       API
        ===================================================== */
 
     window.CCFVAuth = {
@@ -881,9 +935,7 @@
 
         getSession,
 
-        translateAuthError,
-
-        protectAdminPage
+        getClient
 
     };
 
@@ -894,48 +946,31 @@
 
     async function init() {
 
-        /*
-         * Mostra no console para sabermos que
-         * o arquivo realmente foi carregado.
-         */
-
         console.log(
-            "%cCCFV // AUTH SYSTEM",
+            "%cCCFV // AUTH DEBUG",
             "color:#43df91;font-weight:900;font-size:18px;"
         );
 
 
-        setupLoginForm();
+        bindLoginForm();
 
 
         try {
 
-            await initializeSupabase();
+            await getClient();
 
 
-            /*
-             * PRIMEIRO protege o Admin.
-             */
-
-            await protectAdminPage();
+            await protectAdmin();
 
 
-            /*
-             * Depois protege a página de login.
-             */
+            await protectLogin();
 
-            await protectLoginPage();
-
-
-            /*
-             * Observa mudanças de sessão.
-             */
 
             await bindAuthState();
 
 
             console.log(
-                "CCFV // SUPABASE AUTH OK"
+                "CCFV // SUPABASE CONECTADO"
             );
 
         }
@@ -945,40 +980,10 @@
         ) {
 
             console.error(
-                "CCFV // AUTH INIT ERROR",
+                "CCFV // AUTH INIT ERROR:",
                 error
             );
 
-
-            /*
-             * Se o problema aconteceu no login,
-             * mostramos o erro.
-             */
-
-            const loginError =
-                document.querySelector(
-                    "#ccfv-login-error"
-                );
-
-
-            if (
-                loginError
-            ) {
-
-                loginError.textContent =
-                    "NÃO FOI POSSÍVEL CONECTAR AO SISTEMA DE AUTENTICAÇÃO.";
-
-                loginError.classList.add(
-                    "is-visible"
-                );
-
-            }
-
-
-            /*
-             * Se estamos no Admin e deu erro,
-             * não deixamos o painel aberto.
-             */
 
             if (
                 isAdminPage()
@@ -986,7 +991,12 @@
 
                 redirectToLogin();
 
+                return;
+
             }
+
+
+            showPage();
 
         }
 
