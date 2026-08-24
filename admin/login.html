@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#020403"
+    >
+
+    <title>
+        CCFV — Acesso Administrativo
+    </title>
+
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <link
+        rel="stylesheet"
+        href="/admin/css/admin.css"
+    >
+
+
+    <style>
+
+        /* =====================================================
+           CCFV LOGIN
+           ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 75% 20%,
+                    rgba(67,223,145,.09),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 15% 80%,
+                    rgba(67,223,145,.045),
+                    transparent 30%
+                ),
+                #020403;
+
+            color: #fff;
+
+            font-family:
+                Inter,
+                Arial,
+                sans-serif;
+
+        }
+
+
+        .ccfv-login {
+
+            position: relative;
+
+            min-height: 100vh;
+
+            display: grid;
+
+            place-items: center;
+
+            padding: 30px;
+
+            overflow: hidden;
+
+        }
+
+
+        .ccfv-login__grid {
+
+            position: absolute;
+
+            inset: 0;
+
+            opacity: .16;
+
+            background-image:
+                linear-gradient(
+                    rgba(67,223,145,.08) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(67,223,145,.08) 1px,
+                    transparent 1px
+                );
+
+            background-size:
+                52px 52px;
+
+            mask-image:
+                radial-gradient(
+                    circle at center,
+                    #000,
+                    transparent 75%
+                );
+
+        }
+
+
+        .ccfv-login__glow {
+
+            position: absolute;
+
+            width: 700px;
+
+            height: 700px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(67,223,145,.11),
+                    transparent 68%
+                );
+
+            filter:
+                blur(10px);
+
+            pointer-events:
+                none;
+
+        }
+
+
+        .ccfv-login__scan {
+
+            position: absolute;
+
+            left: -20%;
+
+            top: 0;
+
+            width: 140%;
+
+            height: 1px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(67,223,145,.35),
+                    transparent
+                );
+
+            animation:
+                ccfvLoginScan 7s linear infinite;
+
+            opacity: .45;
+
+        }
+
+
+        @keyframes ccfvLoginScan {
+
+            0% {
+                transform: translateY(-10vh);
+            }
+
+            100% {
+                transform: translateY(110vh);
+            }
+
+        }
+
+
+        .ccfv-login__shell {
+
+            position: relative;
+
+            z-index: 2;
+
+            width:
+                min(
+                    460px,
+                    100%
+                );
+
+            padding: 34px;
+
+            border:
+                1px solid
+                rgba(67,223,145,.16);
+
+            border-radius: 24px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(7,16,11,.94),
+                    rgba(2,5,4,.97)
+                );
+
+            box-shadow:
+                0 40px 120px
+                rgba(0,0,0,.55),
+                inset 0 1px
+                rgba(255,255,255,.025);
+
+            backdrop-filter:
+                blur(24px);
+
+        }
+
+
+        .ccfv-login__top {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 32px;
+
+        }
+
+
+        .ccfv-login__brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+        }
+
+
+        .ccfv-login__logo {
+
+            width: 48px;
+
+            height: 48px;
+
+            display: grid;
+
+            place-items: center;
+
+            border:
+                1px solid
+                rgba(67,223,145,.35);
+
+            border-radius: 14px;
+
+            color:
+                #43df91;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(67,223,145,.12),
+                    rgba(67,223,145,.025)
+                );
+
+            font-size: 10px;
+
+            font-weight: 950;
+
+            box-shadow:
+                0 0 35px
+                rgba(67,223,145,.09);
+
+        }
+
+
+        .ccfv-login__brand strong {
+
+            display: block;
+
+            color: #fff;
+
+            font-size: 14px;
+
+            font-weight: 950;
+
+            letter-spacing: .04em;
+
+        }
+
+
+        .ccfv-login__brand span {
+
+            display: block;
+
+            margin-top: 4px;
+
+            color:
+                rgba(255,255,255,.28);
+
+            font-size: 6px;
+
+            font-weight: 900;
+
+            letter-spacing: .11em;
+
+        }
+
+
+        .ccfv-login__status {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            color:
+                rgba(255,255,255,.22);
+
+            font-size: 6px;
+
+            font-weight: 900;
+
+            letter-spacing: .08em;
+
+        }
+
+
+        .ccfv-login__status i {
+
+            width: 6px;
+
+            height: 6px;
+
+            display: block;
+
+            border-radius: 50%;
+
+            background:
+                #43df91;
+
+            box-shadow:
+                0 0 14px
+                rgba(67,223,145,.8);
+
+        }
+
+
+        .ccfv-login__eyebrow {
+
+            color:
+                #43df91;
+
+            font-size: 7px;
+
+            font-weight: 900;
+
+            letter-spacing: .18em;
+
+        }
+
+
+        .ccfv-login h1 {
+
+            margin:
+                12px 0 0;
+
+            color: #fff;
+
+            font-size:
+                clamp(
+                    42px,
+                    8vw,
+                    64px
+                );
+
+            font-weight: 950;
+
+            line-height: .87;
+
+            letter-spacing: -.065em;
+
+        }
+
+
+        .ccfv-login h1 strong {
+
+            display: block;
+
+            color:
+                #43df91;
+
+        }
+
+
+        .ccfv-login__description {
+
+            margin:
+                18px 0 30px;
+
+            color:
+                rgba(255,255,255,.30);
+
+            font-size: 9px;
+
+            line-height: 1.7;
+
+        }
+
+
+        .ccfv-login__form {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 16px;
+
+        }
+
+
+        .ccfv-login__field {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+
+        }
+
+
+        .ccfv-login__field > span {
+
+            color:
+                rgba(255,255,255,.25);
+
+            font-size: 6px;
+
+            font-weight: 900;
+
+            letter-spacing: .11em;
+
+        }
+
+
+        .ccfv-login__field input {
+
+            width: 100%;
+
+            height: 48px;
+
+            padding:
+                0 14px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.09);
+
+            border-radius: 11px;
+
+            outline: none;
+
+            color: #fff;
+
+            background:
+                rgba(255,255,255,.025);
+
+            font-size: 10px;
+
+            transition:
+                border-color .2s ease,
+                background .2s ease,
+                box-shadow .2s ease;
+
+        }
+
+
+        .ccfv-login__field input::placeholder {
+
+            color:
+                rgba(255,255,255,.15);
+
+        }
+
+
+        .ccfv-login__field input:focus {
+
+            border-color:
+                rgba(67,223,145,.45);
+
+            background:
+                rgba(67,223,145,.025);
+
+            box-shadow:
+                0 0 0 4px
+                rgba(67,223,145,.05);
+
+        }
+
+
+        .ccfv-login__error {
+
+            display: none;
+
+            padding:
+                11px 12px;
+
+            border:
+                1px solid
+                rgba(255,88,88,.20);
+
+            border-radius: 9px;
+
+            color:
+                #ff8a8a;
+
+            background:
+                rgba(255,70,70,.045);
+
+            font-size: 7px;
+
+            font-weight: 900;
+
+            line-height: 1.5;
+
+        }
+
+
+        .ccfv-login__error.is-visible {
+
+            display: block;
+
+        }
+
+
+        .ccfv-login__button {
+
+            width: 100%;
+
+            height: 50px;
+
+            margin-top: 3px;
+
+            border:
+                1px solid
+                #43df91;
+
+            border-radius: 11px;
+
+            color:
+                #031008;
+
+            background:
+                #43df91;
+
+            font-size: 8px;
+
+            font-weight: 950;
+
+            letter-spacing: .08em;
+
+            cursor: pointer;
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease,
+                opacity .2s ease;
+
+        }
+
+
+        .ccfv-login__button:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 15px 35px
+                rgba(67,223,145,.16);
+
+        }
+
+
+        .ccfv-login__button:disabled {
+
+            opacity: .55;
+
+            cursor: wait;
+
+            transform: none;
+
+        }
+
+
+        .ccfv-login__footer {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-top: 24px;
+
+            padding-top: 17px;
+
+            border-top:
+                1px solid
+                rgba(255,255,255,.05);
+
+        }
+
+
+        .ccfv-login__footer span {
+
+            color:
+                rgba(255,255,255,.18);
+
+            font-size: 6px;
+
+            font-weight: 900;
+
+        }
+
+
+        .ccfv-login__footer a {
+
+            color:
+                rgba(67,223,145,.65);
+
+            font-size: 6px;
+
+            font-weight: 900;
+
+            text-decoration: none;
+
+        }
+
+
+        .ccfv-login__secure {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 7px;
+
+            margin-top: 18px;
+
+            color:
+                rgba(255,255,255,.14);
+
+            font-size: 6px;
+
+            font-weight: 900;
+
+            letter-spacing: .06em;
+
+        }
+
+
+        .ccfv-login__secure i {
+
+            width: 7px;
+
+            height: 7px;
+
+            border:
+                1px solid
+                rgba(67,223,145,.5);
+
+            border-radius: 2px;
+
+        }
+
+
+        @media (max-width: 560px) {
+
+            .ccfv-login {
+
+                padding: 15px;
+
+            }
+
+
+            .ccfv-login__shell {
+
+                padding: 24px;
+
+                border-radius: 19px;
+
+            }
+
+
+            .ccfv-login__top {
+
+                align-items: flex-start;
+
+            }
+
+
+            .ccfv-login__status {
+
+                display: none;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <main class="ccfv-login">
+
+
+        <div
+            class="ccfv-login__grid"
+        ></div>
+
+
+        <div
+            class="ccfv-login__glow"
+        ></div>
+
+
+        <div
+            class="ccfv-login__scan"
+        ></div>
+
+
+        <section
+            class="ccfv-login__shell"
+        >
+
+
+            <!-- =============================================
+                 BRAND
+                 ============================================= -->
+
+            <div class="ccfv-login__top">
+
+                <div
+                    class="ccfv-login__brand"
+                >
+
+                    <div
+                        class="ccfv-login__logo"
+                    >
+                        CCFV
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            CCFV
+                        </strong>
+
+                        <span>
+                            CONFEDERAÇÃO COLISEU
+                            DE FUTEBOL VIRTUAL
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="ccfv-login__status"
+                >
+
+                    <i></i>
+
+                    SISTEMA ONLINE
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =============================================
+                 TITLE
+                 ============================================= -->
+
+            <div
+                class="ccfv-login__eyebrow"
+            >
+                CCFV // RESTRICTED ACCESS
+            </div>
+
+
+            <h1>
+
+                ACESSO
+
+                <strong>
+                    ADMIN.
+                </strong>
+
+            </h1>
+
+
+            <p
+                class="ccfv-login__description"
+            >
+
+                Área administrativa da CCFV.
+                Entre com suas credenciais para
+                acessar o painel de gerenciamento.
+
+            </p>
+
+
+
+            <!-- =============================================
+                 FORM
+                 ============================================= -->
+
+            <form
+                id="ccfv-login-form"
+                class="ccfv-login__form"
+            >
+
+
+                <label
+                    class="ccfv-login__field"
+                >
+
+                    <span>
+                        EMAIL ADMINISTRATIVO
+                    </span>
+
+
+                    <input
+                        type="email"
+                        id="ccfv-login-email"
+                        name="email"
+                        autocomplete="username"
+                        placeholder="seuemail@exemplo.com"
+                        required
+                    >
+
+                </label>
+
+
+
+                <label
+                    class="ccfv-login__field"
+                >
+
+                    <span>
+                        SENHA
+                    </span>
+
+
+                    <input
+                        type="password"
+                        id="ccfv-login-password"
+                        name="password"
+                        autocomplete="current-password"
+                        placeholder="Digite sua senha"
+                        required
+                    >
+
+                </label>
+
+
+
+                <div
+                    id="ccfv-login-error"
+                    class="ccfv-login__error"
+                ></div>
+
+
+
+                <button
+                    type="submit"
+                    id="ccfv-login-button"
+                    class="ccfv-login__button"
+                >
+                    ENTRAR NO PAINEL
+                </button>
+
+
+            </form>
+
+
+
+            <!-- =============================================
+                 FOOTER
+                 ============================================= -->
+
+            <div
+                class="ccfv-login__footer"
+            >
+
+                <span>
+                    CCFV // SEASON 01
+                </span>
+
+
+                <a
+                    href="/"
+                >
+                    VOLTAR AO SITE →
+                </a>
+
+            </div>
+
+
+            <div
+                class="ccfv-login__secure"
+            >
+
+                <i></i>
+
+                ÁREA RESTRITA — ACESSO AUTORIZADO
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         AUTH
+         ===================================================== -->
+
+    <script
+        src="/admin/js/auth.js"
+        defer
+    ></script>
+
+</body>
+
+</html>
