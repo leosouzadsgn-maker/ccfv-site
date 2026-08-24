@@ -1,6 +1,6 @@
 /* =========================================================
    CCFV — AUTHENTICATION
-   SUPABASE LOGIN
+   SUPABASE LOGIN + PROTEÇÃO DO ADMIN
    ========================================================= */
 
 (() => {
@@ -9,7 +9,7 @@
 
 
     /* =====================================================
-       CONFIGURAÇÃO SUPABASE
+       SUPABASE
        ===================================================== */
 
     const SUPABASE_URL =
@@ -17,19 +17,16 @@
 
 
     /*
-     * COLE A SUA CHAVE "sb_publishable_..."
-     * AQUI.
+     * COLE A SUA CHAVE:
      *
-     * NÃO USE a sb_secret_...
+     * sb_publishable_...
+     *
+     * NÃO use sb_secret_...
      */
 
     const SUPABASE_PUBLISHABLE_KEY =
         "sb_publishable_VykAaaP_0PfIW_n4HYHbTA_VlvrkjMu";
 
-
-    /* =====================================================
-       ESTADO
-       ===================================================== */
 
     let supabaseClient =
         null;
@@ -40,7 +37,54 @@
 
 
     /* =====================================================
-       CARREGAR SUPABASE JS
+       DETECTAR PÁGINA
+       ===================================================== */
+
+    function isLoginPage() {
+
+        return window.location.pathname.endsWith(
+            "/admin/login.html"
+        );
+
+    }
+
+
+    function isAdminPage() {
+
+        const path =
+            window.location.pathname;
+
+
+        return (
+            path.endsWith("/admin/") ||
+            path.endsWith("/admin/index.html")
+        );
+
+    }
+
+
+    /* =====================================================
+       ESCONDER INTERFACE ATÉ VALIDAR LOGIN
+       ===================================================== */
+
+    function hidePageUntilAuth() {
+
+        document.documentElement.style.visibility =
+            "hidden";
+
+    }
+
+
+    function showPageAfterAuth() {
+
+        document.documentElement.style.visibility =
+            "visible";
+
+    }
+
+
+    /* =====================================================
+       CARREGAR SUPABASE
        ===================================================== */
 
     function loadSupabase() {
@@ -50,11 +94,6 @@
                 resolve,
                 reject
             ) => {
-
-                /*
-                 * Se já estiver carregado,
-                 * não cria outro script.
-                 */
 
                 if (
                     window.supabase &&
@@ -99,7 +138,7 @@
 
                             reject(
                                 new Error(
-                                    "Não foi possível carregar o Supabase."
+                                    "Falha ao carregar o Supabase."
                                 )
                             );
 
@@ -149,7 +188,7 @@
 
                             reject(
                                 new Error(
-                                    "Biblioteca do Supabase carregou, mas não está disponível."
+                                    "Supabase não ficou disponível."
                                 )
                             );
 
@@ -205,46 +244,39 @@
 
 
         authReadyPromise =
-            (
-                async () => {
+            (async () => {
 
-                    const supabase =
-                        await loadSupabase();
-
-
-                    /*
-                     * Se a chave ainda estiver no placeholder,
-                     * interrompe com mensagem clara.
-                     */
-
-                    if (
-                        !SUPABASE_PUBLISHABLE_KEY ||
-                        SUPABASE_PUBLISHABLE_KEY ===
-                            "COLE_AQUI_SUA_SB_PUBLISHABLE"
-                    ) {
-
-                        throw new Error(
-                            "A Publishable Key do Supabase ainda não foi inserida no auth.js."
-                        );
-
-                    }
+                const supabase =
+                    await loadSupabase();
 
 
-                    supabaseClient =
-                        supabase.createClient(
-                            SUPABASE_URL,
-                            SUPABASE_PUBLISHABLE_KEY
-                        );
+                if (
+                    !SUPABASE_PUBLISHABLE_KEY ||
+                    SUPABASE_PUBLISHABLE_KEY ===
+                        "COLE_AQUI_SUA_SB_PUBLISHABLE"
+                ) {
 
-
-                    window.CCFVSupabase =
-                        supabaseClient;
-
-
-                    return supabaseClient;
+                    throw new Error(
+                        "A Publishable Key ainda não foi inserida."
+                    );
 
                 }
-            )();
+
+
+                supabaseClient =
+                    supabase.createClient(
+                        SUPABASE_URL,
+                        SUPABASE_PUBLISHABLE_KEY
+                    );
+
+
+                window.CCFVSupabase =
+                    supabaseClient;
+
+
+                return supabaseClient;
+
+            })();
 
 
         return authReadyPromise;
@@ -253,12 +285,32 @@
 
 
     /* =====================================================
-       GET CLIENT
+       SESSION
        ===================================================== */
 
-    async function getClient() {
+    async function getSession() {
 
-        return initializeSupabase();
+        const client =
+            await initializeSupabase();
+
+
+        const {
+            data,
+            error
+        } =
+            await client.auth.getSession();
+
+
+        if (
+            error
+        ) {
+
+            throw error;
+
+        }
+
+
+        return data?.session || null;
 
     }
 
@@ -273,7 +325,7 @@
     ) {
 
         const client =
-            await getClient();
+            await initializeSupabase();
 
 
         const {
@@ -312,7 +364,7 @@
     async function logout() {
 
         const client =
-            await getClient();
+            await initializeSupabase();
 
 
         const {
@@ -330,63 +382,6 @@
         }
 
 
-        redirectToLogin();
-
-    }
-
-
-    /* =====================================================
-       SESSION
-       ===================================================== */
-
-    async function getSession() {
-
-        const client =
-            await getClient();
-
-
-        const {
-            data,
-            error
-        } =
-            await client.auth.getSession();
-
-
-        if (
-            error
-        ) {
-
-            throw error;
-
-        }
-
-
-        return data.session;
-
-    }
-
-
-    /* =====================================================
-       REDIRECIONAR PARA LOGIN
-       ===================================================== */
-
-    function redirectToLogin() {
-
-        const path =
-            window.location.pathname;
-
-
-        if (
-            path.endsWith(
-                "/admin/login.html"
-            )
-        ) {
-
-            return;
-
-        }
-
-
         window.location.href =
             "/admin/login.html";
 
@@ -394,22 +389,13 @@
 
 
     /* =====================================================
-       REDIRECIONAR PARA ADMIN
+       REDIRECIONAR LOGIN
        ===================================================== */
 
-    function redirectToAdmin() {
-
-        const path =
-            window.location.pathname;
-
+    function redirectToLogin() {
 
         if (
-            path.endsWith(
-                "/admin/"
-            ) ||
-            path.endsWith(
-                "/admin/index.html"
-            )
+            isLoginPage()
         ) {
 
             return;
@@ -417,17 +403,56 @@
         }
 
 
-        window.location.href =
-            "/admin/";
+        window.location.replace(
+            "/admin/login.html"
+        );
 
     }
 
 
     /* =====================================================
-       VERIFICAR SE ESTÁ AUTENTICADO
+       REDIRECIONAR ADMIN
        ===================================================== */
 
-    async function requireAuth() {
+    function redirectToAdmin() {
+
+        window.location.replace(
+            "/admin/"
+        );
+
+    }
+
+
+    /* =====================================================
+       PROTEGER ADMIN
+       ===================================================== */
+
+    async function protectAdminPage() {
+
+        /*
+         * Se não estamos no Admin,
+         * não faz nada.
+         */
+
+        if (
+            !isAdminPage()
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+         * Esconde a interface enquanto verifica
+         * a sessão.
+         *
+         * Isso evita que alguém veja o painel
+         * por um instante antes do redirect.
+         */
+
+        hidePageUntilAuth();
+
 
         try {
 
@@ -435,18 +460,31 @@
                 await getSession();
 
 
+            /*
+             * SEM SESSÃO
+             */
+
             if (
                 !session
             ) {
 
                 redirectToLogin();
 
-                return null;
+                return;
 
             }
 
 
-            return session;
+            /*
+             * SESSÃO VÁLIDA
+             */
+
+            console.log(
+                "CCFV // ADMIN AUTHENTICATED"
+            );
+
+
+            showPageAfterAuth();
 
         }
 
@@ -455,14 +493,12 @@
         ) {
 
             console.error(
-                "CCFV // AUTH CHECK ERROR",
+                "CCFV // ADMIN AUTH ERROR",
                 error
             );
 
 
             redirectToLogin();
-
-            return null;
 
         }
 
@@ -470,7 +506,73 @@
 
 
     /* =====================================================
-       TRADUZIR ERROS
+       PROTEGER LOGIN
+       ===================================================== */
+
+    async function protectLoginPage() {
+
+        if (
+            !isLoginPage()
+        ) {
+
+            return;
+
+        }
+
+
+        hidePageUntilAuth();
+
+
+        try {
+
+            const session =
+                await getSession();
+
+
+            /*
+             * Já está logado.
+             * Não precisa ver o login.
+             */
+
+            if (
+                session
+            ) {
+
+                redirectToAdmin();
+
+                return;
+
+            }
+
+
+            /*
+             * Não está logado.
+             * Pode mostrar o login.
+             */
+
+            showPageAfterAuth();
+
+        }
+
+        catch (
+            error
+        ) {
+
+            console.error(
+                "CCFV // LOGIN AUTH ERROR",
+                error
+            );
+
+
+            showPageAfterAuth();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       ERROS DE LOGIN
        ===================================================== */
 
     function translateAuthError(
@@ -534,7 +636,7 @@
 
 
     /* =====================================================
-       LOGIN FORM
+       FORMULÁRIO LOGIN
        ===================================================== */
 
     function setupLoginForm() {
@@ -544,11 +646,6 @@
                 "#ccfv-login-form"
             );
 
-
-        /*
-         * Se não estamos na página de login,
-         * não há formulário para configurar.
-         */
 
         if (
             !form
@@ -585,24 +682,17 @@
 
         form.addEventListener(
             "submit",
-            async (
-                event
-            ) => {
+            async event => {
 
                 event.preventDefault();
 
 
                 const email =
-                    emailInput
-                        ?.value
-                        .trim() ||
-                    "";
+                    emailInput?.value.trim() || "";
 
 
                 const password =
-                    passwordInput
-                        ?.value ||
-                    "";
+                    passwordInput?.value || "";
 
 
                 clearLoginError();
@@ -654,8 +744,7 @@
                     }
 
 
-                    window.location.href =
-                        "/admin/";
+                    redirectToAdmin();
 
                 }
 
@@ -685,7 +774,7 @@
 
 
                         button.textContent =
-                            "ENTRAR";
+                            "ENTRAR NO PAINEL";
 
                     }
 
@@ -744,159 +833,38 @@
 
 
     /* =====================================================
-       PROTEGER LOGIN
-       =====================================================
-
-       Se alguém já estiver autenticado e abrir
-       login.html, vai direto para o Admin.
-       ===================================================== */
-
-    async function checkAlreadyAuthenticated() {
-
-        const path =
-            window.location.pathname;
-
-
-        const isLoginPage =
-            path.endsWith(
-                "/admin/login.html"
-            );
-
-
-        if (
-            !isLoginPage
-        ) {
-
-            return;
-
-        }
-
-
-        try {
-
-            const session =
-                await getSession();
-
-
-            if (
-                session
-            ) {
-
-                redirectToAdmin();
-
-            }
-
-        }
-
-        catch (
-            error
-        ) {
-
-            console.warn(
-                "CCFV // SESSION CHECK",
-                error
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       OBSERVAR AUTH
+       LISTENER DE AUTH
        ===================================================== */
 
     async function bindAuthState() {
 
-        try {
-
-            const client =
-                await getClient();
+        const client =
+            await initializeSupabase();
 
 
-            client.auth.onAuthStateChange(
-                (
-                    event,
-                    session
-                ) => {
+        client.auth.onAuthStateChange(
+            (
+                event,
+                session
+            ) => {
 
-                    console.log(
-                        "CCFV // AUTH EVENT:",
-                        event
-                    );
-
-
-                    /*
-                     * Login concluído.
-                     */
-
-                    if (
-                        event ===
-                        "SIGNED_IN" &&
-                        session
-                    ) {
-
-                        const path =
-                            window.location.pathname;
+                console.log(
+                    "CCFV // AUTH EVENT:",
+                    event
+                );
 
 
-                        if (
-                            path.endsWith(
-                                "/admin/login.html"
-                            )
-                        ) {
+                if (
+                    event ===
+                    "SIGNED_OUT"
+                ) {
 
-                            window.location.href =
-                                "/admin/";
-
-                        }
-
-                    }
-
-
-                    /*
-                     * Logout.
-                     */
-
-                    if (
-                        event ===
-                        "SIGNED_OUT"
-                    ) {
-
-                        const path =
-                            window.location.pathname;
-
-
-                        if (
-                            path.includes(
-                                "/admin/"
-                            ) &&
-                            !path.endsWith(
-                                "/admin/login.html"
-                            )
-                        ) {
-
-                            redirectToLogin();
-
-                        }
-
-                    }
+                    redirectToLogin();
 
                 }
-            );
 
-        }
-
-        catch (
-            error
-        ) {
-
-            console.error(
-                "CCFV // AUTH LISTENER ERROR",
-                error
-            );
-
-        }
+            }
+        );
 
     }
 
@@ -913,11 +881,9 @@
 
         getSession,
 
-        requireAuth,
+        translateAuthError,
 
-        getClient,
-
-        translateAuthError
+        protectAdminPage
 
     };
 
@@ -927,6 +893,11 @@
        ===================================================== */
 
     async function init() {
+
+        /*
+         * Mostra no console para sabermos que
+         * o arquivo realmente foi carregado.
+         */
 
         console.log(
             "%cCCFV // AUTH SYSTEM",
@@ -942,14 +913,29 @@
             await initializeSupabase();
 
 
-            await checkAlreadyAuthenticated();
+            /*
+             * PRIMEIRO protege o Admin.
+             */
 
+            await protectAdminPage();
+
+
+            /*
+             * Depois protege a página de login.
+             */
+
+            await protectLoginPage();
+
+
+            /*
+             * Observa mudanças de sessão.
+             */
 
             await bindAuthState();
 
 
             console.log(
-                "CCFV // Supabase conectado."
+                "CCFV // SUPABASE AUTH OK"
             );
 
         }
@@ -959,34 +945,46 @@
         ) {
 
             console.error(
-                "CCFV // AUTH INIT ERROR:",
+                "CCFV // AUTH INIT ERROR",
                 error
             );
 
 
             /*
-             * Se estamos na página de login,
-             * mostra erro no console.
-             *
-             * Não redireciona infinitamente.
+             * Se o problema aconteceu no login,
+             * mostramos o erro.
              */
 
-            const errorElement =
+            const loginError =
                 document.querySelector(
                     "#ccfv-login-error"
                 );
 
 
             if (
-                errorElement
+                loginError
             ) {
 
-                errorElement.textContent =
+                loginError.textContent =
                     "NÃO FOI POSSÍVEL CONECTAR AO SISTEMA DE AUTENTICAÇÃO.";
 
-                errorElement.classList.add(
+                loginError.classList.add(
                     "is-visible"
                 );
+
+            }
+
+
+            /*
+             * Se estamos no Admin e deu erro,
+             * não deixamos o painel aberto.
+             */
+
+            if (
+                isAdminPage()
+            ) {
+
+                redirectToLogin();
 
             }
 
