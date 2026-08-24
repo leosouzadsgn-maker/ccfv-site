@@ -1,16 +1,11 @@
 /* =========================================================
    CCFV ADMIN
-   PLAYER MANAGEMENT
    ========================================================= */
 
 (() => {
 
     "use strict";
 
-
-    /* =====================================================
-       STORAGE
-       ===================================================== */
 
     const PLAYER_STORAGE_KEY =
         "ccfv_players";
@@ -20,14 +15,9 @@
         "ccfv_matches";
 
 
-    /* =====================================================
-       ELO
-       ===================================================== */
-
     const RANK_CONFIG = {
 
         beginner: {
-            key: "beginner",
             name: "INICIANTE",
             min: 0,
             max: 999,
@@ -35,7 +25,6 @@
         },
 
         amateur: {
-            key: "amateur",
             name: "AMADOR",
             min: 1000,
             max: 1999,
@@ -43,7 +32,6 @@
         },
 
         professional: {
-            key: "professional",
             name: "PROFISSIONAL",
             min: 2000,
             max: 2999,
@@ -51,7 +39,6 @@
         },
 
         legend: {
-            key: "legend",
             name: "LENDA",
             min: 3000,
             max: Infinity,
@@ -60,10 +47,6 @@
 
     };
 
-
-    /* =====================================================
-       STATE
-       ===================================================== */
 
     let players =
         loadPlayers();
@@ -77,21 +60,13 @@
         null;
 
 
-    /* =====================================================
-       DOM
-       ===================================================== */
-
     const dom = {
 
         sidebar:
-            document.querySelector(
-                "#admin-sidebar"
-            ),
+            document.querySelector("#admin-sidebar"),
 
         mobileMenu:
-            document.querySelector(
-                "#admin-mobile-menu"
-            ),
+            document.querySelector("#admin-mobile-menu"),
 
         navItems:
             document.querySelectorAll(
@@ -109,19 +84,13 @@
             ),
 
         modal:
-            document.querySelector(
-                "#player-modal"
-            ),
+            document.querySelector("#player-modal"),
 
         modalTitle:
-            document.querySelector(
-                "#player-modal-title"
-            ),
+            document.querySelector("#player-modal-title"),
 
         form:
-            document.querySelector(
-                "#player-form"
-            ),
+            document.querySelector("#player-form"),
 
         closeModalButtons:
             document.querySelectorAll(
@@ -129,9 +98,7 @@
             ),
 
         newPlayerButton:
-            document.querySelector(
-                "#new-player-button"
-            ),
+            document.querySelector("#new-player-button"),
 
         openNewPlayerButtons:
             document.querySelectorAll(
@@ -169,14 +136,10 @@
             ),
 
         playerId:
-            document.querySelector(
-                "#player-id"
-            ),
+            document.querySelector("#player-id"),
 
         playerName:
-            document.querySelector(
-                "#player-name"
-            ),
+            document.querySelector("#player-name"),
 
         playerInstagram:
             document.querySelector(
@@ -189,19 +152,13 @@
             ),
 
         playerElo:
-            document.querySelector(
-                "#player-elo"
-            ),
+            document.querySelector("#player-elo"),
 
         playerWins:
-            document.querySelector(
-                "#player-wins"
-            ),
+            document.querySelector("#player-wins"),
 
         playerDraws:
-            document.querySelector(
-                "#player-draws"
-            ),
+            document.querySelector("#player-draws"),
 
         playerLosses:
             document.querySelector(
@@ -209,14 +166,10 @@
             ),
 
         playerTitles:
-            document.querySelector(
-                "#player-titles"
-            ),
+            document.querySelector("#player-titles"),
 
         playerPhoto:
-            document.querySelector(
-                "#player-photo"
-            ),
+            document.querySelector("#player-photo"),
 
         playerRankPreview:
             document.querySelector(
@@ -229,9 +182,7 @@
             ),
 
         toast:
-            document.querySelector(
-                "#admin-toast"
-            )
+            document.querySelector("#admin-toast")
 
     };
 
@@ -244,30 +195,15 @@
 
         return String(value)
 
-            .replaceAll(
-                "&",
-                "&amp;"
-            )
+            .replaceAll("&", "&amp;")
 
-            .replaceAll(
-                "<",
-                "&lt;"
-            )
+            .replaceAll("<", "&lt;")
 
-            .replaceAll(
-                ">",
-                "&gt;"
-            )
+            .replaceAll(">", "&gt;")
 
-            .replaceAll(
-                '"',
-                "&quot;"
-            )
+            .replaceAll('"', "&quot;")
 
-            .replaceAll(
-                "'",
-                "&#039;"
-            );
+            .replaceAll("'", "&#039;");
 
     }
 
@@ -282,18 +218,14 @@
 
 
         if (!words.length) {
-
             return "--";
-
         }
 
 
-        if (
-            words.length === 1
-        ) {
+        if (words.length === 1) {
 
             return words[0]
-                .slice(0, 2)
+                .slice(0,2)
                 .toUpperCase();
 
         }
@@ -322,35 +254,26 @@
 
 
             if (!raw) {
-
                 return [];
-
             }
 
 
             const parsed =
-                JSON.parse(
-                    raw
-                );
+                JSON.parse(raw);
 
 
-            return Array.isArray(
-                parsed
-            )
+            return Array.isArray(parsed)
                 ? parsed
                 : [];
 
         }
 
-        catch (
-            error
-        ) {
+        catch (error) {
 
             console.error(
                 "CCFV // LOAD PLAYERS",
                 error
             );
-
 
             return [];
 
@@ -363,9 +286,7 @@
 
         localStorage.setItem(
             PLAYER_STORAGE_KEY,
-            JSON.stringify(
-                players
-            )
+            JSON.stringify(players)
         );
 
     }
@@ -382,21 +303,15 @@
 
 
             if (!raw) {
-
                 return 0;
-
             }
 
 
             const parsed =
-                JSON.parse(
-                    raw
-                );
+                JSON.parse(raw);
 
 
-            return Array.isArray(
-                parsed
-            )
+            return Array.isArray(parsed)
                 ? parsed.length
                 : 0;
 
@@ -415,9 +330,7 @@
        RANK
        ===================================================== */
 
-    function getRank(
-        elo
-    ) {
+    function getRank(elo) {
 
         const value =
             Math.max(
@@ -462,7 +375,7 @@
 
 
     /* =====================================================
-       PLAYER ID
+       ID
        ===================================================== */
 
     function generatePlayerId() {
@@ -474,12 +387,8 @@
         while (
             players.some(
                 player =>
-                    String(
-                        player.id
-                    ) ===
-                    String(
-                        id
-                    )
+                    String(player.id) ===
+                    String(id)
             )
         ) {
 
@@ -488,18 +397,14 @@
         }
 
 
-        return String(
-            id
-        ).padStart(
-            3,
-            "0"
-        );
+        return String(id)
+            .padStart(3,"0");
 
     }
 
 
     /* =====================================================
-       SECTION NAVIGATION
+       NAVEGAÇÃO
        ===================================================== */
 
     function openSection(
@@ -532,21 +437,15 @@
         );
 
 
-        if (
-            dom.sidebar
-        ) {
-
-            dom.sidebar.classList.remove(
-                "is-open"
-            );
-
-        }
+        dom.sidebar?.classList.remove(
+            "is-open"
+        );
 
     }
 
 
     /* =====================================================
-       OPEN NEW PLAYER
+       NOVO JOGADOR
        ===================================================== */
 
     function openNewPlayer() {
@@ -566,6 +465,10 @@
             "";
 
 
+        dom.playerPlatform.value =
+            "PC";
+
+
         dom.playerElo.value =
             "0";
 
@@ -586,10 +489,6 @@
             "0";
 
 
-        dom.playerPlatform.value =
-            "PC";
-
-
         updateRankPreview();
 
 
@@ -607,43 +506,25 @@
         document.body.style.overflow =
             "hidden";
 
-
-        setTimeout(
-            () => {
-
-                dom.playerName.focus();
-
-            },
-            80
-        );
-
     }
 
 
     /* =====================================================
-       OPEN EDIT
+       EDITAR
        ===================================================== */
 
-    function openEditPlayer(
-        id
-    ) {
+    function openEditPlayer(id) {
 
         const player =
             players.find(
                 item =>
-                    String(
-                        item.id
-                    ) ===
-                    String(
-                        id
-                    )
+                    String(item.id) ===
+                    String(id)
             );
 
 
         if (!player) {
-
             return;
-
         }
 
 
@@ -660,58 +541,39 @@
 
 
         dom.playerName.value =
-            player.name ||
-            "";
+            player.name || "";
 
 
         dom.playerInstagram.value =
-            player.instagram ||
-            "";
+            player.instagram || "";
 
 
         dom.playerPlatform.value =
-            player.platform ||
-            "PC";
+            player.platform || "PC";
 
 
         dom.playerElo.value =
-            Number(
-                player.elo ||
-                0
-            );
+            Number(player.elo || 0);
 
 
         dom.playerWins.value =
-            Number(
-                player.wins ||
-                0
-            );
+            Number(player.wins || 0);
 
 
         dom.playerDraws.value =
-            Number(
-                player.draws ||
-                0
-            );
+            Number(player.draws || 0);
 
 
         dom.playerLosses.value =
-            Number(
-                player.losses ||
-                0
-            );
+            Number(player.losses || 0);
 
 
         dom.playerTitles.value =
-            Number(
-                player.titles ||
-                0
-            );
+            Number(player.titles || 0);
 
 
         dom.playerPhoto.value =
-            player.photo ||
-            "";
+            player.photo || "";
 
 
         updateRankPreview();
@@ -735,7 +597,7 @@
 
 
     /* =====================================================
-       CLOSE MODAL
+       FECHAR
        ===================================================== */
 
     function closePlayerModal() {
@@ -762,7 +624,7 @@
 
 
     /* =====================================================
-       PREVIEW
+       PREVIEW ELO
        ===================================================== */
 
     function updateRankPreview() {
@@ -774,9 +636,7 @@
 
 
         const rank =
-            getRank(
-                elo
-            );
+            getRank(elo);
 
 
         dom.playerRankPreview.textContent =
@@ -788,15 +648,13 @@
 
 
         dom.playerEloPreview.textContent =
-            String(
-                elo
-            );
+            String(elo);
 
     }
 
 
     /* =====================================================
-       SAVE PLAYER
+       SALVAR JOGADOR
        ===================================================== */
 
     function savePlayerFromForm(
@@ -807,8 +665,7 @@
 
 
         const name =
-            dom.playerName.value
-                .trim();
+            dom.playerName.value.trim();
 
 
         if (!name) {
@@ -817,20 +674,9 @@
                 "DIGITE O NOME DO JOGADOR."
             );
 
-            dom.playerName.focus();
-
             return;
 
         }
-
-
-        const elo =
-            Math.max(
-                0,
-                Number(
-                    dom.playerElo.value
-                ) || 0
-            );
 
 
         const playerData = {
@@ -840,33 +686,29 @@
                 generatePlayerId(),
 
             name:
-
                 name,
 
             instagram:
-
                 dom.playerInstagram.value
                     .trim()
-                    .replace(
-                        /^@/,
-                        ""
-                    ),
+                    .replace(/^@/, ""),
 
             platform:
-
                 dom.playerPlatform.value,
 
             elo:
-
-                elo,
+                Math.max(
+                    0,
+                    Number(
+                        dom.playerElo.value
+                    ) || 0
+                ),
 
             photo:
-
                 dom.playerPhoto.value
                     .trim(),
 
             wins:
-
                 Math.max(
                     0,
                     Number(
@@ -875,7 +717,6 @@
                 ),
 
             draws:
-
                 Math.max(
                     0,
                     Number(
@@ -884,7 +725,6 @@
                 ),
 
             losses:
-
                 Math.max(
                     0,
                     Number(
@@ -893,7 +733,6 @@
                 ),
 
             titles:
-
                 Math.max(
                     0,
                     Number(
@@ -902,38 +741,27 @@
                 ),
 
             status:
-
                 "ACTIVE"
 
         };
 
 
-        if (
-            editingPlayerId
-        ) {
+        if (editingPlayerId) {
 
             const index =
                 players.findIndex(
                     player =>
-                        String(
-                            player.id
-                        ) ===
-                        String(
-                            editingPlayerId
-                        )
+                        String(player.id) ===
+                        String(editingPlayerId)
                 );
 
 
-            if (
-                index !==
-                -1
-            ) {
+            if (index !== -1) {
 
-                players[index] =
-                    {
-                        ...players[index],
-                        ...playerData
-                    };
+                players[index] = {
+                    ...players[index],
+                    ...playerData
+                };
 
             }
 
@@ -955,7 +783,6 @@
 
         updateDashboardStats();
 
-
         closePlayerModal();
 
 
@@ -969,7 +796,7 @@
 
 
     /* =====================================================
-       FILTER
+       FILTRO
        ===================================================== */
 
     function getFilteredPlayers() {
@@ -980,71 +807,70 @@
                 .toLowerCase();
 
 
-        return players.filter(
-            player => {
+        return players
 
-                const platformOK =
-                    activePlatformFilter ===
-                    "all" ||
+            .filter(
+                player => {
 
-                    String(
-                        player.platform ||
-                        ""
-                    )
-                    .toUpperCase() ===
-                    activePlatformFilter;
+                    const platformOK =
+                        activePlatformFilter ===
+                        "all" ||
+
+                        String(
+                            player.platform ||
+                            ""
+                        )
+                        .toUpperCase() ===
+                        activePlatformFilter;
 
 
-                const searchOK =
-                    !search ||
+                    const searchOK =
+                        !search ||
 
-                    String(
-                        player.name ||
-                        ""
-                    )
-                    .toLowerCase()
-                    .includes(
-                        search
-                    ) ||
+                        String(
+                            player.name ||
+                            ""
+                        )
+                        .toLowerCase()
+                        .includes(search) ||
 
-                    String(
-                        player.instagram ||
-                        ""
-                    )
-                    .toLowerCase()
-                    .includes(
-                        search
+                        String(
+                            player.instagram ||
+                            ""
+                        )
+                        .toLowerCase()
+                        .includes(search);
+
+
+                    return (
+                        platformOK &&
+                        searchOK
                     );
 
+                }
+            )
 
-                return (
-                    platformOK &&
-                    searchOK
-                );
+            .sort(
+                (
+                    a,
+                    b
+                ) =>
 
-            }
-        )
-        .sort(
-            (
-                a,
-                b
-            ) =>
-                Number(
-                    b.elo ||
-                    0
-                ) -
+                    Number(
+                        b.elo || 0
+                    ) -
 
-                Number(
-                    a.elo ||
-                    0
-                )
-        );
+                    Number(
+                        a.elo || 0
+                    )
+
+            );
 
     }
 
 
     /* =====================================================
-       RENDER PLAYERS
+       RENDER
        ===================================================== */
 
     function renderPlayers() {
@@ -1057,20 +883,11 @@
             "";
 
 
-        if (
-            !filtered.length
-        ) {
+        if (!filtered.length) {
 
             dom.playerEmpty.classList.add(
                 "is-visible"
             );
-
-
-            dom.playerTable.parentElement
-                .classList.add(
-                    "is-empty"
-                );
-
 
             return;
 
@@ -1103,30 +920,20 @@
                 row.innerHTML = `
 
                     <td>
-
                         ${String(
                             index + 1
                         ).padStart(
                             2,
                             "0"
                         )}
-
                     </td>
 
 
                     <td>
 
-                        <div
-                            class="
-                                admin-player
-                            "
-                        >
+                        <div class="admin-player">
 
-                            <div
-                                class="
-                                    admin-player__photo
-                                "
-                            >
+                            <div class="admin-player__photo">
 
                                 ${
                                     player.photo
@@ -1154,17 +961,14 @@
                             </div>
 
 
-                            <div
-                                class="
-                                    admin-player__name
-                                "
-                            >
+                            <div class="admin-player__name">
 
                                 <strong>
                                     ${escapeHTML(
                                         player.name
                                     )}
                                 </strong>
+
 
                                 <small>
                                     @${escapeHTML(
@@ -1189,15 +993,10 @@
 
                     <td>
 
-                        <span
-                            class="
-                                admin-elo
-                            "
-                        >
+                        <span class="admin-elo">
 
                             ${Number(
-                                player.elo ||
-                                0
+                                player.elo || 0
                             )}
 
                         </span>
@@ -1210,7 +1009,12 @@
                         <span
                             class="
                                 admin-badge
-                                admin-badge--${rank.key}
+                                admin-badge--${rank.name
+                                    .toLowerCase()
+                                    .replace(
+                                        " ",
+                                        "-"
+                                    )}
                             "
                         >
 
@@ -1225,11 +1029,7 @@
 
                     <td>
 
-                        <span
-                            class="
-                                admin-status
-                            "
-                        >
+                        <span class="admin-status">
 
                             <i></i>
 
@@ -1242,11 +1042,7 @@
 
                     <td>
 
-                        <div
-                            class="
-                                admin-actions
-                            "
-                        >
+                        <div class="admin-actions">
 
                             <button
                                 type="button"
@@ -1289,7 +1085,7 @@
 
 
     /* =====================================================
-       EDIT / DELETE ACTIONS
+       AÇÕES DA TABELA
        ===================================================== */
 
     function bindPlayerRowActions() {
@@ -1341,29 +1137,21 @@
 
 
     /* =====================================================
-       DELETE
+       EXCLUIR
        ===================================================== */
 
-    function deletePlayer(
-        id
-    ) {
+    function deletePlayer(id) {
 
         const player =
             players.find(
                 item =>
-                    String(
-                        item.id
-                    ) ===
-                    String(
-                        id
-                    )
+                    String(item.id) ===
+                    String(id)
             );
 
 
         if (!player) {
-
             return;
-
         }
 
 
@@ -1374,31 +1162,20 @@
 
 
         if (!confirmed) {
-
             return;
-
         }
 
 
         const index =
             players.findIndex(
                 item =>
-                    String(
-                        item.id
-                    ) ===
-                    String(
-                        id
-                    )
+                    String(item.id) ===
+                    String(id)
             );
 
 
-        if (
-            index ===
-            -1
-        ) {
-
+        if (index === -1) {
             return;
-
         }
 
 
@@ -1424,41 +1201,27 @@
 
 
     /* =====================================================
-       DASHBOARD STATS
+       DASHBOARD
        ===================================================== */
 
     function updateDashboardStats() {
 
-        if (
-            dom.statPlayers
-        ) {
-
-            dom.statPlayers.textContent =
-                String(
-                    players.length
-                )
-                .padStart(
-                    2,
-                    "0"
-                );
-
-        }
+        dom.statPlayers.textContent =
+            String(
+                players.length
+            ).padStart(
+                2,
+                "0"
+            );
 
 
-        if (
-            dom.statMatches
-        ) {
-
-            dom.statMatches.textContent =
-                String(
-                    loadMatchesCount()
-                )
-                .padStart(
-                    2,
-                    "0"
-                );
-
-        }
+        dom.statMatches.textContent =
+            String(
+                loadMatchesCount()
+            ).padStart(
+                2,
+                "0"
+            );
 
     }
 
@@ -1501,7 +1264,7 @@
 
 
     /* =====================================================
-       EVENTOS
+       NAVEGAÇÃO
        ===================================================== */
 
     function bindNavigation() {
@@ -1544,6 +1307,10 @@
     }
 
 
+    /* =====================================================
+       MOBILE
+       ===================================================== */
+
     function bindMobileMenu() {
 
         dom.mobileMenu?.addEventListener(
@@ -1559,6 +1326,10 @@
 
     }
 
+
+    /* =====================================================
+       MODAL
+       ===================================================== */
 
     function bindPlayerModal() {
 
@@ -1604,30 +1375,12 @@
         );
 
 
-        dom.modal.addEventListener(
-            "click",
-            event => {
-
-                if (
-                    event.target ===
-                    dom.modal
-                ) {
-
-                    closePlayerModal();
-
-                }
-
-            }
-        );
-
-
         document.addEventListener(
             "keydown",
             event => {
 
                 if (
-                    event.key ===
-                    "Escape"
+                    event.key === "Escape"
                 ) {
 
                     closePlayerModal();
@@ -1639,6 +1392,10 @@
 
     }
 
+
+    /* =====================================================
+       BUSCA / FILTROS
+       ===================================================== */
 
     function bindPlayerSearch() {
 
@@ -1657,13 +1414,10 @@
 
                         dom.playerFilterButtons
                             .forEach(
-                                item => {
-
+                                item =>
                                     item.classList.remove(
                                         "is-active"
-                                    );
-
-                                }
+                                    )
                             );
 
 
@@ -1707,18 +1461,13 @@
 
 
         console.log(
-            "%cCCFV // ADMIN",
+            "%cCCFV // ADMIN ONLINE",
             "color:#43df91;font-weight:900;font-size:18px;"
         );
 
 
         console.log(
-            "Painel administrativo iniciado."
-        );
-
-
-        console.log(
-            "Base atual: localStorage."
+            "Admin carregado corretamente."
         );
 
     }
@@ -1741,6 +1490,5 @@
         init();
 
     }
-
 
 })();
