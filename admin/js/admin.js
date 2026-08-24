@@ -1,5 +1,7 @@
 /* =========================================================
    CCFV ADMIN
+   SUPABASE DATABASE
+   PLAYER MANAGEMENT
    ========================================================= */
 
 (() => {
@@ -7,18 +9,35 @@
     "use strict";
 
 
-    const PLAYER_STORAGE_KEY =
-        "ccfv_players";
+    /* =====================================================
+       CONFIGURAÇÃO
+       ===================================================== */
+
+    const PLAYERS_TABLE = "players";
 
 
-    const MATCH_STORAGE_KEY =
-        "ccfv_matches";
+    /* =====================================================
+       ESTADO
+       ===================================================== */
 
+    let supabaseClient = null;
+
+    let players = [];
+
+    let activePlatformFilter = "all";
+
+    let editingPlayerId = null;
+
+
+    /* =====================================================
+       CONFIGURAÇÃO DE ELO
+       ===================================================== */
 
     const RANK_CONFIG = {
 
         beginner: {
             name: "INICIANTE",
+            key: "beginner",
             min: 0,
             max: 999,
             color: "#8d9a95"
@@ -26,6 +45,7 @@
 
         amateur: {
             name: "AMADOR",
+            key: "amateur",
             min: 1000,
             max: 1999,
             color: "#69a8ff"
@@ -33,6 +53,7 @@
 
         professional: {
             name: "PROFISSIONAL",
+            key: "professional",
             min: 2000,
             max: 2999,
             color: "#43df91"
@@ -40,6 +61,7 @@
 
         legend: {
             name: "LENDA",
+            key: "legend",
             min: 3000,
             max: Infinity,
             color: "#ffc252"
@@ -48,17 +70,9 @@
     };
 
 
-    let players =
-        loadPlayers();
-
-
-    let activePlatformFilter =
-        "all";
-
-
-    let editingPlayerId =
-        null;
-
+    /* =====================================================
+       DOM
+       ===================================================== */
 
     const dom = {
 
@@ -89,13 +103,13 @@
         modalTitle:
             document.querySelector("#player-modal-title"),
 
-        form:
-            document.querySelector("#player-form"),
-
         closeModalButtons:
             document.querySelectorAll(
                 "[data-close-player-modal]"
             ),
+
+        form:
+            document.querySelector("#player-form"),
 
         newPlayerButton:
             document.querySelector("#new-player-button"),
@@ -136,10 +150,14 @@
             ),
 
         playerId:
-            document.querySelector("#player-id"),
+            document.querySelector(
+                "#player-id"
+            ),
 
         playerName:
-            document.querySelector("#player-name"),
+            document.querySelector(
+                "#player-name"
+            ),
 
         playerInstagram:
             document.querySelector(
@@ -152,13 +170,19 @@
             ),
 
         playerElo:
-            document.querySelector("#player-elo"),
+            document.querySelector(
+                "#player-elo"
+            ),
 
         playerWins:
-            document.querySelector("#player-wins"),
+            document.querySelector(
+                "#player-wins"
+            ),
 
         playerDraws:
-            document.querySelector("#player-draws"),
+            document.querySelector(
+                "#player-draws"
+            ),
 
         playerLosses:
             document.querySelector(
@@ -166,10 +190,14 @@
             ),
 
         playerTitles:
-            document.querySelector("#player-titles"),
+            document.querySelector(
+                "#player-titles"
+            ),
 
         playerPhoto:
-            document.querySelector("#player-photo"),
+            document.querySelector(
+                "#player-photo"
+            ),
 
         playerRankPreview:
             document.querySelector(
@@ -182,28 +210,45 @@
             ),
 
         toast:
-            document.querySelector("#admin-toast")
+            document.querySelector(
+                "#admin-toast"
+            )
 
     };
 
 
     /* =====================================================
-       UTIL
+       UTILITÁRIOS
        ===================================================== */
 
     function escapeHTML(value) {
 
-        return String(value)
+        return String(value ?? "")
 
-            .replaceAll("&", "&amp;")
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
 
-            .replaceAll("<", "&lt;")
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
 
-            .replaceAll(">", "&gt;")
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
 
-            .replaceAll('"', "&quot;")
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
 
-            .replaceAll("'", "&#039;");
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
 
     }
 
@@ -211,21 +256,23 @@
     function getInitials(name) {
 
         const words =
-            String(name)
+            String(name || "")
                 .trim()
                 .split(/\s+/)
                 .filter(Boolean);
 
 
         if (!words.length) {
+
             return "--";
+
         }
 
 
         if (words.length === 1) {
 
             return words[0]
-                .slice(0,2)
+                .slice(0, 2)
                 .toUpperCase();
 
         }
@@ -239,89 +286,13 @@
     }
 
 
-    /* =====================================================
-       STORAGE
-       ===================================================== */
+    function formatNumber(value) {
 
-    function loadPlayers() {
-
-        try {
-
-            const raw =
-                localStorage.getItem(
-                    PLAYER_STORAGE_KEY
-                );
-
-
-            if (!raw) {
-                return [];
-            }
-
-
-            const parsed =
-                JSON.parse(raw);
-
-
-            return Array.isArray(parsed)
-                ? parsed
-                : [];
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "CCFV // LOAD PLAYERS",
-                error
-            );
-
-            return [];
-
-        }
-
-    }
-
-
-    function savePlayers() {
-
-        localStorage.setItem(
-            PLAYER_STORAGE_KEY,
-            JSON.stringify(players)
+        return Number(
+            value || 0
+        ).toLocaleString(
+            "pt-BR"
         );
-
-    }
-
-
-    function loadMatchesCount() {
-
-        try {
-
-            const raw =
-                localStorage.getItem(
-                    MATCH_STORAGE_KEY
-                );
-
-
-            if (!raw) {
-                return 0;
-            }
-
-
-            const parsed =
-                JSON.parse(raw);
-
-
-            return Array.isArray(parsed)
-                ? parsed.length
-                : 0;
-
-        }
-
-        catch {
-
-            return 0;
-
-        }
 
     }
 
@@ -375,436 +346,244 @@
 
 
     /* =====================================================
-       ID
+       SUPABASE
        ===================================================== */
 
-    function generatePlayerId() {
+    async function getSupabase() {
 
-        let id =
-            1;
-
-
-        while (
-            players.some(
-                player =>
-                    String(player.id) ===
-                    String(id)
-            )
+        if (
+            supabaseClient
         ) {
 
-            id++;
+            return supabaseClient;
 
         }
 
 
-        return String(id)
-            .padStart(3,"0");
+        if (
+            !window.CCFVAuth ||
+            typeof window.CCFVAuth.getClient !==
+                "function"
+        ) {
+
+            throw new Error(
+                "Sistema de autenticação ainda não está disponível."
+            );
+
+        }
+
+
+        supabaseClient =
+            await window.CCFVAuth.getClient();
+
+
+        if (
+            !supabaseClient
+        ) {
+
+            throw new Error(
+                "Não foi possível conectar ao Supabase."
+            );
+
+        }
+
+
+        return supabaseClient;
 
     }
 
 
     /* =====================================================
-       NAVEGAÇÃO
+       CÓDIGO CCFV
        ===================================================== */
 
-    function openSection(
-        sectionName
-    ) {
+    async function generatePlayerCode() {
 
-        dom.navItems.forEach(
-            item => {
+        const client =
+            await getSupabase();
 
-                item.classList.toggle(
-                    "is-active",
-                    item.dataset.section ===
-                    sectionName
-                );
+
+        const {
+            data,
+            error
+        } =
+            await client
+
+                .from(
+                    PLAYERS_TABLE
+                )
+
+                .select(
+                    "player_code"
+                )
+
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                )
+
+                .limit(1000);
+
+
+        if (
+            error
+        ) {
+
+            throw error;
+
+        }
+
+
+        let highest =
+            0;
+
+
+        (data || []).forEach(
+            player => {
+
+                const match =
+                    String(
+                        player.player_code || ""
+                    )
+                    .match(
+                        /CCFV-(\d+)/i
+                    );
+
+
+                if (
+                    match
+                ) {
+
+                    highest =
+                        Math.max(
+                            highest,
+                            Number(
+                                match[1]
+                            )
+                        );
+
+                }
 
             }
         );
 
 
-        dom.sections.forEach(
-            section => {
+        return (
+            "CCFV-" +
+            String(
+                highest + 1
+            ).padStart(
+                3,
+                "0"
+            )
+        );
 
-                section.classList.toggle(
-                    "is-active",
-                    section.id ===
-                    `section-${sectionName}`
-                );
+    }
+
+
+    /* =====================================================
+       CARREGAR JOGADORES
+       ===================================================== */
+
+    async function loadPlayers() {
+
+        try {
+
+            const client =
+                await getSupabase();
+
+
+            const {
+                data,
+                error
+            } =
+                await client
+
+                    .from(
+                        PLAYERS_TABLE
+                    )
+
+                    .select(
+                        "*"
+                    )
+
+                    .order(
+                        "elo",
+                        {
+                            ascending: false
+                        }
+                    );
+
+
+            if (
+                error
+            ) {
+
+                throw error;
 
             }
-        );
 
 
-        dom.sidebar?.classList.remove(
-            "is-open"
-        );
-
-    }
-
-
-    /* =====================================================
-       NOVO JOGADOR
-       ===================================================== */
-
-    function openNewPlayer() {
-
-        editingPlayerId =
-            null;
+            players =
+                Array.isArray(data)
+                    ? data
+                    : [];
 
 
-        dom.modalTitle.textContent =
-            "NOVO JOGADOR.";
+            renderPlayers();
+
+            updateDashboardStats();
 
 
-        dom.form.reset();
+            console.log(
+                "CCFV // PLAYERS LOADED:",
+                players.length
+            );
 
+        }
 
-        dom.playerId.value =
-            "";
+        catch (
+            error
+        ) {
 
-
-        dom.playerPlatform.value =
-            "PC";
-
-
-        dom.playerElo.value =
-            "0";
-
-
-        dom.playerWins.value =
-            "0";
-
-
-        dom.playerDraws.value =
-            "0";
-
-
-        dom.playerLosses.value =
-            "0";
-
-
-        dom.playerTitles.value =
-            "0";
-
-
-        updateRankPreview();
-
-
-        dom.modal.classList.add(
-            "is-open"
-        );
-
-
-        dom.modal.setAttribute(
-            "aria-hidden",
-            "false"
-        );
-
-
-        document.body.style.overflow =
-            "hidden";
-
-    }
-
-
-    /* =====================================================
-       EDITAR
-       ===================================================== */
-
-    function openEditPlayer(id) {
-
-        const player =
-            players.find(
-                item =>
-                    String(item.id) ===
-                    String(id)
+            console.error(
+                "CCFV // LOAD PLAYERS ERROR:",
+                error
             );
 
 
-        if (!player) {
-            return;
-        }
+            players = [];
 
 
-        editingPlayerId =
-            player.id;
+            renderPlayers();
 
+            updateDashboardStats();
 
-        dom.modalTitle.textContent =
-            "EDITAR JOGADOR.";
-
-
-        dom.playerId.value =
-            player.id;
-
-
-        dom.playerName.value =
-            player.name || "";
-
-
-        dom.playerInstagram.value =
-            player.instagram || "";
-
-
-        dom.playerPlatform.value =
-            player.platform || "PC";
-
-
-        dom.playerElo.value =
-            Number(player.elo || 0);
-
-
-        dom.playerWins.value =
-            Number(player.wins || 0);
-
-
-        dom.playerDraws.value =
-            Number(player.draws || 0);
-
-
-        dom.playerLosses.value =
-            Number(player.losses || 0);
-
-
-        dom.playerTitles.value =
-            Number(player.titles || 0);
-
-
-        dom.playerPhoto.value =
-            player.photo || "";
-
-
-        updateRankPreview();
-
-
-        dom.modal.classList.add(
-            "is-open"
-        );
-
-
-        dom.modal.setAttribute(
-            "aria-hidden",
-            "false"
-        );
-
-
-        document.body.style.overflow =
-            "hidden";
-
-    }
-
-
-    /* =====================================================
-       FECHAR
-       ===================================================== */
-
-    function closePlayerModal() {
-
-        dom.modal.classList.remove(
-            "is-open"
-        );
-
-
-        dom.modal.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-
-
-        document.body.style.overflow =
-            "";
-
-
-        editingPlayerId =
-            null;
-
-    }
-
-
-    /* =====================================================
-       PREVIEW ELO
-       ===================================================== */
-
-    function updateRankPreview() {
-
-        const elo =
-            Number(
-                dom.playerElo.value
-            ) || 0;
-
-
-        const rank =
-            getRank(elo);
-
-
-        dom.playerRankPreview.textContent =
-            rank.name;
-
-
-        dom.playerRankPreview.style.color =
-            rank.color;
-
-
-        dom.playerEloPreview.textContent =
-            String(elo);
-
-    }
-
-
-    /* =====================================================
-       SALVAR JOGADOR
-       ===================================================== */
-
-    function savePlayerFromForm(
-        event
-    ) {
-
-        event.preventDefault();
-
-
-        const name =
-            dom.playerName.value.trim();
-
-
-        if (!name) {
 
             showToast(
-                "DIGITE O NOME DO JOGADOR."
-            );
-
-            return;
-
-        }
-
-
-        const playerData = {
-
-            id:
-                editingPlayerId ||
-                generatePlayerId(),
-
-            name:
-                name,
-
-            instagram:
-                dom.playerInstagram.value
-                    .trim()
-                    .replace(/^@/, ""),
-
-            platform:
-                dom.playerPlatform.value,
-
-            elo:
-                Math.max(
-                    0,
-                    Number(
-                        dom.playerElo.value
-                    ) || 0
-                ),
-
-            photo:
-                dom.playerPhoto.value
-                    .trim(),
-
-            wins:
-                Math.max(
-                    0,
-                    Number(
-                        dom.playerWins.value
-                    ) || 0
-                ),
-
-            draws:
-                Math.max(
-                    0,
-                    Number(
-                        dom.playerDraws.value
-                    ) || 0
-                ),
-
-            losses:
-                Math.max(
-                    0,
-                    Number(
-                        dom.playerLosses.value
-                    ) || 0
-                ),
-
-            titles:
-                Math.max(
-                    0,
-                    Number(
-                        dom.playerTitles.value
-                    ) || 0
-                ),
-
-            status:
-                "ACTIVE"
-
-        };
-
-
-        if (editingPlayerId) {
-
-            const index =
-                players.findIndex(
-                    player =>
-                        String(player.id) ===
-                        String(editingPlayerId)
-                );
-
-
-            if (index !== -1) {
-
-                players[index] = {
-                    ...players[index],
-                    ...playerData
-                };
-
-            }
-
-        }
-
-        else {
-
-            players.push(
-                playerData
+                "ERRO AO CARREGAR JOGADORES."
             );
 
         }
-
-
-        savePlayers();
-
-
-        renderPlayers();
-
-        updateDashboardStats();
-
-        closePlayerModal();
-
-
-        showToast(
-            editingPlayerId
-                ? "JOGADOR ATUALIZADO."
-                : "JOGADOR CADASTRADO."
-        );
 
     }
 
 
     /* =====================================================
-       FILTRO
+       PEGAR JOGADORES FILTRADOS
        ===================================================== */
 
     function getFilteredPlayers() {
 
         const search =
-            dom.playerSearch.value
-                .trim()
-                .toLowerCase();
+            String(
+                dom.playerSearch?.value ||
+                ""
+            )
+            .trim()
+            .toLowerCase();
 
 
         return players
@@ -812,34 +591,47 @@
             .filter(
                 player => {
 
-                    const platformOK =
-                        activePlatformFilter ===
-                        "all" ||
-
+                    const platform =
                         String(
                             player.platform ||
                             ""
+                        ).toUpperCase();
+
+
+                    const platformOK =
+                        activePlatformFilter ===
+                            "all" ||
+
+                        platform ===
+                            activePlatformFilter;
+
+
+                    const name =
+                        String(
+                            player.name ||
+                            ""
                         )
-                        .toUpperCase() ===
-                        activePlatformFilter;
+                        .toLowerCase();
+
+
+                    const instagram =
+                        String(
+                            player.instagram ||
+                            ""
+                        )
+                        .toLowerCase();
 
 
                     const searchOK =
                         !search ||
 
-                        String(
-                            player.name ||
-                            ""
-                        )
-                        .toLowerCase()
-                        .includes(search) ||
+                        name.includes(
+                            search
+                        ) ||
 
-                        String(
-                            player.instagram ||
-                            ""
-                        )
-                        .toLowerCase()
-                        .includes(search);
+                        instagram.includes(
+                            search
+                        );
 
 
                     return (
@@ -854,26 +646,38 @@
                 (
                     a,
                     b
-                ) =>
+                ) => {
 
-                    Number(
-                        b.elo || 0
-                    ) -
+                    return (
+                        Number(
+                            b.elo || 0
+                        ) -
 
-                    Number(
-                        a.elo || 0
-                    )
+                        Number(
+                            a.elo || 0
+                        )
+                    );
 
+                }
             );
 
     }
 
 
     /* =====================================================
-       RENDER
+       RENDER JOGADORES
        ===================================================== */
 
     function renderPlayers() {
+
+        if (
+            !dom.playerTable
+        ) {
+
+            return;
+
+        }
+
 
         const filtered =
             getFilteredPlayers();
@@ -883,9 +687,11 @@
             "";
 
 
-        if (!filtered.length) {
+        if (
+            filtered.length === 0
+        ) {
 
-            dom.playerEmpty.classList.add(
+            dom.playerEmpty?.classList.add(
                 "is-visible"
             );
 
@@ -894,7 +700,7 @@
         }
 
 
-        dom.playerEmpty.classList.remove(
+        dom.playerEmpty?.classList.remove(
             "is-visible"
         );
 
@@ -917,65 +723,86 @@
                     );
 
 
+                const rankClass =
+                    rank.key;
+
+
+                const photoHTML =
+                    player.photo_url
+
+                        ?
+
+                        `
+                            <img
+                                src="${escapeHTML(
+                                    player.photo_url
+                                )}"
+                                alt="${escapeHTML(
+                                    player.name
+                                )}"
+                            >
+                        `
+
+                        :
+
+                        escapeHTML(
+                            getInitials(
+                                player.name
+                            )
+                        );
+
+
                 row.innerHTML = `
 
                     <td>
+
                         ${String(
                             index + 1
                         ).padStart(
                             2,
                             "0"
                         )}
+
                     </td>
 
 
                     <td>
 
-                        <div class="admin-player">
+                        <div
+                            class="admin-player"
+                        >
 
-                            <div class="admin-player__photo">
+                            <div
+                                class="admin-player__photo"
+                            >
 
-                                ${
-                                    player.photo
-
-                                    ?
-
-                                    `
-                                        <img
-                                            src="${escapeHTML(
-                                                player.photo
-                                            )}"
-                                            alt="${escapeHTML(
-                                                player.name
-                                            )}"
-                                        >
-                                    `
-
-                                    :
-
-                                    getInitials(
-                                        player.name
-                                    )
-                                }
+                                ${photoHTML}
 
                             </div>
 
 
-                            <div class="admin-player__name">
+                            <div
+                                class="admin-player__name"
+                            >
 
                                 <strong>
+
                                     ${escapeHTML(
                                         player.name
                                     )}
+
                                 </strong>
 
 
                                 <small>
+
                                     @${escapeHTML(
                                         player.instagram ||
                                         ""
                                     )}
+
                                 </small>
+
 
                             </div>
 
@@ -985,18 +812,22 @@
 
 
                     <td>
+
                         ${escapeHTML(
                             player.platform
                         )}
+
                     </td>
 
 
                     <td>
 
-                        <span class="admin-elo">
+                        <span
+                            class="admin-elo"
+                        >
 
-                            ${Number(
-                                player.elo || 0
+                            ${formatNumber(
+                                player.elo
                             )}
 
                         </span>
@@ -1009,12 +840,7 @@
                         <span
                             class="
                                 admin-badge
-                                admin-badge--${rank.name
-                                    .toLowerCase()
-                                    .replace(
-                                        " ",
-                                        "-"
-                                    )}
+                                admin-badge--${rankClass}
                             "
                         >
 
@@ -1029,11 +855,16 @@
 
                     <td>
 
-                        <span class="admin-status">
+                        <span
+                            class="admin-status"
+                        >
 
                             <i></i>
 
-                            ATIVO
+                            ${player.status === "ACTIVE"
+                                ? "ATIVO"
+                                : "INATIVO"
+                            }
 
                         </span>
 
@@ -1042,7 +873,9 @@
 
                     <td>
 
-                        <div class="admin-actions">
+                        <div
+                            class="admin-actions"
+                        >
 
                             <button
                                 type="button"
@@ -1085,6 +918,680 @@
 
 
     /* =====================================================
+       DASHBOARD
+       ===================================================== */
+
+    function updateDashboardStats() {
+
+        if (
+            dom.statPlayers
+        ) {
+
+            dom.statPlayers.textContent =
+                String(
+                    players.length
+                ).padStart(
+                    2,
+                    "0"
+                );
+
+        }
+
+
+        /*
+         * A tabela de partidas ainda não foi criada.
+         * Por enquanto permanece 00.
+         */
+
+        if (
+            dom.statMatches
+        ) {
+
+            dom.statMatches.textContent =
+                "00";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       NOVO JOGADOR
+       ===================================================== */
+
+    function openNewPlayer() {
+
+        editingPlayerId =
+            null;
+
+
+        if (
+            dom.modalTitle
+        ) {
+
+            dom.modalTitle.textContent =
+                "NOVO JOGADOR.";
+
+        }
+
+
+        dom.form?.reset();
+
+
+        if (
+            dom.playerId
+        ) {
+
+            dom.playerId.value =
+                "";
+
+        }
+
+
+        if (
+            dom.playerPlatform
+        ) {
+
+            dom.playerPlatform.value =
+                "PC";
+
+        }
+
+
+        if (
+            dom.playerElo
+        ) {
+
+            dom.playerElo.value =
+                "0";
+
+        }
+
+
+        if (
+            dom.playerWins
+        ) {
+
+            dom.playerWins.value =
+                "0";
+
+        }
+
+
+        if (
+            dom.playerDraws
+        ) {
+
+            dom.playerDraws.value =
+                "0";
+
+        }
+
+
+        if (
+            dom.playerLosses
+        ) {
+
+            dom.playerLosses.value =
+                "0";
+
+        }
+
+
+        if (
+            dom.playerTitles
+        ) {
+
+            dom.playerTitles.value =
+                "0";
+
+        }
+
+
+        updateRankPreview();
+
+
+        dom.modal?.classList.add(
+            "is-open"
+        );
+
+
+        dom.modal?.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+
+        document.body.style.overflow =
+            "hidden";
+
+    }
+
+
+    /* =====================================================
+       EDITAR JOGADOR
+       ===================================================== */
+
+    function openEditPlayer(id) {
+
+        const player =
+            players.find(
+                item =>
+                    String(
+                        item.id
+                    ) ===
+                    String(
+                        id
+                    )
+            );
+
+
+        if (
+            !player
+        ) {
+
+            return;
+
+        }
+
+
+        editingPlayerId =
+            player.id;
+
+
+        if (
+            dom.modalTitle
+        ) {
+
+            dom.modalTitle.textContent =
+                "EDITAR JOGADOR.";
+
+        }
+
+
+        dom.playerId.value =
+            player.id;
+
+
+        dom.playerName.value =
+            player.name || "";
+
+
+        dom.playerInstagram.value =
+            player.instagram || "";
+
+
+        dom.playerPlatform.value =
+            player.platform || "PC";
+
+
+        dom.playerElo.value =
+            Number(
+                player.elo || 0
+            );
+
+
+        dom.playerWins.value =
+            Number(
+                player.wins || 0
+            );
+
+
+        dom.playerDraws.value =
+            Number(
+                player.draws || 0
+            );
+
+
+        dom.playerLosses.value =
+            Number(
+                player.losses || 0
+            );
+
+
+        dom.playerTitles.value =
+            Number(
+                player.titles || 0
+            );
+
+
+        dom.playerPhoto.value =
+            player.photo_url || "";
+
+
+        updateRankPreview();
+
+
+        dom.modal?.classList.add(
+            "is-open"
+        );
+
+
+        dom.modal?.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+
+        document.body.style.overflow =
+            "hidden";
+
+    }
+
+
+    /* =====================================================
+       FECHAR MODAL
+       ===================================================== */
+
+    function closePlayerModal() {
+
+        dom.modal?.classList.remove(
+            "is-open"
+        );
+
+
+        dom.modal?.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+
+        document.body.style.overflow =
+            "";
+
+
+        editingPlayerId =
+            null;
+
+    }
+
+
+    /* =====================================================
+       PREVIEW ELO
+       ===================================================== */
+
+    function updateRankPreview() {
+
+        if (
+            !dom.playerElo
+        ) {
+
+            return;
+
+        }
+
+
+        const elo =
+            Number(
+                dom.playerElo.value
+            ) || 0;
+
+
+        const rank =
+            getRank(
+                elo
+            );
+
+
+        if (
+            dom.playerRankPreview
+        ) {
+
+            dom.playerRankPreview.textContent =
+                rank.name;
+
+
+            dom.playerRankPreview.style.color =
+                rank.color;
+
+        }
+
+
+        if (
+            dom.playerEloPreview
+        ) {
+
+            dom.playerEloPreview.textContent =
+                formatNumber(
+                    elo
+                );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       SALVAR JOGADOR NO SUPABASE
+       ===================================================== */
+
+    async function savePlayerFromForm(
+        event
+    ) {
+
+        event.preventDefault();
+
+
+        const name =
+            dom.playerName.value.trim();
+
+
+        if (
+            !name
+        ) {
+
+            showToast(
+                "DIGITE O NOME DO JOGADOR."
+            );
+
+            return;
+
+        }
+
+
+        const client =
+            await getSupabase();
+
+
+        const playerPayload = {
+
+            name:
+                name,
+
+            instagram:
+                dom.playerInstagram.value
+                    .trim()
+                    .replace(
+                        /^@/,
+                        ""
+                    ),
+
+            platform:
+                dom.playerPlatform.value,
+
+            elo:
+                Math.max(
+                    0,
+                    Number(
+                        dom.playerElo.value
+                    ) || 0
+                ),
+
+            photo_url:
+                dom.playerPhoto.value
+                    .trim() ||
+                null,
+
+            wins:
+                Math.max(
+                    0,
+                    Number(
+                        dom.playerWins.value
+                    ) || 0
+                ),
+
+            draws:
+                Math.max(
+                    0,
+                    Number(
+                        dom.playerDraws.value
+                    ) || 0
+                ),
+
+            losses:
+                Math.max(
+                    0,
+                    Number(
+                        dom.playerLosses.value
+                    ) || 0
+                ),
+
+            titles:
+                Math.max(
+                    0,
+                    Number(
+                        dom.playerTitles.value
+                    ) || 0
+                ),
+
+            status:
+                "ACTIVE"
+
+        };
+
+
+        try {
+
+            /*
+             * EDITAR
+             */
+
+            if (
+                editingPlayerId
+            ) {
+
+                const {
+                    error
+                } =
+                    await client
+
+                        .from(
+                            PLAYERS_TABLE
+                        )
+
+                        .update(
+                            playerPayload
+                        )
+
+                        .eq(
+                            "id",
+                            editingPlayerId
+                        );
+
+
+                if (
+                    error
+                ) {
+
+                    throw error;
+
+                }
+
+
+                showToast(
+                    "JOGADOR ATUALIZADO."
+                );
+
+            }
+
+            /*
+             * NOVO
+             */
+
+            else {
+
+                const playerCode =
+                    await generatePlayerCode();
+
+
+                const {
+                    error
+                } =
+                    await client
+
+                        .from(
+                            PLAYERS_TABLE
+                        )
+
+                        .insert({
+
+                            ...playerPayload,
+
+                            player_code:
+                                playerCode
+
+                        });
+
+
+                if (
+                    error
+                ) {
+
+                    throw error;
+
+                }
+
+
+                showToast(
+                    "JOGADOR CADASTRADO."
+                );
+
+            }
+
+
+            closePlayerModal();
+
+
+            await loadPlayers();
+
+        }
+
+        catch (
+            error
+        ) {
+
+            console.error(
+                "CCFV // SAVE PLAYER ERROR:",
+                error
+            );
+
+
+            console.error(
+                "MESSAGE:",
+                error?.message
+            );
+
+
+            console.error(
+                "DETAILS:",
+                error?.details
+            );
+
+
+            showToast(
+                "ERRO AO SALVAR JOGADOR."
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       EXCLUIR JOGADOR
+       ===================================================== */
+
+    async function deletePlayer(
+        id
+    ) {
+
+        const player =
+            players.find(
+                item =>
+                    String(
+                        item.id
+                    ) ===
+                    String(
+                        id
+                    )
+            );
+
+
+        if (
+            !player
+        ) {
+
+            return;
+
+        }
+
+
+        const confirmed =
+            window.confirm(
+                `Excluir o jogador "${player.name}"?`
+            );
+
+
+        if (
+            !confirmed
+        ) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const client =
+                await getSupabase();
+
+
+            const {
+                error
+            } =
+                await client
+
+                    .from(
+                        PLAYERS_TABLE
+                    )
+
+                    .delete()
+
+                    .eq(
+                        "id",
+                        id
+                    );
+
+
+            if (
+                error
+            ) {
+
+                throw error;
+
+            }
+
+
+            showToast(
+                "JOGADOR EXCLUÍDO."
+            );
+
+
+            await loadPlayers();
+
+        }
+
+        catch (
+            error
+        ) {
+
+            console.error(
+                "CCFV // DELETE PLAYER ERROR:",
+                error
+            );
+
+
+            showToast(
+                "ERRO AO EXCLUIR JOGADOR."
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
        AÇÕES DA TABELA
        ===================================================== */
 
@@ -1102,7 +1609,8 @@
                         () => {
 
                             openEditPlayer(
-                                button.dataset.editPlayer
+                                button.dataset
+                                    .editPlayer
                             );
 
                         }
@@ -1124,7 +1632,8 @@
                         () => {
 
                             deletePlayer(
-                                button.dataset.deletePlayer
+                                button.dataset
+                                    .deletePlayer
                             );
 
                         }
@@ -1137,135 +1646,45 @@
 
 
     /* =====================================================
-       EXCLUIR
-       ===================================================== */
-
-    function deletePlayer(id) {
-
-        const player =
-            players.find(
-                item =>
-                    String(item.id) ===
-                    String(id)
-            );
-
-
-        if (!player) {
-            return;
-        }
-
-
-        const confirmed =
-            window.confirm(
-                `Excluir o jogador "${player.name}"?`
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        const index =
-            players.findIndex(
-                item =>
-                    String(item.id) ===
-                    String(id)
-            );
-
-
-        if (index === -1) {
-            return;
-        }
-
-
-        players.splice(
-            index,
-            1
-        );
-
-
-        savePlayers();
-
-
-        renderPlayers();
-
-        updateDashboardStats();
-
-
-        showToast(
-            "JOGADOR EXCLUÍDO."
-        );
-
-    }
-
-
-    /* =====================================================
-       DASHBOARD
-       ===================================================== */
-
-    function updateDashboardStats() {
-
-        dom.statPlayers.textContent =
-            String(
-                players.length
-            ).padStart(
-                2,
-                "0"
-            );
-
-
-        dom.statMatches.textContent =
-            String(
-                loadMatchesCount()
-            ).padStart(
-                2,
-                "0"
-            );
-
-    }
-
-
-    /* =====================================================
-       TOAST
-       ===================================================== */
-
-    function showToast(
-        message
-    ) {
-
-        dom.toast.textContent =
-            message;
-
-
-        dom.toast.classList.add(
-            "is-visible"
-        );
-
-
-        clearTimeout(
-            dom.toast._timer
-        );
-
-
-        dom.toast._timer =
-            setTimeout(
-                () => {
-
-                    dom.toast.classList.remove(
-                        "is-visible"
-                    );
-
-                },
-                2600
-            );
-
-    }
-
-
-    /* =====================================================
        NAVEGAÇÃO
        ===================================================== */
+
+    function openSection(
+        sectionName
+    ) {
+
+        dom.navItems.forEach(
+            item => {
+
+                item.classList.toggle(
+                    "is-active",
+                    item.dataset.section ===
+                        sectionName
+                );
+
+            }
+        );
+
+
+        dom.sections.forEach(
+            section => {
+
+                section.classList.toggle(
+                    "is-active",
+                    section.id ===
+                        `section-${sectionName}`
+                );
+
+            }
+        );
+
+
+        dom.sidebar?.classList.remove(
+            "is-open"
+        );
+
+    }
+
 
     function bindNavigation() {
 
@@ -1363,13 +1782,13 @@
         );
 
 
-        dom.form.addEventListener(
+        dom.form?.addEventListener(
             "submit",
             savePlayerFromForm
         );
 
 
-        dom.playerElo.addEventListener(
+        dom.playerElo?.addEventListener(
             "input",
             updateRankPreview
         );
@@ -1380,7 +1799,8 @@
             event => {
 
                 if (
-                    event.key === "Escape"
+                    event.key ===
+                    "Escape"
                 ) {
 
                     closePlayerModal();
@@ -1397,9 +1817,9 @@
        BUSCA / FILTROS
        ===================================================== */
 
-    function bindPlayerSearch() {
+    function bindSearchAndFilters() {
 
-        dom.playerSearch.addEventListener(
+        dom.playerSearch?.addEventListener(
             "input",
             renderPlayers
         );
@@ -1414,10 +1834,13 @@
 
                         dom.playerFilterButtons
                             .forEach(
-                                item =>
+                                item => {
+
                                     item.classList.remove(
                                         "is-active"
-                                    )
+                                    );
+
+                                }
                             );
 
 
@@ -1427,7 +1850,9 @@
 
 
                         activePlatformFilter =
-                            button.dataset.adminFilter;
+                            button.dataset
+                                .adminFilter ||
+                            "all";
 
 
                         renderPlayers();
@@ -1442,10 +1867,62 @@
 
 
     /* =====================================================
+       TOAST
+       ===================================================== */
+
+    function showToast(
+        message
+    ) {
+
+        if (
+            !dom.toast
+        ) {
+
+            return;
+
+        }
+
+
+        dom.toast.textContent =
+            message;
+
+
+        dom.toast.classList.add(
+            "is-visible"
+        );
+
+
+        clearTimeout(
+            dom.toast._timer
+        );
+
+
+        dom.toast._timer =
+            setTimeout(
+                () => {
+
+                    dom.toast.classList.remove(
+                        "is-visible"
+                    );
+
+                },
+                2800
+            );
+
+    }
+
+
+    /* =====================================================
        INIT
        ===================================================== */
 
-    function init() {
+    async function init() {
+
+        console.log(
+            "%cCCFV // ADMIN DATABASE",
+            "color:#43df91;font-weight:900;font-size:18px;"
+        );
+
 
         bindNavigation();
 
@@ -1453,22 +1930,39 @@
 
         bindPlayerModal();
 
-        bindPlayerSearch();
+        bindSearchAndFilters();
 
-        renderPlayers();
-
-        updateDashboardStats();
+        updateRankPreview();
 
 
-        console.log(
-            "%cCCFV // ADMIN ONLINE",
-            "color:#43df91;font-weight:900;font-size:18px;"
-        );
+        try {
+
+            await getSupabase();
+
+            await loadPlayers();
 
 
-        console.log(
-            "Admin carregado corretamente."
-        );
+            console.log(
+                "CCFV // SUPABASE DATABASE CONNECTED"
+            );
+
+        }
+
+        catch (
+            error
+        ) {
+
+            console.error(
+                "CCFV // DATABASE INIT ERROR:",
+                error
+            );
+
+
+            showToast(
+                "ERRO AO CONECTAR AO BANCO."
+            );
+
+        }
 
     }
 
