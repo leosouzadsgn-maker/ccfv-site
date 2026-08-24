@@ -1,6 +1,6 @@
 /* =========================================================
    CCFV — AUTHENTICATION
-   SUPABASE LOGIN + DEBUG
+   SUPABASE LOGIN + PROTEÇÃO DO ADMIN
    ========================================================= */
 
 (() => {
@@ -9,29 +9,28 @@
 
 
     /* =====================================================
-       CONFIGURAÇÃO
+       SUPABASE
        ===================================================== */
 
     const SUPABASE_URL =
-        "https://hfiwndvshzorifkziiw.supabase.co";
+        "https://hfiwndvshzorikfzkiiw.supabase.co";
 
 
     /*
-     * MANTENHA A SUA CHAVE SB_PUBLISHABLE AQUI.
+     * COLE AQUI A SUA CHAVE:
      *
-     * NUNCA coloque a sb_secret aqui.
+     * sb_publishable_...
+     *
+     * NÃO USE sb_secret_...
      */
 
     const SUPABASE_PUBLISHABLE_KEY =
         "sb_publishable_VykAaaP_0PfIW_n4HYHbTA_VlvrkjMu";
 
 
-    let supabaseClient =
-        null;
+    let supabaseClient = null;
 
-
-    let clientPromise =
-        null;
+    let clientPromise = null;
 
 
     /* =====================================================
@@ -199,7 +198,7 @@
 
                         reject(
                             new Error(
-                                "Não foi possível carregar @supabase/supabase-js."
+                                "Não foi possível carregar a biblioteca do Supabase."
                             )
                         );
 
@@ -358,12 +357,6 @@
             await client.auth.getSession();
 
 
-        console.log(
-            "CCFV // SESSION:",
-            data
-        );
-
-
         if (
             error
         ) {
@@ -397,11 +390,6 @@
         if (
             error
         ) {
-
-            console.error(
-                "CCFV // LOGOUT ERROR:",
-                error
-            );
 
             throw error;
 
@@ -446,7 +434,7 @@
 
 
     /* =====================================================
-       ERRO HUMANO
+       ERRO AMIGÁVEL
        ===================================================== */
 
     function getFriendlyError(
@@ -505,19 +493,6 @@
 
         if (
             lower.includes(
-                "jwt"
-            )
-        ) {
-
-            return (
-                "SUPABASE: PROBLEMA COM A CHAVE/API."
-            );
-
-        }
-
-
-        if (
-            lower.includes(
                 "failed to fetch"
             )
         ) {
@@ -541,7 +516,7 @@
 
 
     /* =====================================================
-       ERRO NA TELA
+       ERRO LOGIN
        ===================================================== */
 
     function showLoginError(
@@ -645,9 +620,7 @@
 
         form.addEventListener(
             "submit",
-            async (
-                event
-            ) => {
+            async event => {
 
                 event.preventDefault();
 
@@ -712,40 +685,8 @@
                 ) {
 
                     console.error(
-                        "======================================"
-                    );
-
-
-                    console.error(
-                        "CCFV // ERRO REAL DO SUPABASE"
-                    );
-
-
-                    console.error(
+                        "CCFV // LOGIN ERROR",
                         error
-                    );
-
-
-                    console.error(
-                        "message:",
-                        error?.message
-                    );
-
-
-                    console.error(
-                        "status:",
-                        error?.status
-                    );
-
-
-                    console.error(
-                        "name:",
-                        error?.name
-                    );
-
-
-                    console.error(
-                        "======================================"
                     );
 
 
@@ -804,11 +745,6 @@
             }
 
 
-            console.log(
-                "CCFV // ADMIN AUTENTICADO"
-            );
-
-
             showPage();
 
         }
@@ -818,7 +754,7 @@
         ) {
 
             console.error(
-                "CCFV // PROTECTION ERROR:",
+                "CCFV // PROTECTION ERROR",
                 error
             );
 
@@ -874,7 +810,7 @@
         ) {
 
             console.error(
-                "CCFV // LOGIN PAGE CHECK:",
+                "CCFV // LOGIN PAGE ERROR",
                 error
             );
 
@@ -924,7 +860,7 @@
 
 
     /* =====================================================
-       API
+       API GLOBAL
        ===================================================== */
 
     window.CCFVAuth = {
@@ -947,7 +883,7 @@
     async function init() {
 
         console.log(
-            "%cCCFV // AUTH DEBUG",
+            "%cCCFV // AUTH SYSTEM",
             "color:#43df91;font-weight:900;font-size:18px;"
         );
 
@@ -959,12 +895,9 @@
 
             await getClient();
 
-
             await protectAdmin();
 
-
             await protectLogin();
-
 
             await bindAuthState();
 
@@ -980,7 +913,7 @@
         ) {
 
             console.error(
-                "CCFV // AUTH INIT ERROR:",
+                "CCFV // AUTH INIT ERROR",
                 error
             );
 
