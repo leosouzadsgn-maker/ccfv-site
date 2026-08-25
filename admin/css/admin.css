@@ -2232,3 +2232,67 @@ select {
     }
 
 }
+/* =========================================================
+   CCFV // SELECTS — DARK MODE
+   ========================================================= */
+
+.ccfv-admin select,
+.ccfv-admin-form select,
+#player-platform,
+#brasileirao-team {
+
+    color-scheme: dark;
+
+    color: #ffffff;
+
+    background-color: #07100b;
+
+    border-color: rgba(67, 223, 145, 0.18);
+
+}
+
+
+/* Campo fechado */
+
+.ccfv-admin select option,
+.ccfv-admin-form select option,
+#player-platform option,
+#brasileirao-team option {
+
+    color: #ffffff;
+
+    background-color: #07100b;
+
+}
+
+
+/* Opção selecionada */
+
+.ccfv-admin select option:checked,
+.ccfv-admin-form select option:checked,
+#player-platform option:checked,
+#brasileirao-team option:checked {
+
+    color: #031008;
+
+    background-color: #43df91;
+
+}
+
+
+/* Hover/foco no select */
+
+.ccfv-admin select:focus,
+.ccfv-admin-form select:focus,
+#player-platform:focus,
+#brasileirao-team:focus {
+
+    outline: none;
+
+    border-color: #43df91;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(67, 223, 145, 0.08);
+
+}
