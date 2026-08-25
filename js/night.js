@@ -1,6 +1,6 @@
 /* =========================================================
-   CCFV // NIGHT CUP PUBLIC
-   Página pública da Night Cup
+   CCFV // NIGHT CUP PUBLIC LIVE
+   ADMIN -> matches -> CCFVLive -> NIGHT CUP PUBLIC
    ========================================================= */
 
 (() => {
@@ -9,46 +9,32 @@
 
 
     /* =====================================================
-       UTILITÁRIOS
+       CONFIG
        ===================================================== */
 
-    function number(
-        value
-    ) {
+    const SELECTORS = {
 
-        const n =
-            Number(
-                value
-            );
+        bracketMatches:
+            ".ccfv-night-bracket-match",
 
-        return Number.isFinite(
-            n
-        )
-            ? n
-            : 0;
+        finalMatch:
+            ".ccfv-night-final-match",
 
-    }
+        finalTeam:
+            ".ccfv-night-final-match__team",
+
+        finalChampion:
+            ".ccfv-night-final-match__champion",
+
+        headingStatus:
+            ".ccfv-night-heading-status"
+
+    };
 
 
-    function normalize(
-        value
-    ) {
-
-        return String(
-            value ?? ""
-        )
-            .normalize(
-                "NFD"
-            )
-            .replace(
-                /[\u0300-\u036f]/g,
-                ""
-            )
-            .trim()
-            .toUpperCase();
-
-    }
-
+    /* =====================================================
+       HELPERS
+       ===================================================== */
 
     function escapeHTML(
         value
@@ -81,87 +67,66 @@
     }
 
 
-    /* =====================================================
-       ESTADO
-       ===================================================== */
+    function normalize(
+        value
+    ) {
 
-    let observerStarted =
-        false;
-
-
-    /* =====================================================
-       PLAYERS
-       ===================================================== */
-
-    function getPlayers() {
-
-        if (
-            window.CCFVLive &&
-            Array.isArray(
-                window.CCFVLive.players
+        return String(
+            value ?? ""
+        )
+            .normalize(
+                "NFD"
             )
-        ) {
-
-            return window.CCFVLive.players;
-
-        }
-
-        return [];
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            )
+            .trim()
+            .toUpperCase();
 
     }
 
 
-    function findPlayer(
-        match,
-        side
+    function number(
+        value
+    ) {
+
+        const result =
+            Number(
+                value
+            );
+
+
+        return Number.isFinite(
+            result
+        )
+            ? result
+            : 0;
+
+    }
+
+
+    /* =====================================================
+       LOCALIZAR JOGADOR
+       ===================================================== */
+
+    function getPlayerName(
+        playerId,
+        fallback
     ) {
 
         const players =
-            getPlayers();
+            window.CCFVLive &&
+            Array.isArray(
+                window.CCFVLive.players
+            )
+                ? window.CCFVLive.players
+                : [];
 
 
-        const isHome =
-            side ===
-            "home";
-
-
-        const possibleIds =
-            isHome
-
-                ? [
-                    "home_player_id",
-                    "player1_id",
-                    "player_a_id",
-                    "home_id"
-                ]
-
-                : [
-                    "away_player_id",
-                    "player2_id",
-                    "player_b_id",
-                    "away_id"
-                ];
-
-
-        for (
-            const key
-            of possibleIds
+        if (
+            playerId
         ) {
-
-            const id =
-                match?.[
-                    key
-                ];
-
-
-            if (
-                !id
-            ) {
-
-                continue;
-
-            }
-
 
             const player =
                 players.find(
@@ -170,1066 +135,14 @@
                             item.id
                         ) ===
                         String(
-                            id
+                            playerId
                         )
                 );
 
 
             if (
-                player
-            ) {
-
-                return player;
-
-            }
-
-        }
-
-
-        return null;
-
-    }
-
-
-    function getPlayerName(
-        match,
-        side
-    ) {
-
-        const isHome =
-            side ===
-            "home";
-
-
-        const directKeys =
-            isHome
-
-                ? [
-                    "home_player_name",
-                    "home_name",
-                    "player1_name",
-                    "player_a_name",
-                    "home_player"
-                ]
-
-                : [
-                    "away_player_name",
-                    "away_name",
-                    "player2_name",
-                    "player_b_name",
-                    "away_player"
-                ];
-
-
-        for (
-            const key
-            of directKeys
-        ) {
-
-            const value =
-                match?.[
-                    key
-                ];
-
-
-            if (
-                value !==
-                undefined &&
-                value !==
-                null &&
-                String(
-                    value
-                ).trim() !== ""
-            ) {
-
-                if (
-                    typeof value ===
-                    "string"
-                ) {
-
-                    return value;
-
-                }
-
-
-                if (
-                    typeof value ===
-                    "object"
-                ) {
-
-                    return (
-                        value.name ||
-                        "A DEFINIR"
-                    );
-
-                }
-
-            }
-
-        }
-
-
-        const player =
-            findPlayer(
-                match,
-                side
-            );
-
-
-        if (
-            player?.name
-        ) {
-
-            return player.name;
-
-        }
-
-
-        return "A DEFINIR";
-
-    }
-
-
-    /* =====================================================
-       SCORE
-       ===================================================== */
-
-    function getScore(
-        match,
-        side
-    ) {
-
-        const isHome =
-            side ===
-            "home";
-
-
-        const keys =
-            isHome
-
-                ? [
-                    "home_score",
-                    "player1_score",
-                    "player_a_score",
-                    "home_goals",
-                    "score1",
-                    "score_a"
-                ]
-
-                : [
-                    "away_score",
-                    "player2_score",
-                    "player_b_score",
-                    "away_goals",
-                    "score2",
-                    "score_b"
-                ];
-
-
-        for (
-            const key
-            of keys
-        ) {
-
-            if (
-                match?.[
-                    key
-                ] !==
-                undefined
-            ) {
-
-                return number(
-                    match[
-                        key
-                    ]
-                );
-
-            }
-
-        }
-
-
-        return 0;
-
-    }
-
-
-    /* =====================================================
-       STATUS
-       ===================================================== */
-
-    function getStatus(
-        match
-    ) {
-
-        return normalize(
-            match?.status ||
-            match?.state ||
-            match?.match_status ||
-            ""
-        );
-
-    }
-
-
-    function isFinished(
-        match
-    ) {
-
-        return [
-
-            "FINAL",
-
-            "FINISHED",
-
-            "COMPLETED",
-
-            "DONE",
-
-            "FINALIZADA",
-
-            "CONCLUIDA",
-
-            "ENCERRADA"
-
-        ].includes(
-            getStatus(
-                match
-            )
-        );
-
-    }
-
-
-    /* =====================================================
-       NÚMERO DA PARTIDA
-       ===================================================== */
-
-    function getMatchNumber(
-        match,
-        fallback
-    ) {
-
-        const keys = [
-
-            "match_number",
-
-            "match",
-
-            "game_number",
-
-            "fixture_number",
-
-            "position",
-
-            "number"
-
-        ];
-
-
-        for (
-            const key
-            of keys
-        ) {
-
-            const value =
-                number(
-                    match?.[
-                        key
-                    ]
-                );
-
-
-            if (
-                value >
-                0
-            ) {
-
-                return value;
-
-            }
-
-        }
-
-
-        return fallback;
-
-    }
-
-
-    /* =====================================================
-       FASE
-       ===================================================== */
-
-    function getPhase(
-        match,
-        index
-    ) {
-
-        const raw =
-            normalize(
-                match?.round ||
-                match?.round_name ||
-                match?.phase ||
-                match?.stage ||
-                match?.round_type ||
-                ""
-            );
-
-
-        if (
-            raw.includes(
-                "FINAL"
-            ) &&
-            !raw.includes(
-                "SEMI"
-            )
-        ) {
-
-            return "final";
-
-        }
-
-
-        if (
-            raw.includes(
-                "SEMI"
-            )
-        ) {
-
-            return "semi";
-
-        }
-
-
-        if (
-            raw.includes(
-                "QUART"
-            ) ||
-            raw.includes(
-                "QF"
-            )
-        ) {
-
-            return "quarterfinal";
-
-        }
-
-
-        const round =
-            number(
-                match?.round_number ||
-                match?.stage_number
-            );
-
-
-        if (
-            round ===
-            3
-        ) {
-
-            return "final";
-
-        }
-
-
-        if (
-            round ===
-            2
-        ) {
-
-            return "semi";
-
-        }
-
-
-        /*
-         * Fallback pelo número do jogo:
-         *
-         * 1–4  = quartas
-         * 5–6  = semi
-         * 7    = final
-         */
-
-        const matchNumber =
-            getMatchNumber(
-                match,
-                index + 1
-            );
-
-
-        if (
-            matchNumber >=
-            7
-        ) {
-
-            return "final";
-
-        }
-
-
-        if (
-            matchNumber >=
-            5
-        ) {
-
-            return "semi";
-
-        }
-
-
-        return "quarterfinal";
-
-    }
-
-
-    /* =====================================================
-       DADOS
-       ===================================================== */
-
-    function getNightMatches() {
-
-        if (
-            !window.CCFVLive
-        ) {
-
-            return [];
-
-        }
-
-
-        if (
-            !Array.isArray(
-                window.CCFVLive.nightMatches
-            )
-        ) {
-
-            return [];
-
-        }
-
-
-        return window.CCFVLive
-            .nightMatches
-            .slice();
-
-    }
-
-
-    function splitMatches() {
-
-        const groups = {
-
-            quarterfinal: [],
-
-            semi: [],
-
-            final: []
-
-        };
-
-
-        getNightMatches()
-            .forEach(
-                (
-                    match,
-                    index
-                ) => {
-
-                    const phase =
-                        getPhase(
-                            match,
-                            index
-                        );
-
-
-                    if (
-                        groups[
-                            phase
-                        ]
-                    ) {
-
-                        groups[
-                            phase
-                        ].push(
-                            match
-                        );
-
-                    }
-
-                }
-            );
-
-
-        Object.keys(
-            groups
-        )
-            .forEach(
-                key => {
-
-                    groups[
-                        key
-                    ].sort(
-                        (
-                            a,
-                            b
-                        ) =>
-                            getMatchNumber(
-                                a,
-                                0
-                            ) -
-                            getMatchNumber(
-                                b,
-                                0
-                            )
-                    );
-
-                }
-            );
-
-
-        return groups;
-
-    }
-
-
-    /* =====================================================
-       CSS
-       ===================================================== */
-
-    function injectStyles() {
-
-        if (
-            document.getElementById(
-                "ccfv-public-night-live"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        const style =
-            document.createElement(
-                "style"
-            );
-
-
-        style.id =
-            "ccfv-public-night-live";
-
-
-        style.textContent = `
-
-            .ccfv-night-live-match {
-
-                padding:
-                    12px;
-
-                border:
-                    1px solid
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .07
-                    );
-
-                border-radius:
-                    10px;
-
-                background:
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .012
-                    );
-
-                box-sizing:
-                    border-box;
-
-            }
-
-
-            .ccfv-night-live-match
-            + .ccfv-night-live-match {
-
-                margin-top:
-                    9px;
-
-            }
-
-
-            .ccfv-night-live-match.is-finished {
-
-                border-color:
-                    rgba(
-                        67,
-                        223,
-                        145,
-                        .25
-                    );
-
-                background:
-                    rgba(
-                        67,
-                        223,
-                        145,
-                        .025
-                    );
-
-            }
-
-
-            .ccfv-night-live-match__number {
-
-                color:
-                    #43df91;
-
-                font-size:
-                    10px;
-
-                font-weight:
-                    900;
-
-                letter-spacing:
-                    .08em;
-
-                margin-bottom:
-                    9px;
-
-            }
-
-
-            .ccfv-night-live-match__teams {
-
-                display:
-                    grid;
-
-                grid-template-columns:
-                    minmax(
-                        0,
-                        1fr
-                    )
-                    auto
-                    minmax(
-                        0,
-                        1fr
-                    );
-
-                gap:
-                    10px;
-
-                align-items:
-                    center;
-
-            }
-
-
-            .ccfv-night-live-match__team {
-
-                min-width:
-                    0;
-
-                color:
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .85
-                    );
-
-                font-size:
-                    13px;
-
-                font-weight:
-                    900;
-
-                white-space:
-                    nowrap;
-
-                overflow:
-                    hidden;
-
-                text-overflow:
-                    ellipsis;
-
-            }
-
-
-            .ccfv-night-live-match__team:last-child {
-
-                text-align:
-                    right;
-
-            }
-
-
-            .ccfv-night-live-match__score {
-
-                min-width:
-                    60px;
-
-                padding:
-                    7px 10px;
-
-                border:
-                    1px solid
-                    rgba(
-                        67,
-                        223,
-                        145,
-                        .2
-                    );
-
-                border-radius:
-                    999px;
-
-                color:
-                    #43df91;
-
-                text-align:
-                    center;
-
-                font-size:
-                    12px;
-
-                font-weight:
-                    950;
-
-            }
-
-
-            .ccfv-night-live-match__status {
-
-                margin-top:
-                    9px;
-
-                padding-top:
-                    8px;
-
-                border-top:
-                    1px solid
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .04
-                    );
-
-                color:
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .18
-                    );
-
-                font-size:
-                    8px;
-
-                font-weight:
-                    800;
-
-                text-transform:
-                    uppercase;
-
-            }
-
-
-            .ccfv-night-live-match__winner {
-
-                margin-top:
-                    7px;
-
-                color:
-                    #43df91;
-
-                font-size:
-                    9px;
-
-                font-weight:
-                    900;
-
-            }
-
-
-        `;
-
-
-        document.head.appendChild(
-            style
-        );
-
-    }
-
-
-    /* =====================================================
-       RENDER DE PARTIDAS
-       ===================================================== */
-
-    function renderGames(
-        container,
-        matches,
-        label
-    ) {
-
-        if (
-            !container
-        ) {
-
-            return;
-
-        }
-
-
-        if (
-            !matches.length
-        ) {
-
-            container.innerHTML =
-                "";
-
-            return;
-
-        }
-
-
-        container.innerHTML =
-            matches
-                .map(
-                    (
-                        match,
-                        index
-                    ) => {
-
-                        const home =
-                            getPlayerName(
-                                match,
-                                "home"
-                            );
-
-                        const away =
-                            getPlayerName(
-                                match,
-                                "away"
-                            );
-
-
-                        const finished =
-                            isFinished(
-                                match
-                            );
-
-
-                        const homeScore =
-                            getScore(
-                                match,
-                                "home"
-                            );
-
-
-                        const awayScore =
-                            getScore(
-                                match,
-                                "away"
-                            );
-
-
-                        let winner =
-                            "";
-
-
-                        if (
-                            finished &&
-                            homeScore !==
-                            awayScore
-                        ) {
-
-                            winner =
-                                homeScore >
-                                awayScore
-                                    ? home
-                                    : away;
-
-                        }
-
-
-                        const gameNumber =
-                            String(
-                                getMatchNumber(
-                                    match,
-                                    index + 1
-                                )
-                            ).padStart(
-                                2,
-                                "0"
-                            );
-
-
-                        return `
-
-                            <article
-                                class="
-                                    ccfv-night-live-match
-                                    ${
-                                        finished
-                                            ? "is-finished"
-                                            : ""
-                                    }
-                                "
-                            >
-
-                                <div
-                                    class="
-                                        ccfv-night-live-match__number
-                                    "
-                                >
-                                    ${escapeHTML(
-                                        label
-                                    )}
-                                    ${gameNumber}
-                                </div>
-
-
-                                <div
-                                    class="
-                                        ccfv-night-live-match__teams
-                                    "
-                                >
-
-                                    <strong
-                                        class="
-                                            ccfv-night-live-match__team
-                                        "
-                                    >
-                                        ${escapeHTML(
-                                            home
-                                        )}
-                                    </strong>
-
-
-                                    <span
-                                        class="
-                                            ccfv-night-live-match__score
-                                        "
-                                    >
-                                        ${
-                                            finished
-
-                                                ? `${homeScore} × ${awayScore}`
-
-                                                : "VS"
-                                        }
-                                    </span>
-
-
-                                    <strong
-                                        class="
-                                            ccfv-night-live-match__team
-                                        "
-                                    >
-                                        ${escapeHTML(
-                                            away
-                                        )}
-                                    </strong>
-
-                                </div>
-
-
-                                <div
-                                    class="
-                                        ccfv-night-live-match__status
-                                    "
-                                >
-                                    ${
-                                        finished
-
-                                            ? "RESULTADO REGISTRADO"
-
-                                            : "A DEFINIR"
-                                    }
-                                </div>
-
-
-                                ${
-                                    winner
-
-                                        ? `
-                                            <div
-                                                class="
-                                                    ccfv-night-live-match__winner
-                                                "
-                                            >
-                                                VENCEDOR:
-                                                ${escapeHTML(
-                                                    winner
-                                                )}
-                                            </div>
-                                        `
-
-                                        : ""
-                                }
-
-                            </article>
-
-                        `;
-
-                    }
-                )
-                .join("");
-
-    }
-
-
-    /* =====================================================
-       DESCOBRIR CAMPEÃO
-       ===================================================== */
-
-    function getChampion(
-        finalMatches
-    ) {
-
-        const finalMatch =
-            finalMatches.find(
-                isFinished
-            );
-
-
-        if (
-            !finalMatch
-        ) {
-
-            return "A DEFINIR";
-
-        }
-
-
-        const winnerId =
-            finalMatch.winner_id ||
-            finalMatch.winner_player_id;
-
-
-        if (
-            winnerId
-        ) {
-
-            const player =
-                getPlayers().find(
-                    item =>
-                        String(
-                            item.id
-                        ) ===
-                        String(
-                            winnerId
-                        )
-                );
-
-
-            if (
-                player?.name
+                player &&
+                player.name
             ) {
 
                 return player.name;
@@ -1239,52 +152,140 @@
         }
 
 
-        const explicitWinner =
-            finalMatch.winner_name ||
-            finalMatch.winner ||
-            finalMatch.winner_player_name;
+        return (
+            fallback ||
+            "A DEFINIR"
+        );
 
+    }
+
+
+    /* =====================================================
+       EXTRAIR JOGADOR CASA
+       ===================================================== */
+
+    function getHomeName(
+        match
+    ) {
+
+        return getPlayerName(
+
+            match.home_player_id,
+
+            match.home_player_name ||
+            match.home_name ||
+            match.home_player ||
+            match.home_team ||
+
+            "A DEFINIR"
+
+        );
+
+    }
+
+
+    /* =====================================================
+       EXTRAIR JOGADOR FORA
+       ===================================================== */
+
+    function getAwayName(
+        match
+    ) {
+
+        return getPlayerName(
+
+            match.away_player_id,
+
+            match.away_player_name ||
+            match.away_name ||
+            match.away_player ||
+            match.away_team ||
+
+            "A DEFINIR"
+
+        );
+
+    }
+
+
+    /* =====================================================
+       STATUS
+       ===================================================== */
+
+    function isFinished(
+        match
+    ) {
+
+        const status =
+            normalize(
+                match.status
+            );
+
+
+        return (
+
+            status ===
+                "FINAL"
+
+            ||
+
+            status ===
+                "FINISHED"
+
+            ||
+
+            status ===
+                "COMPLETED"
+
+            ||
+
+            status ===
+                "CONCLUIDA"
+
+            ||
+
+            status ===
+                "CONCLUIDA"
+
+            ||
+
+            status ===
+                "ENCERRADA"
+
+        );
+
+    }
+
+
+    /* =====================================================
+       VENCEDOR
+       ===================================================== */
+
+    function getWinner(
+        match
+    ) {
 
         if (
-            explicitWinner
+            !match ||
+            !isFinished(
+                match
+            )
         ) {
 
-            if (
-                typeof explicitWinner ===
-                "string"
-            ) {
-
-                return explicitWinner;
-
-            }
-
-
-            if (
-                typeof explicitWinner ===
-                "object"
-            ) {
-
-                return (
-                    explicitWinner.name ||
-                    "A DEFINIR"
-                );
-
-            }
+            return null;
 
         }
 
 
         const homeScore =
-            getScore(
-                finalMatch,
-                "home"
+            number(
+                match.home_score
             );
 
 
         const awayScore =
-            getScore(
-                finalMatch,
-                "away"
+            number(
+                match.away_score
             );
 
 
@@ -1293,43 +294,264 @@
             awayScore
         ) {
 
-            return "A DEFINIR";
+            return null;
 
         }
 
 
-        return homeScore >
+        return (
+
+            homeScore >
             awayScore
 
-            ? getPlayerName(
-                finalMatch,
-                "home"
+                ? getHomeName(
+                    match
+                )
+
+                : getAwayName(
+                    match
+                )
+
+        );
+
+    }
+
+
+    /* =====================================================
+       FASE
+       ===================================================== */
+
+    function getStage(
+        match
+    ) {
+
+        const stage =
+            normalize(
+                match.stage
+            );
+
+
+        if (
+            stage.includes(
+                "FINAL"
+            ) &&
+            !stage.includes(
+                "SEMI"
+            ) &&
+            !stage.includes(
+                "QUART"
+            ) &&
+            !stage.includes(
+                "QF"
+            )
+        ) {
+
+            return "FINAL";
+
+        }
+
+
+        if (
+            stage.includes(
+                "SEMI"
+            )
+        ) {
+
+            return "SEMIFINAL";
+
+        }
+
+
+        if (
+            stage.includes(
+                "QUART"
+            ) ||
+            stage.includes(
+                "QF"
+            )
+        ) {
+
+            return "QUARTAS";
+
+        }
+
+
+        const matchNumber =
+            number(
+                match.match_number
+            );
+
+
+        if (
+            matchNumber ===
+            7
+        ) {
+
+            return "FINAL";
+
+        }
+
+
+        if (
+            matchNumber ===
+            5 ||
+            matchNumber ===
+            6
+        ) {
+
+            return "SEMIFINAL";
+
+        }
+
+
+        if (
+            matchNumber >= 1 &&
+            matchNumber <= 4
+        ) {
+
+            return "QUARTAS";
+
+        }
+
+
+        return "";
+
+    }
+
+
+    /* =====================================================
+       NÚMERO DO JOGO
+       ===================================================== */
+
+    function getMatchNumber(
+        match
+    ) {
+
+        return number(
+            match.match_number
+        );
+
+    }
+
+
+    /* =====================================================
+       PEGAR NIGHT CUP
+       ===================================================== */
+
+    function getNightMatches() {
+
+        const state =
+            window.CCFVLive;
+
+
+        if (
+            !state
+        ) {
+
+            return [];
+
+        }
+
+
+        if (
+            !Array.isArray(
+                state.matches
+            )
+        ) {
+
+            return [];
+
+        }
+
+
+        return state.matches
+
+            .filter(
+                match =>
+                    normalize(
+                        match.competition
+                    ) ===
+                    "NIGHT_CUP"
             )
 
-            : getPlayerName(
-                finalMatch,
-                "away"
+            .filter(
+                match =>
+                    getStage(
+                        match
+                    ) !==
+                    ""
+            )
+
+            .sort(
+                (
+                    a,
+                    b
+                ) => {
+
+                    const aNumber =
+                        getMatchNumber(
+                            a
+                        );
+
+
+                    const bNumber =
+                        getMatchNumber(
+                            b
+                        );
+
+
+                    return (
+                        aNumber -
+                        bNumber
+                    );
+
+                }
             );
 
     }
 
 
     /* =====================================================
-       CHAVEAMENTO ESTÁTICO
+       LOCALIZAR PARTIDA
        ===================================================== */
 
-    function renderStaticBracket(
-        groups
+    function findMatch(
+        matches,
+        matchNumber
     ) {
 
-        const articles =
-            document.querySelectorAll(
-                ".ccfv-night-bracket-match"
-            );
+        return (
 
+            matches.find(
+                match =>
+                    getMatchNumber(
+                        match
+                    ) ===
+                    matchNumber
+            )
+
+            ||
+
+            null
+
+        );
+
+    }
+
+
+    /* =====================================================
+       CRIAR HTML DA EQUIPE/JOGADOR
+       ===================================================== */
+
+    function renderBracketTeam(
+        element,
+        name,
+        label,
+        score
+    ) {
 
         if (
-            !articles.length
+            !element
         ) {
 
             return;
@@ -1337,246 +559,789 @@
         }
 
 
-        const qf =
-            groups.quarterfinal;
-
-
-        const sf =
-            groups.semi;
-
-
-        const finalMatches =
-            groups.final;
-
-
-        /*
-         * QUARTAS
-         */
-
-        articles
-            .forEach(
-                (
-                    article,
-                    index
-                ) => {
-
-                    if (
-                        index >=
-                        4
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    const match =
-                        qf[
-                            index
-                        ];
-
-
-                    if (
-                        !match
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    const teams =
-                        article.querySelectorAll(
-                            ".ccfv-night-bracket-team strong"
-                        );
-
-
-                    if (
-                        teams[0]
-                    ) {
-
-                        teams[0].textContent =
-                            getPlayerName(
-                                match,
-                                "home"
-                            );
-
-                    }
-
-
-                    if (
-                        teams[1]
-                    ) {
-
-                        teams[1].textContent =
-                            getPlayerName(
-                                match,
-                                "away"
-                            );
-
-                    }
-
-                }
+        const strong =
+            element.querySelector(
+                "strong"
             );
 
 
+        const span =
+            element.querySelector(
+                "span"
+            );
+
+
+        if (
+            strong
+        ) {
+
+            strong.textContent =
+                name ||
+                "A DEFINIR";
+
+        }
+
+
+        if (
+            span
+        ) {
+
+            span.textContent =
+                label || "";
+
+        }
+
+
         /*
-         * SEMIS
+         * Se houver placar, coloca
+         * discretamente ao lado do nome.
          */
 
-        const semiArticles =
+        let scoreElement =
+            element.querySelector(
+                ".ccfv-night-live-score"
+            );
+
+
+        if (
+            score !==
+            null &&
+            score !==
+            undefined
+        ) {
+
+            if (
+                !scoreElement
+            ) {
+
+                scoreElement =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                scoreElement.className =
+                    "ccfv-night-live-score";
+
+
+                element.appendChild(
+                    scoreElement
+                );
+
+            }
+
+
+            scoreElement.textContent =
+                String(
+                    score
+                );
+
+        }
+
+        else if (
+            scoreElement
+        ) {
+
+            scoreElement.remove();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       ATUALIZAR QUARTAS
+       ===================================================== */
+
+    function renderQuarterfinals(
+        matches
+    ) {
+
+        const games =
             document.querySelectorAll(
-                ".ccfv-night-bracket-column--middle .ccfv-night-bracket-match"
+                SELECTORS.bracketMatches
             );
 
 
-        semiArticles
-            .forEach(
-                (
-                    article,
-                    index
-                ) => {
+        if (
+            games.length <
+            6
+        ) {
 
-                    const match =
-                        sf[
-                            index
-                        ];
+            return;
+
+        }
 
 
-                    if (
-                        !match
-                    ) {
+        const qfGames = [
 
-                        return;
+            {
+                element:
+                    games[0],
 
-                    }
+                match:
+                    findMatch(
+                        matches,
+                        1
+                    ),
+
+                label1:
+                    "01",
+
+                label2:
+                    "02"
+
+            },
+
+            {
+                element:
+                    games[1],
+
+                match:
+                    findMatch(
+                        matches,
+                        2
+                    ),
+
+                label1:
+                    "03",
+
+                label2:
+                    "04"
+
+            },
+
+            {
+                element:
+                    games[2],
+
+                match:
+                    findMatch(
+                        matches,
+                        3
+                    ),
+
+                label1:
+                    "05",
+
+                label2:
+                    "06"
+
+            },
+
+            {
+                element:
+                    games[3],
+
+                match:
+                    findMatch(
+                        matches,
+                        4
+                    ),
+
+                label1:
+                    "07",
+
+                label2:
+                    "08"
+
+            }
+
+        ];
 
 
-                    const teams =
-                        article.querySelectorAll(
-                            ".ccfv-night-bracket-team strong"
-                        );
+        qfGames.forEach(
+            item => {
 
+                if (
+                    !item.element
+                ) {
 
-                    if (
-                        teams[0]
-                    ) {
-
-                        teams[0].textContent =
-                            getPlayerName(
-                                match,
-                                "home"
-                            );
-
-                    }
-
-
-                    if (
-                        teams[1]
-                    ) {
-
-                        teams[1].textContent =
-                            getPlayerName(
-                                match,
-                                "away"
-                            );
-
-                    }
+                    return;
 
                 }
+
+
+                const teams =
+                    item.element.querySelectorAll(
+                        ".ccfv-night-bracket-team"
+                    );
+
+
+                if (
+                    teams.length <
+                    2
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+                    !item.match
+                ) {
+
+                    renderBracketTeam(
+                        teams[0],
+                        "A DEFINIR",
+                        item.label1,
+                        null
+                    );
+
+
+                    renderBracketTeam(
+                        teams[1],
+                        "A DEFINIR",
+                        item.label2,
+                        null
+                    );
+
+
+                    return;
+
+                }
+
+
+                renderBracketTeam(
+
+                    teams[0],
+
+                    getHomeName(
+                        item.match
+                    ),
+
+                    item.label1,
+
+                    isFinished(
+                        item.match
+                    )
+                        ? number(
+                            item.match.home_score
+                        )
+                        : null
+
+                );
+
+
+                renderBracketTeam(
+
+                    teams[1],
+
+                    getAwayName(
+                        item.match
+                    ),
+
+                    item.label2,
+
+                    isFinished(
+                        item.match
+                    )
+                        ? number(
+                            item.match.away_score
+                        )
+                        : null
+
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       SEMIFINAIS
+       ===================================================== */
+
+    function renderSemifinals(
+        matches
+    ) {
+
+        const games =
+            document.querySelectorAll(
+                SELECTORS.bracketMatches
+            );
+
+
+        if (
+            games.length <
+            6
+        ) {
+
+            return;
+
+        }
+
+
+        const semifinal1 =
+            findMatch(
+                matches,
+                5
+            );
+
+
+        const semifinal2 =
+            findMatch(
+                matches,
+                6
+            );
+
+
+        const firstSemifinal =
+            games[4];
+
+
+        const secondSemifinal =
+            games[5];
+
+
+        const qf1 =
+            findMatch(
+                matches,
+                1
+            );
+
+
+        const qf2 =
+            findMatch(
+                matches,
+                2
+            );
+
+
+        const qf3 =
+            findMatch(
+                matches,
+                3
+            );
+
+
+        const qf4 =
+            findMatch(
+                matches,
+                4
             );
 
 
         /*
-         * FINAL
+         * SF01
          */
 
-        const finalArticle =
-            document.querySelector(
-                ".ccfv-night-final-match"
+        renderSemifinalSource(
+            firstSemifinal,
+            semifinal1,
+
+            qf1,
+            qf2,
+
+            "QF 01",
+            "QF 02"
+
+        );
+
+
+        /*
+         * SF02
+         */
+
+        renderSemifinalSource(
+            secondSemifinal,
+            semifinal2,
+
+            qf3,
+            qf4,
+
+            "QF 03",
+            "QF 04"
+
+        );
+
+    }
+
+
+    function renderSemifinalSource(
+        element,
+        semifinal,
+        qfA,
+        qfB,
+        labelA,
+        labelB
+    ) {
+
+        if (
+            !element
+        ) {
+
+            return;
+
+        }
+
+
+        const teams =
+            element.querySelectorAll(
+                ".ccfv-night-bracket-team"
             );
+
+
+        if (
+            teams.length <
+            2
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+         * Se a semifinal já foi registrada,
+         * usamos diretamente os jogadores que
+         * estavam na partida.
+         */
+
+        if (
+            semifinal
+        ) {
+
+            renderBracketTeam(
+                teams[0],
+                getHomeName(
+                    semifinal
+                ),
+                labelA,
+                isFinished(
+                    semifinal
+                )
+                    ? number(
+                        semifinal.home_score
+                    )
+                    : null
+            );
+
+
+            renderBracketTeam(
+                teams[1],
+                getAwayName(
+                    semifinal
+                ),
+                labelB,
+                isFinished(
+                    semifinal
+                )
+                    ? number(
+                        semifinal.away_score
+                    )
+                    : null
+            );
+
+
+            return;
+
+        }
+
+
+        /*
+         * Se ainda não foi registrada,
+         * mostramos o vencedor da QF.
+         */
+
+        const winnerA =
+            getWinner(
+                qfA
+            );
+
+
+        const winnerB =
+            getWinner(
+                qfB
+            );
+
+
+        renderBracketTeam(
+            teams[0],
+            winnerA ||
+                "A DEFINIR",
+            labelA,
+            null
+        );
+
+
+        renderBracketTeam(
+            teams[1],
+            winnerB ||
+                "A DEFINIR",
+            labelB,
+            null
+        );
+
+    }
+
+
+    /* =====================================================
+       FINAL
+       ===================================================== */
+
+    function renderFinal(
+        matches
+    ) {
+
+        const finalElement =
+            document.querySelector(
+                SELECTORS.finalMatch
+            );
+
+
+        if (
+            !finalElement
+        ) {
+
+            return;
+
+        }
+
+
+        const teams =
+            finalElement.querySelectorAll(
+                ".ccfv-night-final-match__team"
+            );
+
+
+        if (
+            teams.length <
+            2
+        ) {
+
+            return;
+
+        }
 
 
         const finalMatch =
-            finalMatches[0];
+            findMatch(
+                matches,
+                7
+            );
 
+
+        const semifinal1 =
+            findMatch(
+                matches,
+                5
+            );
+
+
+        const semifinal2 =
+            findMatch(
+                matches,
+                6
+            );
+
+
+        /*
+         * FINAL já registrada
+         */
 
         if (
-            finalArticle &&
             finalMatch
         ) {
 
-            const teams =
-                finalArticle.querySelectorAll(
-                    ".ccfv-night-final-match__team strong"
-                );
+            renderFinalTeam(
+                teams[0],
+                getHomeName(
+                    finalMatch
+                ),
+                isFinished(
+                    finalMatch
+                )
+                    ? number(
+                        finalMatch.home_score
+                    )
+                    : null,
+                "FINALISTA 01"
+            );
 
 
-            if (
-                teams[0]
-            ) {
-
-                teams[0].textContent =
-                    getPlayerName(
-                        finalMatch,
-                        "home"
-                    );
-
-            }
-
-
-            if (
-                teams[1]
-            ) {
-
-                teams[1].textContent =
-                    getPlayerName(
-                        finalMatch,
-                        "away"
-                    );
-
-            }
+            renderFinalTeam(
+                teams[1],
+                getAwayName(
+                    finalMatch
+                ),
+                isFinished(
+                    finalMatch
+                )
+                    ? number(
+                        finalMatch.away_score
+                    )
+                    : null,
+                "FINALISTA 02"
+            );
 
 
-            const champion =
-                getChampion(
-                    finalMatches
-                );
+            updateChampion(
+                finalMatch
+            );
 
 
-            const championElement =
-                document.querySelector(
-                    "#night-champion-name"
-                );
-
-
-            if (
-                championElement
-            ) {
-
-                championElement.textContent =
-                    champion;
-
-            }
+            return;
 
         }
 
-        else {
 
-            const championElement =
-                document.querySelector(
-                    "#night-champion-name"
-                );
+        /*
+         * FINAL ainda não registrada:
+         * mostramos os vencedores das semis.
+         */
 
+        const finalist1 =
+            getWinner(
+                semifinal1
+            );
+
+
+        const finalist2 =
+            getWinner(
+                semifinal2
+            );
+
+
+        renderFinalTeam(
+            teams[0],
+            finalist1 ||
+                "A DEFINIR",
+            null,
+            "FINALISTA 01"
+        );
+
+
+        renderFinalTeam(
+            teams[1],
+            finalist2 ||
+                "A DEFINIR",
+            null,
+            "FINALISTA 02"
+        );
+
+
+        const champion =
+            document.querySelector(
+                SELECTORS.finalChampion
+            );
+
+
+        if (
+            champion
+        ) {
+
+            champion.innerHTML = `
+
+                <span>
+                    🏆
+                </span>
+
+                CAMPEÃO
+
+            `;
+
+        }
+
+    }
+
+
+    function renderFinalTeam(
+        element,
+        name,
+        score,
+        label
+    ) {
+
+        if (
+            !element
+        ) {
+
+            return;
+
+        }
+
+
+        const strong =
+            element.querySelector(
+                "strong"
+            );
+
+
+        const span =
+            element.querySelector(
+                "span"
+            );
+
+
+        if (
+            strong
+        ) {
+
+            strong.textContent =
+                name;
+
+        }
+
+
+        if (
+            span
+        ) {
+
+            span.textContent =
+                label;
+
+        }
+
+
+        let scoreElement =
+            element.querySelector(
+                ".ccfv-night-final-score"
+            );
+
+
+        if (
+            score !==
+            null &&
+            score !==
+            undefined
+        ) {
 
             if (
-                championElement
+                !scoreElement
             ) {
 
-                championElement.textContent =
-                    "A DEFINIR";
+                scoreElement =
+                    document.createElement(
+                        "small"
+                    );
+
+
+                scoreElement.className =
+                    "ccfv-night-final-score";
+
+
+                element.appendChild(
+                    scoreElement
+                );
 
             }
+
+
+            scoreElement.textContent =
+                String(
+                    score
+                );
+
+        }
+
+        else if (
+            scoreElement
+        ) {
+
+            scoreElement.remove();
 
         }
 
@@ -1584,108 +1349,204 @@
 
 
     /* =====================================================
-       ATUALIZAR
+       CAMPEÃO
        ===================================================== */
 
-    function update() {
+    function updateChampion(
+        finalMatch
+    ) {
 
-        const quarterfinals =
+        const champion =
             document.querySelector(
-                "#night-quarterfinals"
+                SELECTORS.finalChampion
             );
 
 
-        const semifinals =
-            document.querySelector(
-                "#night-semifinals"
+        if (
+            !champion
+        ) {
+
+            return;
+
+        }
+
+
+        const winner =
+            getWinner(
+                finalMatch
             );
+
+
+        champion.innerHTML = winner
+
+            ? `
+
+                <span>
+                    🏆
+                </span>
+
+                CAMPEÃO:
+                <strong>
+                    ${escapeHTML(
+                        winner
+                    )}
+                </strong>
+
+            `
+
+            : `
+
+                <span>
+                    🏆
+                </span>
+
+                CAMPEÃO
+
+            `;
+
+    }
+
+
+    /* =====================================================
+       STATUS DO CABEÇALHO
+       ===================================================== */
+
+    function updateHeadingStatus(
+        matches
+    ) {
+
+        const element =
+            document.querySelector(
+                SELECTORS.headingStatus
+            );
+
+
+        if (
+            !element
+        ) {
+
+            return;
+
+        }
 
 
         const final =
-            document.querySelector(
-                "#night-final"
+            findMatch(
+                matches,
+                7
             );
 
 
+        const completed =
+            matches.filter(
+                isFinished
+            ).length;
+
+
         if (
-            !quarterfinals &&
-            !semifinals &&
-            !final
+            final &&
+            isFinished(
+                final
+            )
         ) {
+
+            element.textContent =
+                "NIGHT CUP #01 • FINALIZADA";
 
             return;
 
         }
 
 
-        injectStyles();
+        if (
+            completed >
+            0
+        ) {
+
+            element.textContent =
+                `NIGHT CUP #01 • ${completed}/7`;
+
+            return;
+
+        }
 
 
-        const groups =
-            splitMatches();
+        element.textContent =
+            "NIGHT CUP #01";
+
+    }
 
 
-        renderGames(
-            quarterfinals,
-            groups.quarterfinal,
-            "QF"
+    /* =====================================================
+       RENDER PRINCIPAL
+       ===================================================== */
+
+    function render() {
+
+        const matches =
+            getNightMatches();
+
+
+        renderQuarterfinals(
+            matches
         );
 
 
-        renderGames(
-            semifinals,
-            groups.semi,
-            "SF"
+        renderSemifinals(
+            matches
         );
 
 
-        renderGames(
-            final,
-            groups.final,
-            "FINAL"
+        renderFinal(
+            matches
         );
 
 
-        renderStaticBracket(
-            groups
+        updateHeadingStatus(
+            matches
+        );
+
+
+        console.log(
+            "%cCCFV // NIGHT LIVE",
+            "color:#43df91;font-weight:900;",
+            {
+                partidas:
+                    matches.length,
+
+                finalizada:
+                    matches.filter(
+                        isFinished
+                    ).length
+            }
         );
 
     }
 
 
     /* =====================================================
-       EVENTO LIVE
+       ESPERAR CCFV LIVE
        ===================================================== */
 
-    function startLiveListener() {
+    function start() {
 
-        if (
-            observerStarted
-        ) {
-
-            return;
-
-        }
-
-
-        observerStarted =
-            true;
+        render();
 
 
         window.addEventListener(
             "ccfv:live-update",
             () => {
 
-                update();
+                render();
 
             }
         );
 
 
         /*
-         * O ccfv-live.js pode carregar depois
-         * deste arquivo. Por isso tentamos
-         * novamente algumas vezes no início.
+         * O ccfv-live.js é carregado depois
+         * deste arquivo. Este intervalo cobre
+         * o primeiro carregamento.
          */
 
         let attempts =
@@ -1699,19 +1560,18 @@
                     attempts++;
 
 
-                    update();
+                    if (
+                        window.CCFVLive
+                    ) {
+
+                        render();
+
+                    }
 
 
                     if (
-                        (
-                            window.CCFVLive &&
-                            Array.isArray(
-                                window.CCFVLive.nightMatches
-                            )
-                        )
-                        ||
                         attempts >=
-                        40
+                        20
                     ) {
 
                         window.clearInterval(
@@ -1721,7 +1581,7 @@
                     }
 
                 },
-                250
+                500
             );
 
     }
@@ -1731,15 +1591,6 @@
        INIT
        ===================================================== */
 
-    function init() {
-
-        update();
-
-        startLiveListener();
-
-    }
-
-
     if (
         document.readyState ===
         "loading"
@@ -1747,7 +1598,7 @@
 
         document.addEventListener(
             "DOMContentLoaded",
-            init,
+            start,
             {
                 once:
                     true
@@ -1758,7 +1609,7 @@
 
     else {
 
-        init();
+        start();
 
     }
 
