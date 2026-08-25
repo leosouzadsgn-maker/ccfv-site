@@ -873,7 +873,250 @@
 
     function buildBrazilResults() {
 
-        return state.matches
+        const api =
+            window.CCFVBrasileirao;
+
+
+        const teams =
+            api?.config?.teams ||
+            [];
+
+
+        const fixtures =
+            typeof api?.getFixtures ===
+                "function"
+                ? api.getFixtures()
+                : [];
+
+
+        const usedMatchNumbers =
+            new Map();
+
+
+        function resolveTeamId(
+            value
+        ) {
+
+            const normalized =
+                normalize(
+                    value
+                );
+
+
+            const numeric =
+                Number(
+                    value
+                );
+
+
+            if (
+                Number.isFinite(
+                    numeric
+                ) &&
+                numeric > 0
+            ) {
+
+                const direct =
+                    teams.find(
+                        team =>
+                            Number(
+                                team.id
+                            ) ===
+                            numeric
+                    );
+
+
+                if (
+                    direct
+                ) {
+
+                    return Number(
+                        direct.id
+                    );
+
+                }
+
+            }
+
+
+            const exact =
+                teams.find(
+                    team =>
+                        normalize(
+                            team.name
+                        ) ===
+                        normalized
+                );
+
+
+            if (
+                exact
+            ) {
+
+                return Number(
+                    exact.id
+                );
+
+            }
+
+
+            const shortName =
+                teams.find(
+                    team =>
+                        normalize(
+                            team.shortName
+                        ) ===
+                        normalized
+                );
+
+
+            if (
+                shortName
+            ) {
+
+                return Number(
+                    shortName.id
+                );
+
+            }
+
+
+            const contained =
+                teams.find(
+                    team => {
+
+                        const name =
+                            normalize(
+                                team.name
+                            );
+
+
+                        const short =
+                            normalize(
+                                team.shortName
+                            );
+
+
+                        return (
+                            (
+                                name &&
+                                (
+                                    normalized.includes(
+                                        name
+                                    ) ||
+                                    name.includes(
+                                        normalized
+                                    )
+                                )
+                            )
+                            ||
+                            (
+                                short &&
+                                (
+                                    normalized.includes(
+                                        short
+                                    ) ||
+                                    short.includes(
+                                        normalized
+                                    )
+                                )
+                            )
+                        );
+
+                    }
+                );
+
+
+            return contained
+                ? Number(
+                    contained.id
+                )
+                : null;
+
+        }
+
+
+        function getNextMatchNumber(
+            round
+        ) {
+
+            const current =
+                usedMatchNumbers.get(
+                    round
+                ) ||
+                0;
+
+
+            const next =
+                current + 1;
+
+
+            usedMatchNumbers.set(
+                round,
+                next
+            );
+
+
+            return next;
+
+        }
+
+
+        function resolveMatchNumber(
+            round,
+            homeId,
+            awayId
+        ) {
+
+            const exact =
+                fixtures.find(
+                    fixture =>
+                        Number(
+                            fixture.round
+                        ) ===
+                        round &&
+
+                        Number(
+                            fixture.home
+                        ) ===
+                        homeId &&
+
+                        Number(
+                            fixture.away
+                        ) ===
+                        awayId
+                );
+
+
+            if (
+                exact
+            ) {
+
+                return Number(
+                    exact.match
+                );
+
+            }
+
+
+            /*
+             * Se o Admin registrar um confronto de teste
+             * que não corresponde ao fixture oficial daquela
+             * rodada, damos a ele um número sequencial dentro
+             * da rodada. A classificação continua correta.
+             */
+
+            return getNextMatchNumber(
+                round
+            );
+
+        }
+
+
+        const results = [];
+
+
+        state.matches
 
             .filter(
                 match =>
@@ -891,49 +1134,159 @@
                     "FINAL"
             )
 
-            .map(
-                match => ({
+            .sort(
+                (
+                    a,
+                    b
+                ) => {
 
-                    round:
+                    const roundA =
+                        number(
+                            a.round_number
+                        );
+
+
+                    const roundB =
+                        number(
+                            b.round_number
+                        );
+
+
+                    if (
+                        roundA !==
+                        roundB
+                    ) {
+
+                        return (
+                            roundA -
+                            roundB
+                        );
+
+                    }
+
+
+                    return (
+                        new Date(
+                            a.played_at ||
+                            a.created_at ||
+                            0
+                        ).getTime() -
+
+                        new Date(
+                            b.played_at ||
+                            b.created_at ||
+                            0
+                        ).getTime()
+                    );
+
+                }
+            )
+
+            .forEach(
+                match => {
+
+                    const round =
                         number(
                             match.round_number
-                        ),
+                        );
 
-                    match:
-                        number(
-                            match.match_number
-                        ),
 
-                    home:
-                        match.home_team,
+                    if (
+                        round <= 0
+                    ) {
 
-                    away:
-                        match.away_team,
+                        return;
 
-                    homeTeam:
-                        match.home_team,
+                    }
 
-                    awayTeam:
-                        match.away_team,
 
-                    homeGoals:
-                        number(
-                            match.home_score
-                        ),
+                    const homeTeamId =
+                        resolveTeamId(
+                            match.home_team
+                        );
 
-                    awayGoals:
-                        number(
-                            match.away_score
-                        ),
 
-                    date:
-                        match.played_at,
+                    const awayTeamId =
+                        resolveTeamId(
+                            match.away_team
+                        );
 
-                    matchId:
-                        match.id
 
-                })
+                    if (
+                        !homeTeamId ||
+                        !awayTeamId
+                    ) {
+
+                        console.warn(
+                            "CCFV // BRASILEIRÃO: clube não encontrado",
+                            {
+                                home:
+                                    match.home_team,
+
+                                away:
+                                    match.away_team
+                            }
+                        );
+
+
+                        return;
+
+                    }
+
+
+                    const matchNumber =
+                        resolveMatchNumber(
+                            round,
+                            homeTeamId,
+                            awayTeamId
+                        );
+
+
+                    results.push({
+
+                        round:
+                            round,
+
+                        match:
+                            matchNumber,
+
+                        home:
+                            homeTeamId,
+
+                        away:
+                            awayTeamId,
+
+                        homeTeam:
+                            homeTeamId,
+
+                        awayTeam:
+                            awayTeamId,
+
+                        homeGoals:
+                            number(
+                                match.home_score
+                            ),
+
+                        awayGoals:
+                            number(
+                                match.away_score
+                            ),
+
+                        date:
+                            match.played_at ||
+                            match.created_at ||
+                            "",
+
+                        matchId:
+                            match.id
+
+                    });
+
+                }
             );
+
+
+        return results;
 
     }
 
