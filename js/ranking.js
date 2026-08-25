@@ -1377,16 +1377,41 @@
        TOPO DO RANKING
        ===================================================== */
 
-    function renderFeature() {
+   function renderFeature() {
 
-        if (
-            !elements.feature
-        ) {
+    if (
+        !elements.feature
+    ) {
 
-            return;
+        return;
 
-        }
+    }
 
+
+    const leader =
+        players
+            .slice()
+            .sort(
+                (
+                    a,
+                    b
+                ) =>
+                    Number(
+                        b.elo || 0
+                    ) -
+                    Number(
+                        a.elo || 0
+                    )
+            )[0];
+
+
+    /*
+     * SEM JOGADOR
+     */
+
+    if (
+        !leader
+    ) {
 
         elements.feature.innerHTML = `
 
@@ -1511,7 +1536,12 @@
                             </span>
 
                             <strong>
-                                00
+                                ${String(
+                                    players.length
+                                ).padStart(
+                                    2,
+                                    "0"
+                                )}
                             </strong>
 
                         </div>
@@ -1537,7 +1567,298 @@
 
         `;
 
+        return;
+
     }
+
+
+    /*
+     * LÍDER REAL
+     */
+
+    const rank =
+        getRankByPoints(
+            leader.elo
+        );
+
+
+    const photo =
+        leader.photo ||
+        leader.photo_url ||
+        "";
+
+
+    const initials =
+        leader.name
+            ? String(
+                leader.name
+            )
+                .trim()
+                .slice(
+                    0,
+                    2
+                )
+                .toUpperCase()
+            : "??";
+
+
+    const photoHTML =
+        photo
+            ? `
+                <img
+                    src="${escapeHTML(
+                        photo
+                    )}"
+                    alt="${escapeHTML(
+                        leader.name
+                    )}"
+                    loading="eager"
+                >
+            `
+            : `
+                <span>
+                    ${escapeHTML(
+                        initials
+                    )}
+                </span>
+            `;
+
+
+    const elo =
+        Number(
+            leader.elo || 0
+        );
+
+
+    const games =
+        Number(
+            leader.matches ??
+            (
+                Number(
+                    leader.wins || 0
+                ) +
+                Number(
+                    leader.draws || 0
+                ) +
+                Number(
+                    leader.losses || 0
+                )
+            )
+        );
+
+
+    const wins =
+        Number(
+            leader.wins || 0
+        );
+
+
+    const draws =
+        Number(
+            leader.draws || 0
+        );
+
+
+    const losses =
+        Number(
+            leader.losses || 0
+        );
+
+
+    const titles =
+        Number(
+            leader.titles || 0
+        );
+
+
+    elements.feature.innerHTML = `
+
+        <div
+            class="
+                ccfv-ranking-feature
+            "
+        >
+
+            <div
+                class="
+                    ccfv-ranking-feature__visual
+                "
+            >
+
+                <div
+                    class="
+                        ccfv-ranking-feature__photo
+                    "
+                >
+
+                    ${photoHTML}
+
+                </div>
+
+
+                <div
+                    class="
+                        ccfv-ranking-feature__badge
+                    "
+                >
+
+                    ${renderBadge(
+                        rank,
+                        "large"
+                    )}
+
+                </div>
+
+
+                <span
+                    class="
+                        ccfv-ranking-feature__position
+                    "
+                >
+                    #01
+                </span>
+
+            </div>
+
+
+            <div
+                class="
+                    ccfv-ranking-feature__content
+            "
+            >
+
+                <span>
+                    CCFV // OFFICIAL LEADER
+                </span>
+
+
+                <h2>
+                    ${escapeHTML(
+                        leader.name
+                    )}
+                </h2>
+
+
+                <small>
+                    ${
+                        leader.instagram
+                            ? `@${escapeHTML(
+                                String(
+                                    leader.instagram
+                                )
+                                    .replace(
+                                        /^@/,
+                                        ""
+                                    )
+                            )}`
+                            : "SEM INSTAGRAM"
+                    }
+                </small>
+
+
+                <div
+                    class="
+                        ccfv-ranking-feature__rank
+                    "
+                >
+                    ${escapeHTML(
+                        rank.name
+                    )}
+                </div>
+
+
+                <div
+                    class="
+                        ccfv-ranking-feature__stats
+                    "
+                >
+
+                    <div>
+
+                        <span>
+                            ELO
+                        </span>
+
+                        <strong>
+                            ${elo}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            JOGOS
+                        </span>
+
+                        <strong>
+                            ${games}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            V
+                        </span>
+
+                        <strong>
+                            ${wins}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            E
+                        </span>
+
+                        <strong>
+                            ${draws}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            D
+                        </span>
+
+                        <strong>
+                            ${losses}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            TÍTULOS
+                        </span>
+
+                        <strong>
+                            ${titles}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
 
 
     /* =====================================================
@@ -1585,25 +1906,35 @@
        RANKING
        ===================================================== */
 
-    function renderRanking(
-        platform = "all"
+   function renderRanking(
+    platform = "all"
+) {
+
+    if (
+        !elements.ranking
     ) {
 
-        if (
-            !elements.ranking
-        ) {
+        return;
 
-            return;
-
-        }
+    }
 
 
-        const filtered =
-            players.filter(
+    const normalizedPlatform =
+        String(
+            platform || "all"
+        )
+            .trim()
+            .toLowerCase();
+
+
+    const filtered =
+        players
+            .filter(
                 player => {
 
                     if (
-                        platform === "all"
+                        normalizedPlatform ===
+                        "all"
                     ) {
 
                         return true;
@@ -1613,275 +1944,327 @@
 
                     return (
                         String(
-                            player.platform
+                            player.platform ||
+                            ""
                         )
+                            .trim()
                             .toLowerCase() ===
-                        platform
+                        normalizedPlatform
                     );
 
                 }
+            )
+            .sort(
+                (
+                    a,
+                    b
+                ) =>
+                    Number(
+                        b.elo || 0
+                    ) -
+                    Number(
+                        a.elo || 0
+                    )
             );
 
 
-        if (
-            !filtered.length
-        ) {
+    if (
+        !filtered.length
+    ) {
 
-            const slots =
-                Array.from(
-                    {
-                        length: 10
-                    },
-                    (
-                        _,
-                        index
-                    ) => {
+        const slots =
+            Array.from(
+                {
+                    length: 10
+                },
+                (
+                    _,
+                    index
+                ) => {
 
-                        return `
+                    return `
+
+                        <div
+                            class="
+                                ccfv-ranking-empty-slot
+                            "
+                        >
+
+                            <span>
+                                ${String(
+                                    index + 1
+                                ).padStart(
+                                    2,
+                                    "0"
+                                )}
+                            </span>
+
 
                             <div
                                 class="
-                                    ccfv-ranking-empty-slot
+                                    ccfv-ranking-empty-slot__player
                                 "
                             >
 
-                                <span>
-                                    ${String(
-                                        index + 1
-                                    ).padStart(
-                                        2,
-                                        "0"
-                                    )}
-                                </span>
-
-
                                 <div
                                     class="
-                                        ccfv-ranking-empty-slot__player
+                                        ccfv-ranking-empty-slot__photo
                                     "
                                 >
-
-                                    <div
-                                        class="
-                                            ccfv-ranking-empty-slot__photo
-                                        "
-                                    >
-                                        ?
-                                    </div>
-
-
-                                    <div>
-
-                                        <strong>
-                                            AGUARDANDO COMPETIDOR
-                                        </strong>
-
-                                        <small>
-                                            POSIÇÃO #${String(
-                                                index + 1
-                                            ).padStart(
-                                                2,
-                                                "0"
-                                            )}
-                                        </small>
-
-                                    </div>
-
+                                    ?
                                 </div>
 
 
-                                <span>
-                                    —
-                                </span>
+                                <div>
 
+                                    <strong>
+                                        AGUARDANDO COMPETIDOR
+                                    </strong>
 
-                                <span>
-                                    0000
-                                </span>
+                                    <small>
+                                        POSIÇÃO #${String(
+                                            index + 1
+                                        ).padStart(
+                                            2,
+                                            "0"
+                                        )}
+                                    </small>
 
-
-                                <span
-                                    class="
-                                        ccfv-ranking-empty-slot__status
-                                    "
-                                >
-                                    DISPONÍVEL
-                                </span>
+                                </div>
 
                             </div>
 
-                        `;
 
-                    }
-                )
-                .join("");
-
-
-            elements.ranking.innerHTML =
-                renderRankingHeader() +
-                slots;
-
-            return;
-
-        }
+                            <span>
+                                —
+                            </span>
 
 
-        filtered.sort(
-            (
-                a,
-                b
-            ) =>
-                (
-                    b.elo || 0
-                ) -
-                (
-                    a.elo || 0
-                )
-        );
+                            <span>
+                                0000
+                            </span>
+
+
+                            <span
+                                class="
+                                    ccfv-ranking-empty-slot__status
+                                "
+                            >
+                                DISPONÍVEL
+                            </span>
+
+                        </div>
+
+                    `;
+
+                }
+            )
+            .join("");
 
 
         elements.ranking.innerHTML =
             renderRankingHeader() +
-            filtered
-                .map(
-                    (
-                        player,
-                        index
-                    ) => {
+            slots;
 
-                        const rank =
-                            getRankByPoints(
-                                player.elo
-                            );
+        return;
+
+    }
 
 
-                        return `
+    elements.ranking.innerHTML =
+        renderRankingHeader() +
+        filtered
+            .map(
+                (
+                    player,
+                    index
+                ) => {
 
-                            <article
+                    const rank =
+                        getRankByPoints(
+                            player.elo
+                        );
+
+
+                    const photo =
+                        player.photo ||
+                        player.photo_url ||
+                        "";
+
+
+                    const initials =
+                        player.name
+                            ? String(
+                                player.name
+                            )
+                                .trim()
+                                .slice(
+                                    0,
+                                    2
+                                )
+                                .toUpperCase()
+                            : "??";
+
+
+                    const photoHTML =
+                        photo
+                            ? `
+                                <img
+                                    src="${escapeHTML(
+                                        photo
+                                    )}"
+                                    alt="${escapeHTML(
+                                        player.name
+                                    )}"
+                                    loading="lazy"
+                                >
+                            `
+                            : `
+                                <span>
+                                    ${escapeHTML(
+                                        initials
+                                    )}
+                                </span>
+                            `;
+
+
+                    const position =
+                        index + 1;
+
+
+                    return `
+
+                        <article
+                            class="
+                                ccfv-ranking-row
+                                ccfv-ranking-row--${rank.key}
+                                ${
+                                    position ===
+                                    1
+                                        ? "is-first"
+                                        : ""
+                                }
+                            "
+                        >
+
+                            <span
                                 class="
-                                    ccfv-ranking-row
-                                    ccfv-ranking-row--${rank.key}
+                                    ccfv-ranking-row__position
+                                "
+                            >
+                                ${String(
+                                    position
+                                ).padStart(
+                                    2,
+                                    "0"
+                                )}
+                            </span>
+
+
+                            <div
+                                class="
+                                    ccfv-ranking-row__player
                                 "
                             >
 
-                                <span
-                                    class="
-                                        ccfv-ranking-row__position
-                                    "
-                                >
-                                    ${String(
-                                        index + 1
-                                    ).padStart(
-                                        2,
-                                        "0"
-                                    )}
-                                </span>
-
-
                                 <div
                                     class="
-                                        ccfv-ranking-row__player
+                                        ccfv-ranking-row__photo
                                     "
                                 >
 
-                                    <div
-                                        class="
-                                            ccfv-ranking-row__photo
-                                        "
-                                    >
-
-                                        ${
-                                            player.photo
-                                                ? `
-                                                    <img
-                                                        src="${escapeHTML(
-                                                            player.photo
-                                                        )}"
-                                                        alt="${escapeHTML(
-                                                            player.name
-                                                        )}"
-                                                    >
-                                                `
-                                                : "?"
-                                        }
-
-                                    </div>
-
-
-                                    <div
-                                        class="
-                                            ccfv-ranking-row__player-info
-                                        "
-                                    >
-
-                                        <strong>
-                                            ${escapeHTML(
-                                                player.name
-                                            )}
-                                        </strong>
-
-                                        <span>
-                                            ${escapeHTML(
-                                                rank.name
-                                            )}
-                                        </span>
-
-                                    </div>
+                                    ${photoHTML}
 
                                 </div>
 
 
-                                <span
+                                <div
                                     class="
-                                        ccfv-ranking-row__platform
+                                        ccfv-ranking-row__player-info
                                     "
                                 >
-                                    ${escapeHTML(
-                                        player.platform
-                                    )}
-                                </span>
+
+                                    <strong>
+                                        ${escapeHTML(
+                                            player.name
+                                        )}
+                                    </strong>
 
 
-                                <span
-                                    class="
-                                        ccfv-ranking-row__points
-                                    "
-                                >
-                                    ${Number(
-                                        player.elo || 0
-                                    )}
-                                </span>
+                                    <span>
+                                        ${
+                                            player.instagram
+                                                ? `@${escapeHTML(
+                                                    String(
+                                                        player.instagram
+                                                    )
+                                                        .replace(
+                                                            /^@/,
+                                                            ""
+                                                        )
+                                                )}`
+                                                : escapeHTML(
+                                                    rank.name
+                                                )
+                                        }
+                                    </span>
+
+                                </div>
+
+                            </div>
 
 
-                                <span
-                                    class="
-                                        ccfv-ranking-row__elo
-                                    "
-                                >
-                                    ELO
-                                </span>
+                            <span
+                                class="
+                                    ccfv-ranking-row__platform
+                                "
+                            >
+                                ${escapeHTML(
+                                    player.platform ||
+                                    "—"
+                                )}
+                            </span>
 
 
-                                <span
-                                    class="
-                                        ccfv-ranking-row__rank
-                                    "
-                                >
-                                    ${escapeHTML(
-                                        rank.name
-                                    )}
-                                </span>
+                            <span
+                                class="
+                                    ccfv-ranking-row__points
+                                "
+                            >
+                                ${Number(
+                                    player.elo || 0
+                                )}
+                            </span>
 
-                            </article>
 
-                        `;
+                            <span
+                                class="
+                                    ccfv-ranking-row__elo
+                                "
+                            >
+                                ELO
+                            </span>
 
-                    }
-                )
-                .join("");
 
-    }
+                            <span
+                                class="
+                                    ccfv-ranking-row__rank
+                                "
+                            >
+                                ${escapeHTML(
+                                    rank.name
+                                )}
+                            </span>
 
+                        </article>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+}
 
     /* =====================================================
        CARD PRÉVIA
