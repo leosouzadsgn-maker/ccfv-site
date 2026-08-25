@@ -97,6 +97,7 @@
 
         },
 
+
         amateur: {
 
             name:
@@ -116,6 +117,7 @@
 
         },
 
+
         professional: {
 
             name:
@@ -134,6 +136,7 @@
                 "#43df91"
 
         },
+
 
         legend: {
 
@@ -175,6 +178,9 @@
 
     let currentPhotoUrl =
         null;
+
+    let occupiedBrasileiraoTeams =
+        new Set();
 
 
     /* =====================================================
@@ -367,27 +373,22 @@
         return String(
             value ?? ""
         )
-
             .replaceAll(
                 "&",
                 "&amp;"
             )
-
             .replaceAll(
                 "<",
                 "&lt;"
             )
-
             .replaceAll(
                 ">",
                 "&gt;"
             )
-
             .replaceAll(
                 '"',
                 "&quot;"
             )
-
             .replaceAll(
                 "'",
                 "&#039;"
@@ -505,6 +506,26 @@
     }
 
 
+    function normalizeTeamName(
+        value
+    ) {
+
+        return String(
+            value || ""
+        )
+            .normalize(
+                "NFD"
+            )
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            )
+            .trim()
+            .toUpperCase();
+
+    }
+
+
     /* =====================================================
        SUPABASE
        ===================================================== */
@@ -557,11 +578,9 @@
             error
         } =
             await client
-
                 .from(
                     PLAYERS_TABLE
                 )
-
                 .select(
                     "player_code"
                 );
@@ -589,7 +608,7 @@
                     const match =
                         String(
                             player.player_code ||
-                            ""
+                                ""
                         )
                             .match(
                                 /CCFV-(\d+)/i
@@ -641,15 +660,12 @@
 
             const playersResult =
                 await client
-
                     .from(
                         PLAYERS_TABLE
                     )
-
                     .select(
                         "*"
                     )
-
                     .order(
                         "elo",
                         {
@@ -670,11 +686,9 @@
 
             const competitionsResult =
                 await client
-
                     .from(
                         COMPETITIONS_TABLE
                     )
-
                     .select(
                         "*"
                     );
@@ -723,10 +737,14 @@
                 );
 
 
+            rebuildOccupiedBrasileiraoTeams(
+                editingPlayerId
+            );
+
+
             renderPlayers();
 
             updateDashboardStats();
-
 
         }
 
@@ -744,6 +762,10 @@
                 [];
 
 
+            occupiedBrasileiraoTeams =
+                new Set();
+
+
             renderPlayers();
 
             updateDashboardStats();
@@ -759,6 +781,176 @@
 
 
     /* =====================================================
+       BRASILEIRÃO — CLUBES OCUPADOS
+       ===================================================== */
+
+    function rebuildOccupiedBrasileiraoTeams(
+        exceptPlayerId = null
+    ) {
+
+        occupiedBrasileiraoTeams =
+            new Set();
+
+
+        players.forEach(
+            player => {
+
+                if (
+                    exceptPlayerId &&
+                    String(
+                        player.id
+                    ) ===
+                    String(
+                        exceptPlayerId
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                (
+                    player.competitions ||
+                    []
+                )
+                    .forEach(
+                        competition => {
+
+                            if (
+                                String(
+                                    competition.competition ||
+                                        ""
+                                ).toUpperCase() !==
+                                "BRASILEIRAO"
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            const team =
+                                normalizeTeamName(
+                                    competition.team_name
+                                );
+
+
+                            if (
+                                team
+                            ) {
+
+                                occupiedBrasileiraoTeams
+                                    .add(
+                                        team
+                                    );
+
+                            }
+
+                        }
+                    );
+
+            }
+        );
+
+    }
+
+
+    function refreshBrasileiraoTeamOptions() {
+
+        if (
+            !dom.brasileiraoTeam
+        ) {
+
+            return;
+
+        }
+
+
+        rebuildOccupiedBrasileiraoTeams(
+            editingPlayerId
+        );
+
+
+        Array.from(
+            dom.brasileiraoTeam.options
+        )
+            .forEach(
+                option => {
+
+                    const team =
+                        normalizeTeamName(
+                            option.value
+                        );
+
+
+                    if (
+                        !team
+                    ) {
+
+                        option.disabled =
+                            false;
+
+                        option.removeAttribute(
+                            "data-team-occupied"
+                        );
+
+                        option.title =
+                            "";
+
+                        return;
+
+                    }
+
+
+                    const occupied =
+                        occupiedBrasileiraoTeams
+                            .has(
+                                team
+                            );
+
+
+                    option.disabled =
+                        occupied;
+
+
+                    option.dataset.teamOccupied =
+                        occupied
+                            ? "true"
+                            : "false";
+
+
+                    option.title =
+                        occupied
+                            ? "Clube já escolhido por outro jogador."
+                            : "";
+
+                }
+            );
+
+
+        const selectedTeam =
+            normalizeTeamName(
+                dom.brasileiraoTeam.value
+            );
+
+
+        if (
+            selectedTeam &&
+            occupiedBrasileiraoTeams.has(
+                selectedTeam
+            )
+        ) {
+
+            dom.brasileiraoTeam.value =
+                "";
+
+        }
+
+    }
+
+
+    /* =====================================================
        FILTER
        ===================================================== */
 
@@ -767,7 +959,7 @@
         const search =
             String(
                 dom.playerSearch?.value ||
-                ""
+                    ""
             )
                 .trim()
                 .toLowerCase();
@@ -781,7 +973,7 @@
                     const platform =
                         String(
                             player.platform ||
-                            ""
+                                ""
                         ).toUpperCase();
 
 
@@ -796,7 +988,7 @@
                     const name =
                         String(
                             player.name ||
-                            ""
+                                ""
                         )
                             .toLowerCase();
 
@@ -804,7 +996,7 @@
                     const instagram =
                         String(
                             player.instagram ||
-                            ""
+                                ""
                         )
                             .toLowerCase();
 
@@ -884,9 +1076,13 @@
                         item.competition ===
                             "BRASILEIRAO"
 
-                            ? "BRASILEIRÃO"
+                            ?
 
-                            : "NIGHT CUP";
+                            "BRASILEIRÃO"
+
+                            :
+
+                            "NIGHT CUP";
 
 
                     return `
@@ -1378,35 +1574,31 @@
 
     function updateCompetitionUI() {
 
-    const brasileirao =
-        Boolean(
-            dom.competitionBrasileirao?.checked
-        );
+        const brasileirao =
+            Boolean(
+                dom.competitionBrasileirao?.checked
+            );
 
 
-    const night =
-        Boolean(
-            dom.competitionNight?.checked
-        );
+        const night =
+            Boolean(
+                dom.competitionNight?.checked
+            );
 
 
-    /* =====================================================
-       BRASILEIRÃO
-       ===================================================== */
-
-    if (
-        dom.competitionBrasileiraoLabel
-    ) {
+        /* =================================================
+           BRASILEIRÃO
+           ================================================= */
 
         dom.competitionBrasileiraoLabel
-            .classList.toggle(
+            ?.classList.toggle(
                 "is-selected",
                 brasileirao
             );
 
 
         dom.competitionBrasileiraoLabel
-            .setAttribute(
+            ?.setAttribute(
                 "aria-checked",
                 brasileirao
                     ? "true"
@@ -1414,90 +1606,19 @@
             );
 
 
-        dom.competitionBrasileiraoLabel.style.borderColor =
-            brasileirao
-                ? "rgba(67,223,145,.72)"
-                : "";
-
-
-        dom.competitionBrasileiraoLabel.style.background =
-            brasileirao
-                ? "rgba(67,223,145,.10)"
-                : "";
-
-
-        dom.competitionBrasileiraoLabel.style.color =
-            brasileirao
-                ? "#43df91"
-                : "";
-
-
-        dom.competitionBrasileiraoLabel.style.boxShadow =
-            brasileirao
-                ? "0 0 0 1px rgba(67,223,145,.12), 0 10px 24px rgba(67,223,145,.06)"
-                : "";
-
-    }
-
-
-    /* =====================================================
-       QUADRINHO DO BRASILEIRÃO
-       ===================================================== */
-
-    const brasileiraoBox =
-        dom.competitionBrasileiraoLabel
-            ?.querySelector(
-                ".ccfv-competition-check__box"
-            );
-
-
-    if (
-        brasileiraoBox
-    ) {
-
-        brasileiraoBox.style.borderColor =
-            brasileirao
-                ? "#43df91"
-                : "";
-
-
-        brasileiraoBox.style.background =
-            brasileirao
-                ? "#43df91"
-                : "";
-
-
-        brasileiraoBox.style.color =
-            brasileirao
-                ? "#031008"
-                : "transparent";
-
-
-        brasileiraoBox.textContent =
-            brasileirao
-                ? "✓"
-                : "✓";
-
-    }
-
-
-    /* =====================================================
-       NIGHT CUP
-       ===================================================== */
-
-    if (
-        dom.competitionNightLabel
-    ) {
+        /* =================================================
+           NIGHT CUP
+           ================================================= */
 
         dom.competitionNightLabel
-            .classList.toggle(
+            ?.classList.toggle(
                 "is-selected",
                 night
             );
 
 
         dom.competitionNightLabel
-            .setAttribute(
+            ?.setAttribute(
                 "aria-checked",
                 night
                     ? "true"
@@ -1505,119 +1626,51 @@
             );
 
 
-        dom.competitionNightLabel.style.borderColor =
-            night
-                ? "rgba(67,223,145,.72)"
-                : "";
+        /* =================================================
+           CONFIGURAÇÕES
+           ================================================= */
 
-
-        dom.competitionNightLabel.style.background =
-            night
-                ? "rgba(67,223,145,.10)"
-                : "";
-
-
-        dom.competitionNightLabel.style.color =
-            night
-                ? "#43df91"
-                : "";
-
-
-        dom.competitionNightLabel.style.boxShadow =
-            night
-                ? "0 0 0 1px rgba(67,223,145,.12), 0 10px 24px rgba(67,223,145,.06)"
-                : "";
-
-    }
-
-
-    /* =====================================================
-       QUADRINHO DA NIGHT CUP
-       ===================================================== */
-
-    const nightBox =
-        dom.competitionNightLabel
-            ?.querySelector(
-                ".ccfv-competition-check__box"
-            );
-
-
-    if (
-        nightBox
-    ) {
-
-        nightBox.style.borderColor =
-            night
-                ? "#43df91"
-                : "";
-
-
-        nightBox.style.background =
-            night
-                ? "#43df91"
-                : "";
-
-
-        nightBox.style.color =
-            night
-                ? "#031008"
-                : "transparent";
-
-
-        nightBox.textContent =
-            night
-                ? "✓"
-                : "✓";
-
-    }
-
-
-    /* =====================================================
-       CONFIGURAÇÃO DO BRASILEIRÃO
-       ===================================================== */
-
-    dom.brasileiraoConfig
-        ?.classList.toggle(
-            "is-visible",
-            brasileirao
-        );
-
-
-    if (
         dom.brasileiraoConfig
-    ) {
-
-        dom.brasileiraoConfig.style.display =
-            brasileirao
-                ? "block"
-                : "none";
-
-    }
+            ?.classList.toggle(
+                "is-visible",
+                brasileirao
+            );
 
 
-    /* =====================================================
-       CONFIGURAÇÃO DA NIGHT CUP
-       ===================================================== */
+        if (
+            dom.brasileiraoConfig
+        ) {
 
-    dom.nightConfig
-        ?.classList.toggle(
-            "is-visible",
-            night
-        );
+            dom.brasileiraoConfig.style.display =
+                brasileirao
+                    ? "block"
+                    : "none";
+
+        }
 
 
-    if (
         dom.nightConfig
-    ) {
+            ?.classList.toggle(
+                "is-visible",
+                night
+            );
 
-        dom.nightConfig.style.display =
-            night
-                ? "block"
-                : "none";
+
+        if (
+            dom.nightConfig
+        ) {
+
+            dom.nightConfig.style.display =
+                night
+                    ? "block"
+                    : "none";
+
+        }
+
+
+        refreshBrasileiraoTeamOptions();
 
     }
-
-}
 
 
     /* =====================================================
@@ -1662,6 +1715,9 @@
 
 
         resetPhotoPreview();
+
+
+        rebuildOccupiedBrasileiraoTeams();
 
 
         updateCompetitionUI();
@@ -1826,6 +1882,11 @@
         }
 
 
+        rebuildOccupiedBrasileiraoTeams(
+            editingPlayerId
+        );
+
+
         updateCompetitionUI();
 
         updateRankPreview();
@@ -1940,6 +2001,26 @@
             }
 
 
+            rebuildOccupiedBrasileiraoTeams(
+                editingPlayerId
+            );
+
+
+            if (
+                occupiedBrasileiraoTeams.has(
+                    normalizeTeamName(
+                        team
+                    )
+                )
+            ) {
+
+                throw new Error(
+                    "ESSE CLUBE JÁ FOI ESCOLHIDO POR OUTRO JOGADOR."
+                );
+
+            }
+
+
             selected.push({
 
                 competition:
@@ -2026,6 +2107,7 @@
                 "DIGITE O NOME DO JOGADOR."
             );
 
+
             return;
 
         }
@@ -2048,6 +2130,7 @@
             showToast(
                 error.message
             );
+
 
             return;
 
@@ -2726,6 +2809,110 @@
             );
 
 
+        /*
+         * Clique no card inteiro.
+         */
+
+        dom.competitionBrasileiraoLabel
+            ?.addEventListener(
+                "click",
+                event => {
+
+                    if (
+                        event.target ===
+                        dom.competitionBrasileirao
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    event.preventDefault();
+
+
+                    dom.competitionBrasileirao.checked =
+                        !dom.competitionBrasileirao.checked;
+
+
+                    updateCompetitionUI();
+
+                }
+            );
+
+
+        dom.competitionNightLabel
+            ?.addEventListener(
+                "click",
+                event => {
+
+                    if (
+                        event.target ===
+                        dom.competitionNight
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    event.preventDefault();
+
+
+                    dom.competitionNight.checked =
+                        !dom.competitionNight.checked;
+
+
+                    updateCompetitionUI();
+
+                }
+            );
+
+
+        /*
+         * Troca de clube.
+         */
+
+        dom.brasileiraoTeam
+            ?.addEventListener(
+                "change",
+                () => {
+
+                    rebuildOccupiedBrasileiraoTeams(
+                        editingPlayerId
+                    );
+
+
+                    const selectedTeam =
+                        normalizeTeamName(
+                            dom.brasileiraoTeam.value
+                        );
+
+
+                    if (
+                        selectedTeam &&
+                        occupiedBrasileiraoTeams.has(
+                            selectedTeam
+                        )
+                    ) {
+
+                        dom.brasileiraoTeam.value =
+                            "";
+
+
+                        showToast(
+                            "ESSE CLUBE JÁ FOI ESCOLHIDO POR OUTRO JOGADOR."
+                        );
+
+                    }
+
+
+                    refreshBrasileiraoTeamOptions();
+
+                }
+            );
+
+
         document.addEventListener(
             "keydown",
             event => {
@@ -2859,13 +3046,21 @@
 
         bindNavigation();
 
+
         bindMobileMenu();
+
 
         bindPlayerModal();
 
+
         bindSearchAndFilters();
 
+
+        rebuildOccupiedBrasileiraoTeams();
+
+
         updateCompetitionUI();
+
 
         updateRankPreview();
 
@@ -2873,6 +3068,7 @@
         try {
 
             await getSupabase();
+
 
             await loadPlayers();
 
