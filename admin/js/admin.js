@@ -1378,46 +1378,246 @@
 
     function updateCompetitionUI() {
 
-        const brasileirao =
-            Boolean(
-                dom.competitionBrasileirao?.checked
-            );
+    const brasileirao =
+        Boolean(
+            dom.competitionBrasileirao?.checked
+        );
 
 
-        const night =
-            Boolean(
-                dom.competitionNight?.checked
+    const night =
+        Boolean(
+            dom.competitionNight?.checked
+        );
+
+
+    /* =====================================================
+       BRASILEIRÃO
+       ===================================================== */
+
+    if (
+        dom.competitionBrasileiraoLabel
+    ) {
+
+        dom.competitionBrasileiraoLabel
+            .classList.toggle(
+                "is-selected",
+                brasileirao
             );
 
 
         dom.competitionBrasileiraoLabel
-            ?.classList.toggle(
-                "is-selected",
+            .setAttribute(
+                "aria-checked",
                 brasileirao
+                    ? "true"
+                    : "false"
+            );
+
+
+        dom.competitionBrasileiraoLabel.style.borderColor =
+            brasileirao
+                ? "rgba(67,223,145,.72)"
+                : "";
+
+
+        dom.competitionBrasileiraoLabel.style.background =
+            brasileirao
+                ? "rgba(67,223,145,.10)"
+                : "";
+
+
+        dom.competitionBrasileiraoLabel.style.color =
+            brasileirao
+                ? "#43df91"
+                : "";
+
+
+        dom.competitionBrasileiraoLabel.style.boxShadow =
+            brasileirao
+                ? "0 0 0 1px rgba(67,223,145,.12), 0 10px 24px rgba(67,223,145,.06)"
+                : "";
+
+    }
+
+
+    /* =====================================================
+       QUADRINHO DO BRASILEIRÃO
+       ===================================================== */
+
+    const brasileiraoBox =
+        dom.competitionBrasileiraoLabel
+            ?.querySelector(
+                ".ccfv-competition-check__box"
+            );
+
+
+    if (
+        brasileiraoBox
+    ) {
+
+        brasileiraoBox.style.borderColor =
+            brasileirao
+                ? "#43df91"
+                : "";
+
+
+        brasileiraoBox.style.background =
+            brasileirao
+                ? "#43df91"
+                : "";
+
+
+        brasileiraoBox.style.color =
+            brasileirao
+                ? "#031008"
+                : "transparent";
+
+
+        brasileiraoBox.textContent =
+            brasileirao
+                ? "✓"
+                : "✓";
+
+    }
+
+
+    /* =====================================================
+       NIGHT CUP
+       ===================================================== */
+
+    if (
+        dom.competitionNightLabel
+    ) {
+
+        dom.competitionNightLabel
+            .classList.toggle(
+                "is-selected",
+                night
             );
 
 
         dom.competitionNightLabel
-            ?.classList.toggle(
-                "is-selected",
+            .setAttribute(
+                "aria-checked",
                 night
+                    ? "true"
+                    : "false"
             );
 
 
-        dom.brasileiraoConfig
-            ?.classList.toggle(
-                "is-visible",
-                brasileirao
-            );
+        dom.competitionNightLabel.style.borderColor =
+            night
+                ? "rgba(67,223,145,.72)"
+                : "";
 
 
-        dom.nightConfig
-            ?.classList.toggle(
-                "is-visible",
-                night
-            );
+        dom.competitionNightLabel.style.background =
+            night
+                ? "rgba(67,223,145,.10)"
+                : "";
+
+
+        dom.competitionNightLabel.style.color =
+            night
+                ? "#43df91"
+                : "";
+
+
+        dom.competitionNightLabel.style.boxShadow =
+            night
+                ? "0 0 0 1px rgba(67,223,145,.12), 0 10px 24px rgba(67,223,145,.06)"
+                : "";
 
     }
+
+
+    /* =====================================================
+       QUADRINHO DA NIGHT CUP
+       ===================================================== */
+
+    const nightBox =
+        dom.competitionNightLabel
+            ?.querySelector(
+                ".ccfv-competition-check__box"
+            );
+
+
+    if (
+        nightBox
+    ) {
+
+        nightBox.style.borderColor =
+            night
+                ? "#43df91"
+                : "";
+
+
+        nightBox.style.background =
+            night
+                ? "#43df91"
+                : "";
+
+
+        nightBox.style.color =
+            night
+                ? "#031008"
+                : "transparent";
+
+
+        nightBox.textContent =
+            night
+                ? "✓"
+                : "✓";
+
+    }
+
+
+    /* =====================================================
+       CONFIGURAÇÃO DO BRASILEIRÃO
+       ===================================================== */
+
+    dom.brasileiraoConfig
+        ?.classList.toggle(
+            "is-visible",
+            brasileirao
+        );
+
+
+    if (
+        dom.brasileiraoConfig
+    ) {
+
+        dom.brasileiraoConfig.style.display =
+            brasileirao
+                ? "block"
+                : "none";
+
+    }
+
+
+    /* =====================================================
+       CONFIGURAÇÃO DA NIGHT CUP
+       ===================================================== */
+
+    dom.nightConfig
+        ?.classList.toggle(
+            "is-visible",
+            night
+        );
+
+
+    if (
+        dom.nightConfig
+    ) {
+
+        dom.nightConfig.style.display =
+            night
+                ? "block"
+                : "none";
+
+    }
+
+}
 
 
     /* =====================================================
