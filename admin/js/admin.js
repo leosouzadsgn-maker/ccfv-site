@@ -1,7 +1,7 @@
 /* =========================================================
    CCFV ADMIN
-   SUPABASE DATABASE
    PLAYER MANAGEMENT
+   SUPABASE + COMPETITIONS + PHOTO UPLOAD
    ========================================================= */
 
 (() => {
@@ -10,64 +10,171 @@
 
 
     /* =====================================================
-       CONFIGURAÇÃO
+       CONFIG
        ===================================================== */
 
-    const PLAYERS_TABLE = "players";
+    const PLAYERS_TABLE =
+        "players";
+
+    const COMPETITIONS_TABLE =
+        "player_competitions";
+
+    const PHOTO_BUCKET =
+        "player-photos";
+
+
+    /* =====================================================
+       BRASILEIRÃO
+       ===================================================== */
+
+    const BRASILEIRAO_TEAMS = [
+
+        "ATHLETICO-PR",
+
+        "ATLÉTICO-MG",
+
+        "BAHIA",
+
+        "BOTAFOGO",
+
+        "BRAGANTINO",
+
+        "CHAPECOENSE",
+
+        "CORINTHIANS",
+
+        "CORITIBA",
+
+        "CRUZEIRO",
+
+        "FLAMENGO",
+
+        "FLUMINENSE",
+
+        "GRÊMIO",
+
+        "INTERNACIONAL",
+
+        "MIRASSOL",
+
+        "PALMEIRAS",
+
+        "REMO",
+
+        "SANTOS",
+
+        "SÃO PAULO",
+
+        "VASCO",
+
+        "VITÓRIA"
+
+    ];
+
+
+    /* =====================================================
+       RANKING
+       ===================================================== */
+
+    const RANK_CONFIG = {
+
+        beginner: {
+
+            name:
+                "INICIANTE",
+
+            key:
+                "beginner",
+
+            min:
+                0,
+
+            max:
+                999,
+
+            color:
+                "#8d9a95"
+
+        },
+
+        amateur: {
+
+            name:
+                "AMADOR",
+
+            key:
+                "amateur",
+
+            min:
+                1000,
+
+            max:
+                1999,
+
+            color:
+                "#69a8ff"
+
+        },
+
+        professional: {
+
+            name:
+                "PROFISSIONAL",
+
+            key:
+                "professional",
+
+            min:
+                2000,
+
+            max:
+                2999,
+
+            color:
+                "#43df91"
+
+        },
+
+        legend: {
+
+            name:
+                "LENDA",
+
+            key:
+                "legend",
+
+            min:
+                3000,
+
+            max:
+                Infinity,
+
+            color:
+                "#ffc252"
+
+        }
+
+    };
 
 
     /* =====================================================
        ESTADO
        ===================================================== */
 
-    let supabaseClient = null;
+    let supabaseClient =
+        null;
 
-    let players = [];
+    let players =
+        [];
 
-    let activePlatformFilter = "all";
+    let activePlatformFilter =
+        "all";
 
-    let editingPlayerId = null;
+    let editingPlayerId =
+        null;
 
-
-    /* =====================================================
-       CONFIGURAÇÃO DE ELO
-       ===================================================== */
-
-    const RANK_CONFIG = {
-
-        beginner: {
-            name: "INICIANTE",
-            key: "beginner",
-            min: 0,
-            max: 999,
-            color: "#8d9a95"
-        },
-
-        amateur: {
-            name: "AMADOR",
-            key: "amateur",
-            min: 1000,
-            max: 1999,
-            color: "#69a8ff"
-        },
-
-        professional: {
-            name: "PROFISSIONAL",
-            key: "professional",
-            min: 2000,
-            max: 2999,
-            color: "#43df91"
-        },
-
-        legend: {
-            name: "LENDA",
-            key: "legend",
-            min: 3000,
-            max: Infinity,
-            color: "#ffc252"
-        }
-
-    };
+    let currentPhotoUrl =
+        null;
 
 
     /* =====================================================
@@ -77,10 +184,14 @@
     const dom = {
 
         sidebar:
-            document.querySelector("#admin-sidebar"),
+            document.querySelector(
+                "#admin-sidebar"
+            ),
 
         mobileMenu:
-            document.querySelector("#admin-mobile-menu"),
+            document.querySelector(
+                "#admin-mobile-menu"
+            ),
 
         navItems:
             document.querySelectorAll(
@@ -98,10 +209,14 @@
             ),
 
         modal:
-            document.querySelector("#player-modal"),
+            document.querySelector(
+                "#player-modal"
+            ),
 
         modalTitle:
-            document.querySelector("#player-modal-title"),
+            document.querySelector(
+                "#player-modal-title"
+            ),
 
         closeModalButtons:
             document.querySelectorAll(
@@ -109,10 +224,14 @@
             ),
 
         form:
-            document.querySelector("#player-form"),
+            document.querySelector(
+                "#player-form"
+            ),
 
         newPlayerButton:
-            document.querySelector("#new-player-button"),
+            document.querySelector(
+                "#new-player-button"
+            ),
 
         openNewPlayerButtons:
             document.querySelectorAll(
@@ -169,34 +288,54 @@
                 "#player-platform"
             ),
 
-        playerElo:
+        playerPhotoFile:
             document.querySelector(
-                "#player-elo"
+                "#player-photo-file"
             ),
 
-        playerWins:
+        playerPhotoPreview:
             document.querySelector(
-                "#player-wins"
+                "#player-photo-preview"
             ),
 
-        playerDraws:
+        competitionBrasileirao:
             document.querySelector(
-                "#player-draws"
+                "#competition-brasileirao"
             ),
 
-        playerLosses:
+        competitionBrasileiraoLabel:
             document.querySelector(
-                "#player-losses"
+                "#competition-brasileirao-label"
             ),
 
-        playerTitles:
+        competitionNight:
             document.querySelector(
-                "#player-titles"
+                "#competition-night"
             ),
 
-        playerPhoto:
+        competitionNightLabel:
             document.querySelector(
-                "#player-photo"
+                "#competition-night-label"
+            ),
+
+        brasileiraoConfig:
+            document.querySelector(
+                "#brasileirao-config"
+            ),
+
+        brasileiraoTeam:
+            document.querySelector(
+                "#brasileirao-team"
+            ),
+
+        nightConfig:
+            document.querySelector(
+                "#night-config"
+            ),
+
+        nightTeam:
+            document.querySelector(
+                "#night-team"
             ),
 
         playerRankPreview:
@@ -218,12 +357,16 @@
 
 
     /* =====================================================
-       UTILITÁRIOS
+       HELPERS
        ===================================================== */
 
-    function escapeHTML(value) {
+    function escapeHTML(
+        value
+    ) {
 
-        return String(value ?? "")
+        return String(
+            value ?? ""
+        )
 
             .replaceAll(
                 "&",
@@ -253,26 +396,41 @@
     }
 
 
-    function getInitials(name) {
+    function getInitials(
+        name
+    ) {
 
         const words =
-            String(name || "")
+            String(
+                name || ""
+            )
                 .trim()
-                .split(/\s+/)
-                .filter(Boolean);
+                .split(
+                    /\s+/
+                )
+                .filter(
+                    Boolean
+                );
 
 
-        if (!words.length) {
+        if (
+            !words.length
+        ) {
 
             return "--";
 
         }
 
 
-        if (words.length === 1) {
+        if (
+            words.length === 1
+        ) {
 
             return words[0]
-                .slice(0, 2)
+                .slice(
+                    0,
+                    2
+                )
                 .toUpperCase();
 
         }
@@ -286,27 +444,16 @@
     }
 
 
-    function formatNumber(value) {
-
-        return Number(
-            value || 0
-        ).toLocaleString(
-            "pt-BR"
-        );
-
-    }
-
-
-    /* =====================================================
-       RANK
-       ===================================================== */
-
-    function getRank(elo) {
+    function getRank(
+        elo
+    ) {
 
         const value =
             Math.max(
                 0,
-                Number(elo) || 0
+                Number(
+                    elo || 0
+                )
             );
 
 
@@ -345,6 +492,19 @@
     }
 
 
+    function formatNumber(
+        value
+    ) {
+
+        return Number(
+            value || 0
+        ).toLocaleString(
+            "pt-BR"
+        );
+
+    }
+
+
     /* =====================================================
        SUPABASE
        ===================================================== */
@@ -367,7 +527,7 @@
         ) {
 
             throw new Error(
-                "Sistema de autenticação ainda não está disponível."
+                "Sistema de autenticação não está disponível."
             );
 
         }
@@ -377,24 +537,13 @@
             await window.CCFVAuth.getClient();
 
 
-        if (
-            !supabaseClient
-        ) {
-
-            throw new Error(
-                "Não foi possível conectar ao Supabase."
-            );
-
-        }
-
-
         return supabaseClient;
 
     }
 
 
     /* =====================================================
-       CÓDIGO CCFV
+       PLAYER CODE
        ===================================================== */
 
     async function generatePlayerCode() {
@@ -415,16 +564,7 @@
 
                 .select(
                     "player_code"
-                )
-
-                .order(
-                    "created_at",
-                    {
-                        ascending: false
-                    }
-                )
-
-                .limit(1000);
+                );
 
 
         if (
@@ -440,34 +580,38 @@
             0;
 
 
-        (data || []).forEach(
-            player => {
+        (
+            data || []
+        )
+            .forEach(
+                player => {
 
-                const match =
-                    String(
-                        player.player_code || ""
-                    )
-                    .match(
-                        /CCFV-(\d+)/i
-                    );
+                    const match =
+                        String(
+                            player.player_code ||
+                            ""
+                        )
+                            .match(
+                                /CCFV-(\d+)/i
+                            );
 
 
-                if (
-                    match
-                ) {
+                    if (
+                        match
+                    ) {
 
-                    highest =
-                        Math.max(
-                            highest,
-                            Number(
-                                match[1]
-                            )
-                        );
+                        highest =
+                            Math.max(
+                                highest,
+                                Number(
+                                    match[1]
+                                )
+                            );
+
+                    }
 
                 }
-
-            }
-        );
+            );
 
 
         return (
@@ -484,7 +628,7 @@
 
 
     /* =====================================================
-       CARREGAR JOGADORES
+       CARREGAR JOGADORES + COMPETIÇÕES
        ===================================================== */
 
     async function loadPlayers() {
@@ -495,10 +639,7 @@
                 await getSupabase();
 
 
-            const {
-                data,
-                error
-            } =
+            const playersResult =
                 await client
 
                     .from(
@@ -512,35 +653,80 @@
                     .order(
                         "elo",
                         {
-                            ascending: false
+                            ascending:
+                                false
                         }
                     );
 
 
             if (
-                error
+                playersResult.error
             ) {
 
-                throw error;
+                throw playersResult.error;
 
             }
 
 
+            const competitionsResult =
+                await client
+
+                    .from(
+                        COMPETITIONS_TABLE
+                    )
+
+                    .select(
+                        "*"
+                    );
+
+
+            if (
+                competitionsResult.error
+            ) {
+
+                throw competitionsResult.error;
+
+            }
+
+
+            const competitions =
+                competitionsResult.data ||
+                [];
+
+
             players =
-                Array.isArray(data)
-                    ? data
-                    : [];
+                (
+                    playersResult.data ||
+                    []
+                )
+                .map(
+                    player => {
+
+                        return {
+
+                            ...player,
+
+                            competitions:
+                                competitions.filter(
+                                    item =>
+                                        String(
+                                            item.player_id
+                                        ) ===
+                                        String(
+                                            player.id
+                                        )
+                                )
+
+                        };
+
+                    }
+                );
 
 
             renderPlayers();
 
             updateDashboardStats();
 
-
-            console.log(
-                "CCFV // PLAYERS LOADED:",
-                players.length
-            );
 
         }
 
@@ -554,7 +740,8 @@
             );
 
 
-            players = [];
+            players =
+                [];
 
 
             renderPlayers();
@@ -572,7 +759,7 @@
 
 
     /* =====================================================
-       PEGAR JOGADORES FILTRADOS
+       FILTER
        ===================================================== */
 
     function getFilteredPlayers() {
@@ -582,8 +769,8 @@
                 dom.playerSearch?.value ||
                 ""
             )
-            .trim()
-            .toLowerCase();
+                .trim()
+                .toLowerCase();
 
 
         return players
@@ -611,7 +798,7 @@
                             player.name ||
                             ""
                         )
-                        .toLowerCase();
+                            .toLowerCase();
 
 
                     const instagram =
@@ -619,7 +806,7 @@
                             player.instagram ||
                             ""
                         )
-                        .toLowerCase();
+                            .toLowerCase();
 
 
                     const searchOK =
@@ -665,7 +852,64 @@
 
 
     /* =====================================================
-       RENDER JOGADORES
+       COMPETIÇÕES HTML
+       ===================================================== */
+
+    function competitionBadges(
+        competitions
+    ) {
+
+        if (
+            !competitions ||
+            !competitions.length
+        ) {
+
+            return `
+                <span
+                    class="admin-badge"
+                >
+                    SEM COMPETIÇÃO
+                </span>
+            `;
+
+        }
+
+
+        return competitions
+
+            .map(
+                item => {
+
+                    const name =
+                        item.competition ===
+                            "BRASILEIRAO"
+
+                            ? "BRASILEIRÃO"
+
+                            : "NIGHT CUP";
+
+
+                    return `
+                        <span
+                            class="admin-badge"
+                            style="margin-right:4px;"
+                        >
+                            ${escapeHTML(
+                                name
+                            )}
+                        </span>
+                    `;
+
+                }
+            )
+
+            .join("");
+
+    }
+
+
+    /* =====================================================
+       RENDER
        ===================================================== */
 
     function renderPlayers() {
@@ -688,7 +932,7 @@
 
 
         if (
-            filtered.length === 0
+            !filtered.length
         ) {
 
             dom.playerEmpty?.classList.add(
@@ -721,10 +965,6 @@
                     document.createElement(
                         "tr"
                     );
-
-
-                const rankClass =
-                    rank.key;
 
 
                 const photoHTML =
@@ -803,7 +1043,6 @@
 
                                 </small>
 
-
                             </div>
 
                         </div>
@@ -840,7 +1079,7 @@
                         <span
                             class="
                                 admin-badge
-                                admin-badge--${rankClass}
+                                admin-badge--${rank.key}
                             "
                         >
 
@@ -855,15 +1094,26 @@
 
                     <td>
 
+                        ${competitionBadges(
+                            player.competitions
+                        )}
+
+                    </td>
+
+
+                    <td>
+
                         <span
                             class="admin-status"
                         >
 
                             <i></i>
 
-                            ${player.status === "ACTIVE"
-                                ? "ATIVO"
-                                : "INATIVO"
+                            ${
+                                player.status ===
+                                "ACTIVE"
+                                    ? "ATIVO"
+                                    : "INATIVO"
                             }
 
                         </span>
@@ -938,11 +1188,6 @@
         }
 
 
-        /*
-         * A tabela de partidas ainda não foi criada.
-         * Por enquanto permanece 00.
-         */
-
         if (
             dom.statMatches
         ) {
@@ -956,7 +1201,227 @@
 
 
     /* =====================================================
-       NOVO JOGADOR
+       FOTO PREVIEW
+       ===================================================== */
+
+    function resetPhotoPreview() {
+
+        currentPhotoUrl =
+            null;
+
+
+        if (
+            dom.playerPhotoPreview
+        ) {
+
+            dom.playerPhotoPreview.innerHTML =
+                "FOTO";
+
+        }
+
+
+        if (
+            dom.playerPhotoFile
+        ) {
+
+            dom.playerPhotoFile.value =
+                "";
+
+        }
+
+    }
+
+
+    function setPhotoPreview(
+        file
+    ) {
+
+        if (
+            !file ||
+            !dom.playerPhotoPreview
+        ) {
+
+            return;
+
+        }
+
+
+        const url =
+            URL.createObjectURL(
+                file
+            );
+
+
+        dom.playerPhotoPreview.innerHTML = `
+
+            <img
+                src="${url}"
+                alt="Prévia da foto"
+            >
+
+        `;
+
+    }
+
+
+    /* =====================================================
+       UPLOAD FOTO
+       ===================================================== */
+
+    async function uploadPlayerPhoto(
+        file,
+        playerId
+    ) {
+
+        if (
+            !file
+        ) {
+
+            return currentPhotoUrl;
+
+        }
+
+
+        if (
+            !file.type.startsWith(
+                "image/"
+            )
+        ) {
+
+            throw new Error(
+                "Selecione uma imagem válida."
+            );
+
+        }
+
+
+        const client =
+            await getSupabase();
+
+
+        const extension =
+            (
+                file.name
+                    .split(".")
+                    .pop() ||
+                "jpg"
+            )
+                .toLowerCase();
+
+
+        const fileName =
+            `${Date.now()}-${crypto.randomUUID()}.${extension}`;
+
+
+        const filePath =
+            `${playerId}/${fileName}`;
+
+
+        const {
+            error:
+                uploadError
+        } =
+            await client
+                .storage
+                .from(
+                    PHOTO_BUCKET
+                )
+                .upload(
+                    filePath,
+                    file,
+                    {
+                        cacheControl:
+                            "3600",
+
+                        upsert:
+                            false,
+
+                        contentType:
+                            file.type
+                    }
+                );
+
+
+        if (
+            uploadError
+        ) {
+
+            throw uploadError;
+
+        }
+
+
+        const {
+            data
+        } =
+            client
+                .storage
+                .from(
+                    PHOTO_BUCKET
+                )
+                .getPublicUrl(
+                    filePath
+                );
+
+
+        return (
+            data?.publicUrl ||
+            null
+        );
+
+    }
+
+
+    /* =====================================================
+       COMPETIÇÃO UI
+       ===================================================== */
+
+    function updateCompetitionUI() {
+
+        const brasileirao =
+            Boolean(
+                dom.competitionBrasileirao?.checked
+            );
+
+
+        const night =
+            Boolean(
+                dom.competitionNight?.checked
+            );
+
+
+        dom.competitionBrasileiraoLabel
+            ?.classList.toggle(
+                "is-selected",
+                brasileirao
+            );
+
+
+        dom.competitionNightLabel
+            ?.classList.toggle(
+                "is-selected",
+                night
+            );
+
+
+        dom.brasileiraoConfig
+            ?.classList.toggle(
+                "is-visible",
+                brasileirao
+            );
+
+
+        dom.nightConfig
+            ?.classList.toggle(
+                "is-visible",
+                night
+            );
+
+    }
+
+
+    /* =====================================================
+       ABRIR NOVO
        ===================================================== */
 
     function openNewPlayer() {
@@ -965,98 +1430,51 @@
             null;
 
 
-        if (
-            dom.modalTitle
-        ) {
-
-            dom.modalTitle.textContent =
-                "NOVO JOGADOR.";
-
-        }
+        currentPhotoUrl =
+            null;
 
 
-        dom.form?.reset();
+        dom.modalTitle.textContent =
+            "NOVO JOGADOR.";
 
 
-        if (
-            dom.playerId
-        ) {
-
-            dom.playerId.value =
-                "";
-
-        }
+        dom.form.reset();
 
 
-        if (
-            dom.playerPlatform
-        ) {
-
-            dom.playerPlatform.value =
-                "PC";
-
-        }
+        dom.playerPlatform.value =
+            "PC";
 
 
-        if (
-            dom.playerElo
-        ) {
-
-            dom.playerElo.value =
-                "0";
-
-        }
+        dom.competitionBrasileirao.checked =
+            false;
 
 
-        if (
-            dom.playerWins
-        ) {
-
-            dom.playerWins.value =
-                "0";
-
-        }
+        dom.competitionNight.checked =
+            false;
 
 
-        if (
-            dom.playerDraws
-        ) {
-
-            dom.playerDraws.value =
-                "0";
-
-        }
+        dom.brasileiraoTeam.value =
+            "";
 
 
-        if (
-            dom.playerLosses
-        ) {
-
-            dom.playerLosses.value =
-                "0";
-
-        }
+        dom.nightTeam.value =
+            "";
 
 
-        if (
-            dom.playerTitles
-        ) {
+        resetPhotoPreview();
 
-            dom.playerTitles.value =
-                "0";
 
-        }
-
+        updateCompetitionUI();
 
         updateRankPreview();
 
 
-        dom.modal?.classList.add(
+        dom.modal.classList.add(
             "is-open"
         );
 
 
-        dom.modal?.setAttribute(
+        dom.modal.setAttribute(
             "aria-hidden",
             "false"
         );
@@ -1069,10 +1487,12 @@
 
 
     /* =====================================================
-       EDITAR JOGADOR
+       EDITAR
        ===================================================== */
 
-    function openEditPlayer(id) {
+    function openEditPlayer(
+        id
+    ) {
 
         const player =
             players.find(
@@ -1099,14 +1519,13 @@
             player.id;
 
 
-        if (
-            dom.modalTitle
-        ) {
+        currentPhotoUrl =
+            player.photo_url ||
+            null;
 
-            dom.modalTitle.textContent =
-                "EDITAR JOGADOR.";
 
-        }
+        dom.modalTitle.textContent =
+            "EDITAR JOGADOR.";
 
 
         dom.playerId.value =
@@ -1125,49 +1544,99 @@
             player.platform || "PC";
 
 
-        dom.playerElo.value =
-            Number(
-                player.elo || 0
+        dom.competitionBrasileirao.checked =
+            false;
+
+
+        dom.competitionNight.checked =
+            false;
+
+
+        dom.brasileiraoTeam.value =
+            "";
+
+
+        dom.nightTeam.value =
+            "";
+
+
+        (
+            player.competitions ||
+            []
+        )
+            .forEach(
+                item => {
+
+                    if (
+                        item.competition ===
+                        "BRASILEIRAO"
+                    ) {
+
+                        dom.competitionBrasileirao.checked =
+                            true;
+
+
+                        dom.brasileiraoTeam.value =
+                            item.team_name || "";
+
+                    }
+
+
+                    if (
+                        item.competition ===
+                        "NIGHT_CUP"
+                    ) {
+
+                        dom.competitionNight.checked =
+                            true;
+
+
+                        dom.nightTeam.value =
+                            item.team_name || "";
+
+                    }
+
+                }
             );
 
 
-        dom.playerWins.value =
-            Number(
-                player.wins || 0
-            );
+        if (
+            currentPhotoUrl
+        ) {
+
+            dom.playerPhotoPreview.innerHTML = `
+
+                <img
+                    src="${escapeHTML(
+                        currentPhotoUrl
+                    )}"
+                    alt="${escapeHTML(
+                        player.name
+                    )}"
+                >
+
+            `;
+
+        }
+
+        else {
+
+            resetPhotoPreview();
+
+        }
 
 
-        dom.playerDraws.value =
-            Number(
-                player.draws || 0
-            );
-
-
-        dom.playerLosses.value =
-            Number(
-                player.losses || 0
-            );
-
-
-        dom.playerTitles.value =
-            Number(
-                player.titles || 0
-            );
-
-
-        dom.playerPhoto.value =
-            player.photo_url || "";
-
+        updateCompetitionUI();
 
         updateRankPreview();
 
 
-        dom.modal?.classList.add(
+        dom.modal.classList.add(
             "is-open"
         );
 
 
-        dom.modal?.setAttribute(
+        dom.modal.setAttribute(
             "aria-hidden",
             "false"
         );
@@ -1180,17 +1649,17 @@
 
 
     /* =====================================================
-       FECHAR MODAL
+       CLOSE
        ===================================================== */
 
     function closePlayerModal() {
 
-        dom.modal?.classList.remove(
+        dom.modal.classList.remove(
             "is-open"
         );
 
 
-        dom.modal?.setAttribute(
+        dom.modal.setAttribute(
             "aria-hidden",
             "true"
         );
@@ -1207,13 +1676,13 @@
 
 
     /* =====================================================
-       PREVIEW ELO
+       ELO PREVIEW
        ===================================================== */
 
     function updateRankPreview() {
 
         if (
-            !dom.playerElo
+            !dom.playerRankPreview
         ) {
 
             return;
@@ -1221,48 +1690,120 @@
         }
 
 
-        const elo =
-            Number(
-                dom.playerElo.value
-            ) || 0;
-
-
         const rank =
             getRank(
-                elo
+                0
             );
 
 
-        if (
-            dom.playerRankPreview
-        ) {
-
-            dom.playerRankPreview.textContent =
-                rank.name;
+        dom.playerRankPreview.textContent =
+            rank.name;
 
 
-            dom.playerRankPreview.style.color =
-                rank.color;
-
-        }
+        dom.playerRankPreview.style.color =
+            rank.color;
 
 
-        if (
-            dom.playerEloPreview
-        ) {
-
-            dom.playerEloPreview.textContent =
-                formatNumber(
-                    elo
-                );
-
-        }
+        dom.playerEloPreview.textContent =
+            "0";
 
     }
 
 
     /* =====================================================
-       SALVAR JOGADOR NO SUPABASE
+       VALIDAR COMPETIÇÕES
+       ===================================================== */
+
+    function collectCompetitions() {
+
+        const selected =
+            [];
+
+
+        if (
+            dom.competitionBrasileirao.checked
+        ) {
+
+            const team =
+                dom.brasileiraoTeam.value
+                    .trim();
+
+
+            if (
+                !team
+            ) {
+
+                throw new Error(
+                    "SELECIONE O CLUBE DO BRASILEIRÃO."
+                );
+
+            }
+
+
+            selected.push({
+
+                competition:
+                    "BRASILEIRAO",
+
+                team_name:
+                    team
+
+            });
+
+        }
+
+
+        if (
+            dom.competitionNight.checked
+        ) {
+
+            const team =
+                dom.nightTeam.value
+                    .trim();
+
+
+            if (
+                !team
+            ) {
+
+                throw new Error(
+                    "INFORME O TIME DA NIGHT CUP."
+                );
+
+            }
+
+
+            selected.push({
+
+                competition:
+                    "NIGHT_CUP",
+
+                team_name:
+                    team
+
+            });
+
+        }
+
+
+        if (
+            selected.length === 0
+        ) {
+
+            throw new Error(
+                "SELECIONE PELO MENOS UMA COMPETIÇÃO."
+            );
+
+        }
+
+
+        return selected;
+
+    }
+
+
+    /* =====================================================
+       SALVAR
        ===================================================== */
 
     async function savePlayerFromForm(
@@ -1273,7 +1814,8 @@
 
 
         const name =
-            dom.playerName.value.trim();
+            dom.playerName.value
+                .trim();
 
 
         if (
@@ -1289,85 +1831,156 @@
         }
 
 
-        const client =
-            await getSupabase();
-
-
-        const playerPayload = {
-
-            name:
-                name,
-
-            instagram:
-                dom.playerInstagram.value
-                    .trim()
-                    .replace(
-                        /^@/,
-                        ""
-                    ),
-
-            platform:
-                dom.playerPlatform.value,
-
-            elo:
-                Math.max(
-                    0,
-                    Number(
-                        dom.playerElo.value
-                    ) || 0
-                ),
-
-            photo_url:
-                dom.playerPhoto.value
-                    .trim() ||
-                null,
-
-            wins:
-                Math.max(
-                    0,
-                    Number(
-                        dom.playerWins.value
-                    ) || 0
-                ),
-
-            draws:
-                Math.max(
-                    0,
-                    Number(
-                        dom.playerDraws.value
-                    ) || 0
-                ),
-
-            losses:
-                Math.max(
-                    0,
-                    Number(
-                        dom.playerLosses.value
-                    ) || 0
-                ),
-
-            titles:
-                Math.max(
-                    0,
-                    Number(
-                        dom.playerTitles.value
-                    ) || 0
-                ),
-
-            status:
-                "ACTIVE"
-
-        };
+        let competitions;
 
 
         try {
 
+            competitions =
+                collectCompetitions();
+
+        }
+
+        catch (
+            error
+        ) {
+
+            showToast(
+                error.message
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            const client =
+                await getSupabase();
+
+
             /*
-             * EDITAR
+             * ID
+             *
+             * Criamos o UUID agora para poder
+             * organizar a foto no Storage.
+             */
+
+            const playerId =
+                editingPlayerId ||
+                crypto.randomUUID();
+
+
+            /*
+             * Foto
+             */
+
+            const selectedPhoto =
+                dom.playerPhotoFile?.files?.[0] ||
+                null;
+
+
+            let photoUrl =
+                currentPhotoUrl;
+
+
+            if (
+                selectedPhoto
+            ) {
+
+                showToast(
+                    "ENVIANDO FOTO..."
+                );
+
+
+                photoUrl =
+                    await uploadPlayerPhoto(
+                        selectedPhoto,
+                        playerId
+                    );
+
+            }
+
+
+            /*
+             * Dados iniciais
+             *
+             * O jogador começa SEMPRE com
+             * Elo e estatísticas zerados.
+             */
+
+            const playerPayload = {
+
+                id:
+                    playerId,
+
+                player_code:
+                    editingPlayerId
+
+                        ?
+
+                        (
+                            players.find(
+                                item =>
+                                    String(
+                                        item.id
+                                    ) ===
+                                    String(
+                                        editingPlayerId
+                                    )
+                            )?.player_code ||
+                            null
+                        )
+
+                        :
+
+                        await generatePlayerCode(),
+
+                name:
+                    name,
+
+                instagram:
+                    dom.playerInstagram.value
+                        .trim()
+                        .replace(
+                            /^@/,
+                            ""
+                        ),
+
+                platform:
+                    dom.playerPlatform.value,
+
+                photo_url:
+                    photoUrl || null,
+
+                elo:
+                    0,
+
+                wins:
+                    0,
+
+                draws:
+                    0,
+
+                losses:
+                    0,
+
+                titles:
+                    0,
+
+                status:
+                    "ACTIVE"
+
+            };
+
+
+            /*
+             * NOVO
              */
 
             if (
-                editingPlayerId
+                !editingPlayerId
             ) {
 
                 const {
@@ -1379,9 +1992,52 @@
                             PLAYERS_TABLE
                         )
 
-                        .update(
+                        .insert(
                             playerPayload
+                        );
+
+
+                if (
+                    error
+                ) {
+
+                    throw error;
+
+                }
+
+            }
+
+
+            /*
+             * EDITAR
+             */
+
+            else {
+
+                const {
+                    error
+                } =
+                    await client
+
+                        .from(
+                            PLAYERS_TABLE
                         )
+
+                        .update({
+
+                            name:
+                                playerPayload.name,
+
+                            instagram:
+                                playerPayload.instagram,
+
+                            platform:
+                                playerPayload.platform,
+
+                            photo_url:
+                                playerPayload.photo_url
+
+                        })
 
                         .eq(
                             "id",
@@ -1397,54 +2053,81 @@
 
                 }
 
+            }
 
-                showToast(
-                    "JOGADOR ATUALIZADO."
-                );
+
+            /*
+             * ATUALIZAR COMPETIÇÕES
+             */
+
+            const {
+                error:
+                    deleteCompetitionError
+            } =
+                await client
+
+                    .from(
+                        COMPETITIONS_TABLE
+                    )
+
+                    .delete()
+
+                    .eq(
+                        "player_id",
+                        playerId
+                    );
+
+
+            if (
+                deleteCompetitionError
+            ) {
+
+                throw deleteCompetitionError;
 
             }
 
-            /*
-             * NOVO
-             */
 
-            else {
+            const competitionRows =
+                competitions.map(
+                    item => {
 
-                const playerCode =
-                    await generatePlayerCode();
+                        return {
 
+                            player_id:
+                                playerId,
 
-                const {
-                    error
-                } =
-                    await client
+                            competition:
+                                item.competition,
 
-                        .from(
-                            PLAYERS_TABLE
-                        )
+                            team_name:
+                                item.team_name
 
-                        .insert({
+                        };
 
-                            ...playerPayload,
-
-                            player_code:
-                                playerCode
-
-                        });
-
-
-                if (
-                    error
-                ) {
-
-                    throw error;
-
-                }
-
-
-                showToast(
-                    "JOGADOR CADASTRADO."
+                    }
                 );
+
+
+            const {
+                error:
+                    competitionInsertError
+            } =
+                await client
+
+                    .from(
+                        COMPETITIONS_TABLE
+                    )
+
+                    .insert(
+                        competitionRows
+                    );
+
+
+            if (
+                competitionInsertError
+            ) {
+
+                throw competitionInsertError;
 
             }
 
@@ -1454,6 +2137,14 @@
 
             await loadPlayers();
 
+
+            showToast(
+                editingPlayerId
+                    ? "JOGADOR ATUALIZADO."
+                    : "JOGADOR CADASTRADO."
+            );
+
+
         }
 
         catch (
@@ -1461,24 +2152,25 @@
         ) {
 
             console.error(
-                "CCFV // SAVE PLAYER ERROR:",
+                "CCFV // SAVE ERROR:",
                 error
             );
 
 
             console.error(
-                "MESSAGE:",
+                "CCFV // MESSAGE:",
                 error?.message
             );
 
 
             console.error(
-                "DETAILS:",
+                "CCFV // DETAILS:",
                 error?.details
             );
 
 
             showToast(
+                error?.message ||
                 "ERRO AO SALVAR JOGADOR."
             );
 
@@ -1488,7 +2180,7 @@
 
 
     /* =====================================================
-       EXCLUIR JOGADOR
+       EXCLUIR
        ===================================================== */
 
     async function deletePlayer(
@@ -1537,6 +2229,11 @@
                 await getSupabase();
 
 
+            /*
+             * As competições serão excluídas
+             * automaticamente pelo ON DELETE CASCADE.
+             */
+
             const {
                 error
             } =
@@ -1563,12 +2260,12 @@
             }
 
 
+            await loadPlayers();
+
+
             showToast(
                 "JOGADOR EXCLUÍDO."
             );
-
-
-            await loadPlayers();
 
         }
 
@@ -1577,12 +2274,13 @@
         ) {
 
             console.error(
-                "CCFV // DELETE PLAYER ERROR:",
+                "CCFV // DELETE ERROR:",
                 error
             );
 
 
             showToast(
+                error?.message ||
                 "ERRO AO EXCLUIR JOGADOR."
             );
 
@@ -1592,15 +2290,17 @@
 
 
     /* =====================================================
-       AÇÕES DA TABELA
+       TABLE ACTIONS
        ===================================================== */
 
     function bindPlayerRowActions() {
 
         document
+
             .querySelectorAll(
                 "[data-edit-player]"
             )
+
             .forEach(
                 button => {
 
@@ -1621,9 +2321,11 @@
 
 
         document
+
             .querySelectorAll(
                 "[data-delete-player]"
             )
+
             .forEach(
                 button => {
 
@@ -1788,10 +2490,40 @@
         );
 
 
-        dom.playerElo?.addEventListener(
-            "input",
-            updateRankPreview
+        dom.playerPhotoFile?.addEventListener(
+            "change",
+            event => {
+
+                const file =
+                    event.target.files?.[0];
+
+
+                if (
+                    file
+                ) {
+
+                    setPhotoPreview(
+                        file
+                    );
+
+                }
+
+            }
         );
+
+
+        dom.competitionBrasileirao
+            ?.addEventListener(
+                "change",
+                updateCompetitionUI
+            );
+
+
+        dom.competitionNight
+            ?.addEventListener(
+                "change",
+                updateCompetitionUI
+            );
 
 
         document.addEventListener(
@@ -1825,43 +2557,44 @@
         );
 
 
-        dom.playerFilterButtons.forEach(
-            button => {
+        dom.playerFilterButtons
+            .forEach(
+                button => {
 
-                button.addEventListener(
-                    "click",
-                    () => {
+                    button.addEventListener(
+                        "click",
+                        () => {
 
-                        dom.playerFilterButtons
-                            .forEach(
-                                item => {
+                            dom.playerFilterButtons
+                                .forEach(
+                                    item => {
 
-                                    item.classList.remove(
-                                        "is-active"
-                                    );
+                                        item.classList.remove(
+                                            "is-active"
+                                        );
 
-                                }
+                                    }
+                                );
+
+
+                            button.classList.add(
+                                "is-active"
                             );
 
 
-                        button.classList.add(
-                            "is-active"
-                        );
+                            activePlatformFilter =
+                                button.dataset
+                                    .adminFilter ||
+                                "all";
 
 
-                        activePlatformFilter =
-                            button.dataset
-                                .adminFilter ||
-                            "all";
+                            renderPlayers();
 
+                        }
+                    );
 
-                        renderPlayers();
-
-                    }
-                );
-
-            }
-        );
+                }
+            );
 
     }
 
@@ -1906,7 +2639,7 @@
                     );
 
                 },
-                2800
+                3200
             );
 
     }
@@ -1919,7 +2652,7 @@
     async function init() {
 
         console.log(
-            "%cCCFV // ADMIN DATABASE",
+            "%cCCFV // PLAYER MANAGEMENT",
             "color:#43df91;font-weight:900;font-size:18px;"
         );
 
@@ -1932,6 +2665,8 @@
 
         bindSearchAndFilters();
 
+        updateCompetitionUI();
+
         updateRankPreview();
 
 
@@ -1943,7 +2678,7 @@
 
 
             console.log(
-                "CCFV // SUPABASE DATABASE CONNECTED"
+                "CCFV // PLAYER DATABASE ONLINE"
             );
 
         }
@@ -1953,12 +2688,13 @@
         ) {
 
             console.error(
-                "CCFV // DATABASE INIT ERROR:",
+                "CCFV // INIT ERROR:",
                 error
             );
 
 
             showToast(
+                error?.message ||
                 "ERRO AO CONECTAR AO BANCO."
             );
 
