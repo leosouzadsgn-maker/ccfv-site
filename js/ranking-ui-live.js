@@ -1,7 +1,6 @@
 /* =========================================================
    CCFV // RANKING UI LIVE
-   Alimenta visualmente os cards e o ranking completo
-   usando os dados já recebidos pelo CCFV Live.
+   CAMADA VISUAL DO RANKING
    ========================================================= */
 
 (() => {
@@ -16,12 +15,13 @@
     let currentPlatform =
         "all";
 
-
-    let observer =
-        null;
-
+    let currentSearch =
+        "";
 
     let updateTimer =
+        null;
+
+    let observer =
         null;
 
 
@@ -60,7 +60,7 @@
     }
 
 
-    function normalizePlatform(
+    function normalize(
         value
     ) {
 
@@ -105,7 +105,7 @@
     }
 
 
-    function getRankByPoints(
+    function getRank(
         elo
     ) {
 
@@ -135,11 +135,13 @@
         ) {
 
             return {
+
                 key:
                     "legend",
 
                 name:
                     "LENDA"
+
             };
 
         }
@@ -151,11 +153,13 @@
         ) {
 
             return {
+
                 key:
                     "professional",
 
                 name:
                     "PROFISSIONAL"
+
             };
 
         }
@@ -167,22 +171,26 @@
         ) {
 
             return {
+
                 key:
                     "amateur",
 
                 name:
                     "AMADOR"
+
             };
 
         }
 
 
         return {
+
             key:
                 "beginner",
 
             name:
                 "INICIANTE"
+
         };
 
     }
@@ -224,9 +232,15 @@
             );
 
 
+        const titles =
+            Number(
+                player?.titles ||
+                0
+            );
+
+
         const winRate =
-            games >
-            0
+            games > 0
                 ? Math.round(
                     (
                         wins /
@@ -247,6 +261,8 @@
 
             games,
 
+            titles,
+
             winRate
 
         };
@@ -255,14 +271,14 @@
 
 
     /* =====================================================
-       CSS
+       ESTILO VISUAL
        ===================================================== */
 
     function injectStyles() {
 
         if (
             document.querySelector(
-                "#ccfv-ranking-ui-live-style"
+                "#ccfv-ranking-ui-final-style"
             )
         ) {
 
@@ -278,33 +294,439 @@
 
 
         style.id =
-            "ccfv-ranking-ui-live-style";
+            "ccfv-ranking-ui-final-style";
 
 
         style.textContent = `
 
-            /* =============================================
-               PLAYER CARD — FOTO REAL
-               ============================================= */
+            /* =================================================
+               TOPO DO RANKING
+               ================================================= */
 
-            .ccfv-player-card-preview__photo-frame {
+            #ranking-feature-player {
 
-                position:
-                    relative;
+                width:
+                    100% !important;
+
+                min-height:
+                    360px !important;
+
+                display:
+                    block !important;
 
                 overflow:
-                    hidden;
+                    hidden !important;
+
+                box-sizing:
+                    border-box !important;
 
             }
 
 
+            .ccfv-live-feature {
+
+                width:
+                    100%;
+
+                min-height:
+                    360px;
+
+                display:
+                    grid;
+
+                grid-template-columns:
+                    320px
+                    minmax(
+                        0,
+                        1fr
+                    );
+
+                gap:
+                    36px;
+
+                align-items:
+                    center;
+
+                padding:
+                    28px;
+
+                box-sizing:
+                    border-box;
+
+            }
+
+
+            .ccfv-live-feature__photo-wrap {
+
+                width:
+                    280px;
+
+                height:
+                    300px;
+
+                overflow:
+                    hidden;
+
+                border-radius:
+                    18px;
+
+                border:
+                    1px solid
+                    rgba(
+                        67,
+                        223,
+                        145,
+                        .22
+                    );
+
+                background:
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        .025
+                    );
+
+                box-shadow:
+                    0 30px 80px
+                    rgba(
+                        0,
+                        0,
+                        0,
+                        .35
+                    );
+
+            }
+
+
+            .ccfv-live-feature__photo {
+
+                width:
+                    100% !important;
+
+                height:
+                    100% !important;
+
+                max-width:
+                    100% !important;
+
+                max-height:
+                    100% !important;
+
+                display:
+                    block;
+
+                object-fit:
+                    cover;
+
+                object-position:
+                    center;
+
+            }
+
+
+            .ccfv-live-feature__photo-placeholder {
+
+                width:
+                    100%;
+
+                height:
+                    100%;
+
+                display:
+                    flex;
+
+                align-items:
+                    center;
+
+                justify-content:
+                    center;
+
+                font-size:
+                    56px;
+
+                font-weight:
+                    950;
+
+                color:
+                    #43df91;
+
+                background:
+                    radial-gradient(
+                        circle,
+                        rgba(
+                            67,
+                            223,
+                            145,
+                            .12
+                        ),
+                        transparent
+                    );
+
+            }
+
+
+            .ccfv-live-feature__content {
+
+                min-width:
+                    0;
+
+            }
+
+
+            .ccfv-live-feature__eyebrow {
+
+                display:
+                    block;
+
+                margin-bottom:
+                    10px;
+
+                font-size:
+                    11px;
+
+                font-weight:
+                    900;
+
+                letter-spacing:
+                    .14em;
+
+                color:
+                    #43df91;
+
+            }
+
+
+            .ccfv-live-feature__position {
+
+                display:
+                    inline-flex;
+
+                align-items:
+                    center;
+
+                height:
+                    28px;
+
+                padding:
+                    0 10px;
+
+                border-radius:
+                    999px;
+
+                border:
+                    1px solid
+                    rgba(
+                        67,
+                        223,
+                        145,
+                        .25
+                    );
+
+                color:
+                    #43df91;
+
+                font-size:
+                    11px;
+
+                font-weight:
+                    900;
+
+                margin-bottom:
+                    14px;
+
+            }
+
+
+            .ccfv-live-feature__name {
+
+                margin:
+                    0;
+
+                font-size:
+                    clamp(
+                        34px,
+                        4vw,
+                        64px
+                    );
+
+                line-height:
+                    .92;
+
+                font-weight:
+                    950;
+
+                letter-spacing:
+                    -.045em;
+
+                color:
+                    #fff;
+
+            }
+
+
+            .ccfv-live-feature__instagram {
+
+                margin-top:
+                    8px;
+
+                color:
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        .45
+                    );
+
+                font-weight:
+                    700;
+
+            }
+
+
+            .ccfv-live-feature__rank {
+
+                margin-top:
+                    18px;
+
+                color:
+                    #43df91;
+
+                font-size:
+                    14px;
+
+                font-weight:
+                    900;
+
+                letter-spacing:
+                    .08em;
+
+            }
+
+
+            .ccfv-live-feature__stats {
+
+                margin-top:
+                    24px;
+
+                display:
+                    grid;
+
+                grid-template-columns:
+                    repeat(
+                        6,
+                        minmax(
+                            70px,
+                            1fr
+                        )
+                    );
+
+                gap:
+                    8px;
+
+            }
+
+
+            .ccfv-live-feature__stat {
+
+                min-width:
+                    0;
+
+                padding:
+                    13px;
+
+                border:
+                    1px solid
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        .07
+                    );
+
+                border-radius:
+                    10px;
+
+                background:
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        .025
+                    );
+
+            }
+
+
+            .ccfv-live-feature__stat span {
+
+                display:
+                    block;
+
+                font-size:
+                    9px;
+
+                font-weight:
+                    900;
+
+                letter-spacing:
+                    .08em;
+
+                color:
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        .32
+                    );
+
+            }
+
+
+            .ccfv-live-feature__stat strong {
+
+                display:
+                    block;
+
+                margin-top:
+                    5px;
+
+                font-size:
+                    18px;
+
+                font-weight:
+                    950;
+
+                color:
+                    #fff;
+
+            }
+
+
+            /* =================================================
+               PLAYER CARDS
+               ================================================= */
+
+            #player-card-grid
+            .ccfv-player-card-preview__photo-frame {
+
+                position:
+                    relative !important;
+
+                overflow:
+                    hidden !important;
+
+            }
+
+
+            #player-card-grid
             .ccfv-player-card-preview__player-photo {
 
                 position:
-                    absolute;
+                    absolute !important;
 
                 inset:
-                    0;
+                    0 !important;
 
                 width:
                     100% !important;
@@ -319,26 +741,29 @@
                     100% !important;
 
                 object-fit:
-                    cover;
+                    cover !important;
 
                 object-position:
-                    center;
+                    center !important;
 
                 display:
-                    block;
+                    block !important;
 
                 z-index:
-                    2;
+                    2 !important;
 
             }
 
 
+            #player-card-grid
             .ccfv-player-card-preview--occupied
             .ccfv-player-card-preview__photo-mark,
 
+            #player-card-grid
             .ccfv-player-card-preview--occupied
             .ccfv-player-card-preview__silhouette,
 
+            #player-card-grid
             .ccfv-player-card-preview--occupied
             .ccfv-player-card-preview__target {
 
@@ -348,33 +773,53 @@
             }
 
 
-            /* =============================================
+            /* =================================================
                RANKING COMPLETO
-               ============================================= */
+               ================================================= */
 
-            [data-ranking-list] {
+            .ccfv-live-complete-ranking {
 
                 width:
                     100%;
+
+                overflow:
+                    hidden;
+
+                border:
+                    1px solid
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        .07
+                    );
+
+                border-radius:
+                    16px;
+
+                background:
+                    rgba(
+                        0,
+                        0,
+                        0,
+                        .22
+                    );
 
             }
 
 
-            .ccfv-ranking-live-full-row {
-
-                width:
-                    100%;
-
-                min-height:
-                    74px;
+            .ccfv-live-complete-head {
 
                 display:
                     grid;
 
                 grid-template-columns:
                     70px
-                    minmax(220px, 1fr)
-                    90px
+                    minmax(
+                        260px,
+                        1fr
+                    )
+                    100px
                     90px
                     70px
                     70px
@@ -382,11 +827,71 @@
                     80px
                     140px;
 
+                gap:
+                    12px;
+
                 align-items:
                     center;
 
+                padding:
+                    15px 18px;
+
+                border-bottom:
+                    1px solid
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        .08
+                    );
+
+                color:
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        .35
+                    );
+
+                font-size:
+                    10px;
+
+                font-weight:
+                    900;
+
+                letter-spacing:
+                    .08em;
+
+            }
+
+
+            .ccfv-live-complete-row {
+
+                display:
+                    grid;
+
+                grid-template-columns:
+                    70px
+                    minmax(
+                        260px,
+                        1fr
+                    )
+                    100px
+                    90px
+                    70px
+                    70px
+                    70px
+                    80px
+                    140px;
+
                 gap:
                     12px;
+
+                align-items:
+                    center;
+
+                min-height:
+                    76px;
 
                 padding:
                     0 18px;
@@ -397,7 +902,7 @@
                         255,
                         255,
                         255,
-                        .06
+                        .055
                     );
 
                 box-sizing:
@@ -406,7 +911,15 @@
             }
 
 
-            .ccfv-ranking-live-full-row:hover {
+            .ccfv-live-complete-row:last-child {
+
+                border-bottom:
+                    0;
+
+            }
+
+
+            .ccfv-live-complete-row:hover {
 
                 background:
                     rgba(
@@ -419,7 +932,7 @@
             }
 
 
-            .ccfv-ranking-live-full-row__player {
+            .ccfv-live-complete-player {
 
                 min-width:
                     0;
@@ -433,31 +946,22 @@
                 gap:
                     12px;
 
-                overflow:
-                    hidden;
-
             }
 
 
-            .ccfv-ranking-live-full-row__photo {
+            .ccfv-live-complete-photo {
 
                 width:
-                    44px;
+                    48px;
 
                 min-width:
-                    44px;
+                    48px;
 
                 height:
-                    44px;
-
-                min-height:
-                    44px;
+                    48px;
 
                 overflow:
                     hidden;
-
-                border-radius:
-                    10px;
 
                 display:
                     flex;
@@ -467,6 +971,9 @@
 
                 justify-content:
                     center;
+
+                border-radius:
+                    10px;
 
                 background:
                     rgba(
@@ -485,13 +992,10 @@
                         .18
                     );
 
-                flex-shrink:
-                    0;
-
             }
 
 
-            .ccfv-ranking-live-full-row__photo img {
+            .ccfv-live-complete-photo img {
 
                 width:
                     100%;
@@ -514,113 +1018,167 @@
             }
 
 
-            .ccfv-ranking-live-full-row__info {
+            .ccfv-live-complete-info {
 
                 min-width:
                     0;
 
+                overflow:
+                    hidden;
+
             }
 
 
-            .ccfv-ranking-live-full-row__info strong {
+            .ccfv-live-complete-info strong {
 
                 display:
                     block;
 
-                white-space:
-                    nowrap;
-
                 overflow:
                     hidden;
+
+                white-space:
+                    nowrap;
 
                 text-overflow:
                     ellipsis;
 
+                color:
+                    #fff;
+
             }
 
 
-            .ccfv-ranking-live-full-row__info small {
+            .ccfv-live-complete-info small {
 
                 display:
                     block;
 
                 margin-top:
-                    2px;
-
-                opacity:
-                    .5;
-
-                white-space:
-                    nowrap;
+                    3px;
 
                 overflow:
                     hidden;
 
+                white-space:
+                    nowrap;
+
                 text-overflow:
                     ellipsis;
 
-            }
-
-
-            .ccfv-ranking-live-full-row__position {
-
-                font-weight:
-                    900;
-
-            }
-
-
-            .ccfv-ranking-live-full-row__elo {
-
-                font-weight:
-                    900;
+                color:
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        .35
+                    );
 
             }
 
 
-            .ccfv-ranking-live-full-row__win {
+            .ccfv-live-complete-elo {
 
                 color:
                     #43df91;
 
+                font-weight:
+                    950;
+
             }
 
 
-            .ccfv-ranking-live-full-row__loss {
+            .ccfv-live-complete-win {
+
+                color:
+                    #43df91;
+
+                font-weight:
+                    900;
+
+            }
+
+
+            .ccfv-live-complete-loss {
 
                 color:
                     #e15d5d;
 
+                font-weight:
+                    900;
+
             }
 
 
-            .ccfv-ranking-live-full-row__level {
+            .ccfv-live-complete-rank {
 
                 font-weight:
-                    800;
+                    900;
 
             }
 
 
-            .ccfv-ranking-live-empty {
+            .ccfv-live-complete-empty {
 
                 padding:
-                    50px 20px;
+                    60px 20px;
 
                 text-align:
                     center;
 
-                opacity:
-                    .6;
+                color:
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        .45
+                    );
 
             }
 
 
             @media (
-                max-width: 1000px
+                max-width: 900px
             ) {
 
-                .ccfv-ranking-live-full-row {
+                .ccfv-live-feature {
+
+                    grid-template-columns:
+                        1fr;
+
+                }
+
+
+                .ccfv-live-feature__photo-wrap {
+
+                    width:
+                        min(
+                            240px,
+                            100%
+                        );
+
+                    height:
+                        260px;
+
+                    margin:
+                        0 auto;
+
+                }
+
+
+                .ccfv-live-feature__stats {
+
+                    grid-template-columns:
+                        repeat(
+                            3,
+                            1fr
+                        );
+
+                }
+
+
+                .ccfv-live-complete-head,
+                .ccfv-live-complete-row {
 
                     grid-template-columns:
                         50px
@@ -629,19 +1187,21 @@
                             1fr
                         )
                         80px
-                        80px
-                        70px;
+                        70px
+                        80px;
 
                 }
 
 
-                .ccfv-ranking-live-full-row__draws,
+                .ccfv-live-complete-head span:nth-child(5),
+                .ccfv-live-complete-head span:nth-child(6),
+                .ccfv-live-complete-head span:nth-child(7),
+                .ccfv-live-complete-head span:nth-child(8),
 
-                .ccfv-ranking-live-full-row__losses,
-
-                .ccfv-ranking-live-full-row__titles,
-
-                .ccfv-ranking-live-full-row__level {
+                .ccfv-live-complete-row > span:nth-child(5),
+                .ccfv-live-complete-row > span:nth-child(6),
+                .ccfv-live-complete-row > span:nth-child(7),
+                .ccfv-live-complete-row > span:nth-child(8) {
 
                     display:
                         none;
@@ -661,17 +1221,19 @@
 
 
     /* =====================================================
-       CARD — ATUALIZAR
+       TOPO REAL
        ===================================================== */
 
-    function updateCard(
-        card,
-        player,
-        rank
-    ) {
+    function renderFeature() {
+
+        const container =
+            document.querySelector(
+                "#ranking-feature-player"
+            );
+
 
         if (
-            !card
+            !container
         ) {
 
             return;
@@ -679,391 +1241,392 @@
         }
 
 
-        const occupied =
-            Boolean(
-                player
-            );
-
-
-        card.classList.toggle(
-            "ccfv-player-card-preview--occupied",
-            occupied
-        );
-
-
-        card.classList.toggle(
-            "ccfv-player-card-preview--empty",
-            !occupied
-        );
-
-
-        const photoFrame =
-            card.querySelector(
-                ".ccfv-player-card-preview__photo-frame"
-            );
-
-
-        const identity =
-            card.querySelector(
-                ".ccfv-player-card-preview__identity"
-            );
-
-
-        const metrics =
-            card.querySelectorAll(
-                ".ccfv-player-card-preview__metrics > div"
-            );
-
-
-        const topStrong =
-            card.querySelector(
-                ".ccfv-player-card-preview__top strong"
-            );
-
-
-        if (
-            !photoFrame ||
-            !identity
-        ) {
-
-            return;
-
-        }
-
-
-        /*
-         * FOTO
-         */
-
-        const oldPhoto =
-            photoFrame.querySelector(
-                ".ccfv-player-card-preview__player-photo"
-            );
-
-
-        if (
-            oldPhoto
-        ) {
-
-            oldPhoto.remove();
-
-        }
-
-
-        if (
-            player
-        ) {
-
-            const photo =
-                player.photo ||
-                player.photo_url ||
-                "";
-
-
-            if (
-                photo
-            ) {
-
-                const image =
-                    document.createElement(
-                        "img"
-                    );
-
-
-                image.className =
-                    "ccfv-player-card-preview__player-photo";
-
-
-                image.src =
-                    photo;
-
-
-                image.alt =
-                    player.name ||
-                    "Jogador CCFV";
-
-
-                image.loading =
-                    "lazy";
-
-
-                image.onerror =
-                    () => {
-
-                        image.remove();
-
-                    };
-
-
-                photoFrame.appendChild(
-                    image
+        const players =
+            getPlayers()
+                .slice()
+                .sort(
+                    (
+                        a,
+                        b
+                    ) =>
+                        Number(
+                            b.elo ||
+                            0
+                        ) -
+                        Number(
+                            a.elo ||
+                            0
+                        )
                 );
 
-            }
 
-        }
-
-
-        /*
-         * ID
-         */
-
-        const identitySpans =
-            identity.querySelectorAll(
-                ":scope > span, :scope > strong, :scope > small"
-            );
-
-
-        const rankElement =
-            identity.querySelector(
-                ":scope > span"
-            );
-
-
-        const nameElement =
-            identity.querySelector(
-                ":scope > strong"
-            );
-
-
-        const subElement =
-            identity.querySelector(
-                ":scope > small"
-            );
+        const leader =
+            players[0] ||
+            null;
 
 
         if (
-            rankElement
+            !leader
         ) {
 
-            rankElement.textContent =
-                rank.name;
+            container.innerHTML = `
+
+                <div
+                    class="
+                        ccfv-live-feature
+                    "
+                >
+
+                    <div
+                        class="
+                            ccfv-live-feature__photo-wrap
+                        "
+                    >
+
+                        <div
+                            class="
+                                ccfv-live-feature__photo-placeholder
+                            "
+                        >
+                            CCFV
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            ccfv-live-feature__content
+                        "
+                    >
+
+                        <span
+                            class="
+                                ccfv-live-feature__eyebrow
+                            "
+                        >
+                            CCFV // OFFICIAL LEADER
+                        </span>
+
+
+                        <span
+                            class="
+                                ccfv-live-feature__position
+                            "
+                        >
+                            #01 · AGUARDANDO
+                        </span>
+
+
+                        <h2
+                            class="
+                                ccfv-live-feature__name
+                            "
+                        >
+                            NENHUM LÍDER
+                        </h2>
+
+
+                        <div
+                            class="
+                                ccfv-live-feature__rank
+                            "
+                        >
+                            O RANKING AINDA ESTÁ VAZIO.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            `;
+
+            return;
 
         }
 
 
-        if (
-            nameElement
-        ) {
+        const rank =
+            getRank(
+                leader.elo
+            );
 
-            nameElement.textContent =
-                player
-                    ? player.name
-                    : "PLAYER";
-
-        }
-
-
-        if (
-            subElement
-        ) {
-
-            subElement.textContent =
-                player
-                    ? (
-                        player.instagram
-                            ? `@${String(
-                                player.instagram
-                            ).replace(
-                                /^@/,
-                                ""
-                            )}`
-                            : "COMPETIDOR CCFV"
-                    )
-                    : "NOME DO COMPETIDOR";
-
-        }
-
-
-        /*
-         * POSIÇÃO NO TOPO
-         */
-
-        if (
-            topStrong
-        ) {
-
-            const position =
-                player
-                    ? Number(
-                        player.ranking_position ||
-                        0
-                    )
-                    : 0;
-
-
-            if (
-                position
-            ) {
-
-                topStrong.textContent =
-                    `#${String(
-                        position
-                    ).padStart(
-                        3,
-                        "0"
-                    )}`;
-
-            }
-
-        }
-
-
-        /*
-         * MÉTRICAS
-         */
 
         const stats =
             getStats(
-                player
+                leader
             );
 
 
-        if (
-            metrics.length >=
-            3
-        ) {
-
-            const eloStrong =
-                metrics[0]
-                    .querySelector(
-                        "strong"
-                    );
+        const photo =
+            leader.photo_url ||
+            leader.photo ||
+            "";
 
 
-            const posStrong =
-                metrics[1]
-                    .querySelector(
-                        "strong"
-                    );
+        const instagram =
+            leader.instagram
+                ? `@${String(
+                    leader.instagram
+                ).replace(
+                    /^@/,
+                    ""
+                )}`
+                : "SEM INSTAGRAM";
 
 
-            const winStrong =
-                metrics[2]
-                    .querySelector(
-                        "strong"
-                    );
-
-
-            if (
-                eloStrong
-            ) {
-
-                eloStrong.textContent =
-                    player
-                        ? String(
-                            Number(
-                                player.elo ||
-                                0
-                            )
-                        ).padStart(
-                            4,
-                            "0"
-                        )
-                        : "0000";
-
-            }
-
-
-            if (
-                posStrong
-            ) {
-
-                posStrong.textContent =
-                    player
-                        ? `#${String(
-                            Number(
-                                player.ranking_position ||
-                                0
-                            )
-                        ).padStart(
-                            3,
-                            "0"
-                        )}`
-                        : "#000";
-
-            }
-
-
-            if (
-                winStrong
-            ) {
-
-                winStrong.textContent =
-                    player
-                        ? `${String(
-                            stats.winRate
-                        ).padStart(
-                            2,
-                            "0"
-                        )}%`
-                        : "00%";
-
-            }
-
-        }
-
-
-        /*
-         * Ocultar placeholder somente
-         * quando existe foto.
-         */
-
-        const mark =
-            photoFrame.querySelector(
-                ".ccfv-player-card-preview__photo-mark"
-            );
-
-
-        const silhouette =
-            photoFrame.querySelector(
-                ".ccfv-player-card-preview__silhouette"
-            );
-
-
-        const target =
-            photoFrame.querySelector(
-                ".ccfv-player-card-preview__target"
-            );
-
-
-        const hasPhoto =
-            Boolean(
-                player &&
-                (
-                    player.photo ||
-                    player.photo_url
+        const initials =
+            String(
+                leader.name ||
+                "CCFV"
+            )
+                .trim()
+                .slice(
+                    0,
+                    2
                 )
-            );
+                .toUpperCase();
 
 
-        [
-            mark,
-            silhouette,
-            target
-        ]
-            .forEach(
-                element => {
+        const photoHTML =
+            photo
+                ? `
+                    <img
+                        class="
+                            ccfv-live-feature__photo
+                        "
+                        src="${escapeHTML(
+                            photo
+                        )}"
+                        alt="${escapeHTML(
+                            leader.name
+                        )}"
+                    >
+                `
+                : `
+                    <div
+                        class="
+                            ccfv-live-feature__photo-placeholder
+                        "
+                    >
+                        ${escapeHTML(
+                            initials
+                        )}
+                    </div>
+                `;
 
-                    if (
-                        element
-                    ) {
 
-                        element.style.display =
-                            hasPhoto
-                                ? "none"
-                                : "";
+        container.innerHTML = `
 
-                    }
+            <div
+                class="
+                    ccfv-live-feature
+                "
+            >
 
-                }
-            );
+                <div
+                    class="
+                        ccfv-live-feature__photo-wrap
+                    "
+                >
+
+                    ${photoHTML}
+
+                </div>
+
+
+                <div
+                    class="
+                        ccfv-live-feature__content
+                    "
+                >
+
+                    <span
+                        class="
+                            ccfv-live-feature__eyebrow
+                        "
+                    >
+                        CCFV // OFFICIAL LEADER
+                    </span>
+
+
+                    <span
+                        class="
+                            ccfv-live-feature__position
+                        "
+                    >
+                        #01 · ${escapeHTML(
+                            rank.name
+                        )}
+                    </span>
+
+
+                    <h2
+                        class="
+                            ccfv-live-feature__name
+                        "
+                    >
+                        ${escapeHTML(
+                            leader.name
+                        )}
+                    </h2>
+
+
+                    <div
+                        class="
+                            ccfv-live-feature__instagram
+                        "
+                    >
+                        ${escapeHTML(
+                            instagram
+                        )}
+                    </div>
+
+
+                    <div
+                        class="
+                            ccfv-live-feature__rank
+                        "
+                    >
+                        ${escapeHTML(
+                            leader.platform ||
+                            "PLATAFORMA"
+                        )}
+                        ·
+                        ${escapeHTML(
+                            rank.name
+                        )}
+                    </div>
+
+
+                    <div
+                        class="
+                            ccfv-live-feature__stats
+                        "
+                    >
+
+                        <div
+                            class="
+                                ccfv-live-feature__stat
+                            "
+                        >
+
+                            <span>
+                                ELO
+                            </span>
+
+                            <strong>
+                                ${Number(
+                                    leader.elo ||
+                                    0
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                ccfv-live-feature__stat
+                            "
+                        >
+
+                            <span>
+                                JOGOS
+                            </span>
+
+                            <strong>
+                                ${stats.games}
+                            </strong>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                ccfv-live-feature__stat
+                            "
+                        >
+
+                            <span>
+                                V
+                            </span>
+
+                            <strong>
+                                ${stats.wins}
+                            </strong>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                ccfv-live-feature__stat
+                            "
+                        >
+
+                            <span>
+                                E
+                            </span>
+
+                            <strong>
+                                ${stats.draws}
+                            </strong>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                ccfv-live-feature__stat
+                            "
+                        >
+
+                            <span>
+                                D
+                            </span>
+
+                            <strong>
+                                ${stats.losses}
+                            </strong>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                ccfv-live-feature__stat
+                            "
+                        >
+
+                            <span>
+                                WIN
+                            </span>
+
+                            <strong>
+                                ${String(
+                                    stats.winRate
+                                ).padStart(
+                                    2,
+                                    "0"
+                                )}%
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
 
     }
 
 
     /* =====================================================
-       CARDS — SINCRONIZAR
+       PLAYER CARDS
        ===================================================== */
 
     function syncPlayerCards() {
@@ -1120,7 +1683,7 @@
                 );
 
 
-        const ranks = [
+        const rankKeys = [
 
             "beginner",
 
@@ -1133,7 +1696,7 @@
         ];
 
 
-        ranks.forEach(
+        rankKeys.forEach(
             (
                 rankKey,
                 index
@@ -1155,15 +1718,122 @@
                 const player =
                     players.find(
                         item =>
-                            getRankByPoints(
+                            getRank(
                                 item.elo
                             ).key ===
                             rankKey
                     );
 
 
+                const photoFrame =
+                    card.querySelector(
+                        ".ccfv-player-card-preview__photo-frame"
+                    );
+
+
+                const identity =
+                    card.querySelector(
+                        ".ccfv-player-card-preview__identity"
+                    );
+
+
+                if (
+                    !photoFrame ||
+                    !identity
+                ) {
+
+                    return;
+
+                }
+
+
+                /*
+                 * FOTO EXISTENTE
+                 */
+
+                const oldPhoto =
+                    photoFrame.querySelector(
+                        ".ccfv-player-card-preview__player-photo"
+                    );
+
+
+                if (
+                    oldPhoto
+                ) {
+
+                    oldPhoto.remove();
+
+                }
+
+
+                /*
+                 * FOTO REAL
+                 */
+
+                const photo =
+                    player?.photo_url ||
+                    player?.photo ||
+                    "";
+
+
+                if (
+                    photo
+                ) {
+
+                    const img =
+                        document.createElement(
+                            "img"
+                        );
+
+
+                    img.className =
+                        "ccfv-player-card-preview__player-photo";
+
+
+                    img.src =
+                        photo;
+
+
+                    img.alt =
+                        player?.name ||
+                        "Jogador";
+
+
+                    img.loading =
+                        "lazy";
+
+
+                    photoFrame.appendChild(
+                        img
+                    );
+
+                }
+
+
+                /*
+                 * IDENTIDADE
+                 */
+
+                const rankElement =
+                    identity.querySelector(
+                        ":scope > span"
+                    );
+
+
+                const nameElement =
+                    identity.querySelector(
+                        ":scope > strong"
+                    );
+
+
+                const subElement =
+                    identity.querySelector(
+                        ":scope > small"
+                    );
+
+
                 const rank =
-                    getRankByPoints(
+                    getRank(
                         player?.elo ||
                         (
                             rankKey ===
@@ -1180,15 +1850,341 @@
                     );
 
 
-                updateCard(
-                    card,
-                    player ||
-                        null,
-                    rank
+                if (
+                    rankElement
+                ) {
+
+                    rankElement.textContent =
+                        rank.name;
+
+                }
+
+
+                if (
+                    nameElement
+                ) {
+
+                    nameElement.textContent =
+                        player
+                            ? player.name
+                            : "PLAYER";
+
+                }
+
+
+                if (
+                    subElement
+                ) {
+
+                    subElement.textContent =
+                        player
+                            ? (
+                                player.instagram
+                                    ? `@${String(
+                                        player.instagram
+                                    ).replace(
+                                        /^@/,
+                                        ""
+                                    )}`
+                                    : "COMPETIDOR CCFV"
+                            )
+                            : "NOME DO COMPETIDOR";
+
+                }
+
+
+                /*
+                 * METRICAS
+                 */
+
+                const metricBoxes =
+                    card.querySelectorAll(
+                        ".ccfv-player-card-preview__metrics > div"
+                    );
+
+
+                if (
+                    metricBoxes.length >=
+                    3
+                ) {
+
+                    const stats =
+                        getStats(
+                            player
+                        );
+
+
+                    const eloElement =
+                        metricBoxes[0]
+                            .querySelector(
+                                "strong"
+                            );
+
+
+                    const posElement =
+                        metricBoxes[1]
+                            .querySelector(
+                                "strong"
+                            );
+
+
+                    const winElement =
+                        metricBoxes[2]
+                            .querySelector(
+                                "strong"
+                            );
+
+
+                    if (
+                        eloElement
+                    ) {
+
+                        eloElement.textContent =
+                            player
+                                ? String(
+                                    Number(
+                                        player.elo ||
+                                        0
+                                    )
+                                ).padStart(
+                                    4,
+                                    "0"
+                                )
+                                : "0000";
+
+                    }
+
+
+                    if (
+                        posElement
+                    ) {
+
+                        posElement.textContent =
+                            player
+                                ? `#${String(
+                                    Number(
+                                        player.ranking_position ||
+                                        0
+                                    )
+                                ).padStart(
+                                    3,
+                                    "0"
+                                )}`
+                                : "#000";
+
+                    }
+
+
+                    if (
+                        winElement
+                    ) {
+
+                        winElement.textContent =
+                            player
+                                ? `${String(
+                                    stats.winRate
+                                ).padStart(
+                                    2,
+                                    "0"
+                                )}%`
+                                : "00%";
+
+                    }
+
+                }
+
+
+                /*
+                 * CLASSE OCUPADO
+                 */
+
+                card.classList.toggle(
+                    "ccfv-player-card-preview--occupied",
+                    Boolean(
+                        player
+                    )
                 );
+
+
+                card.classList.toggle(
+                    "ccfv-player-card-preview--empty",
+                    !player
+                );
+
+
+                [
+                    ".ccfv-player-card-preview__photo-mark",
+
+                    ".ccfv-player-card-preview__silhouette",
+
+                    ".ccfv-player-card-preview__target"
+
+                ]
+                    .forEach(
+                        selector => {
+
+                            card.querySelectorAll(
+                                selector
+                            )
+                                .forEach(
+                                    element => {
+
+                                        element.style.display =
+                                            player &&
+                                            photo
+                                                ? "none"
+                                                : "";
+
+                                    }
+                                );
+
+                        }
+                    );
 
             }
         );
+
+    }
+
+
+    /* =====================================================
+       ENCONTRAR BLOCO DO RANKING COMPLETO
+       ===================================================== */
+
+    function getCompleteContainer() {
+
+        const direct =
+            document.querySelector(
+                "[data-ranking-list]"
+            );
+
+
+        if (
+            direct
+        ) {
+
+            return {
+
+                list:
+                    direct,
+
+                empty:
+                    document.querySelector(
+                        "[data-ranking-empty]"
+                    )
+
+            };
+
+        }
+
+
+        /*
+         * Estrutura antiga do site:
+         * encontra o bloco visual que
+         * contém "NENHUM COMPETIDOR".
+         */
+
+        const candidates =
+            Array.from(
+                document.querySelectorAll(
+                    "div, section, article"
+                )
+            )
+                .filter(
+                    element =>
+                        (
+                            element.textContent ||
+                            ""
+                        )
+                            .toUpperCase()
+                            .includes(
+                                "NENHUM COMPETIDOR CADASTRADO"
+                            )
+                )
+                .filter(
+                    element =>
+                        element.children.length >
+                        0
+                );
+
+
+        if (
+            !candidates.length
+        ) {
+
+            return null;
+
+        }
+
+
+        /*
+         * Usa o candidato menor que
+         * realmente representa o estado vazio.
+         */
+
+        const empty =
+            candidates.sort(
+                (
+                    a,
+                    b
+                ) =>
+                    a.textContent.length -
+                    b.textContent.length
+            )[0];
+
+
+        const parent =
+            empty.parentElement;
+
+
+        if (
+            !parent
+        ) {
+
+            return null;
+
+        }
+
+
+        let list =
+            parent.querySelector(
+                ".ccfv-live-complete-generated"
+            );
+
+
+        if (
+            !list
+        ) {
+
+            list =
+                document.createElement(
+                    "div"
+                );
+
+
+            list.className =
+                "ccfv-live-complete-generated";
+
+
+            empty.insertAdjacentElement(
+                "afterend",
+                list
+            );
+
+        }
+
+
+        empty.style.display =
+            "none";
+
+
+        return {
+
+            list,
+
+            empty
+
+        };
 
     }
 
@@ -1199,14 +2195,13 @@
 
     function renderCompleteRanking() {
 
-        const list =
-            document.querySelector(
-                "[data-ranking-list]"
-            );
+        const container =
+            getCompleteContainer();
 
 
         if (
-            !list
+            !container ||
+            !container.list
         ) {
 
             return;
@@ -1219,23 +2214,49 @@
                 .filter(
                     player => {
 
-                        if (
+                        const matchesPlatform =
                             currentPlatform ===
                             "all"
-                        ) {
+                                ? true
+                                : normalize(
+                                    player.platform
+                                ) ===
+                                    normalize(
+                                        currentPlatform
+                                    );
 
-                            return true;
 
-                        }
+                        const term =
+                            normalize(
+                                currentSearch
+                            );
+
+
+                        const name =
+                            normalize(
+                                player.name
+                            );
+
+
+                        const instagram =
+                            normalize(
+                                player.instagram
+                            );
+
+
+                        const matchesSearch =
+                            !term ||
+                            name.includes(
+                                term
+                            ) ||
+                            instagram.includes(
+                                term
+                            );
 
 
                         return (
-                            normalizePlatform(
-                                player.platform
-                            ) ===
-                            normalizePlatform(
-                                currentPlatform
-                            )
+                            matchesPlatform &&
+                            matchesSearch
                         );
 
                     }
@@ -1257,55 +2278,77 @@
                 );
 
 
-        const empty =
-            document.querySelector(
-                "[data-ranking-empty]"
-            );
-
-
         if (
             !players.length
         ) {
 
-            list.innerHTML = `
+            container.list.innerHTML = `
 
                 <div
                     class="
-                        ccfv-ranking-live-empty
+                        ccfv-live-complete-empty
                     "
                 >
-                    NENHUM JOGADOR ENCONTRADO.
+                    NENHUM COMPETIDOR ENCONTRADO.
                 </div>
 
             `;
-
-
-            if (
-                empty
-            ) {
-
-                empty.hidden =
-                    false;
-
-            }
-
 
             return;
 
         }
 
 
-        if (
-            empty
-        ) {
+        const head = `
 
-            empty.hidden =
-                true;
+            <div
+                class="
+                    ccfv-live-complete-head
+                "
+            >
 
-        }
+                <span>
+                    POS
+                </span>
+
+                <span>
+                    JOGADOR
+                </span>
+
+                <span>
+                    PLATAFORMA
+                </span>
+
+                <span>
+                    ELO
+                </span>
+
+                <span>
+                    J
+                </span>
+
+                <span>
+                    V
+                </span>
+
+                <span>
+                    E
+                </span>
+
+                <span>
+                    D
+                </span>
+
+                <span>
+                    NÍVEL
+                </span>
+
+            </div>
+
+        `;
 
 
-        list.innerHTML =
+        const rows =
             players
                 .map(
                     (
@@ -1313,22 +2356,35 @@
                         index
                     ) => {
 
-                        const rank =
-                            getRankByPoints(
-                                player.elo
-                            );
-
-
                         const stats =
                             getStats(
                                 player
                             );
 
 
+                        const rank =
+                            getRank(
+                                player.elo
+                            );
+
+
                         const photo =
-                            player.photo ||
                             player.photo_url ||
+                            player.photo ||
                             "";
+
+
+                        const initials =
+                            String(
+                                player.name ||
+                                "CCFV"
+                            )
+                                .trim()
+                                .slice(
+                                    0,
+                                    2
+                                )
+                                .toUpperCase();
 
 
                         const photoHTML =
@@ -1344,22 +2400,24 @@
                                         loading="lazy"
                                     >
                                 `
-                                : "?";
+                                : `
+                                    <span>
+                                        ${escapeHTML(
+                                            initials
+                                        )}
+                                    </span>
+                                `;
 
 
                         return `
 
                             <div
                                 class="
-                                    ccfv-ranking-live-full-row
+                                    ccfv-live-complete-row
                                 "
                             >
 
-                                <span
-                                    class="
-                                        ccfv-ranking-live-full-row__position
-                                    "
-                                >
+                                <span>
                                     ${String(
                                         index + 1
                                     ).padStart(
@@ -1371,22 +2429,24 @@
 
                                 <div
                                     class="
-                                        ccfv-ranking-live-full-row__player
+                                        ccfv-live-complete-player
                                     "
                                 >
 
                                     <div
                                         class="
-                                            ccfv-ranking-live-full-row__photo
+                                            ccfv-live-complete-photo
                                         "
                                     >
+
                                         ${photoHTML}
+
                                     </div>
 
 
                                     <div
                                         class="
-                                            ccfv-ranking-live-full-row__info
+                                            ccfv-live-complete-info
                                         "
                                     >
 
@@ -1418,9 +2478,17 @@
                                 </div>
 
 
+                                <span>
+                                    ${escapeHTML(
+                                        player.platform ||
+                                        "—"
+                                    )}
+                                </span>
+
+
                                 <span
                                     class="
-                                        ccfv-ranking-live-full-row__elo
+                                        ccfv-live-complete-elo
                                     "
                                 >
                                     ${Number(
@@ -1437,25 +2505,21 @@
 
                                 <span
                                     class="
-                                        ccfv-ranking-live-full-row__win
+                                        ccfv-live-complete-win
                                     "
                                 >
                                     ${stats.wins}
                                 </span>
 
 
-                                <span
-                                    class="
-                                        ccfv-ranking-live-full-row__draws
-                                    "
-                                >
+                                <span>
                                     ${stats.draws}
                                 </span>
 
 
                                 <span
                                     class="
-                                        ccfv-ranking-live-full-row__losses
+                                        ccfv-live-complete-loss
                                     "
                                 >
                                     ${stats.losses}
@@ -1464,19 +2528,7 @@
 
                                 <span
                                     class="
-                                        ccfv-ranking-live-full-row__titles
-                                    "
-                                >
-                                    ${Number(
-                                        player.titles ||
-                                        0
-                                    )}
-                                </span>
-
-
-                                <span
-                                    class="
-                                        ccfv-ranking-live-full-row__level
+                                        ccfv-live-complete-rank
                                     "
                                 >
                                     ${escapeHTML(
@@ -1492,26 +2544,42 @@
                 )
                 .join("");
 
+
+        container.list.innerHTML =
+            `
+                <div
+                    class="
+                        ccfv-live-complete-ranking
+                    "
+                >
+
+                    ${head}
+
+                    ${rows}
+
+                </div>
+            `;
+
     }
 
 
     /* =====================================================
-       FILTROS DO RANKING COMPLETO
+       BUSCA
        ===================================================== */
 
-    function bindCompleteFilters() {
+    function bindSearch() {
 
-        const buttons =
+        const inputs =
             document.querySelectorAll(
-                "[data-ranking-list] ~ * [data-platform], [data-ranking-list] + * [data-platform]"
+                'input[placeholder*="Nome do jogador" i], input[placeholder*="Nome ou Instagram" i]'
             );
 
 
-        buttons.forEach(
-            button => {
+        inputs.forEach(
+            input => {
 
                 if (
-                    button.dataset.ccfvRankingBound ===
+                    input.dataset.ccfvLiveSearch ===
                     "true"
                 ) {
 
@@ -1520,46 +2588,17 @@
                 }
 
 
-                button.dataset.ccfvRankingBound =
+                input.dataset.ccfvLiveSearch =
                     "true";
 
 
-                button.addEventListener(
-                    "click",
+                input.addEventListener(
+                    "input",
                     () => {
 
-                        currentPlatform =
-                            button.dataset.platform ||
-                            "all";
-
-
-                        document
-                            .querySelectorAll(
-                                "[data-platform]"
-                            )
-                            .forEach(
-                                item => {
-
-                                    if (
-                                        item.dataset.platform ===
-                                        currentPlatform
-                                    ) {
-
-                                        item.classList.add(
-                                            "is-active"
-                                        );
-
-                                    }
-                                    else {
-
-                                        item.classList.remove(
-                                            "is-active"
-                                        );
-
-                                    }
-
-                                }
-                            );
+                        currentSearch =
+                            input.value ||
+                            "";
 
 
                         renderCompleteRanking();
@@ -1574,10 +2613,10 @@
 
 
     /* =====================================================
-       TENTAR FILTROS GERAIS
+       FILTROS
        ===================================================== */
 
-    function bindGlobalPlatformFilters() {
+    function bindFilters() {
 
         document
             .querySelectorAll(
@@ -1587,7 +2626,7 @@
                 button => {
 
                     if (
-                        button.dataset.ccfvUiBound ===
+                        button.dataset.ccfvFinalFilter ===
                         "true"
                     ) {
 
@@ -1596,7 +2635,7 @@
                     }
 
 
-                    button.dataset.ccfvUiBound =
+                    button.dataset.ccfvFinalFilter =
                         "true";
 
 
@@ -1609,16 +2648,27 @@
                                 "all";
 
 
-                            window.setTimeout(
-                                () => {
+                            document
+                                .querySelectorAll(
+                                    "[data-platform]"
+                                )
+                                .forEach(
+                                    item => {
 
-                                    syncPlayerCards();
+                                        item.classList.toggle(
+                                            "is-active",
+                                            (
+                                                item.dataset.platform ||
+                                                "all"
+                                            ) ===
+                                                currentPlatform
+                                        );
 
-                                    renderCompleteRanking();
+                                    }
+                                );
 
-                                },
-                                20
-                            );
+
+                            renderCompleteRanking();
 
                         }
                     );
@@ -1630,20 +2680,160 @@
 
 
     /* =====================================================
+       VER RANKING COMPLETO
+       ===================================================== */
+
+    function bindCompleteButton() {
+
+        const elements =
+            Array.from(
+                document.querySelectorAll(
+                    "a, button"
+                )
+            );
+
+
+        elements.forEach(
+            element => {
+
+                const text =
+                    (
+                        element.textContent ||
+                        ""
+                    )
+                        .replace(
+                            /\s+/g,
+                            " "
+                        )
+                        .trim()
+                        .toUpperCase();
+
+
+                if (
+                    !text.includes(
+                        "VER RANKING COMPLETO"
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                if (
+                    element.dataset.ccfvCompleteBound ===
+                    "true"
+                ) {
+
+                    return;
+
+                }
+
+
+                element.dataset.ccfvCompleteBound =
+                    "true";
+
+
+                element.addEventListener(
+                    "click",
+                    () => {
+
+                        window.setTimeout(
+                            () => {
+
+                                const target =
+                                    Array.from(
+                                        document.querySelectorAll(
+                                            "h1, h2, h3, section, div"
+                                        )
+                                    )
+                                        .find(
+                                            item =>
+                                                (
+                                                    item.textContent ||
+                                                    ""
+                                                )
+                                                    .replace(
+                                                        /\s+/g,
+                                                        " "
+                                                    )
+                                                    .toUpperCase()
+                                                    .includes(
+                                                        "RANKING COMPLETO"
+                                                    )
+                                        );
+
+
+                                if (
+                                    target
+                                ) {
+
+                                    target.scrollIntoView(
+                                        {
+                                            behavior:
+                                                "smooth",
+
+                                            block:
+                                                "start"
+
+                                        }
+                                    );
+
+                                }
+
+                                else {
+
+                                    const href =
+                                        element.getAttribute(
+                                            "href"
+                                        );
+
+
+                                    if (
+                                        href &&
+                                        href !==
+                                        "#"
+                                    ) {
+
+                                        window.location.href =
+                                            href;
+
+                                    }
+
+                                }
+
+                            },
+                            100
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
        UPDATE
        ===================================================== */
 
-    function updateAll() {
+    function update() {
 
         injectStyles();
+
+        renderFeature();
 
         syncPlayerCards();
 
         renderCompleteRanking();
 
-        bindGlobalPlatformFilters();
+        bindSearch();
 
-        bindCompleteFilters();
+        bindFilters();
+
+        bindCompleteButton();
 
     }
 
@@ -1652,16 +2842,9 @@
        OBSERVER
        ===================================================== */
 
-    function watchCards() {
-
-        const grid =
-            document.querySelector(
-                "#player-card-grid"
-            );
-
+    function observeDom() {
 
         if (
-            !grid ||
             observer
         ) {
 
@@ -1681,8 +2864,8 @@
 
                     updateTimer =
                         setTimeout(
-                            updateAll,
-                            80
+                            update,
+                            100
                         );
 
                 }
@@ -1690,7 +2873,7 @@
 
 
         observer.observe(
-            grid,
+            document.body,
             {
                 childList:
                     true,
@@ -1705,16 +2888,16 @@
 
 
     /* =====================================================
-       LIVE EVENT
+       REALTIME
        ===================================================== */
 
-    function bindLiveEvent() {
+    function bindLive() {
 
         window.addEventListener(
             "ccfv:live-update",
             () => {
 
-                updateAll();
+                update();
 
             }
         );
@@ -1728,41 +2911,40 @@
 
     function init() {
 
-        injectStyles();
+        update();
 
-        updateAll();
+        observeDom();
 
-        watchCards();
-
-        bindLiveEvent();
+        bindLive();
 
 
         /*
-         * O ranking.js pode renderizar
-         * os cards depois do nosso init.
-         * Fazemos algumas tentativas curtas.
+         * O ranking.js renderiza algumas
+         * partes depois do carregamento.
+         * Fazemos pequenas verificações
+         * de segurança.
          */
 
         let attempts =
             0;
 
 
-        const retry =
-            setInterval(
+        const timer =
+            window.setInterval(
                 () => {
 
-                    updateAll();
+                    update();
 
                     attempts++;
 
 
                     if (
                         attempts >=
-                        20
+                        24
                     ) {
 
-                        clearInterval(
-                            retry
+                        window.clearInterval(
+                            timer
                         );
 
                     }
