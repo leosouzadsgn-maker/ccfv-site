@@ -432,6 +432,54 @@
 
 
     /* =====================================================
+       EXTRAIR RODADA
+       ===================================================== */
+
+    function resolveRoundNumber(
+        match
+    ) {
+
+        const direct =
+            number(
+                match.round_number ??
+                match.round
+            );
+
+
+        if (
+            direct > 0
+        ) {
+
+            return direct;
+
+        }
+
+
+        const text =
+            String(
+                match.stage ||
+                match.phase ||
+                match.round_name ||
+                ""
+            );
+
+
+        const found =
+            text.match(
+                /(?:RODADA|ROUND)\s*[_-]?\s*(\d+)/i
+            );
+
+
+        return found
+            ? number(
+                found[1]
+            )
+            : 0;
+
+    }
+
+
+    /* =====================================================
        CONVERTER MATCH DO SUPABASE
        ===================================================== */
 
@@ -469,13 +517,30 @@
                 {
                     home:
                         match.home_team,
-
                     away:
                         match.away_team
-
                 }
             );
 
+            return null;
+
+        }
+
+
+        const roundNumber =
+            resolveRoundNumber(
+                match
+            );
+
+
+        if (
+            roundNumber <= 0
+        ) {
+
+            console.warn(
+                "CCFV // BRASILEIRÃO: rodada não encontrada",
+                match
+            );
 
             return null;
 
@@ -484,37 +549,95 @@
 
         const fixture =
             resolveFixture(
-                match,
+                {
+                    ...match,
+                    round_number:
+                        roundNumber
+                },
                 api
             );
 
 
         /*
-         * O banco possui round_number,
-         * mas não possui match_number.
-         *
-         * O número oficial vem do fixture.
+         * O banco não precisa possuir match_number.
+         * O número oficial vem dos fixtures do próprio
+         * Brasileirão.
          */
 
-        const matchNumber =
+        let matchNumber =
             fixture
                 ? number(
                     fixture.match
                 )
-                : 0;
+                : number(
+                    match.match_number
+                );
 
 
-        const roundNumber =
-            number(
-                match.round_number
-            );
-
+        /*
+         * Último fallback: localizar a partida pelo
+         * confronto dentro da rodada. Isso evita que
+         * um resultado válido seja descartado só porque
+         * a linha do banco não possui o número do jogo.
+         */
 
         if (
-            roundNumber <= 0
+            matchNumber <= 0
         ) {
 
-            return null;
+            const fixtures =
+                typeof api.getFixtures ===
+                    "function"
+                    ? api.getFixtures()
+                    : [];
+
+
+            const fallbackFixture =
+                Array.isArray(fixtures)
+                    ? fixtures.find(
+                        item => {
+
+                            if (
+                                number(item.round) !==
+                                roundNumber
+                            ) {
+
+                                return false;
+
+                            }
+
+                            const normalHome =
+                                number(item.home) ===
+                                number(home.id);
+
+                            const normalAway =
+                                number(item.away) ===
+                                number(away.id);
+
+                            const inverseHome =
+                                number(item.home) ===
+                                number(away.id);
+
+                            const inverseAway =
+                                number(item.away) ===
+                                number(home.id);
+
+                            return (
+                                (normalHome && normalAway) ||
+                                (inverseHome && inverseAway)
+                            );
+
+                        }
+                    )
+                    : null;
+
+
+            matchNumber =
+                fallbackFixture
+                    ? number(
+                        fallbackFixture.match
+                    )
+                    : 0;
 
         }
 
@@ -524,28 +647,18 @@
         ) {
 
             console.warn(
-                "CCFV // BRASILEIRÃO: fixture não encontrado",
+                "CCFV // BRASILEIRÃO: número do jogo não encontrado",
                 {
                     round:
                         roundNumber,
-
                     home:
                         home.name,
-
                     away:
                         away.name
-
                 }
             );
 
-            /*
-             * Ainda permitimos o resultado
-             * usando uma numeração de segurança.
-             *
-             * Isso evita perder a partida,
-             * mas o log deixa claro que o fixture
-             * precisa ser conferido.
-             */
+            return null;
 
         }
 
@@ -644,11 +757,23 @@
                     "BRASILEIRAO"
             )
             .filter(
-                match =>
-                    normalize(
-                        match.status
-                    ) ===
-                    "FINAL"
+                match => {
+
+                    const status =
+                        normalize(
+                            match.status
+                        );
+
+                    return (
+                        status === "FINAL" ||
+                        status === "FINISHED" ||
+                        status === "COMPLETED" ||
+                        status === "CONCLUIDA" ||
+                        status === "CONCLUÍDA" ||
+                        status === "ENCERRADA"
+                    );
+
+                }
             )
             .forEach(
                 match => {
