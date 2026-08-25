@@ -1,1122 +1,242 @@
 /* =========================================================
    CCFV // LIVE DATA ENGINE
+   Supabase -> público em tempo real
    ========================================================= */
 
 (() => {
-
     "use strict";
 
-
-    /* =====================================================
-       CONFIG
-       ===================================================== */
-
     const TABLES = {
-
-        players:
-            "players",
-
-        playerCompetitions:
-            "player_competitions",
-
-        matches:
-            "matches",
-
-        night:
-            "night_cup_matches",
-
-        ranking:
-            "ccfv_ranking"
-
+        players: "players",
+        playerCompetitions: "player_competitions",
+        matches: "matches",
+        night: "night_cup_matches"
     };
-
 
     const REALTIME_TABLES = [
-
-        "players",
-
-        "player_competitions",
-
-        "matches",
-
-        "night_cup_matches"
-
+        TABLES.players,
+        TABLES.playerCompetitions,
+        TABLES.matches,
+        TABLES.night
     ];
 
-
-    /* =====================================================
-       ESTADO
-       ===================================================== */
-
     const state = {
-
         players: [],
-
         playerCompetitions: [],
-
         matches: [],
-
         nightMatches: [],
-
         ranking: [],
-
         updatedAt: null
-
     };
 
+    let supabaseClient = null;
+    let realtimeChannel = null;
+    let refreshTimer = null;
+    let refreshing = false;
 
-    let supabaseClient =
-        null;
-
-
-    let channel =
-        null;
-
-
-    let refreshTimer =
-        null;
-
-
-    let refreshing =
-        false;
-
-
-    /* =====================================================
-       UTILITÁRIOS
-       ===================================================== */
-
-    function escapeHTML(
-        value
-    ) {
-
-        return String(
-            value ?? ""
-        )
-            .replaceAll(
-                "&",
-                "&amp;"
-            )
-            .replaceAll(
-                "<",
-                "&lt;"
-            )
-            .replaceAll(
-                ">",
-                "&gt;"
-            )
-            .replaceAll(
-                '"',
-                "&quot;"
-            )
-            .replaceAll(
-                "'",
-                "&#039;"
-            );
-
+    function number(value) {
+        const n = Number(value);
+        return Number.isFinite(n) ? n : 0;
     }
 
-
-    function number(
-        value
-    ) {
-
-        return Number(
-            value || 0
-        );
-
-    }
-
-
-    function normalize(
-        value
-    ) {
-
-        return String(
-            value || ""
-        )
-            .normalize(
-                "NFD"
-            )
-            .replace(
-                /[\u0300-\u036f]/g,
-                ""
-            )
+    function normalize(value) {
+        return String(value ?? "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
             .trim()
             .toUpperCase();
-
     }
 
-
-    /* =====================================================
-       CSS DO RANKING
-       ===================================================== */
-
-    function injectRankingStyles() {
-
-        if (
-            document.querySelector(
-                "#ccfv-ranking-live-styles"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        const style =
-            document.createElement(
-                "style"
-            );
-
-
-        style.id =
-            "ccfv-ranking-live-styles";
-
-
-        style.textContent = `
-
-            /* =============================================
-               TABELA PRINCIPAL DO RANKING
-               ============================================= */
-
-            #ranking-list {
-
-                width:
-                    100%;
-
-                max-width:
-                    100%;
-
-                overflow:
-                    hidden;
-
-            }
-
-
-            #ranking-list
-            .ccfv-ranking-row {
-
-                width:
-                    100% !important;
-
-                min-width:
-                    0 !important;
-
-                min-height:
-                    78px;
-
-                display:
-                    grid !important;
-
-                grid-template-columns:
-                    70px
-                    minmax(280px, 1fr)
-                    110px
-                    100px
-                    80px
-                    150px;
-
-                align-items:
-                    center;
-
-                gap:
-                    16px;
-
-                overflow:
-                    hidden;
-
-                box-sizing:
-                    border-box;
-
-            }
-
-
-            /* =============================================
-               FOTO DA LINHA
-               ============================================= */
-
-            #ranking-list
-            .ccfv-ranking-row__photo {
-
-                width:
-                    52px !important;
-
-                min-width:
-                    52px !important;
-
-                max-width:
-                    52px !important;
-
-                height:
-                    52px !important;
-
-                min-height:
-                    52px !important;
-
-                max-height:
-                    52px !important;
-
-                overflow:
-                    hidden !important;
-
-                display:
-                    flex !important;
-
-                align-items:
-                    center !important;
-
-                justify-content:
-                    center !important;
-
-                flex-shrink:
-                    0 !important;
-
-                border-radius:
-                    10px;
-
-                position:
-                    relative;
-
-                box-sizing:
-                    border-box;
-
-            }
-
-
-            #ranking-list
-            .ccfv-ranking-row__photo img {
-
-                width:
-                    100% !important;
-
-                height:
-                    100% !important;
-
-                min-width:
-                    100% !important;
-
-                min-height:
-                    100% !important;
-
-                max-width:
-                    100% !important;
-
-                max-height:
-                    100% !important;
-
-                display:
-                    block !important;
-
-                object-fit:
-                    cover !important;
-
-                object-position:
-                    center !important;
-
-            }
-
-
-            /* =============================================
-               IDENTIDADE DO JOGADOR
-               ============================================= */
-
-            #ranking-list
-            .ccfv-ranking-row__player {
-
-                min-width:
-                    0;
-
-                display:
-                    flex;
-
-                align-items:
-                    center;
-
-                gap:
-                    12px;
-
-                overflow:
-                    hidden;
-
-            }
-
-
-            #ranking-list
-            .ccfv-ranking-row__player-info {
-
-                min-width:
-                    0;
-
-                overflow:
-                    hidden;
-
-            }
-
-
-            #ranking-list
-            .ccfv-ranking-row__player-info strong {
-
-                display:
-                    block;
-
-                overflow:
-                    hidden;
-
-                white-space:
-                    nowrap;
-
-                text-overflow:
-                    ellipsis;
-
-            }
-
-
-            #ranking-list
-            .ccfv-ranking-row__player-info span {
-
-                display:
-                    block;
-
-                overflow:
-                    hidden;
-
-                white-space:
-                    nowrap;
-
-                text-overflow:
-                    ellipsis;
-
-            }
-
-
-            /* =============================================
-               FEATURE / PRIMEIRO COLOCADO
-               ============================================= */
-
-            #ranking-feature-player
-            .ccfv-ranking-leader__visual {
-
-                max-width:
-                    240px;
-
-                overflow:
-                    hidden;
-
-            }
-
-
-            #ranking-feature-player
-            .ccfv-ranking-leader__photo {
-
-                width:
-                    220px !important;
-
-                height:
-                    260px !important;
-
-                max-width:
-                    220px !important;
-
-                max-height:
-                    260px !important;
-
-                overflow:
-                    hidden !important;
-
-                border-radius:
-                    16px;
-
-                box-sizing:
-                    border-box;
-
-            }
-
-
-            #ranking-feature-player
-            .ccfv-ranking-leader__photo img {
-
-                width:
-                    100% !important;
-
-                height:
-                    100% !important;
-
-                max-width:
-                    100% !important;
-
-                max-height:
-                    100% !important;
-
-                object-fit:
-                    cover !important;
-
-                object-position:
-                    center !important;
-
-                display:
-                    block !important;
-
-            }
-
-
-            /* =============================================
-               RESPONSIVO
-               ============================================= */
-
-            @media (
-                max-width: 900px
-            ) {
-
-                #ranking-list
-                .ccfv-ranking-row {
-
-                    grid-template-columns:
-                        55px
-                        minmax(
-                            180px,
-                            1fr
-                        )
-                        80px
-                        80px;
-
-                }
-
-
-                #ranking-list
-                .ccfv-ranking-row__elo,
-                #ranking-list
-                .ccfv-ranking-row__rank {
-
-                    display:
-                        none !important;
-
-                }
-
-            }
-
-        `;
-
-
-        document.head.appendChild(
-            style
-        );
-
+    function escapeHTML(value) {
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
     }
-
-
-    /* =====================================================
-       SUPABASE
-       ===================================================== */
 
     async function getSupabase() {
-
-        if (
-            supabaseClient
-        ) {
-
+        if (supabaseClient) {
             return supabaseClient;
-
         }
-
 
         if (
             window.CCFVAuth &&
-            typeof
-                window.CCFVAuth.getClient ===
-                "function"
+            typeof window.CCFVAuth.getClient === "function"
         ) {
-
-            supabaseClient =
-                await
-                    window.CCFVAuth
-                        .getClient();
-
+            supabaseClient = await window.CCFVAuth.getClient();
             return supabaseClient;
-
         }
 
-
-        try {
-
-            const authScript =
-                document.querySelector(
-                    'script[src="/admin/js/auth.js"]'
-                );
-
-
-            if (
-                !authScript
-            ) {
-
-                const script =
-                    document.createElement(
-                        "script"
-                    );
-
-
-                script.src =
-                    "/admin/js/auth.js";
-
-                script.defer =
-                    true;
-
-
-                document.head.appendChild(
-                    script
-                );
-
-            }
-
-        }
-
-        catch (
-            error
-        ) {
-
-            console.error(
-                "CCFV // AUTH LOAD:",
-                error
-            );
-
-        }
-
-
-        const started =
-            Date.now();
-
-
-        while (
-            !(
-                window.CCFVAuth &&
-                typeof
-                    window.CCFVAuth.getClient ===
-                    "function"
-            )
-        ) {
-
-            if (
-                Date.now() -
-                started >
-                10000
-            ) {
-
-                break;
-
-            }
-
-
-            await new Promise(
-                resolve =>
-                    setTimeout(
-                        resolve,
-                        100
-                    )
-            );
-
-        }
-
-
-        if (
-            window.CCFVAuth &&
-            typeof
-                window.CCFVAuth.getClient ===
-                "function"
-        ) {
-
-            supabaseClient =
-                await
-                    window.CCFVAuth
-                        .getClient();
-
-            return supabaseClient;
-
-        }
-
-
-        throw new Error(
-            "Supabase não está disponível."
+        const authScript = document.querySelector(
+            'script[src="/admin/js/auth.js"]'
         );
 
-    }
-
-
-    /* =====================================================
-       LOADERS
-       ===================================================== */
-
-    async function loadPlayers(
-        client
-    ) {
-
-        const {
-            data,
-            error
-        } =
-            await client
-                .from(
-                    TABLES.players
-                )
-                .select(
-                    "*"
-                );
-
-
-        if (
-            error
-        ) {
-
-            throw error;
-
+        if (!authScript) {
+            const script = document.createElement("script");
+            script.src = "/admin/js/auth.js";
+            script.defer = true;
+            document.head.appendChild(script);
         }
 
+        const started = Date.now();
 
-        return data || [];
-
-    }
-
-
-    async function loadPlayerCompetitions(
-        client
-    ) {
-
-        const {
-            data,
-            error
-        } =
-            await client
-                .from(
-                    TABLES.playerCompetitions
-                )
-                .select(
-                    "*"
-                );
-
-
-        if (
-            error
+        while (
+            !window.CCFVAuth ||
+            typeof window.CCFVAuth.getClient !== "function"
         ) {
+            if (Date.now() - started > 10000) {
+                throw new Error("Supabase não está disponível.");
+            }
 
-            throw error;
-
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
 
-
-        return data || [];
-
+        supabaseClient = await window.CCFVAuth.getClient();
+        return supabaseClient;
     }
 
+    async function loadPlayers(client) {
+        const { data, error } = await client
+            .from(TABLES.players)
+            .select("*");
 
-    async function loadMatches(
-        client
-    ) {
+        if (error) {
+            throw error;
+        }
 
-        const {
-            data,
-            error
-        } =
-            await client
-                .from(
-                    TABLES.matches
-                )
-                .select(
-                    "*"
-                )
-                .order(
-                    "played_at",
-                    {
-                        ascending:
-                            false
+        return data || [];
+    }
+
+    async function loadPlayerCompetitions(client) {
+        const { data, error } = await client
+            .from(TABLES.playerCompetitions)
+            .select("*");
+
+        if (error) {
+            throw error;
+        }
+
+        return data || [];
+    }
+
+    async function loadMatches(client) {
+        const { data, error } = await client
+            .from(TABLES.matches)
+            .select("*")
+            .order("played_at", {
+                ascending: false
+            });
+
+        if (error) {
+            throw error;
+        }
+
+        return data || [];
+    }
+
+    async function loadNightMatches(client) {
+        const { data, error } = await client
+            .from(TABLES.night)
+            .select("*")
+            .order("match_number", {
+                ascending: true
+            });
+
+        if (error) {
+            throw error;
+        }
+
+        return data || [];
+    }
+
+    /* =========================================================
+       RANKING LIVE
+       ========================================================= */
+
+    function buildLiveRanking(players) {
+
+        return (players || [])
+            .map(player => ({
+
+                ...player,
+
+                matches:
+                    number(
+                        player.matches_played
+                    ),
+
+                goalsFor:
+                    number(
+                        player.goals_for
+                    ),
+
+                goalsAgainst:
+                    number(
+                        player.goals_against
+                    )
+
+            }))
+            .sort(
+                (a, b) => {
+
+                    const elo =
+                        number(b.elo) -
+                        number(a.elo);
+
+                    if (
+                        elo !== 0
+                    ) {
+
+                        return elo;
+
                     }
-                );
 
+                    const wins =
+                        number(b.wins) -
+                        number(a.wins);
 
-        if (
-            error
-        ) {
+                    if (
+                        wins !== 0
+                    ) {
 
-            throw error;
+                        return wins;
 
-        }
-
-
-        return data || [];
-
-    }
-
-
-    async function loadNightMatches(
-        client
-    ) {
-
-        const {
-            data,
-            error
-        } =
-            await client
-                .from(
-                    TABLES.night
-                )
-                .select(
-                    "*"
-                )
-                .order(
-                    "match_number",
-                    {
-                        ascending:
-                            true
                     }
-                );
 
+                    return String(
+                        a.name || ""
+                    ).localeCompare(
+                        String(
+                            b.name || ""
+                        ),
+                        "pt-BR"
+                    );
 
-        if (
-            error
-        ) {
-
-            throw error;
-
-        }
-
-
-        return data || [];
-
-    }
-
-
-    async function loadRanking(
-        client
-    ) {
-
-        const {
-            data,
-            error
-        } =
-            await client
-                .from(
-                    TABLES.ranking
-                )
-                .select(
-                    "*"
-                )
-                .order(
-                    "ranking_position",
-                    {
-                        ascending:
-                            true
-                    }
-                );
-
-
-        if (
-            error
-        ) {
-
-            throw error;
-
-        }
-
-
-        return data || [];
-
-    }
-
-
-    /* =====================================================
-       RANKING
-       ===================================================== */
-
-    function syncRanking() {
-
-        injectRankingStyles();
-
-
-        if (
-            !window.CCFVRanking
-        ) {
-
-            return;
-
-        }
-
-
-        if (
-            Array.isArray(
-                window.CCFVRanking.players
+                }
             )
-        ) {
+            .map(
+                (player, index) => ({
 
-            window.CCFVRanking.players.splice(
-                0,
-                window.CCFVRanking.players.length,
-                ...state.ranking
+                    ...player,
+
+                    ranking_position:
+                        index + 1
+
+                })
             );
 
-        }
-
-
-        if (
-            typeof
-                window.CCFVRanking.refresh ===
-                "function"
-        ) {
-
-            window.CCFVRanking.refresh();
-
-        }
-
     }
 
 
-    /* =====================================================
+    /* =========================================================
        BRASILEIRÃO
-       ===================================================== */
+       ========================================================= */
 
     function buildBrazilResults() {
 
-        const api =
-            window.CCFVBrasileirao;
-
-
-        const teams =
-            api?.config?.teams ||
-            [];
-
-
-        const fixtures =
-            typeof api?.getFixtures ===
-                "function"
-                ? api.getFixtures()
-                : [];
-
-
-        const usedMatchNumbers =
-            new Map();
-
-
-        function resolveTeamId(
-            value
-        ) {
-
-            const normalized =
-                normalize(
-                    value
-                );
-
-
-            const numeric =
-                Number(
-                    value
-                );
-
-
-            if (
-                Number.isFinite(
-                    numeric
-                ) &&
-                numeric > 0
-            ) {
-
-                const direct =
-                    teams.find(
-                        team =>
-                            Number(
-                                team.id
-                            ) ===
-                            numeric
-                    );
-
-
-                if (
-                    direct
-                ) {
-
-                    return Number(
-                        direct.id
-                    );
-
-                }
-
-            }
-
-
-            const exact =
-                teams.find(
-                    team =>
-                        normalize(
-                            team.name
-                        ) ===
-                        normalized
-                );
-
-
-            if (
-                exact
-            ) {
-
-                return Number(
-                    exact.id
-                );
-
-            }
-
-
-            const shortName =
-                teams.find(
-                    team =>
-                        normalize(
-                            team.shortName
-                        ) ===
-                        normalized
-                );
-
-
-            if (
-                shortName
-            ) {
-
-                return Number(
-                    shortName.id
-                );
-
-            }
-
-
-            const contained =
-                teams.find(
-                    team => {
-
-                        const name =
-                            normalize(
-                                team.name
-                            );
-
-
-                        const short =
-                            normalize(
-                                team.shortName
-                            );
-
-
-                        return (
-                            (
-                                name &&
-                                (
-                                    normalized.includes(
-                                        name
-                                    ) ||
-                                    name.includes(
-                                        normalized
-                                    )
-                                )
-                            )
-                            ||
-                            (
-                                short &&
-                                (
-                                    normalized.includes(
-                                        short
-                                    ) ||
-                                    short.includes(
-                                        normalized
-                                    )
-                                )
-                            )
-                        );
-
-                    }
-                );
-
-
-            return contained
-                ? Number(
-                    contained.id
-                )
-                : null;
-
-        }
-
-
-        function getNextMatchNumber(
-            round
-        ) {
-
-            const current =
-                usedMatchNumbers.get(
-                    round
-                ) ||
-                0;
-
-
-            const next =
-                current + 1;
-
-
-            usedMatchNumbers.set(
-                round,
-                next
-            );
-
-
-            return next;
-
-        }
-
-
-        function resolveMatchNumber(
-            round,
-            homeId,
-            awayId
-        ) {
-
-            const exact =
-                fixtures.find(
-                    fixture =>
-                        Number(
-                            fixture.round
-                        ) ===
-                        round &&
-
-                        Number(
-                            fixture.home
-                        ) ===
-                        homeId &&
-
-                        Number(
-                            fixture.away
-                        ) ===
-                        awayId
-                );
-
-
-            if (
-                exact
-            ) {
-
-                return Number(
-                    exact.match
-                );
-
-            }
-
-
-            /*
-             * Se o Admin registrar um confronto de teste
-             * que não corresponde ao fixture oficial daquela
-             * rodada, damos a ele um número sequencial dentro
-             * da rodada. A classificação continua correta.
-             */
-
-            return getNextMatchNumber(
-                round
-            );
-
-        }
-
-
-        const results = [];
-
-
-        state.matches
+        return state.matches
 
             .filter(
                 match =>
@@ -1134,159 +254,51 @@
                     "FINAL"
             )
 
-            .sort(
-                (
-                    a,
-                    b
-                ) => {
+            .map(
+                match => ({
 
-                    const roundA =
-                        number(
-                            a.round_number
-                        );
-
-
-                    const roundB =
-                        number(
-                            b.round_number
-                        );
-
-
-                    if (
-                        roundA !==
-                        roundB
-                    ) {
-
-                        return (
-                            roundA -
-                            roundB
-                        );
-
-                    }
-
-
-                    return (
-                        new Date(
-                            a.played_at ||
-                            a.created_at ||
-                            0
-                        ).getTime() -
-
-                        new Date(
-                            b.played_at ||
-                            b.created_at ||
-                            0
-                        ).getTime()
-                    );
-
-                }
-            )
-
-            .forEach(
-                match => {
-
-                    const round =
+                    round:
                         number(
                             match.round_number
-                        );
+                        ),
 
+                    match:
+                        number(
+                            match.match_number
+                        ),
 
-                    if (
-                        round <= 0
-                    ) {
+                    home:
+                        match.home_team,
 
-                        return;
+                    away:
+                        match.away_team,
 
-                    }
+                    homeTeam:
+                        match.home_team,
 
+                    awayTeam:
+                        match.away_team,
 
-                    const homeTeamId =
-                        resolveTeamId(
-                            match.home_team
-                        );
+                    homeGoals:
+                        number(
+                            match.home_score
+                        ),
 
+                    awayGoals:
+                        number(
+                            match.away_score
+                        ),
 
-                    const awayTeamId =
-                        resolveTeamId(
-                            match.away_team
-                        );
+                    date:
+                        match.played_at ||
+                        match.created_at ||
+                        "",
 
+                    matchId:
+                        match.id
 
-                    if (
-                        !homeTeamId ||
-                        !awayTeamId
-                    ) {
-
-                        console.warn(
-                            "CCFV // BRASILEIRÃO: clube não encontrado",
-                            {
-                                home:
-                                    match.home_team,
-
-                                away:
-                                    match.away_team
-                            }
-                        );
-
-
-                        return;
-
-                    }
-
-
-                    const matchNumber =
-                        resolveMatchNumber(
-                            round,
-                            homeTeamId,
-                            awayTeamId
-                        );
-
-
-                    results.push({
-
-                        round:
-                            round,
-
-                        match:
-                            matchNumber,
-
-                        home:
-                            homeTeamId,
-
-                        away:
-                            awayTeamId,
-
-                        homeTeam:
-                            homeTeamId,
-
-                        awayTeam:
-                            awayTeamId,
-
-                        homeGoals:
-                            number(
-                                match.home_score
-                            ),
-
-                        awayGoals:
-                            number(
-                                match.away_score
-                            ),
-
-                        date:
-                            match.played_at ||
-                            match.created_at ||
-                            "",
-
-                        matchId:
-                            match.id
-
-                    });
-
-                }
+                })
             );
-
-
-        return results;
 
     }
 
@@ -1296,20 +308,16 @@
         const api =
             window.CCFVBrasileirao;
 
-
         if (
-            !api ||
-            !api.config
+            !api?.config
         ) {
 
             return;
 
         }
 
-
         const results =
             buildBrazilResults();
-
 
         if (
             Array.isArray(
@@ -1325,20 +333,25 @@
 
         }
 
+        else {
+
+            api.config.results =
+                results;
+
+        }
 
         const rounds =
             results
                 .map(
-                    result =>
+                    item =>
                         number(
-                            result.round
+                            item.round
                         )
                 )
                 .filter(
                     round =>
                         round > 0
                 );
-
 
         api.config.currentRound =
             rounds.length
@@ -1350,11 +363,9 @@
                 )
                 : 1;
 
-
         if (
-            typeof
-                api.refresh ===
-                "function"
+            typeof api.refresh ===
+            "function"
         ) {
 
             api.refresh();
@@ -1364,9 +375,1183 @@
     }
 
 
-    /* =====================================================
+    /* =========================================================
+       NIGHT CUP
+       ========================================================= */
+
+    function nightValue(
+        match,
+        keys,
+        fallback = null
+    ) {
+
+        for (
+            const key of keys
+        ) {
+
+            if (
+                match &&
+                match[key] !== undefined &&
+                match[key] !== null &&
+                String(
+                    match[key]
+                ).trim() !== ""
+            ) {
+
+                return match[key];
+
+            }
+
+        }
+
+        return fallback;
+
+    }
+
+
+    function getNightPlayerName(
+        match,
+        side
+    ) {
+
+        const home =
+            side === "home";
+
+        const direct =
+            nightValue(
+                match,
+
+                home
+                    ? [
+                        "home_player_name",
+                        "home_name",
+                        "player1_name",
+                        "player_a_name",
+                        "home_player",
+                        "player1",
+                        "player_a"
+                    ]
+
+                    : [
+                        "away_player_name",
+                        "away_name",
+                        "player2_name",
+                        "player_b_name",
+                        "away_player",
+                        "player2",
+                        "player_b"
+                    ],
+
+                null
+            );
+
+        if (
+            direct &&
+            typeof direct !==
+                "object"
+        ) {
+
+            return String(
+                direct
+            );
+
+        }
+
+        const playerId =
+            nightValue(
+                match,
+
+                home
+                    ? [
+                        "home_player_id",
+                        "player1_id",
+                        "player_a_id",
+                        "home_id"
+                    ]
+
+                    : [
+                        "away_player_id",
+                        "player2_id",
+                        "player_b_id",
+                        "away_id"
+                    ],
+
+                null
+            );
+
+        if (
+            playerId
+        ) {
+
+            const player =
+                state.players.find(
+                    item =>
+                        String(
+                            item.id
+                        ) ===
+                        String(
+                            playerId
+                        )
+                );
+
+            if (
+                player?.name
+            ) {
+
+                return player.name;
+
+            }
+
+        }
+
+        if (
+            direct &&
+            typeof direct ===
+                "object"
+        ) {
+
+            return (
+                direct.name ||
+                "A DEFINIR"
+            );
+
+        }
+
+        return "A DEFINIR";
+
+    }
+
+
+    function getNightScore(
+        match,
+        side
+    ) {
+
+        const home =
+            side === "home";
+
+        return number(
+            nightValue(
+
+                match,
+
+                home
+                    ? [
+                        "home_score",
+                        "player1_score",
+                        "player_a_score",
+                        "score1",
+                        "score_a",
+                        "home_goals"
+                    ]
+
+                    : [
+                        "away_score",
+                        "player2_score",
+                        "player_b_score",
+                        "score2",
+                        "score_b",
+                        "away_goals"
+                    ],
+
+                0
+            )
+        );
+
+    }
+
+
+    function getNightStatus(
+        match
+    ) {
+
+        return normalize(
+            nightValue(
+                match,
+                [
+                    "status",
+                    "state",
+                    "match_status"
+                ],
+                "PENDING"
+            )
+        );
+
+    }
+
+
+    function isNightFinished(
+        match
+    ) {
+
+        return [
+            "FINAL",
+            "FINISHED",
+            "COMPLETED",
+            "DONE",
+            "FINALIZADA"
+        ].includes(
+            getNightStatus(
+                match
+            )
+        );
+
+    }
+
+
+    function getNightMatchNumber(
+        match,
+        index
+    ) {
+
+        return number(
+            nightValue(
+                match,
+                [
+                    "match_number",
+                    "match",
+                    "game_number",
+                    "fixture_number",
+                    "position"
+                ],
+                index + 1
+            )
+        );
+
+    }
+
+
+    function getNightRound(
+        match
+    ) {
+
+        const raw =
+            normalize(
+                nightValue(
+                    match,
+                    [
+                        "round",
+                        "round_name",
+                        "phase",
+                        "stage",
+                        "round_type"
+                    ],
+                    ""
+                )
+            );
+
+        if (
+            raw.includes(
+                "FINAL"
+            ) &&
+            !raw.includes(
+                "SEMI"
+            )
+        ) {
+
+            return "final";
+
+        }
+
+        if (
+            raw.includes(
+                "SEMI"
+            )
+        ) {
+
+            return "semi";
+
+        }
+
+        if (
+            raw.includes(
+                "QUART"
+            ) ||
+            raw.includes(
+                "QF"
+            )
+        ) {
+
+            return "quarterfinal";
+
+        }
+
+        const n =
+            number(
+                nightValue(
+                    match,
+                    [
+                        "round_number",
+                        "stage_number",
+                        "round_index"
+                    ],
+                    0
+                )
+            );
+
+        if (
+            n >= 3
+        ) {
+
+            return "final";
+
+        }
+
+        if (
+            n === 2
+        ) {
+
+            return "semi";
+
+        }
+
+        const matchNumber =
+            number(
+                nightValue(
+                    match,
+                    [
+                        "match_number",
+                        "match",
+                        "game_number",
+                        "fixture_number",
+                        "position"
+                    ],
+                    0
+                )
+            );
+
+        if (
+            matchNumber >= 7
+        ) {
+
+            return "final";
+
+        }
+
+        if (
+            matchNumber >= 5
+        ) {
+
+            return "semi";
+
+        }
+
+        return "quarterfinal";
+
+    }
+
+
+    /* =========================================================
+       NIGHT CUP VISUAL
+       ========================================================= */
+
+    function injectNightStyles() {
+
+        if (
+            document.getElementById(
+                "ccfv-night-live-styles"
+            )
+        ) {
+
+            return;
+
+        }
+
+        const style =
+            document.createElement(
+                "style"
+            );
+
+        style.id =
+            "ccfv-night-live-styles";
+
+        style.textContent = `
+
+            .ccfv-night-live-game {
+
+                border:
+                    1px solid
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        .07
+                    );
+
+                border-radius:
+                    12px;
+
+                padding:
+                    12px;
+
+                background:
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        .012
+                    );
+
+                box-sizing:
+                    border-box;
+
+            }
+
+
+            .ccfv-night-live-game
+            + .ccfv-night-live-game {
+
+                margin-top:
+                    9px;
+
+            }
+
+
+            .ccfv-night-live-game.is-final {
+
+                border-color:
+                    rgba(
+                        67,
+                        223,
+                        145,
+                        .24
+                    );
+
+                background:
+                    rgba(
+                        67,
+                        223,
+                        145,
+                        .025
+                    );
+
+            }
+
+
+            .ccfv-night-live-top {
+
+                display:
+                    flex;
+
+                align-items:
+                    center;
+
+                justify-content:
+                    space-between;
+
+                gap:
+                    10px;
+
+                margin-bottom:
+                    9px;
+
+                color:
+                    #43df91;
+
+                font-size:
+                    10px;
+
+                font-weight:
+                    900;
+
+                letter-spacing:
+                    .08em;
+
+                text-transform:
+                    uppercase;
+
+            }
+
+
+            .ccfv-night-live-top small {
+
+                color:
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        .25
+                    );
+
+                font-size:
+                    9px;
+
+            }
+
+
+            .ccfv-night-live-teams {
+
+                display:
+                    grid;
+
+                grid-template-columns:
+                    minmax(
+                        0,
+                        1fr
+                    )
+                    auto
+                    minmax(
+                        0,
+                        1fr
+                    );
+
+                gap:
+                    12px;
+
+                align-items:
+                    center;
+
+            }
+
+
+            .ccfv-night-live-team {
+
+                min-width:
+                    0;
+
+                color:
+                    #fff;
+
+                font-size:
+                    13px;
+
+                font-weight:
+                    900;
+
+                overflow:
+                    hidden;
+
+                text-overflow:
+                    ellipsis;
+
+                white-space:
+                    nowrap;
+
+            }
+
+
+            .ccfv-night-live-team.is-away {
+
+                text-align:
+                    right;
+
+            }
+
+
+            .ccfv-night-live-score {
+
+                min-width:
+                    64px;
+
+                padding:
+                    7px 9px;
+
+                border:
+                    1px solid
+                    rgba(
+                        67,
+                        223,
+                        145,
+                        .18
+                    );
+
+                border-radius:
+                    999px;
+
+                text-align:
+                    center;
+
+                color:
+                    #43df91;
+
+                font-size:
+                    12px;
+
+                font-weight:
+                    950;
+
+            }
+
+
+            .ccfv-night-live-bottom {
+
+                display:
+                    flex;
+
+                justify-content:
+                    space-between;
+
+                gap:
+                    10px;
+
+                margin-top:
+                    9px;
+
+                padding-top:
+                    8px;
+
+                border-top:
+                    1px solid
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        .04
+                    );
+
+                color:
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        .18
+                    );
+
+                font-size:
+                    8px;
+
+                font-weight:
+                    800;
+
+                text-transform:
+                    uppercase;
+
+            }
+
+
+            .ccfv-night-live-bottom strong {
+
+                color:
+                    #43df91;
+
+            }
+
+        `;
+
+        document.head.appendChild(
+            style
+        );
+
+    }
+
+
+    function renderNightGroup(
+        container,
+        matches,
+        label
+    ) {
+
+        if (
+            !container
+        ) {
+
+            return;
+
+        }
+
+        injectNightStyles();
+
+        const ordered =
+            matches
+                .slice()
+                .sort(
+                    (
+                        a,
+                        b
+                    ) =>
+                        getNightMatchNumber(
+                            a,
+                            0
+                        ) -
+                        getNightMatchNumber(
+                            b,
+                            0
+                        )
+                );
+
+        if (
+            !ordered.length
+        ) {
+
+            container.innerHTML = `
+
+                <div
+                    class="ccfv-night-live-game"
+                >
+
+                    <div
+                        class="ccfv-night-live-top"
+                    >
+
+                        <span>
+                            ${escapeHTML(
+                                label
+                            )}
+                        </span>
+
+                        <small>
+                            A DEFINIR
+                        </small>
+
+                    </div>
+
+
+                    <div
+                        class="ccfv-night-live-teams"
+                    >
+
+                        <strong
+                            class="ccfv-night-live-team"
+                        >
+                            A DEFINIR
+                        </strong>
+
+                        <span
+                            class="ccfv-night-live-score"
+                        >
+                            VS
+                        </span>
+
+                        <strong
+                            class="
+                                ccfv-night-live-team
+                                is-away
+                            "
+                        >
+                            A DEFINIR
+                        </strong>
+
+                    </div>
+
+
+                    <div
+                        class="ccfv-night-live-bottom"
+                    >
+
+                        <span>
+                            AGUARDANDO
+                        </span>
+
+                        <strong>
+                            CCFV
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            ordered
+                .map(
+                    (
+                        match,
+                        index
+                    ) => {
+
+                        const home =
+                            getNightPlayerName(
+                                match,
+                                "home"
+                            );
+
+                        const away =
+                            getNightPlayerName(
+                                match,
+                                "away"
+                            );
+
+                        const finished =
+                            isNightFinished(
+                                match
+                            );
+
+                        const numberLabel =
+                            String(
+                                getNightMatchNumber(
+                                    match,
+                                    index
+                                )
+                            ).padStart(
+                                2,
+                                "0"
+                            );
+
+                        const score =
+                            finished
+                                ? `${getNightScore(
+                                    match,
+                                    "home"
+                                )} × ${getNightScore(
+                                    match,
+                                    "away"
+                                )}`
+                                : "VS";
+
+                        return `
+
+                            <div
+                                class="
+                                    ccfv-night-live-game
+                                    ${finished
+                                        ? "is-final"
+                                        : ""}
+                                "
+                            >
+
+                                <div
+                                    class="
+                                        ccfv-night-live-top
+                                    "
+                                >
+
+                                    <span>
+                                        ${escapeHTML(
+                                            label
+                                        )}
+                                        ${numberLabel}
+                                    </span>
+
+                                    <small>
+                                        ${finished
+                                            ? "FINALIZADA"
+                                            : "A DEFINIR"}
+                                    </small>
+
+                                </div>
+
+
+                                <div
+                                    class="
+                                        ccfv-night-live-teams
+                                    "
+                                >
+
+                                    <strong
+                                        class="
+                                            ccfv-night-live-team
+                                        "
+                                    >
+                                        ${escapeHTML(
+                                            home
+                                        )}
+                                    </strong>
+
+
+                                    <span
+                                        class="
+                                            ccfv-night-live-score
+                                        "
+                                    >
+                                        ${score}
+                                    </span>
+
+
+                                    <strong
+                                        class="
+                                            ccfv-night-live-team
+                                            is-away
+                                        "
+                                    >
+                                        ${escapeHTML(
+                                            away
+                                        )}
+                                    </strong>
+
+                                </div>
+
+
+                                <div
+                                    class="
+                                        ccfv-night-live-bottom
+                                    "
+                                >
+
+                                    <span>
+                                        ${finished
+                                            ? "RESULTADO REGISTRADO"
+                                            : "AGUARDANDO RESULTADO"}
+                                    </span>
+
+                                    <strong>
+                                        CCFV
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }
+                )
+                .join("");
+
+    }
+
+
+    function syncNightCup() {
+
+        const quarterfinals =
+            document.querySelector(
+                "#night-quarterfinals"
+            );
+
+        const semifinals =
+            document.querySelector(
+                "#night-semifinals"
+            );
+
+        const final =
+            document.querySelector(
+                "#night-final"
+            );
+
+        const champion =
+            document.querySelector(
+                "#night-champion-name"
+            );
+
+        const statusElement =
+            document.querySelector(
+                "#night-cup-status"
+            );
+
+
+        if (
+            !quarterfinals &&
+            !semifinals &&
+            !final &&
+            !champion
+        ) {
+
+            return;
+
+        }
+
+
+        const groups = {
+
+            quarterfinal: [],
+
+            semi: [],
+
+            final: []
+
+        };
+
+
+        (
+            state.nightMatches ||
+            []
+        )
+            .forEach(
+                match => {
+
+                    const round =
+                        getNightRound(
+                            match
+                        );
+
+                    groups[
+                        round
+                    ].push(
+                        match
+                    );
+
+                }
+            );
+
+
+        renderNightGroup(
+            quarterfinals,
+            groups.quarterfinal,
+            "QF"
+        );
+
+
+        renderNightGroup(
+            semifinals,
+            groups.semi,
+            "SF"
+        );
+
+
+        renderNightGroup(
+            final,
+            groups.final,
+            "FINAL"
+        );
+
+
+        if (
+            champion
+        ) {
+
+            const finalMatch =
+                groups.final.find(
+                    isNightFinished
+                );
+
+            let winner =
+                null;
+
+
+            if (
+                finalMatch
+            ) {
+
+                const explicitWinner =
+                    nightValue(
+                        finalMatch,
+                        [
+                            "winner_name",
+                            "winner",
+                            "winner_player_name"
+                        ],
+                        null
+                    );
+
+
+                if (
+                    explicitWinner &&
+                    typeof explicitWinner !==
+                        "object"
+                ) {
+
+                    winner =
+                        String(
+                            explicitWinner
+                        );
+
+                }
+
+
+                if (
+                    !winner
+                ) {
+
+                    const winnerId =
+                        nightValue(
+                            finalMatch,
+                            [
+                                "winner_id",
+                                "winner_player_id"
+                            ],
+                            null
+                        );
+
+
+                    if (
+                        winnerId
+                    ) {
+
+                        winner =
+                            state.players.find(
+                                player =>
+                                    String(
+                                        player.id
+                                    ) ===
+                                    String(
+                                        winnerId
+                                    )
+                            )?.name ||
+                            null;
+
+                    }
+
+                }
+
+
+                if (
+                    !winner
+                ) {
+
+                    const homeScore =
+                        getNightScore(
+                            finalMatch,
+                            "home"
+                        );
+
+                    const awayScore =
+                        getNightScore(
+                            finalMatch,
+                            "away"
+                        );
+
+
+                    if (
+                        homeScore !==
+                        awayScore
+                    ) {
+
+                        winner =
+                            homeScore >
+                            awayScore
+
+                                ? getNightPlayerName(
+                                    finalMatch,
+                                    "home"
+                                )
+
+                                : getNightPlayerName(
+                                    finalMatch,
+                                    "away"
+                                );
+
+                    }
+
+                }
+
+            }
+
+
+            champion.textContent =
+                winner ||
+                "A DEFINIR";
+
+        }
+
+
+        if (
+            statusElement
+        ) {
+
+            const total =
+                state.nightMatches.length;
+
+            const finished =
+                state.nightMatches.filter(
+                    isNightFinished
+                ).length;
+
+
+            statusElement.textContent =
+
+                total === 0
+
+                    ? "SETUP"
+
+                    : finished >= total
+
+                        ? "FINALIZADA"
+
+                        : "EM ANDAMENTO";
+
+        }
+
+    }
+
+
+    /* =========================================================
        HOME
-       ===================================================== */
+       ========================================================= */
 
     function syncHome() {
 
@@ -1418,86 +1603,62 @@
                 : 0;
 
 
-        const clubsElement =
-            cards[0].querySelector(
-                ".ccfv-data-card__number"
-            );
+        const values = [
 
+            "20",
 
-        const roundsElement =
-            cards[1].querySelector(
-                ".ccfv-data-card__number"
-            );
+            String(
+                currentRound
+            ),
 
+            String(
+                state.matches.length
+            ),
 
-        const matchesElement =
-            cards[2].querySelector(
-                ".ccfv-data-card__number"
-            );
-
-
-        const championElement =
-            cards[3].querySelector(
-                ".ccfv-data-card__number"
-            );
-
-
-        if (
-            clubsElement
-        ) {
-
-            clubsElement.textContent =
-                "20";
-
-        }
-
-
-        if (
-            roundsElement
-        ) {
-
-            roundsElement.textContent =
-                String(
-                    currentRound
-                );
-
-        }
-
-
-        if (
-            matchesElement
-        ) {
-
-            matchesElement.textContent =
-                String(
-                    state.matches.length
-                );
-
-        }
-
-
-        const championshipFinished =
             brazilMatches.length >=
-            380;
+                380
+                ? "1"
+                : "0"
+
+        ];
 
 
-        if (
-            championElement
-        ) {
+        cards.forEach(
+            (
+                card,
+                index
+            ) => {
 
-            championElement.textContent =
-                championshipFinished
-                    ? "1"
-                    : "0";
+                const target =
+                    card.querySelector(
+                        ".ccfv-data-card__number"
+                    );
 
-        }
+
+                if (
+                    target &&
+                    values[
+                        index
+                    ] !==
+                    undefined
+                ) {
+
+                    target.textContent =
+                        values[
+                            index
+                        ];
+
+                }
+
+            }
+        );
 
     }
 
 
-    /* =====================================================
+    /* =========================================================
        CONTADORES
-       ===================================================== */
+       ========================================================= */
 
     function syncCounters() {
 
@@ -1571,9 +1732,9 @@
     }
 
 
-    /* =====================================================
+    /* =========================================================
        ESTADO PÚBLICO
-       ===================================================== */
+       ========================================================= */
 
     function exposeState() {
 
@@ -1585,6 +1746,7 @@
             new CustomEvent(
                 "ccfv:live-update",
                 {
+
                     detail: {
 
                         state,
@@ -1613,9 +1775,9 @@
     }
 
 
-    /* =====================================================
+    /* =========================================================
        REFRESH
-       ===================================================== */
+       ========================================================= */
 
     async function refresh(
         reason =
@@ -1649,9 +1811,7 @@
 
                 matches,
 
-                nightMatches,
-
-                ranking
+                nightMatches
 
             ] =
                 await Promise.all([
@@ -1669,10 +1829,6 @@
                     ),
 
                     loadNightMatches(
-                        client
-                    ),
-
-                    loadRanking(
                         client
                     )
 
@@ -1696,16 +1852,18 @@
 
 
             state.ranking =
-                ranking;
+                buildLiveRanking(
+                    players
+                );
 
 
             state.updatedAt =
                 new Date();
 
 
-            syncRanking();
-
             syncBrasileirao();
+
+            syncNightCup();
 
             syncHome();
 
@@ -1719,6 +1877,7 @@
                 "color:#43df91;font-weight:900;",
                 reason,
                 {
+
                     players:
                         state.players.length,
 
@@ -1757,22 +1916,22 @@
     }
 
 
-    /* =====================================================
+    /* =========================================================
        REALTIME
-       ===================================================== */
+       ========================================================= */
 
     function subscribeRealtime(
         client
     ) {
 
         if (
-            channel
+            realtimeChannel
         ) {
 
             try {
 
                 client.removeChannel(
-                    channel
+                    realtimeChannel
                 );
 
             }
@@ -1791,7 +1950,7 @@
         }
 
 
-        channel =
+        realtimeChannel =
             client.channel(
                 "ccfv-live-public"
             );
@@ -1800,7 +1959,7 @@
         REALTIME_TABLES.forEach(
             table => {
 
-                channel.on(
+                realtimeChannel.on(
                     "postgres_changes",
                     {
 
@@ -1813,6 +1972,7 @@
                         table
 
                     },
+
                     () => {
 
                         clearTimeout(
@@ -1839,7 +1999,7 @@
         );
 
 
-        channel.subscribe(
+        realtimeChannel.subscribe(
             status => {
 
                 console.log(
@@ -1854,9 +2014,9 @@
     }
 
 
-    /* =====================================================
+    /* =========================================================
        API
-       ===================================================== */
+       ========================================================= */
 
     window.CCFVLiveAPI = {
 
@@ -1871,14 +2031,11 @@
     };
 
 
-    /* =====================================================
+    /* =========================================================
        INIT
-       ===================================================== */
+       ========================================================= */
 
     async function init() {
-
-        injectRankingStyles();
-
 
         await new Promise(
             resolve =>
@@ -1960,6 +2117,5 @@
         init();
 
     }
-
 
 })();
