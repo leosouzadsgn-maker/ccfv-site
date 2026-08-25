@@ -2813,61 +2813,7 @@
          * Clique no card inteiro.
          */
 
-        dom.competitionBrasileiraoLabel
-            ?.addEventListener(
-                "click",
-                event => {
-
-                    if (
-                        event.target ===
-                        dom.competitionBrasileirao
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    event.preventDefault();
-
-
-                    dom.competitionBrasileirao.checked =
-                        !dom.competitionBrasileirao.checked;
-
-
-                    updateCompetitionUI();
-
-                }
-            );
-
-
-        dom.competitionNightLabel
-            ?.addEventListener(
-                "click",
-                event => {
-
-                    if (
-                        event.target ===
-                        dom.competitionNight
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    event.preventDefault();
-
-
-                    dom.competitionNight.checked =
-                        !dom.competitionNight.checked;
-
-
-                    updateCompetitionUI();
-
-                }
-            );
-
+       
 
         /*
          * Troca de clube.
