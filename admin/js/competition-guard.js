@@ -1,17 +1,15 @@
 /* =========================================================
    CCFV // COMPETITION GUARD
-   BRASILEIRÃO + NIGHT CUP
+   ADMIN — JOGADORES / COMPETIÇÕES / CLUBES
 
-   Regras:
-   1. Checkbox selecionado fica visualmente marcado.
-   2. Brasileirão: cada clube pode pertencer a apenas
-      um jogador ativo.
-   3. Ao escolher um clube, ele fica indisponível
-      imediatamente nesta seleção.
-   4. Clubes já ocupados no Supabase ficam desabilitados.
-   5. Ao editar um jogador, o clube dele continua disponível
-      para ele próprio.
-   6. Alterações externas são recarregadas quando necessário.
+   Responsabilidades:
+   - Abrir o modal de novo jogador com segurança.
+   - Garantir seleção visual do Brasileirão/Night Cup.
+   - Mostrar/ocultar configurações das competições.
+   - Consultar player_competitions.
+   - Bloquear clubes do Brasileirão já ocupados.
+   - Permitir que um jogador editado mantenha o próprio clube.
+   - Funcionar mesmo que o bind do admin.js falhe.
    ========================================================= */
 
 (() => {
@@ -20,74 +18,17 @@
 
 
     /* =====================================================
-       CONFIG
+       CONFIGURAÇÃO
        ===================================================== */
 
-    const COMPETITION_BR =
+    const BRASILEIRAO =
         "BRASILEIRAO";
 
-    const COMPETITION_NIGHT =
+    const NIGHT_CUP =
         "NIGHT_CUP";
 
-    const ACTIVE_STATUS =
-        "ACTIVE";
-
-    const POLL_INTERVAL =
+    const REFRESH_INTERVAL =
         15000;
-
-
-    /* =====================================================
-       DOM
-       ===================================================== */
-
-    const getDOM = () => ({
-
-        playerId:
-            document.querySelector(
-                "#player-id"
-            ),
-
-        competitionBrasileirao:
-            document.querySelector(
-                "#competition-brasileirao"
-            ),
-
-        competitionBrasileiraoLabel:
-            document.querySelector(
-                "#competition-brasileirao-label"
-            ),
-
-        competitionNight:
-            document.querySelector(
-                "#competition-night"
-            ),
-
-        competitionNightLabel:
-            document.querySelector(
-                "#competition-night-label"
-            ),
-
-        brasileiraoConfig:
-            document.querySelector(
-                "#brasileirao-config"
-            ),
-
-        brasileiraoTeam:
-            document.querySelector(
-                "#brasileirao-team"
-            ),
-
-        nightConfig:
-            document.querySelector(
-                "#night-config"
-            ),
-
-        nightTeam:
-            document.querySelector(
-                "#night-team"
-            )
-
-    });
 
 
     /* =====================================================
@@ -100,18 +41,110 @@
     let occupiedTeams =
         new Set();
 
-    let loaded =
-        false;
-
     let refreshTimer =
-        null;
-
-    let observer =
         null;
 
 
     /* =====================================================
-       HELPERS
+       DOM
+       ===================================================== */
+
+    function dom() {
+
+        return {
+
+            modal:
+                document.querySelector(
+                    "#player-modal"
+                ),
+
+            modalTitle:
+                document.querySelector(
+                    "#player-modal-title"
+                ),
+
+            modalCloseButtons:
+                document.querySelectorAll(
+                    "[data-close-player-modal]"
+                ),
+
+            newPlayerButton:
+                document.querySelector(
+                    "#new-player-button"
+                ),
+
+            openNewPlayerButtons:
+                document.querySelectorAll(
+                    "[data-open-new-player]"
+                ),
+
+            form:
+                document.querySelector(
+                    "#player-form"
+                ),
+
+            playerId:
+                document.querySelector(
+                    "#player-id"
+                ),
+
+            playerPlatform:
+                document.querySelector(
+                    "#player-platform"
+                ),
+
+            competitionBrasileirao:
+                document.querySelector(
+                    "#competition-brasileirao"
+                ),
+
+            competitionBrasileiraoLabel:
+                document.querySelector(
+                    "#competition-brasileirao-label"
+                ),
+
+            competitionNight:
+                document.querySelector(
+                    "#competition-night"
+                ),
+
+            competitionNightLabel:
+                document.querySelector(
+                    "#competition-night-label"
+                ),
+
+            brasileiraoConfig:
+                document.querySelector(
+                    "#brasileirao-config"
+                ),
+
+            brasileiraoTeam:
+                document.querySelector(
+                    "#brasileirao-team"
+                ),
+
+            nightConfig:
+                document.querySelector(
+                    "#night-config"
+                ),
+
+            nightTeam:
+                document.querySelector(
+                    "#night-team"
+                ),
+
+            photoPreview:
+                document.querySelector(
+                    "#player-photo-preview"
+                )
+
+        };
+
+    }
+
+
+    /* =====================================================
+       NORMALIZAÇÃO
        ===================================================== */
 
     function normalize(
@@ -119,7 +152,7 @@
     ) {
 
         return String(
-            value || ""
+            value ?? ""
         )
             .normalize(
                 "NFD"
@@ -130,83 +163,6 @@
             )
             .trim()
             .toUpperCase();
-
-    }
-
-
-    function getCurrentPlayerId() {
-
-        const dom =
-            getDOM();
-
-
-        return (
-            dom.playerId?.value ||
-            null
-        );
-
-    }
-
-
-    function getToastFunction() {
-
-        if (
-            typeof window.showToast ===
-            "function"
-        ) {
-
-            return window.showToast;
-
-        }
-
-
-        if (
-            window.CCFVAdmin &&
-            typeof
-                window.CCFVAdmin.showToast ===
-            "function"
-        ) {
-
-            return window.CCFVAdmin.showToast;
-
-        }
-
-
-        return (
-            message => {
-
-                console.warn(
-                    "CCFV //",
-                    message
-                );
-
-            }
-        );
-
-    }
-
-
-    function notify(
-        message
-    ) {
-
-        try {
-
-            getToastFunction()(
-                message
-            );
-
-        }
-        catch (
-            error
-        ) {
-
-            console.warn(
-                "CCFV // TOAST:",
-                error
-            );
-
-        }
 
     }
 
@@ -225,10 +181,6 @@
 
         }
 
-
-        /*
-         * Primeiro tenta usar o Auth oficial.
-         */
 
         if (
             window.CCFVAuth &&
@@ -252,7 +204,7 @@
             ) {
 
                 console.warn(
-                    "CCFV // AUTH CLIENT ERROR:",
+                    "CCFV // AUTH:",
                     error
                 );
 
@@ -261,17 +213,13 @@
         }
 
 
-        /*
-         * Aguarda o auth carregar.
-         */
-
-        const started =
+        const start =
             Date.now();
 
 
         while (
             Date.now() -
-            started <
+            start <
             10000
         ) {
 
@@ -297,11 +245,11 @@
                 ) {
 
                     console.warn(
-                        "CCFV // AUTH CLIENT ERROR:",
+                        "CCFV // AUTH:",
                         error
                     );
 
-                    break;
+                    return null;
 
                 }
 
@@ -325,7 +273,437 @@
 
 
     /* =====================================================
-       BUSCAR CLUBES OCUPADOS
+       TOAST
+       ===================================================== */
+
+    function toast(
+        message
+    ) {
+
+        const element =
+            document.querySelector(
+                "#admin-toast"
+            );
+
+
+        if (
+            !element
+        ) {
+
+            console.warn(
+                "CCFV //",
+                message
+            );
+
+            return;
+
+        }
+
+
+        element.textContent =
+            message;
+
+
+        element.classList.add(
+            "is-visible"
+        );
+
+
+        clearTimeout(
+            element._ccfvTimer
+        );
+
+
+        element._ccfvTimer =
+            setTimeout(
+                () => {
+
+                    element.classList.remove(
+                        "is-visible"
+                    );
+
+                },
+                3000
+            );
+
+    }
+
+
+    /* =====================================================
+       ABRIR MODAL — CAMADA DE SEGURANÇA
+       ===================================================== */
+
+    function openPlayerModal() {
+
+        const d =
+            dom();
+
+
+        if (
+            !d.modal
+        ) {
+
+            console.error(
+                "CCFV // MODAL #player-modal NÃO ENCONTRADO."
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Reset básico.
+         *
+         * O admin.js também faz esse trabalho,
+         * mas esta camada garante que o modal abra
+         * mesmo quando o bind original falhar.
+         */
+
+        if (
+            d.form
+        ) {
+
+            try {
+
+                d.form.reset();
+
+            }
+            catch (
+                error
+            ) {
+
+                console.warn(
+                    "CCFV // FORM RESET:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        if (
+            d.playerId
+        ) {
+
+            d.playerId.value =
+                "";
+
+        }
+
+
+        if (
+            d.playerPlatform
+        ) {
+
+            d.playerPlatform.value =
+                "PC";
+
+        }
+
+
+        if (
+            d.competitionBrasileirao
+        ) {
+
+            d.competitionBrasileirao.checked =
+                false;
+
+        }
+
+
+        if (
+            d.competitionNight
+        ) {
+
+            d.competitionNight.checked =
+                false;
+
+        }
+
+
+        if (
+            d.brasileiraoTeam
+        ) {
+
+            d.brasileiraoTeam.value =
+                "";
+
+        }
+
+
+        if (
+            d.nightTeam
+        ) {
+
+            d.nightTeam.value =
+                "";
+
+        }
+
+
+        if (
+            d.modalTitle
+        ) {
+
+            d.modalTitle.textContent =
+                "NOVO JOGADOR.";
+
+        }
+
+
+        if (
+            d.photoPreview
+        ) {
+
+            d.photoPreview.innerHTML =
+                "FOTO";
+
+        }
+
+
+        /*
+         * Atualiza seleção visual.
+         */
+
+        refreshCompetitionUI();
+
+
+        /*
+         * Abre pelo sistema oficial.
+         */
+
+        d.modal.classList.add(
+            "is-open"
+        );
+
+
+        d.modal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+
+        /*
+         * Garantia visual:
+         * caso alguma regra de CSS esteja impedindo
+         * a abertura, estas propriedades inline
+         * garantem a visibilidade.
+         */
+
+        d.modal.style.display =
+            "flex";
+
+        d.modal.style.visibility =
+            "visible";
+
+        d.modal.style.opacity =
+            "1";
+
+        d.modal.style.pointerEvents =
+            "auto";
+
+
+        document.body.style.overflow =
+            "hidden";
+
+
+        /*
+         * Recarrega disponibilidade dos clubes
+         * somente depois que o modal está aberto.
+         */
+
+        loadOccupiedTeams();
+
+
+        /*
+         * Foco no primeiro campo.
+         */
+
+        setTimeout(
+            () => {
+
+                const name =
+                    document.querySelector(
+                        "#player-name"
+                    );
+
+
+                if (
+                    name
+                ) {
+
+                    name.focus();
+
+                }
+
+            },
+            50
+        );
+
+    }
+
+
+    /* =====================================================
+       FECHAR MODAL
+       ===================================================== */
+
+    function closePlayerModal() {
+
+        const d =
+            dom();
+
+
+        if (
+            !d.modal
+        ) {
+
+            return;
+
+        }
+
+
+        d.modal.classList.remove(
+            "is-open"
+        );
+
+
+        d.modal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+
+        d.modal.style.display =
+            "";
+
+        d.modal.style.visibility =
+            "";
+
+        d.modal.style.opacity =
+            "";
+
+        d.modal.style.pointerEvents =
+            "";
+
+
+        document.body.style.overflow =
+            "";
+
+    }
+
+
+    /* =====================================================
+       SELEÇÃO DAS COMPETIÇÕES
+       ===================================================== */
+
+    function refreshCompetitionUI() {
+
+        const d =
+            dom();
+
+
+        const brasileirao =
+            Boolean(
+                d.competitionBrasileirao &&
+                d.competitionBrasileirao.checked
+            );
+
+
+        const night =
+            Boolean(
+                d.competitionNight &&
+                d.competitionNight.checked
+            );
+
+
+        if (
+            d.competitionBrasileiraoLabel
+        ) {
+
+            d.competitionBrasileiraoLabel
+                .classList
+                .toggle(
+                    "is-selected",
+                    brasileirao
+                );
+
+            d.competitionBrasileiraoLabel
+                .setAttribute(
+                    "aria-checked",
+                    brasileirao
+                        ? "true"
+                        : "false"
+                );
+
+        }
+
+
+        if (
+            d.competitionNightLabel
+        ) {
+
+            d.competitionNightLabel
+                .classList
+                .toggle(
+                    "is-selected",
+                    night
+                );
+
+            d.competitionNightLabel
+                .setAttribute(
+                    "aria-checked",
+                    night
+                        ? "true"
+                        : "false"
+                );
+
+        }
+
+
+        if (
+            d.brasileiraoConfig
+        ) {
+
+            d.brasileiraoConfig
+                .classList
+                .toggle(
+                    "is-visible",
+                    brasileirao
+                );
+
+            d.brasileiraoConfig.style.display =
+                brasileirao
+                    ? ""
+                    : "none";
+
+        }
+
+
+        if (
+            d.nightConfig
+        ) {
+
+            d.nightConfig
+                .classList
+                .toggle(
+                    "is-visible",
+                    night
+                );
+
+            d.nightConfig.style.display =
+                night
+                    ? ""
+                    : "none";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       CARREGAR CLUBES OCUPADOS
        ===================================================== */
 
     async function loadOccupiedTeams() {
@@ -338,20 +716,12 @@
             !client
         ) {
 
-            console.warn(
-                "CCFV // COMPETITION GUARD: Supabase não disponível."
-            );
-
             return;
 
         }
 
 
         try {
-
-            /*
-             * Busca todas as inscrições do Brasileirão.
-             */
 
             const result =
                 await client
@@ -363,7 +733,7 @@
                     )
                     .eq(
                         "competition",
-                        COMPETITION_BR
+                        BRASILEIRAO
                     );
 
 
@@ -376,31 +746,26 @@
             }
 
 
-            const rows =
-                result.data ||
-                [];
-
-
-            /*
-             * Jogador que está sendo editado
-             * pode manter o próprio clube.
-             */
-
             const currentPlayerId =
-                getCurrentPlayerId();
+                document.querySelector(
+                    "#player-id"
+                )?.value ||
+                "";
 
 
             occupiedTeams =
                 new Set(
-                    rows
+                    (
+                        result.data ||
+                        []
+                    )
                         .filter(
                             row =>
                                 String(
                                     row.player_id
                                 ) !==
                                 String(
-                                    currentPlayerId ||
-                                    ""
+                                    currentPlayerId
                                 )
                         )
                         .map(
@@ -415,10 +780,6 @@
                 );
 
 
-            loaded =
-                true;
-
-
             refreshTeamOptions();
 
         }
@@ -427,7 +788,7 @@
         ) {
 
             console.error(
-                "CCFV // COMPETITION GUARD LOAD ERROR:",
+                "CCFV // CLUBES:",
                 error
             );
 
@@ -437,125 +798,17 @@
 
 
     /* =====================================================
-       ATUALIZAR ESTADO VISUAL DAS COMPETIÇÕES
-       ===================================================== */
-
-    function refreshCompetitionUI() {
-
-        const dom =
-            getDOM();
-
-
-        /*
-         * BRASILEIRÃO
-         */
-
-        if (
-            dom.competitionBrasileirao &&
-            dom.competitionBrasileiraoLabel
-        ) {
-
-            const selected =
-                dom.competitionBrasileirao.checked;
-
-
-            dom.competitionBrasileiraoLabel
-                .classList
-                .toggle(
-                    "is-selected",
-                    selected
-                );
-
-
-            dom.competitionBrasileiraoLabel
-                .setAttribute(
-                    "aria-checked",
-                    selected
-                        ? "true"
-                        : "false"
-                );
-
-        }
-
-
-        /*
-         * NIGHT CUP
-         */
-
-        if (
-            dom.competitionNight &&
-            dom.competitionNightLabel
-        ) {
-
-            const selected =
-                dom.competitionNight.checked;
-
-
-            dom.competitionNightLabel
-                .classList
-                .toggle(
-                    "is-selected",
-                    selected
-                );
-
-
-            dom.competitionNightLabel
-                .setAttribute(
-                    "aria-checked",
-                    selected
-                        ? "true"
-                        : "false"
-                );
-
-        }
-
-
-        /*
-         * Configuração do Brasileirão
-         */
-
-        if (
-            dom.brasileiraoConfig
-        ) {
-
-            dom.brasileiraoConfig.style.display =
-                dom.competitionBrasileirao?.checked
-                    ? ""
-                    : "none";
-
-        }
-
-
-        /*
-         * Configuração da Night Cup
-         */
-
-        if (
-            dom.nightConfig
-        ) {
-
-            dom.nightConfig.style.display =
-                dom.competitionNight?.checked
-                    ? ""
-                    : "none";
-
-        }
-
-    }
-
-
-    /* =====================================================
-       CLUBES DO BRASILEIRÃO
+       ATUALIZAR OPTIONS DO BRASILEIRÃO
        ===================================================== */
 
     function refreshTeamOptions() {
 
-        const dom =
-            getDOM();
+        const d =
+            dom();
 
 
         const select =
-            dom.brasileiraoTeam;
+            d.brasileiraoTeam;
 
 
         if (
@@ -573,70 +826,6 @@
             );
 
 
-        const currentPlayerId =
-            getCurrentPlayerId();
-
-
-        /*
-         * Se houver jogador atualmente editado,
-         * busca o clube dele para permitir manter.
-         */
-
-        let editingOwnTeam =
-            "";
-
-
-        if (
-            currentPlayerId &&
-            window.CCFVAdmin &&
-            Array.isArray(
-                window.CCFVAdmin.players
-            )
-        ) {
-
-            const player =
-                window.CCFVAdmin.players.find(
-                    item =>
-                        String(
-                            item.id
-                        ) ===
-                        String(
-                            currentPlayerId
-                        )
-                );
-
-
-            if (
-                player &&
-                Array.isArray(
-                    player.competitions
-                )
-            ) {
-
-                const ownCompetition =
-                    player.competitions.find(
-                        item =>
-                            item.competition ===
-                            COMPETITION_BR
-                    );
-
-
-                editingOwnTeam =
-                    normalize(
-                        ownCompetition?.team_name
-                    );
-
-            }
-
-        }
-
-
-        /*
-         * Caso o Admin não exponha players,
-         * usamos somente o currentValue para
-         * não bloquear o valor que já está selecionado.
-         */
-
         Array.from(
             select.options
         )
@@ -651,15 +840,12 @@
 
 
                     /*
-                     * Placeholder nunca é bloqueado.
+                     * Placeholder.
                      */
 
                     if (
                         !value ||
-                        !option.value &&
-                        normalize(
-                            option.textContent
-                        ).includes(
+                        value.includes(
                             "SELECIONE"
                         )
                     ) {
@@ -682,34 +868,34 @@
                         );
 
 
-                    const own =
-                        value ===
-                        editingOwnTeam;
-
-
                     const currentlySelected =
                         value ===
                         currentValue;
 
 
-                    const shouldDisable =
-                        loaded &&
+                    /*
+                     * Se o clube está ocupado e não
+                     * é o valor atual do jogador,
+                     * fica bloqueado.
+                     */
+
+                    const disabled =
                         occupied &&
-                        !own &&
                         !currentlySelected;
 
 
                     option.disabled =
-                        shouldDisable;
+                        disabled;
 
 
                     option.dataset.teamOccupied =
-                        shouldDisable
+                        disabled
                             ? "true"
                             : "false";
 
+
                     option.title =
-                        shouldDisable
+                        disabled
                             ? "Clube já ocupado"
                             : "";
 
@@ -718,130 +904,31 @@
 
 
         /*
-         * Se o valor atual ficou ocupado
-         * por outro jogador, limpa a seleção.
-         */
-
-        const selectedOption =
-            select.options[
-                select.selectedIndex
-            ];
-
-
-        if (
-            selectedOption &&
-            selectedOption.disabled
-        ) {
-
-            select.value =
-                "";
-
-            refreshCompetitionUI();
-
-        }
-
-
-        /*
-         * Classe visual no select.
+         * Classe visual.
          */
 
         select.classList.toggle(
             "is-valid",
             Boolean(
-                normalize(
-                    select.value
-                )
+                select.value
             )
         );
 
-
-        /*
-         * Texto auxiliar no select.
-         */
-
-        const parent =
-            select.parentElement;
-
-
-        if (
-            parent
-        ) {
-
-            let helper =
-                parent.querySelector(
-                    ".ccfv-team-availability"
-                );
-
-
-            if (
-                !helper
-            ) {
-
-                helper =
-                    document.createElement(
-                        "small"
-                    );
-
-
-                helper.className =
-                    "ccfv-team-availability";
-
-
-                helper.style.display =
-                    "block";
-
-
-                helper.style.marginTop =
-                    "6px";
-
-
-                helper.style.fontSize =
-                    "11px";
-
-
-                helper.style.fontWeight =
-                    "700";
-
-
-                helper.style.opacity =
-                    ".65";
-
-
-                parent.appendChild(
-                    helper
-                );
-
-            }
-
-
-            helper.textContent =
-                loaded
-                    ? "Clubes já ocupados ficam indisponíveis."
-                    : "Verificando disponibilidade dos clubes...";
-
-        }
-
     }
 
 
     /* =====================================================
-       SELEÇÃO DO CLUBE
+       ALTERAÇÃO DE CLUBE
        ===================================================== */
 
-    function bindTeamSelection() {
+    function handleTeamChange() {
 
-        const dom =
-            getDOM();
-
-
-        const select =
-            dom.brasileiraoTeam;
+        const d =
+            dom();
 
 
         if (
-            !select ||
-            select.dataset.ccfvGuardBound ===
-                "true"
+            !d.brasileiraoTeam
         ) {
 
             return;
@@ -849,125 +936,202 @@
         }
 
 
-        select.dataset.ccfvGuardBound =
-            "true";
+        const value =
+            normalize(
+                d.brasileiraoTeam.value
+            );
 
 
-        select.addEventListener(
-            "change",
-            () => {
+        if (
+            value &&
+            occupiedTeams.has(
+                value
+            )
+        ) {
 
-                const value =
-                    normalize(
-                        select.value
-                    );
+            d.brasileiraoTeam.value =
+                "";
+
+            toast(
+                "ESSE CLUBE JÁ ESTÁ OCUPADO NO BRASILEIRÃO."
+            );
+
+        }
 
 
-                if (
-                    value &&
-                    occupiedTeams.has(
-                        value
-                    )
-                ) {
+        refreshTeamOptions();
 
-                    /*
-                     * Não permite selecionar
-                     * um clube já ocupado.
-                     */
+    }
 
-                    select.value =
-                        "";
 
-                    notify(
-                        "ESSE CLUBE JÁ ESTÁ OCUPADO NO BRASILEIRÃO."
-                    );
+    /* =====================================================
+       BIND COMPETIÇÕES
+       ===================================================== */
+
+    function bindCompetitionInputs() {
+
+        const d =
+            dom();
+
+
+        if (
+            d.competitionBrasileirao &&
+            d.competitionBrasileirao.dataset.ccfvBound !==
+                "true"
+        ) {
+
+            d.competitionBrasileirao.dataset.ccfvBound =
+                "true";
+
+
+            d.competitionBrasileirao.addEventListener(
+                "change",
+                () => {
+
+                    refreshCompetitionUI();
 
                     refreshTeamOptions();
 
-                    return;
-
                 }
+            );
+
+        }
 
 
-                refreshTeamOptions();
+        if (
+            d.competitionNight &&
+            d.competitionNight.dataset.ccfvBound !==
+                "true"
+        ) {
 
-            }
-        );
+            d.competitionNight.dataset.ccfvBound =
+                "true";
+
+
+            d.competitionNight.addEventListener(
+                "change",
+                refreshCompetitionUI
+            );
+
+        }
+
+
+        if (
+            d.brasileiraoTeam &&
+            d.brasileiraoTeam.dataset.ccfvBound !==
+                "true"
+        ) {
+
+            d.brasileiraoTeam.dataset.ccfvBound =
+                "true";
+
+
+            d.brasileiraoTeam.addEventListener(
+                "change",
+                handleTeamChange
+            );
+
+        }
+
+
+        if (
+            d.modalCloseButtons
+        ) {
+
+            d.modalCloseButtons
+                .forEach(
+                    button => {
+
+                        if (
+                            button.dataset.ccfvBound ===
+                                "true"
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        button.dataset.ccfvBound =
+                            "true";
+
+
+                        button.addEventListener(
+                            "click",
+                            closePlayerModal
+                        );
+
+                    }
+                );
+
+        }
 
     }
 
 
     /* =====================================================
-       CHECKBOXES
+       CLICK DE NOVO JOGADOR
        ===================================================== */
 
-    function bindCompetition(
-        checkbox
-    ) {
+    function bindNewPlayerButtons() {
+
+        const d =
+            dom();
+
+
+        /*
+         * Botão principal.
+         */
 
         if (
-            !checkbox ||
-            checkbox.dataset.ccfvGuardBound ===
-                "true"
+            d.newPlayerButton
         ) {
 
-            return;
+            d.newPlayerButton
+                .dataset
+                .ccfvGuardBound =
+                "true";
+
+
+            if (
+                !d.newPlayerButton
+                    .dataset
+                    .ccfvClickBound
+            ) {
+
+                d.newPlayerButton
+                    .dataset
+                    .ccfvClickBound =
+                    "true";
+
+
+                d.newPlayerButton.addEventListener(
+                    "click",
+                    event => {
+
+                        event.preventDefault();
+
+                        openPlayerModal();
+
+                    }
+                );
+
+            }
 
         }
 
 
-        checkbox.dataset.ccfvGuardBound =
-            "true";
-
-
-        checkbox.addEventListener(
-            "change",
-            () => {
-
-                refreshCompetitionUI();
-
-                refreshTeamOptions();
-
-            }
-        );
-
-    }
-
-
-    function bindCompetitionUI() {
-
-        const dom =
-            getDOM();
-
-
-        bindCompetition(
-            dom.competitionBrasileirao
-        );
-
-
-        bindCompetition(
-            dom.competitionNight
-        );
-
-
         /*
-         * Também permite clicar no card/label
-         * inteiro, não somente na caixinha.
+         * Botão da tela vazia.
          */
 
-        [
-            dom.competitionBrasileiraoLabel,
-
-            dom.competitionNightLabel
-
-        ]
+        d.openNewPlayerButtons
             .forEach(
-                label => {
+                button => {
 
                     if (
-                        !label ||
-                        label.dataset.ccfvLabelBound ===
-                            "true"
+                        button.dataset
+                            .ccfvClickBound
                     ) {
 
                         return;
@@ -975,32 +1139,18 @@
                     }
 
 
-                    label.dataset.ccfvLabelBound =
+                    button.dataset
+                        .ccfvClickBound =
                         "true";
 
 
-                    label.addEventListener(
+                    button.addEventListener(
                         "click",
                         event => {
 
-                            /*
-                             * Deixa o browser alterar
-                             * o checkbox normalmente.
-                             *
-                             * Apenas espera o estado
-                             * mudar e atualiza o visual.
-                             */
+                            event.preventDefault();
 
-                            setTimeout(
-                                () => {
-
-                                    refreshCompetitionUI();
-
-                                    refreshTeamOptions();
-
-                                },
-                                0
-                            );
+                            openPlayerModal();
 
                         }
                     );
@@ -1012,39 +1162,98 @@
 
 
     /* =====================================================
-       LIMPAR MODAL
+       DELEGAÇÃO DE CLICK
        ===================================================== */
 
-    function handleModalReset() {
+    function bindDocumentFallback() {
 
-        const dom =
-            getDOM();
+        if (
+            document.body.dataset
+                .ccfvModalFallback ===
+            "true"
+        ) {
+
+            return;
+
+        }
 
 
-        refreshCompetitionUI();
+        document.body.dataset
+            .ccfvModalFallback =
+            "true";
 
-        refreshTeamOptions();
+
+        document.addEventListener(
+            "click",
+            event => {
+
+                const target =
+                    event.target instanceof
+                    Element
+                        ? event.target
+                        : null;
 
 
-        /*
-         * Quando o modal for aberto para
-         * um novo jogador, consulta novamente
-         * os clubes ocupados.
-         */
+                if (
+                    !target
+                ) {
 
-        loadOccupiedTeams();
+                    return;
+
+                }
+
+
+                const newButton =
+                    target.closest(
+                        "#new-player-button, [data-open-new-player]"
+                    );
+
+
+                if (
+                    newButton
+                ) {
+
+                    event.preventDefault();
+
+                    openPlayerModal();
+
+                    return;
+
+                }
+
+
+                const closeButton =
+                    target.closest(
+                        "[data-close-player-modal]"
+                    );
+
+
+                if (
+                    closeButton
+                ) {
+
+                    event.preventDefault();
+
+                    closePlayerModal();
+
+                }
+
+            }
+        );
 
     }
 
 
     /* =====================================================
-       OBSERVER
+       TECLA ESC
        ===================================================== */
 
-    function observeModal() {
+    function bindEscape() {
 
         if (
-            observer
+            document.body.dataset
+                .ccfvEscapeBound ===
+            "true"
         ) {
 
             return;
@@ -1052,26 +1261,43 @@
         }
 
 
-        const target =
-            document.body;
+        document.body.dataset
+            .ccfvEscapeBound =
+            "true";
 
 
-        if (
-            !target
-        ) {
+        document.addEventListener(
+            "keydown",
+            event => {
 
-            return;
+                if (
+                    event.key ===
+                    "Escape"
+                ) {
 
-        }
+                    closePlayerModal();
+
+                }
+
+            }
+        );
+
+    }
 
 
-        observer =
+    /* =====================================================
+       MUTATION OBSERVER
+       ===================================================== */
+
+    function observeDynamicDOM() {
+
+        const observer =
             new MutationObserver(
                 () => {
 
-                    bindCompetitionUI();
+                    bindNewPlayerButtons();
 
-                    bindTeamSelection();
+                    bindCompetitionInputs();
 
                     refreshCompetitionUI();
 
@@ -1080,12 +1306,12 @@
 
 
         observer.observe(
-            target,
+            document.body,
             {
-                subtree:
+                childList:
                     true,
 
-                childList:
+                subtree:
                     true
 
             }
@@ -1095,20 +1321,14 @@
 
 
     /* =====================================================
-       REFRESH PERIÓDICO
+       REFRESH AUTOMÁTICO
        ===================================================== */
 
-    function startPolling() {
+    function startRefresh() {
 
-        if (
+        clearInterval(
             refreshTimer
-        ) {
-
-            clearInterval(
-                refreshTimer
-            );
-
-        }
+        );
 
 
         refreshTimer =
@@ -1118,33 +1338,33 @@
                     loadOccupiedTeams();
 
                 },
-                POLL_INTERVAL
+                REFRESH_INTERVAL
             );
 
     }
 
 
     /* =====================================================
-       API GLOBAL
+       API
        ===================================================== */
 
     window.CCFVCompetitionGuard = {
 
         refresh:
-            loadOccupiedTeams,
+            async () => {
 
-        refreshUI:
-            () => {
-
-                bindCompetitionUI();
-
-                bindTeamSelection();
+                await
+                    loadOccupiedTeams();
 
                 refreshCompetitionUI();
 
-                refreshTeamOptions();
-
             },
+
+        openPlayer:
+            openPlayerModal,
+
+        closePlayer:
+            closePlayerModal,
 
         getOccupiedTeams:
             () =>
@@ -1161,17 +1381,30 @@
 
     async function init() {
 
-        bindCompetitionUI();
+        bindNewPlayerButtons();
 
-        bindTeamSelection();
+        bindCompetitionInputs();
+
+        bindDocumentFallback();
+
+        bindEscape();
 
         refreshCompetitionUI();
 
-        observeModal();
+        observeDynamicDOM();
 
-        startPolling();
+        startRefresh();
+
+        /*
+         * Primeiro abre/funciona a interface.
+         * Banco vem depois.
+         */
 
         await loadOccupiedTeams();
+
+        bindNewPlayerButtons();
+
+        bindCompetitionInputs();
 
         refreshCompetitionUI();
 
