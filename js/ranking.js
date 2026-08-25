@@ -1,5 +1,18 @@
 /* =========================================================
-   CCFV // RANKING PÚBLICO OFICIAL
+   CCFV — RANKING OFICIAL
+   MOTOR DE ELO + INSÍGNIAS + PLAYER CARDS
+
+   ELO:
+   0–999       INICIANTE
+   1000–1999   AMADOR
+   2000–2999   PROFISSIONAL
+   3000+       LENDA
+
+   JOGADORES REAIS:
+   cadastrados futuramente pelo ADMIN.
+
+   PLAYER CARDS:
+   totalmente gerados por HTML + CSS + JS.
    ========================================================= */
 
 (() => {
@@ -8,69 +21,125 @@
 
 
     /* =====================================================
-       CONFIGURAÇÃO
+       CONFIGURAÇÃO DOS NÍVEIS
        ===================================================== */
 
     const RANK_CONFIG = {
 
         beginner: {
+
             key: "beginner",
+
             name: "INICIANTE",
+
             min: 0,
+
             max: 999,
+
             next: 1000,
+
             color: "#8d9a95",
+
             description:
                 "O início da caminhada competitiva."
+
         },
+
 
         amateur: {
+
             key: "amateur",
+
             name: "AMADOR",
+
             min: 1000,
+
             max: 1999,
+
             next: 2000,
+
             color: "#69a8ff",
+
             description:
                 "Primeira grande conquista da CCFV."
+
         },
+
 
         professional: {
+
             key: "professional",
+
             name: "PROFISSIONAL",
+
             min: 2000,
+
             max: 2999,
+
             next: 3000,
+
             color: "#43df91",
+
             description:
                 "O nível competitivo de alto rendimento."
+
         },
 
+
         legend: {
+
             key: "legend",
+
             name: "LENDA",
+
             min: 3000,
+
             max: Infinity,
+
             next: null,
+
             color: "#ffc252",
+
             description:
                 "A elite absoluta da CCFV."
+
         }
 
     };
 
 
     /* =====================================================
-       ESTADO
+       ELO
        ===================================================== */
 
-    let players = [];
+    const ELO_CONFIG = {
 
-    let supabaseClient = null;
+        baseK: 60,
+
+        competitionMultiplier: {
+
+            brasileirao: 1.00,
+
+            night_quarter: 1.10,
+
+            night_semi: 1.20,
+
+            night_final: 1.35
+
+        }
+
+    };
 
 
     /* =====================================================
-       DOM
+       JOGADORES
+       ===================================================== */
+
+    const players = [];
+
+
+    /* =====================================================
+       ELEMENTOS
        ===================================================== */
 
     const elements = {
@@ -109,34 +178,17 @@
 
 
     /* =====================================================
-       HELPERS
+       UTILITÁRIOS
        ===================================================== */
 
     function escapeHTML(value) {
 
-        return String(
-            value ?? ""
-        )
-            .replaceAll(
-                "&",
-                "&amp;"
-            )
-            .replaceAll(
-                "<",
-                "&lt;"
-            )
-            .replaceAll(
-                ">",
-                "&gt;"
-            )
-            .replaceAll(
-                '"',
-                "&quot;"
-            )
-            .replaceAll(
-                "'",
-                "&#039;"
-            );
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
 
     }
 
@@ -144,31 +196,27 @@
     function getInitials(name) {
 
         const words =
-            String(
-                name || ""
-            )
+            String(name)
                 .trim()
-                .split(
-                    /\s+/
-                )
-                .filter(
-                    Boolean
-                );
+                .split(/\s+/)
+                .filter(Boolean);
+
 
         if (!words.length) {
+
             return "--";
+
         }
+
 
         if (words.length === 1) {
 
             return words[0]
-                .slice(
-                    0,
-                    2
-                )
+                .slice(0, 2)
                 .toUpperCase();
 
         }
+
 
         return (
             words[0][0] +
@@ -178,243 +226,458 @@
     }
 
 
+    /* =====================================================
+       ELO → RANK
+       ===================================================== */
+
     function getRankByPoints(elo) {
 
         const value =
             Math.max(
                 0,
-                Number(
-                    elo || 0
-                )
+                Number(elo) || 0
             );
+
 
         if (
             value >=
             RANK_CONFIG.legend.min
         ) {
+
             return RANK_CONFIG.legend;
+
         }
+
 
         if (
             value >=
             RANK_CONFIG.professional.min
         ) {
+
             return RANK_CONFIG.professional;
+
         }
+
 
         if (
             value >=
             RANK_CONFIG.amateur.min
         ) {
+
             return RANK_CONFIG.amateur;
+
         }
+
 
         return RANK_CONFIG.beginner;
 
     }
 
 
-    function formatNumber(value) {
-
-        return Number(
-            value || 0
-        ).toLocaleString(
-            "pt-BR"
-        );
-
-    }
-
-
-    function getGames(player) {
-
-        return Number(
-            player.matches ??
-            (
-                Number(
-                    player.wins || 0
-                ) +
-                Number(
-                    player.draws || 0
-                ) +
-                Number(
-                    player.losses || 0
-                )
-            )
-        );
-
-    }
-
-
-    function getWinRate(player) {
-
-        const games =
-            getGames(
-                player
-            );
-
-        if (!games) {
-            return 0;
-        }
-
-        return Math.round(
-            (
-                Number(
-                    player.wins || 0
-                ) /
-                games
-            ) *
-            100
-        );
-
-    }
-
-
     /* =====================================================
-       SUPABASE
+       PROGRESSO
        ===================================================== */
 
-    async function loadSupabase() {
+    function getProgress(elo) {
 
-        if (
-            supabaseClient
-        ) {
-            return supabaseClient;
-        }
+        const rank =
+            getRankByPoints(elo);
 
 
         if (
-            window.CCFVAuth &&
-            typeof
-                window.CCFVAuth
-                    .getClient ===
-                "function"
+            rank.key === "legend"
         ) {
 
-            supabaseClient =
-                await
-                window.CCFVAuth
-                    .getClient();
-
-            return supabaseClient;
+            return 100;
 
         }
 
 
-        throw new Error(
-            "CCFVAuth não disponível."
+        const current =
+            Number(elo) || 0;
+
+
+        const range =
+            rank.next -
+            rank.min;
+
+
+        return Math.min(
+            100,
+            Math.max(
+                0,
+                (
+                    (
+                        current -
+                        rank.min
+                    ) /
+                    range
+                ) * 100
+            )
         );
 
     }
 
 
-    async function loadOfficialRanking() {
+    /* =====================================================
+       ELO EXPECTED SCORE
+       ===================================================== */
 
-        const client =
-            await loadSupabase();
+    function getExpectedScore(
+        playerElo,
+        opponentElo
+    ) {
 
-
-        const result =
-            await client
-                .from(
-                    "ccfv_ranking"
-                )
-                .select(
-                    "*"
-                )
-                .order(
-                    "ranking_position",
-                    {
-                        ascending: true
-                    }
-                );
-
-
-        if (
-            result.error
-        ) {
-
-            throw result.error;
-
-        }
-
-
-        players =
+        return (
+            1 /
             (
-                result.data ||
-                []
-            )
-                .map(
-                    player => ({
-
-                        ...player,
-
-                        ranking_position:
-                            Number(
-                                player.ranking_position ||
-                                0
-                            ),
-
-                        elo:
-                            Number(
-                                player.elo ||
-                                0
-                            ),
-
-                        wins:
-                            Number(
-                                player.wins ||
-                                0
-                            ),
-
-                        draws:
-                            Number(
-                                player.draws ||
-                                0
-                            ),
-
-                        losses:
-                            Number(
-                                player.losses ||
-                                0
-                            ),
-
-                        titles:
-                            Number(
-                                player.titles ||
-                                0
-                            ),
-
-                        photo:
-                            player.photo ||
-                            player.photo_url ||
-                            "",
-
-                        platform:
-                            player.platform ||
-                            "PC"
-
-                    })
-                )
-                .sort(
+                1 +
+                Math.pow(
+                    10,
                     (
-                        a,
-                        b
-                    ) =>
-                        Number(
-                            a.ranking_position ||
-                            999999
-                        ) -
-                        Number(
-                            b.ranking_position ||
-                            999999
-                        )
-                );
+                        opponentElo -
+                        playerElo
+                    ) / 400
+                )
+            )
+        );
 
     }
 
 
     /* =====================================================
-       INSÍGNIA
+       PESO DA COMPETIÇÃO
+       ===================================================== */
+
+    function getCompetitionMultiplier(
+        competition,
+        stage
+    ) {
+
+        if (
+            competition ===
+            "brasileirao"
+        ) {
+
+            return 1.00;
+
+        }
+
+
+        if (
+            competition ===
+            "night"
+        ) {
+
+            if (
+                stage ===
+                "final"
+            ) {
+
+                return 1.35;
+
+            }
+
+
+            if (
+                stage ===
+                "semi"
+            ) {
+
+                return 1.20;
+
+            }
+
+
+            return 1.10;
+
+        }
+
+
+        return 1;
+
+    }
+
+
+    /* =====================================================
+       CÁLCULO DE ELO
+       ===================================================== */
+
+    function calculateEloChange({
+
+        playerElo,
+
+        opponentElo,
+
+        score,
+
+        competition =
+            "brasileirao",
+
+        stage = null
+
+    }) {
+
+        const expected =
+            getExpectedScore(
+                playerElo,
+                opponentElo
+            );
+
+
+        const multiplier =
+            getCompetitionMultiplier(
+                competition,
+                stage
+            );
+
+
+        const K =
+            ELO_CONFIG.baseK *
+            multiplier;
+
+
+        return Math.round(
+            K *
+            (
+                score -
+                expected
+            )
+        );
+
+    }
+
+
+    /* =====================================================
+       RESULTADO DE PARTIDA
+       ===================================================== */
+
+    function applyMatchResult({
+
+        playerId,
+
+        opponentId,
+
+        result,
+
+        competition =
+            "brasileirao",
+
+        stage = null
+
+    }) {
+
+        const player =
+            players.find(
+                item =>
+                    Number(item.id) ===
+                    Number(playerId)
+            );
+
+
+        const opponent =
+            players.find(
+                item =>
+                    Number(item.id) ===
+                    Number(opponentId)
+            );
+
+
+        if (
+            !player ||
+            !opponent
+        ) {
+
+            throw new Error(
+                "Jogador não encontrado."
+            );
+
+        }
+
+
+        let playerScore;
+
+
+        if (
+            result ===
+            "win"
+        ) {
+
+            playerScore = 1;
+
+        }
+
+        else if (
+            result ===
+            "draw"
+        ) {
+
+            playerScore = 0.5;
+
+        }
+
+        else if (
+            result ===
+            "loss"
+        ) {
+
+            playerScore = 0;
+
+        }
+
+        else {
+
+            throw new Error(
+                "Resultado inválido."
+            );
+
+        }
+
+
+        const opponentScore =
+            1 -
+            playerScore;
+
+
+        const playerChange =
+            calculateEloChange({
+
+                playerElo:
+                    player.elo || 0,
+
+                opponentElo:
+                    opponent.elo || 0,
+
+                score:
+                    playerScore,
+
+                competition,
+
+                stage
+
+            });
+
+
+        const opponentChange =
+            calculateEloChange({
+
+                playerElo:
+                    opponent.elo || 0,
+
+                opponentElo:
+                    player.elo || 0,
+
+                score:
+                    opponentScore,
+
+                competition,
+
+                stage
+
+            });
+
+
+        player.elo =
+            Math.max(
+                0,
+                (player.elo || 0) +
+                playerChange
+            );
+
+
+        opponent.elo =
+            Math.max(
+                0,
+                (opponent.elo || 0) +
+                opponentChange
+            );
+
+
+        player.wins =
+            Number(
+                player.wins || 0
+            );
+
+
+        player.draws =
+            Number(
+                player.draws || 0
+            );
+
+
+        player.losses =
+            Number(
+                player.losses || 0
+            );
+
+
+        opponent.wins =
+            Number(
+                opponent.wins || 0
+            );
+
+
+        opponent.draws =
+            Number(
+                opponent.draws || 0
+            );
+
+
+        opponent.losses =
+            Number(
+                opponent.losses || 0
+            );
+
+
+        if (
+            result === "win"
+        ) {
+
+            player.wins++;
+
+            opponent.losses++;
+
+        }
+
+        else if (
+            result === "draw"
+        ) {
+
+            player.draws++;
+
+            opponent.draws++;
+
+        }
+
+        else {
+
+            player.losses++;
+
+            opponent.wins++;
+
+        }
+
+
+        refreshAll();
+
+
+        return {
+
+            player,
+
+            opponent,
+
+            playerChange,
+
+            opponentChange
+
+        };
+
+    }
+
+
+    /* =====================================================
+       SVG INSÍGNIAS
        ===================================================== */
 
     function renderBadge(
@@ -422,35 +685,555 @@
         size = "medium"
     ) {
 
-        const sizeClass =
-            `ccfv-badge--${size}`;
+        if (
+            rank.key ===
+            "legend"
+        ) {
+
+            return `
+
+                <svg
+                    class="
+                        ccfv-badge
+                        ccfv-badge--legend
+                        ccfv-badge--${size}
+                    "
+                    viewBox="0 0 220 260"
+                    aria-label="LENDA"
+                    role="img"
+                >
+
+                    <defs>
+
+                        <linearGradient
+                            id="legend-metal"
+                            x1="0"
+                            y1="0"
+                            x2="1"
+                            y2="1"
+                        >
+
+                            <stop
+                                offset="0%"
+                                stop-color="#fff7c5"
+                            />
+
+                            <stop
+                                offset="24%"
+                                stop-color="#ffd86b"
+                            />
+
+                            <stop
+                                offset="50%"
+                                stop-color="#ffc252"
+                            />
+
+                            <stop
+                                offset="76%"
+                                stop-color="#9d6710"
+                            />
+
+                            <stop
+                                offset="100%"
+                                stop-color="#fff1a0"
+                            />
+
+                        </linearGradient>
+
+
+                        <radialGradient
+                            id="legend-core"
+                        >
+
+                            <stop
+                                offset="0%"
+                                stop-color="#fff4b4"
+                            />
+
+                            <stop
+                                offset="35%"
+                                stop-color="#ffc252"
+                            />
+
+                            <stop
+                                offset="100%"
+                                stop-color="#7e5108"
+                            />
+
+                        </radialGradient>
+
+
+                        <filter
+                            id="legend-glow"
+                        >
+
+                            <feGaussianBlur
+                                stdDeviation="7"
+                                result="blur"
+                            />
+
+                            <feMerge>
+
+                                <feMergeNode
+                                    in="blur"
+                                />
+
+                                <feMergeNode
+                                    in="SourceGraphic"
+                                />
+
+                            </feMerge>
+
+                        </filter>
+
+                    </defs>
+
+
+                    <polygon
+                        points="
+                            110,4
+                            144,24
+                            190,26
+                            216,68
+                            195,182
+                            110,254
+                            25,182
+                            4,68
+                            30,26
+                            76,24
+                        "
+                        fill="#070807"
+                        stroke="#ffc252"
+                        stroke-width="5"
+                        filter="url(#legend-glow)"
+                    />
+
+
+                    <polygon
+                        points="
+                            110,18
+                            141,37
+                            179,39
+                            200,70
+                            179,173
+                            110,238
+                            41,173
+                            20,70
+                            41,39
+                            79,37
+                        "
+                        fill="#12110c"
+                        stroke="url(#legend-metal)"
+                        stroke-width="3"
+                    />
+
+
+                    <circle
+                        cx="110"
+                        cy="104"
+                        r="56"
+                        fill="rgba(255,194,82,.035)"
+                        stroke="#ffc252"
+                        stroke-width="2"
+                    />
+
+
+                    <circle
+                        cx="110"
+                        cy="104"
+                        r="45"
+                        fill="none"
+                        stroke="rgba(255,240,160,.30)"
+                        stroke-width="1"
+                    />
+
+
+                    <path
+                        d="
+                            M72 76
+                            L89 89
+                            L110 58
+                            L131 89
+                            L148 76
+                            L145 108
+                            L110 132
+                            L75 108
+                            Z
+                        "
+                        fill="url(#legend-core)"
+                    />
+
+
+                    <path
+                        d="
+                            M60 134
+                            Q110 174
+                            160 134
+                            L150 169
+                            Q110 197
+                            70 169
+                            Z
+                        "
+                        fill="none"
+                        stroke="#ffc252"
+                        stroke-width="5"
+                    />
+
+
+                    <circle
+                        cx="52"
+                        cy="89"
+                        r="4"
+                        fill="#ffe99a"
+                    />
+
+                    <circle
+                        cx="168"
+                        cy="89"
+                        r="4"
+                        fill="#ffe99a"
+                    />
+
+
+                    <text
+                        x="110"
+                        y="216"
+                        text-anchor="middle"
+                        fill="#fff8d1"
+                        stroke="#7c4f08"
+                        stroke-width="2"
+                        paint-order="stroke"
+                        font-size="17"
+                        font-weight="900"
+                        letter-spacing="2.8"
+                    >
+                        LENDA
+                    </text>
+
+                </svg>
+
+            `;
+
+        }
+
+
+        if (
+            rank.key ===
+            "professional"
+        ) {
+
+            return `
+
+                <svg
+                    class="
+                        ccfv-badge
+                        ccfv-badge--professional
+                        ccfv-badge--${size}
+                    "
+                    viewBox="0 0 220 260"
+                    aria-label="PROFISSIONAL"
+                    role="img"
+                >
+
+                    <polygon
+                        points="
+                            110,7
+                            157,31
+                            200,72
+                            188,178
+                            110,250
+                            32,178
+                            20,72
+                            63,31
+                        "
+                        fill="#05120b"
+                        stroke="#43df91"
+                        stroke-width="5"
+                    />
+
+
+                    <polygon
+                        points="
+                            110,26
+                            147,47
+                            181,78
+                            170,168
+                            110,225
+                            50,168
+                            39,78
+                            73,47
+                        "
+                        fill="none"
+                        stroke="#9dffd2"
+                        stroke-width="3"
+                    />
+
+
+                    <circle
+                        cx="110"
+                        cy="105"
+                        r="49"
+                        fill="rgba(67,223,145,.045)"
+                        stroke="#43df91"
+                        stroke-width="2"
+                    />
+
+
+                    <path
+                        d="
+                            M110 61
+                            L124 89
+                            L154 94
+                            L132 113
+                            L138 145
+                            L110 129
+                            L82 145
+                            L88 113
+                            L66 94
+                            L96 89
+                            Z
+                        "
+                        fill="#43df91"
+                    />
+
+
+                    <circle
+                        cx="57"
+                        cy="91"
+                        r="5"
+                        fill="#43df91"
+                    />
+
+                    <circle
+                        cx="163"
+                        cy="91"
+                        r="5"
+                        fill="#43df91"
+                    />
+
+
+                    <text
+                        x="110"
+                        y="212"
+                        text-anchor="middle"
+                        fill="#c9ffe3"
+                        stroke="#086b43"
+                        stroke-width="1.4"
+                        paint-order="stroke"
+                        font-size="14"
+                        font-weight="900"
+                        letter-spacing="1.5"
+                    >
+                        PROFISSIONAL
+                    </text>
+
+                </svg>
+
+            `;
+
+        }
+
+
+        if (
+            rank.key ===
+            "amateur"
+        ) {
+
+            return `
+
+                <svg
+                    class="
+                        ccfv-badge
+                        ccfv-badge--amateur
+                        ccfv-badge--${size}
+                    "
+                    viewBox="0 0 220 260"
+                    aria-label="AMADOR"
+                    role="img"
+                >
+
+                    <polygon
+                        points="
+                            110,9
+                            159,38
+                            194,82
+                            182,175
+                            110,246
+                            38,175
+                            26,82
+                            61,38
+                        "
+                        fill="#06101d"
+                        stroke="#69a8ff"
+                        stroke-width="5"
+                    />
+
+
+                    <polygon
+                        points="
+                            110,27
+                            148,50
+                            178,84
+                            167,164
+                            110,221
+                            53,164
+                            42,84
+                            72,50
+                        "
+                        fill="none"
+                        stroke="#b9d9ff"
+                        stroke-width="3"
+                    />
+
+
+                    <circle
+                        cx="110"
+                        cy="105"
+                        r="46"
+                        fill="rgba(105,168,255,.045)"
+                        stroke="#69a8ff"
+                        stroke-width="2"
+                    />
+
+
+                    <path
+                        d="
+                            M110 64
+                            L124 91
+                            L152 96
+                            L131 115
+                            L138 143
+                            L110 128
+                            L82 143
+                            L89 115
+                            L68 96
+                            L96 91
+                            Z
+                        "
+                        fill="#69a8ff"
+                    />
+
+
+                    <circle
+                        cx="63"
+                        cy="94"
+                        r="4"
+                        fill="#69a8ff"
+                    />
+
+                    <circle
+                        cx="157"
+                        cy="94"
+                        r="4"
+                        fill="#69a8ff"
+                    />
+
+
+                    <text
+                        x="110"
+                        y="211"
+                        text-anchor="middle"
+                        fill="#e3efff"
+                        stroke="#24558e"
+                        stroke-width="1.3"
+                        paint-order="stroke"
+                        font-size="16"
+                        font-weight="900"
+                        letter-spacing="2.4"
+                    >
+                        AMADOR
+                    </text>
+
+                </svg>
+
+            `;
+
+        }
+
 
         return `
 
-            <div
+            <svg
                 class="
                     ccfv-badge
-                    ${sizeClass}
-                    ccfv-badge--${rank.key}
+                    ccfv-badge--beginner
+                    ccfv-badge--${size}
                 "
-                style="
-                    --badge-color:${rank.color};
-                "
+                viewBox="0 0 220 260"
+                aria-label="INICIANTE"
+                role="img"
             >
 
-                <div
-                    class="ccfv-badge__shape"
+                <polygon
+                    points="
+                        110,11
+                        158,41
+                        191,82
+                        179,169
+                        110,246
+                        41,169
+                        29,82
+                        62,41
+                    "
+                    fill="#080b0a"
+                    stroke="#8d9a95"
+                    stroke-width="5"
+                />
+
+
+                <polygon
+                    points="
+                        110,29
+                        148,51
+                        175,84
+                        164,161
+                        110,220
+                        56,161
+                        45,84
+                        72,51
+                    "
+                    fill="none"
+                    stroke="#bbc6c2"
+                    stroke-width="2"
+                />
+
+
+                <circle
+                    cx="110"
+                    cy="105"
+                    r="42"
+                    fill="rgba(255,255,255,.025)"
+                    stroke="#8d9a95"
+                    stroke-width="2"
+                />
+
+
+                <circle
+                    cx="110"
+                    cy="105"
+                    r="13"
+                    fill="none"
+                    stroke="#8d9a95"
+                    stroke-width="4"
+                />
+
+
+                <text
+                    x="110"
+                    y="212"
+                    text-anchor="middle"
+                    fill="#e5ece9"
+                    stroke="#4c5752"
+                    stroke-width="1.3"
+                    paint-order="stroke"
+                    font-size="15"
+                    font-weight="900"
+                    letter-spacing="2.2"
                 >
+                    INICIANTE
+                </text>
 
-                    <span>
-                        ${escapeHTML(
-                            rank.name
-                        )}
-                    </span>
-
-                </div>
-
-            </div>
+            </svg>
 
         `;
 
@@ -458,7 +1241,7 @@
 
 
     /* =====================================================
-       NÍVEIS
+       ELOS
        ===================================================== */
 
     function renderLevels() {
@@ -466,15 +1249,19 @@
         if (
             !elements.levelGrid
         ) {
+
             return;
+
         }
 
 
         const levels = [
+
             RANK_CONFIG.beginner,
             RANK_CONFIG.amateur,
             RANK_CONFIG.professional,
             RANK_CONFIG.legend
+
         ];
 
 
@@ -487,12 +1274,9 @@
                     ) => {
 
                         const range =
-                            rank.key ===
-                            "legend"
-
+                            rank.key === "legend"
                                 ? "3000+ ELO"
-
-                                : `${rank.min} — ${rank.max} ELO`;
+                                : `${rank.min} → ${rank.max} ELO`;
 
 
                         return `
@@ -515,12 +1299,14 @@
                                             ccfv-ranking-level__number
                                         "
                                     >
+
                                         ${String(
                                             index + 1
                                         ).padStart(
                                             2,
                                             "0"
                                         )}
+
                                     </span>
 
                                 </div>
@@ -531,10 +1317,12 @@
                                         ccfv-ranking-level__badge-art
                                     "
                                 >
+
                                     ${renderBadge(
                                         rank,
                                         "medium"
                                     )}
+
                                 </div>
 
 
@@ -543,9 +1331,11 @@
                                         ccfv-ranking-level__name
                                     "
                                 >
+
                                     ${escapeHTML(
                                         rank.name
                                     )}
+
                                 </div>
 
 
@@ -554,7 +1344,9 @@
                                         ccfv-ranking-level__range
                                     "
                                 >
+
                                     ${range}
+
                                 </div>
 
 
@@ -563,9 +1355,11 @@
                                         ccfv-ranking-level__description
                                     "
                                 >
+
                                     ${escapeHTML(
                                         rank.description
                                     )}
+
                                 </div>
 
                             </article>
@@ -580,7 +1374,174 @@
 
 
     /* =====================================================
-       HEADER DO RANKING
+       TOPO DO RANKING
+       ===================================================== */
+
+    function renderFeature() {
+
+        if (
+            !elements.feature
+        ) {
+
+            return;
+
+        }
+
+
+        elements.feature.innerHTML = `
+
+            <div
+                class="
+                    ccfv-ranking-empty-feature
+                "
+            >
+
+                <div
+                    class="
+                        ccfv-ranking-empty-feature__art
+                    "
+                >
+
+                    <div
+                        class="
+                            ccfv-ranking-empty-feature__orb
+                        "
+                    ></div>
+
+
+                    <div
+                        class="
+                            ccfv-ranking-empty-feature__ring
+                            ccfv-ranking-empty-feature__ring--one
+                        "
+                    ></div>
+
+
+                    <div
+                        class="
+                            ccfv-ranking-empty-feature__ring
+                            ccfv-ranking-empty-feature__ring--two
+                        "
+                    ></div>
+
+
+                    <div
+                        class="
+                            ccfv-ranking-empty-feature__ring
+                            ccfv-ranking-empty-feature__ring--three
+                        "
+                    ></div>
+
+
+                    <div
+                        class="
+                            ccfv-ranking-empty-feature__badge
+                        "
+                    >
+
+                        ${renderBadge(
+                            RANK_CONFIG.legend,
+                            "large"
+                        )}
+
+                    </div>
+
+
+                    <span
+                        class="
+                            ccfv-ranking-empty-feature__number
+                        "
+                    >
+                        #01
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="
+                        ccfv-ranking-empty-feature__content
+                    "
+                >
+
+                    <span>
+                        CCFV // THE THRONE
+                    </span>
+
+
+                    <strong>
+                        O TRONO
+                        <br>
+                        ESTÁ
+                        <br>
+                        VAZIO.
+                    </strong>
+
+
+                    <p>
+                        O primeiro jogador a conquistar
+                        seu espaço na elite da CCFV ocupará
+                        automaticamente esta posição.
+                    </p>
+
+
+                    <div
+                        class="
+                            ccfv-ranking-empty-feature__stats
+                        "
+                    >
+
+                        <div>
+
+                            <span>
+                                STATUS
+                            </span>
+
+                            <strong>
+                                OPEN
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                PLAYERS
+                            </span>
+
+                            <strong>
+                                00
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                SEASON
+                            </span>
+
+                            <strong>
+                                01
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =====================================================
+       HEADER DA TABELA
        ===================================================== */
 
     function renderRankingHeader() {
@@ -589,7 +1550,7 @@
 
             <div
                 class="
-                    ccfv-ranking-header
+                    ccfv-ranking-table-head
                 "
             >
 
@@ -610,7 +1571,7 @@
                 </span>
 
                 <span>
-                    NÍVEL
+                    STATUS
                 </span>
 
             </div>
@@ -631,89 +1592,156 @@
         if (
             !elements.ranking
         ) {
+
             return;
+
         }
 
 
         const filtered =
-            players
-                .filter(
-                    player => {
+            players.filter(
+                player => {
 
-                        if (
-                            platform ===
-                            "all"
-                        ) {
-                            return true;
-                        }
+                    if (
+                        platform === "all"
+                    ) {
 
-                        return String(
-                            player.platform ||
-                            ""
-                        )
-                            .toLowerCase() ===
-                            String(
-                                platform
-                            )
-                                .toLowerCase();
+                        return true;
 
                     }
-                )
-                .sort(
-                    (
-                        a,
-                        b
-                    ) =>
-                        Number(
-                            a.ranking_position ||
-                            999999
-                        ) -
-                        Number(
-                            b.ranking_position ||
-                            999999
+
+
+                    return (
+                        String(
+                            player.platform
                         )
-                );
+                            .toLowerCase() ===
+                        platform
+                    );
+
+                }
+            );
 
 
         if (
             !filtered.length
         ) {
 
+            const slots =
+                Array.from(
+                    {
+                        length: 10
+                    },
+                    (
+                        _,
+                        index
+                    ) => {
+
+                        return `
+
+                            <div
+                                class="
+                                    ccfv-ranking-empty-slot
+                                "
+                            >
+
+                                <span>
+                                    ${String(
+                                        index + 1
+                                    ).padStart(
+                                        2,
+                                        "0"
+                                    )}
+                                </span>
+
+
+                                <div
+                                    class="
+                                        ccfv-ranking-empty-slot__player
+                                    "
+                                >
+
+                                    <div
+                                        class="
+                                            ccfv-ranking-empty-slot__photo
+                                        "
+                                    >
+                                        ?
+                                    </div>
+
+
+                                    <div>
+
+                                        <strong>
+                                            AGUARDANDO COMPETIDOR
+                                        </strong>
+
+                                        <small>
+                                            POSIÇÃO #${String(
+                                                index + 1
+                                            ).padStart(
+                                                2,
+                                                "0"
+                                            )}
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+
+                                <span>
+                                    —
+                                </span>
+
+
+                                <span>
+                                    0000
+                                </span>
+
+
+                                <span
+                                    class="
+                                        ccfv-ranking-empty-slot__status
+                                    "
+                                >
+                                    DISPONÍVEL
+                                </span>
+
+                            </div>
+
+                        `;
+
+                    }
+                )
+                .join("");
+
+
             elements.ranking.innerHTML =
-
                 renderRankingHeader() +
-
-                `
-
-                    <div
-                        class="
-                            ccfv-ranking-empty
-                        "
-                    >
-
-                        <strong>
-                            NENHUM COMPETIDOR
-                        </strong>
-
-                        <span>
-                            O Ranking será alimentado
-                            automaticamente conforme os
-                            jogadores entrarem na CCFV.
-                        </span>
-
-                    </div>
-
-                `;
+                slots;
 
             return;
 
         }
 
 
+        filtered.sort(
+            (
+                a,
+                b
+            ) =>
+                (
+                    b.elo || 0
+                ) -
+                (
+                    a.elo || 0
+                )
+        );
+
+
         elements.ranking.innerHTML =
-
             renderRankingHeader() +
-
             filtered
                 .map(
                     (
@@ -725,44 +1753,6 @@
                             getRankByPoints(
                                 player.elo
                             );
-
-
-                        const position =
-                            Number(
-                                player.ranking_position ||
-                                (
-                                    index +
-                                    1
-                                )
-                            );
-
-
-                        const photo =
-                            player.photo
-                                ? `
-
-                                    <img
-                                        src="${escapeHTML(
-                                            player.photo
-                                        )}"
-                                        alt="${escapeHTML(
-                                            player.name
-                                        )}"
-                                        loading="lazy"
-                                    >
-
-                                `
-                                : `
-
-                                    <span>
-                                        ${escapeHTML(
-                                            getInitials(
-                                                player.name
-                                            )
-                                        )}
-                                    </span>
-
-                                `;
 
 
                         return `
@@ -780,7 +1770,7 @@
                                     "
                                 >
                                     ${String(
-                                        position
+                                        index + 1
                                     ).padStart(
                                         2,
                                         "0"
@@ -799,7 +1789,22 @@
                                             ccfv-ranking-row__photo
                                         "
                                     >
-                                        ${photo}
+
+                                        ${
+                                            player.photo
+                                                ? `
+                                                    <img
+                                                        src="${escapeHTML(
+                                                            player.photo
+                                                        )}"
+                                                        alt="${escapeHTML(
+                                                            player.name
+                                                        )}"
+                                                    >
+                                                `
+                                                : "?"
+                                        }
+
                                     </div>
 
 
@@ -811,26 +1816,14 @@
 
                                         <strong>
                                             ${escapeHTML(
-                                                player.name ||
-                                                "COMPETIDOR"
+                                                player.name
                                             )}
                                         </strong>
 
                                         <span>
-                                            ${
-                                                player.instagram
-                                                    ? `@${escapeHTML(
-                                                        String(
-                                                            player.instagram
-                                                        ).replace(
-                                                            /^@/,
-                                                            ""
-                                                        )
-                                                    )}`
-                                                    : escapeHTML(
-                                                        rank.name
-                                                    )
-                                            }
+                                            ${escapeHTML(
+                                                rank.name
+                                            )}
                                         </span>
 
                                     </div>
@@ -854,8 +1847,8 @@
                                         ccfv-ranking-row__points
                                     "
                                 >
-                                    ${formatNumber(
-                                        player.elo
+                                    ${Number(
+                                        player.elo || 0
                                     )}
                                 </span>
 
@@ -891,279 +1884,7 @@
 
 
     /* =====================================================
-       LÍDER
-       ===================================================== */
-
-    function renderFeature() {
-
-        if (
-            !elements.feature
-        ) {
-            return;
-        }
-
-
-        const leader =
-            players[0];
-
-
-        if (
-            !leader
-        ) {
-
-            elements.feature.innerHTML = `
-
-                <div
-                    class="
-                        ccfv-ranking-empty-feature
-                    "
-                >
-
-                    <div
-                        class="
-                            ccfv-ranking-empty-feature__art
-                        "
-                    >
-
-                        ${renderBadge(
-                            RANK_CONFIG.legend,
-                            "large"
-                        )}
-
-                        <span
-                            class="
-                                ccfv-ranking-empty-feature__number
-                            "
-                        >
-                            #01
-                        </span>
-
-                    </div>
-
-
-                    <div
-                        class="
-                            ccfv-ranking-empty-feature__content
-                        "
-                    >
-
-                        <span>
-                            CCFV // THE THRONE
-                        </span>
-
-                        <strong>
-                            O TRONO
-                            <br>
-                            ESTÁ
-                            <br>
-                            VAZIO.
-                        </strong>
-
-                        <p>
-                            O primeiro jogador a conquistar
-                            a liderança ocupará automaticamente
-                            esta posição.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
-        const rank =
-            getRankByPoints(
-                leader.elo
-            );
-
-
-        const photo =
-            leader.photo
-                ? `
-
-                    <img
-                        src="${escapeHTML(
-                            leader.photo
-                        )}"
-                        alt="${escapeHTML(
-                            leader.name
-                        )}"
-                    >
-
-                `
-                : `
-
-                    <span>
-                        ${escapeHTML(
-                            getInitials(
-                                leader.name
-                            )
-                        )}
-                    </span>
-
-                `;
-
-
-        elements.feature.innerHTML = `
-
-            <div
-                class="
-                    ccfv-ranking-leader
-                    ccfv-ranking-leader--${rank.key}
-                "
-            >
-
-                <div
-                    class="
-                        ccfv-ranking-leader__visual
-                    "
-                >
-
-                    <div
-                        class="
-                            ccfv-ranking-leader__photo
-                        "
-                    >
-                        ${photo}
-                    </div>
-
-
-                    <div
-                        class="
-                            ccfv-ranking-leader__badge
-                        "
-                    >
-                        ${renderBadge(
-                            rank,
-                            "large"
-                        )}
-                    </div>
-
-
-                    <span
-                        class="
-                            ccfv-ranking-leader__position
-                        "
-                    >
-                        #01
-                    </span>
-
-                </div>
-
-
-                <div
-                    class="
-                        ccfv-ranking-leader__content
-                    "
-                >
-
-                    <span>
-                        CCFV // CURRENT LEADER
-                    </span>
-
-
-                    <strong>
-                        ${escapeHTML(
-                            leader.name
-                        )}
-                    </strong>
-
-
-                    <small>
-                        ${
-                            leader.instagram
-                                ? `@${escapeHTML(
-                                    String(
-                                        leader.instagram
-                                    ).replace(
-                                        /^@/,
-                                        ""
-                                    )
-                                )}`
-                                : "SEM INSTAGRAM"
-                        }
-                    </small>
-
-
-                    <div
-                        class="
-                            ccfv-ranking-leader__rank
-                        "
-                    >
-                        ${escapeHTML(
-                            rank.name
-                        )}
-                    </div>
-
-
-                    <div
-                        class="
-                            ccfv-ranking-leader__stats
-                        "
-                    >
-
-                        <div>
-
-                            <span>
-                                ELO
-                            </span>
-
-                            <strong>
-                                ${formatNumber(
-                                    leader.elo
-                                )}
-                            </strong>
-
-                        </div>
-
-
-                        <div>
-
-                            <span>
-                                JOGOS
-                            </span>
-
-                            <strong>
-                                ${getGames(
-                                    leader
-                                )}
-                            </strong>
-
-                        </div>
-
-
-                        <div>
-
-                            <span>
-                                WIN RATE
-                            </span>
-
-                            <strong>
-                                ${getWinRate(
-                                    leader
-                                )}%
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-
-    /* =====================================================
-       CARDS DE NÍVEL
+       CARD PRÉVIA
        ===================================================== */
 
     function createPreviewCard(
@@ -1179,6 +1900,7 @@
                     ccfv-player-card-preview--${rank.key}
                     ccfv-player-card-preview--animated
                 "
+                data-card-rank="${rank.key}"
             >
 
                 <div
@@ -1216,7 +1938,6 @@
                     "
                 ></div>
 
-
                 <div
                     class="
                         ccfv-player-card-preview__corner
@@ -1224,14 +1945,12 @@
                     "
                 ></div>
 
-
                 <div
                     class="
                         ccfv-player-card-preview__corner
                         ccfv-player-card-preview__corner--bl
                     "
                 ></div>
-
 
                 <div
                     class="
@@ -1243,30 +1962,102 @@
 
                 <div
                     class="
-                        ccfv-player-card-preview__header
+                        ccfv-player-card-preview__top
                     "
                 >
 
-                    <span>
-                        CCFV
-                    </span>
+                    <div>
 
-                    <strong>
-                        OFFICIAL
-                    </strong>
+                        <span>
+                            CCFV PLAYER
+                        </span>
+
+                        <strong>
+                            #${number}
+                        </strong>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            ccfv-player-card-preview__mini-badge
+                        "
+                    >
+
+                        ${renderBadge(
+                            rank,
+                            "small"
+                        )}
+
+                    </div>
 
                 </div>
 
 
                 <div
                     class="
-                        ccfv-player-card-preview__badge
+                        ccfv-player-card-preview__scanline
+                    "
+                ></div>
+
+
+                <div
+                    class="
+                        ccfv-player-card-preview__photo
                     "
                 >
+
+                    <div
+                        class="
+                            ccfv-player-card-preview__photo-frame
+                        "
+                    >
+
+                        <div
+                            class="
+                                ccfv-player-card-preview__photo-mark
+                            "
+                        >
+                            A SUA FOTO
+                        </div>
+
+
+                        <div
+                            class="
+                                ccfv-player-card-preview__silhouette
+                            "
+                        >
+
+                            <span></span>
+
+                            <i></i>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                ccfv-player-card-preview__target
+                            "
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="
+                        ccfv-player-card-preview__badge-floating
+                    "
+                >
+
                     ${renderBadge(
                         rank,
                         "medium"
                     )}
+
                 </div>
 
 
@@ -1282,9 +2073,11 @@
                         )}
                     </span>
 
+
                     <strong>
                         PLAYER
                     </strong>
+
 
                     <small>
                         NOME DO COMPETIDOR
@@ -1306,9 +2099,7 @@
                         </span>
 
                         <strong>
-                            ${formatNumber(
-                                rank.min
-                            )}
+                            0000
                         </strong>
 
                     </div>
@@ -1360,6 +2151,24 @@
 
                 </div>
 
+
+                <div
+                    class="
+                        ccfv-player-card-preview__particles
+                    "
+                >
+
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                    <i></i>
+
+                </div>
+
             </article>
 
         `;
@@ -1372,7 +2181,9 @@
         if (
             !elements.cards
         ) {
+
             return;
+
         }
 
 
@@ -1381,29 +2192,37 @@
             {
                 rank:
                     RANK_CONFIG.beginner,
+
                 number:
                     "001"
+
             },
 
             {
                 rank:
                     RANK_CONFIG.amateur,
+
                 number:
                     "002"
+
             },
 
             {
                 rank:
                     RANK_CONFIG.professional,
+
                 number:
                     "003"
+
             },
 
             {
                 rank:
                     RANK_CONFIG.legend,
+
                 number:
                     "004"
+
             }
 
         ];
@@ -1419,6 +2238,129 @@
                         )
                 )
                 .join("");
+
+
+        bindCardMotion();
+
+    }
+
+
+    /* =====================================================
+       MOVIMENTO 3D
+       ===================================================== */
+
+    function bindCardMotion() {
+
+        const cards =
+            document.querySelectorAll(
+                ".ccfv-player-card-preview--animated"
+            );
+
+
+        cards.forEach(
+            card => {
+
+                card.addEventListener(
+                    "pointermove",
+                    event => {
+
+                        const rect =
+                            card.getBoundingClientRect();
+
+
+                        const x =
+                            event.clientX -
+                            rect.left;
+
+
+                        const y =
+                            event.clientY -
+                            rect.top;
+
+
+                        const percentX =
+                            x /
+                            rect.width;
+
+
+                        const percentY =
+                            y /
+                            rect.height;
+
+
+                        const rotateY =
+                            (
+                                percentX -
+                                0.5
+                            ) * 14;
+
+
+                        const rotateX =
+                            (
+                                0.5 -
+                                percentY
+                            ) * 14;
+
+
+                        card.style.setProperty(
+                            "--mouse-x",
+                            `${percentX * 100}%`
+                        );
+
+
+                        card.style.setProperty(
+                            "--mouse-y",
+                            `${percentY * 100}%`
+                        );
+
+
+                        card.style.setProperty(
+                            "--rotate-x",
+                            `${rotateX}deg`
+                        );
+
+
+                        card.style.setProperty(
+                            "--rotate-y",
+                            `${rotateY}deg`
+                        );
+
+                    }
+                );
+
+
+                card.addEventListener(
+                    "pointerleave",
+                    () => {
+
+                        card.style.setProperty(
+                            "--rotate-x",
+                            "0deg"
+                        );
+
+
+                        card.style.setProperty(
+                            "--rotate-y",
+                            "0deg"
+                        );
+
+
+                        card.style.setProperty(
+                            "--mouse-x",
+                            "50%"
+                        );
+
+
+                        card.style.setProperty(
+                            "--mouse-y",
+                            "50%"
+                        );
+
+                    }
+                );
+
+            }
+        );
 
     }
 
@@ -1450,8 +2392,7 @@
 
 
                         renderRanking(
-                            button.dataset.platform ||
-                            "all"
+                            button.dataset.platform
                         );
 
                     }
@@ -1464,14 +2405,10 @@
 
 
     /* =====================================================
-       CONTADORES
+       CONTADOR
        ===================================================== */
 
     function updateCount() {
-
-        const count =
-            players.length;
-
 
         if (
             elements.playerCount
@@ -1479,84 +2416,10 @@
 
             elements.playerCount.textContent =
                 String(
-                    count
+                    players.length
                 ).padStart(
                     2,
                     "0"
-                );
-
-        }
-
-
-        const leader =
-            players[0];
-
-
-        const eloElement =
-            document.querySelector(
-                "[data-ranking-top-elo]"
-            );
-
-
-        const leaderElement =
-            document.querySelector(
-                "[data-ranking-leader]"
-            );
-
-
-        const titlesElement =
-            document.querySelector(
-                "[data-ranking-titles]"
-            );
-
-
-        if (
-            eloElement
-        ) {
-
-            eloElement.textContent =
-                leader
-                    ? formatNumber(
-                        leader.elo
-                    )
-                    : "0";
-
-        }
-
-
-        if (
-            leaderElement
-        ) {
-
-            leaderElement.textContent =
-                leader
-                    ? (
-                        leader.name ||
-                        "—"
-                    )
-                    : "—";
-
-        }
-
-
-        if (
-            titlesElement
-        ) {
-
-            titlesElement.textContent =
-                formatNumber(
-                    players.reduce(
-                        (
-                            total,
-                            player
-                        ) =>
-                            total +
-                            Number(
-                                player.titles ||
-                                0
-                            ),
-                        0
-                    )
                 );
 
         }
@@ -1568,9 +2431,7 @@
        REFRESH
        ===================================================== */
 
-    function refreshAll(
-        platform = "all"
-    ) {
+    function refreshAll() {
 
         updateCount();
 
@@ -1578,9 +2439,7 @@
 
         renderFeature();
 
-        renderRanking(
-            platform
-        );
+        renderRanking();
 
         renderCards();
 
@@ -1588,7 +2447,7 @@
 
 
     /* =====================================================
-       API PÚBLICA
+       API
        ===================================================== */
 
     window.CCFVRanking = {
@@ -1598,10 +2457,19 @@
         rankConfig:
             RANK_CONFIG,
 
-        refresh:
-            refreshAll,
+        eloConfig:
+            ELO_CONFIG,
 
-        getRankByPoints
+        getRankByPoints,
+
+        getProgress,
+
+        calculateEloChange,
+
+        applyMatchResult,
+
+        refresh:
+            refreshAll
 
     };
 
@@ -1610,38 +2478,27 @@
        INIT
        ===================================================== */
 
-    async function init() {
+    function init() {
 
         refreshAll();
-
 
         bindFilters();
 
 
-        try {
+        console.log(
+            "%cCCFV // RANKING",
+            "color:#43df91;font-weight:900;font-size:18px;"
+        );
 
-            await loadOfficialRanking();
 
-            refreshAll();
+        console.log(
+            "Ranking iniciado sem jogadores fictícios."
+        );
 
-            console.log(
-                "CCFV // Ranking oficial carregado."
-            );
 
-        } catch (
-            error
-        ) {
-
-            console.error(
-                "CCFV // Erro no Ranking:",
-                error
-            );
-
-            players = [];
-
-            refreshAll();
-
-        }
+        console.log(
+            "Player Cards 3D + holografia ativos."
+        );
 
     }
 
@@ -1656,11 +2513,12 @@
             init
         );
 
-    } else {
+    }
+
+    else {
 
         init();
 
     }
-
 
 })();
