@@ -18,10 +18,6 @@
     <title>CCFV Admin</title>
 
 
-    <!-- =====================================================
-         FONT
-         ===================================================== -->
-
     <link
         rel="preconnect"
         href="https://fonts.googleapis.com"
@@ -29,7 +25,7 @@
 
     <link
         rel="preconnect"
-        href="https://fonts.googleapis.com"
+        href="https://fonts.gstatic.com"
         crossorigin
     >
 
@@ -39,19 +35,11 @@
     >
 
 
-    <!-- =====================================================
-         CSS PRINCIPAL
-         ===================================================== -->
-
     <link
         rel="stylesheet"
         href="/admin/css/admin.css"
     >
 
-
-    <!-- =====================================================
-         CSS ESPECÍFICO
-         ===================================================== -->
 
     <style>
 
@@ -91,254 +79,40 @@
 
 
         /* =================================================
-           SELECT
+           RANKING
            ================================================= */
 
-        .ccfv-admin select,
-        .ccfv-admin-form select,
-        .ccfv-match-form select,
-        #player-platform,
-        #brasileirao-team,
-        #match-competition,
-        #match-stage,
-        #match-home-player,
-        #match-away-player,
-        #brasileirao-round {
+        .ccfv-ranking-toolbar {
 
-            color-scheme: dark;
+            display: flex;
 
-            color: #ffffff;
+            align-items: flex-end;
 
-            background-color: #07100b;
+            justify-content: space-between;
 
-            border-color:
-                rgba(67,223,145,.18);
+            gap: 15px;
+
+            flex-wrap: wrap;
+
+            margin-bottom: 15px;
 
         }
 
 
-        .ccfv-admin select option,
-        .ccfv-admin-form select option,
-        .ccfv-match-form select option {
-
-            color: #ffffff;
-
-            background-color: #07100b;
-
-        }
-
-
-        /* =================================================
-           COMPETIÇÕES
-           ================================================= */
-
-        .ccfv-competition-selector {
+        .ccfv-ranking-search {
 
             display: flex;
 
             flex-direction: column;
 
-            gap: 10px;
+            gap: 7px;
 
-            padding: 17px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.06);
-
-            border-radius: 13px;
-
-            background:
-                rgba(255,255,255,.012);
+            min-width: 280px;
 
         }
 
 
-        .ccfv-competition-selector__title {
-
-            color:
-                rgba(255,255,255,.25);
-
-            font-size: 6px;
-
-            font-weight: 900;
-
-            letter-spacing: .12em;
-
-        }
-
-
-        .ccfv-competition-options {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(2,minmax(0,1fr));
-
-            gap: 9px;
-
-        }
-
-
-        .ccfv-competition-check {
-
-            position: relative;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-
-            min-height: 54px;
-
-            padding:
-                0 12px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.07);
-
-            border-radius: 10px;
-
-            color:
-                rgba(255,255,255,.38);
-
-            background:
-                rgba(255,255,255,.015);
-
-            cursor: pointer;
-
-        }
-
-
-        .ccfv-competition-check.is-selected {
-
-            border-color:
-                rgba(67,223,145,.35);
-
-            background:
-                rgba(67,223,145,.045);
-
-            color:
-                #43df91;
-
-        }
-
-
-        .ccfv-competition-check input {
-
-            position: absolute;
-
-            opacity: 0;
-
-            pointer-events: none;
-
-        }
-
-
-        .ccfv-competition-check__box {
-
-            width: 18px;
-
-            height: 18px;
-
-            display: grid;
-
-            place-items: center;
-
-            flex: 0 0 18px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.16);
-
-            border-radius: 5px;
-
-            color: transparent;
-
-            background:
-                rgba(255,255,255,.02);
-
-            font-size: 11px;
-
-            font-weight: 950;
-
-        }
-
-
-        .ccfv-competition-check.is-selected
-        .ccfv-competition-check__box {
-
-            color:
-                #031008;
-
-            border-color:
-                #43df91;
-
-            background:
-                #43df91;
-
-        }
-
-
-        .ccfv-competition-check__content {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 4px;
-
-        }
-
-
-        .ccfv-competition-check__content strong {
-
-            font-size: 8px;
-
-            font-weight: 950;
-
-        }
-
-
-        .ccfv-competition-check__content small {
-
-            color:
-                rgba(255,255,255,.18);
-
-            font-size: 6px;
-
-        }
-
-
-        .ccfv-competition-config {
-
-            display: none;
-
-            margin-top: 2px;
-
-            padding-top: 12px;
-
-            border-top:
-                1px solid
-                rgba(255,255,255,.05);
-
-        }
-
-
-        .ccfv-competition-config.is-visible {
-
-            display: block;
-
-        }
-
-
-        .ccfv-competition-config__label {
-
-            display: block;
-
-            margin-bottom: 7px;
+        .ccfv-ranking-search span {
 
             color:
                 rgba(255,255,255,.22);
@@ -347,226 +121,16 @@
 
             font-weight: 900;
 
-        }
-
-
-        .ccfv-competition-config__help {
-
-            display: block;
-
-            margin-top: 7px;
-
-            color:
-                rgba(255,255,255,.14);
-
-            font-size: 6px;
-
-            line-height: 1.5;
-
-        }
-
-
-        /* =================================================
-           FOTO
-           ================================================= */
-
-        .ccfv-photo-upload {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 13px;
-
-            min-height: 90px;
-
-            padding: 13px;
-
-            border:
-                1px dashed
-                rgba(67,223,145,.18);
-
-            border-radius: 12px;
-
-            background:
-                rgba(67,223,145,.018);
-
-        }
-
-
-        .ccfv-photo-preview {
-
-            width: 64px;
-
-            height: 64px;
-
-            flex: 0 0 64px;
-
-            overflow: hidden;
-
-            display: grid;
-
-            place-items: center;
-
-            border:
-                1px solid
-                rgba(67,223,145,.17);
-
-            border-radius: 12px;
-
-            color:
-                rgba(67,223,145,.45);
-
-            background:
-                rgba(255,255,255,.02);
-
-            font-size: 8px;
-
-            font-weight: 900;
-
-            text-align: center;
-
-        }
-
-
-        .ccfv-photo-preview img {
-
-            width: 100%;
-
-            height: 100%;
-
-            object-fit: cover;
-
-        }
-
-
-        .ccfv-hidden-file {
-
-            display: none !important;
-
-        }
-
-
-        .ccfv-photo-upload__body {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 8px;
-
-        }
-
-
-        .ccfv-photo-upload__button {
-
-            display: inline-flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            width: fit-content;
-
-            min-height: 34px;
-
-            padding:
-                0 12px;
-
-            border:
-                1px solid
-                rgba(67,223,145,.22);
-
-            border-radius: 8px;
-
-            color:
-                #43df91;
-
-            background:
-                rgba(67,223,145,.035);
-
-            font-size: 6px;
-
-            font-weight: 900;
-
-            cursor: pointer;
-
-        }
-
-
-        .ccfv-photo-upload__body small {
-
-            color:
-                rgba(255,255,255,.18);
-
-            font-size: 6px;
-
-            line-height: 1.5;
-
-        }
-
-
-        /* =================================================
-           MATCH ENGINE
-           ================================================= */
-
-        .ccfv-match-admin-grid {
-
-            display: grid;
-
-            grid-template-columns:
-                minmax(0,1.05fr)
-                minmax(380px,.95fr);
-
-            gap: 18px;
-
-        }
-
-
-        .ccfv-match-form {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 14px;
-
-        }
-
-
-        .ccfv-match-form > label,
-        .ccfv-match-side > label {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 7px;
-
-        }
-
-
-        .ccfv-match-form label > span,
-        .ccfv-match-side label > span {
-
-            color:
-                rgba(255,255,255,.24);
-
-            font-size: 6px;
-
-            font-weight: 900;
-
             letter-spacing: .12em;
 
         }
 
 
-        .ccfv-match-form select,
-        .ccfv-match-form input {
+        .ccfv-ranking-search input {
 
             width: 100%;
 
-            height: 44px;
+            height: 42px;
 
             padding:
                 0 12px;
@@ -585,610 +149,14 @@
             background:
                 #07100b;
 
-            font-size: 8px;
-
-            font-weight: 800;
-
-        }
-
-
-        .ccfv-match-admin-divider {
-
-            height: 1px;
-
-            margin:
-                5px 0;
-
-            background:
-                rgba(255,255,255,.05);
-
-        }
-
-
-        .ccfv-match-side-grid {
-
-            display: grid;
-
-            grid-template-columns:
-                minmax(0,1fr)
-                46px
-                minmax(0,1fr);
-
-            gap: 12px;
-
-        }
-
-
-        .ccfv-match-side {
-
-            min-width: 0;
-
-            padding: 13px;
-
-            border:
-                1px solid
-                rgba(67,223,145,.09);
-
-            border-radius: 12px;
-
-            background:
-                rgba(67,223,145,.012);
-
-        }
-
-
-        .ccfv-match-side__label {
-
-            display: block;
-
-            margin-bottom: 10px;
-
-            color:
-                #43df91;
-
-            font-size: 7px;
-
-            font-weight: 950;
-
-            letter-spacing: .14em;
-
-        }
-
-
-        .ccfv-match-side__info,
-        .ccfv-match-side__elo {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 4px;
-
-            margin-top: 11px;
-
-            padding-top: 10px;
-
-            border-top:
-                1px solid
-                rgba(255,255,255,.04);
-
-        }
-
-
-        .ccfv-match-side__info span,
-        .ccfv-match-side__elo span {
-
-            color:
-                rgba(255,255,255,.17);
-
-            font-size: 5px;
-
-            font-weight: 900;
-
-        }
-
-
-        .ccfv-match-side__info strong {
-
-            overflow: hidden;
-
-            color:
-                rgba(255,255,255,.55);
-
-            font-size: 8px;
-
-            font-weight: 900;
-
-            white-space: nowrap;
-
-            text-overflow: ellipsis;
-
-        }
-
-
-        .ccfv-match-side__elo strong {
-
-            color:
-                #43df91;
-
-            font-size: 13px;
-
-            font-weight: 950;
-
-        }
-
-
-        .ccfv-match-side input {
-
-            margin-top: 10px;
-
-            height: 58px !important;
-
-            text-align: center;
-
-            font-size: 24px !important;
-
-            font-weight: 950;
-
-        }
-
-
-        .ccfv-match-vs {
-
-            display: grid;
-
-            place-items: center;
-
-            padding-top: 24px;
-
-        }
-
-
-        .ccfv-match-vs span {
-
-            width: 38px;
-
-            height: 38px;
-
-            display: grid;
-
-            place-items: center;
-
-            border:
-                1px solid
-                rgba(67,223,145,.14);
-
-            border-radius: 50%;
-
-            color:
-                rgba(255,255,255,.32);
-
-            background:
-                rgba(255,255,255,.02);
-
-            font-size: 7px;
-
-            font-weight: 950;
-
-        }
-
-
-        /* =================================================
-           BRASILEIRÃO
-           ================================================= */
-
-        .ccfv-brasileirao-panel {
-
-            overflow: hidden;
-
-        }
-
-
-        .ccfv-brasileirao-head,
-        .ccfv-brasileirao-row {
-
-            display: grid;
-
-            grid-template-columns:
-                58px
-                minmax(240px,1fr)
-                repeat(8,52px);
-
-            align-items: center;
-
-            min-height: 58px;
-
-            padding:
-                0 20px;
-
-            gap: 4px;
-
-        }
-
-
-        .ccfv-brasileirao-head {
-
-            border-bottom:
-                1px solid
-                rgba(255,255,255,.055);
-
-            color:
-                rgba(255,255,255,.18);
-
-            font-size: 6px;
-
-            font-weight: 950;
-
-            letter-spacing: .12em;
-
-        }
-
-
-        .ccfv-brasileirao-row {
-
-            border-bottom:
-                1px solid
-                rgba(255,255,255,.035);
-
-            color:
-                rgba(255,255,255,.35);
-
-            font-size: 7px;
-
-        }
-
-
-        .ccfv-brasileirao-row.is-first {
-
-            background:
-                linear-gradient(
-                    90deg,
-                    rgba(67,223,145,.065),
-                    transparent
-                );
-
-        }
-
-
-        .ccfv-brasileirao-row__pos {
-
-            color:
-                rgba(67,223,145,.55);
-
-            font-size: 9px;
-
-            font-weight: 950;
-
-        }
-
-
-        .ccfv-brasileirao-row__club {
-
-            min-width: 0;
-
-        }
-
-
-        .ccfv-brasileirao-row__club strong {
-
-            display: block;
-
-            overflow: hidden;
-
-            color:
-                rgba(255,255,255,.78);
-
-            font-size: 8px;
-
-            font-weight: 950;
-
-            white-space: nowrap;
-
-            text-overflow: ellipsis;
-
-        }
-
-
-        .ccfv-brasileirao-row span {
-
-            text-align: center;
-
-        }
-
-
-        .ccfv-stat-positive {
-
-            color:
-                rgba(67,223,145,.65);
-
-            font-weight: 900;
-
-        }
-
-
-        .ccfv-stat-negative {
-
-            color:
-                rgba(255,110,110,.55);
-
-            font-weight: 900;
-
-        }
-
-
-        .ccfv-brasileirao-row__sg {
-
-            color:
-                rgba(255,255,255,.60);
-
-            font-weight: 900;
-
-        }
-
-
-        .ccfv-brasileirao-row__pts {
-
-            color:
-                #43df91;
-
-            text-align: center;
-
-            font-size: 10px;
-
-            font-weight: 950;
-
-        }
-
-
-        /* =================================================
-           NIGHT CUP
-           ================================================= */
-
-        .ccfv-night-wrap {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 18px;
-
-        }
-
-
-        .ccfv-night-statusbar {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 15px;
-
-            flex-wrap: wrap;
-
-            padding:
-                14px 16px;
-
-            border:
-                1px solid
-                rgba(67,223,145,.12);
-
-            border-radius: 12px;
-
-            background:
-                rgba(67,223,145,.018);
-
-        }
-
-
-        .ccfv-night-status {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-
-        }
-
-
-        .ccfv-night-status i {
-
-            width: 8px;
-
-            height: 8px;
-
-            border-radius: 50%;
-
-            background:
-                #43df91;
-
-            box-shadow:
-                0 0 12px
-                rgba(67,223,145,.45);
-
-        }
-
-
-        .ccfv-night-status strong {
-
-            color:
-                #43df91;
-
-            font-size: 8px;
-
-            font-weight: 950;
-
-        }
-
-
-        .ccfv-night-status small {
-
-            color:
-                rgba(255,255,255,.18);
-
-            font-size: 6px;
-
-        }
-
-
-        .ccfv-night-actions {
-
-            display: flex;
-
-            gap: 8px;
-
-            flex-wrap: wrap;
-
-        }
-
-
-        .ccfv-night-setup {
-
-            padding:
-                18px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.06);
-
-            border-radius: 14px;
-
-            background:
-                rgba(255,255,255,.012);
-
-        }
-
-
-        .ccfv-night-setup__heading {
-
-            display: flex;
-
-            align-items: flex-end;
-
-            justify-content: space-between;
-
-            gap: 20px;
-
-            margin-bottom: 14px;
-
-        }
-
-
-        .ccfv-night-setup__heading div {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 5px;
-
-        }
-
-
-        .ccfv-night-setup__heading span {
-
-            color:
-                #43df91;
-
-            font-size: 6px;
-
-            font-weight: 950;
-
-            letter-spacing: .12em;
-
-        }
-
-
-        .ccfv-night-setup__heading strong {
-
-            color:
-                rgba(255,255,255,.78);
-
-            font-size: 16px;
-
-            font-weight: 950;
-
-        }
-
-
-        .ccfv-night-setup__heading small {
-
-            color:
-                rgba(255,255,255,.18);
-
-            font-size: 7px;
-
-        }
-
-
-        .ccfv-night-player-grid {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(4,minmax(0,1fr));
-
-            gap: 10px;
-
-        }
-
-
-        .ccfv-night-player {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 7px;
-
-        }
-
-
-        .ccfv-night-player > span {
-
-            color:
-                rgba(255,255,255,.25);
-
-            font-size: 6px;
-
-            font-weight: 900;
-
-        }
-
-
-        .ccfv-night-player select {
-
-            width: 100%;
-
-            height: 43px;
-
-            padding:
-                0 10px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.08);
-
-            border-radius: 8px;
-
-            color:
-                #ffffff;
-
-            background:
-                #07100b;
-
             font-size: 7px;
 
             font-weight: 800;
 
-            outline: none;
-
         }
 
 
-        .ccfv-night-player select:focus {
+        .ccfv-ranking-search input:focus {
 
             border-color:
                 rgba(67,223,145,.4);
@@ -1196,69 +164,68 @@
         }
 
 
-        .ccfv-night-player small {
-
-            min-height: 13px;
-
-            color:
-                rgba(255,255,255,.14);
-
-            font-size: 5px;
-
-        }
-
-
-        .ccfv-night-setup__footer {
+        .ccfv-ranking-filters {
 
             display: flex;
 
-            align-items: center;
+            gap: 7px;
 
-            justify-content: space-between;
-
-            gap: 12px;
-
-            margin-top: 15px;
-
-            padding-top: 14px;
-
-            border-top:
-                1px solid
-                rgba(255,255,255,.05);
+            flex-wrap: wrap;
 
         }
 
 
-        .ccfv-night-setup__message {
+        .ccfv-ranking-filters button {
 
-            color:
-                rgba(255,255,255,.18);
-
-            font-size: 7px;
-
-            line-height: 1.4;
-
-        }
-
-
-        .ccfv-night-bracket {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(3,minmax(0,1fr));
-
-            gap: 14px;
-
-        }
-
-
-        .ccfv-night-round {
-
-            min-width: 0;
+            min-height: 38px;
 
             padding:
-                14px;
+                0 12px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
+
+            border-radius: 8px;
+
+            color:
+                rgba(255,255,255,.28);
+
+            background:
+                rgba(255,255,255,.015);
+
+            font-size: 6px;
+
+            font-weight: 950;
+
+        }
+
+
+        .ccfv-ranking-filters button:hover {
+
+            border-color:
+                rgba(67,223,145,.20);
+
+        }
+
+
+        .ccfv-ranking-filters button.is-active {
+
+            color:
+                #031008;
+
+            border-color:
+                #43df91;
+
+            background:
+                #43df91;
+
+        }
+
+
+        .ccfv-ranking-table {
+
+            overflow: hidden;
 
             border:
                 1px solid
@@ -1272,519 +239,397 @@
         }
 
 
-        .ccfv-night-round__header {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 10px;
-
-            margin-bottom: 11px;
-
-            padding-bottom: 10px;
-
-            border-bottom:
-                1px solid
-                rgba(255,255,255,.05);
-
-        }
-
-
-        .ccfv-night-round__header span {
-
-            color:
-                #43df91;
-
-            font-size: 6px;
-
-            font-weight: 950;
-
-            letter-spacing: .12em;
-
-        }
-
-
-        .ccfv-night-round__header small {
-
-            color:
-                rgba(255,255,255,.15);
-
-            font-size: 5px;
-
-        }
-
-
-        .ccfv-night-games {
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 9px;
-
-        }
-
-
-        .ccfv-night-game {
-
-            padding:
-                12px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.06);
-
-            border-radius: 10px;
-
-            background:
-                rgba(255,255,255,.014);
-
-        }
-
-
-        .ccfv-night-game.is-final {
-
-            border-color:
-                rgba(67,223,145,.24);
-
-            box-shadow:
-                0 0 30px
-                rgba(67,223,145,.025);
-
-        }
-
-
-        .ccfv-night-game__top {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 8px;
-
-            margin-bottom: 9px;
-
-        }
-
-
-        .ccfv-night-game__top span {
-
-            color:
-                #43df91;
-
-            font-size: 5px;
-
-            font-weight: 950;
-
-            letter-spacing: .1em;
-
-        }
-
-
-        .ccfv-night-game__top small {
-
-            color:
-                rgba(255,255,255,.15);
-
-            font-size: 5px;
-
-        }
-
-
-        .ccfv-night-teams {
+        .ccfv-ranking-head,
+        .ccfv-ranking-row {
 
             display: grid;
 
             grid-template-columns:
-                minmax(0,1fr)
-                34px
-                minmax(0,1fr);
+                62px
+                minmax(250px,1fr)
+                85px
+                70px
+                60px
+                60px
+                60px
+                65px
+                120px;
 
             align-items: center;
 
-            gap: 8px;
+            gap: 5px;
+
+            min-height: 68px;
+
+            padding:
+                0 18px;
 
         }
 
 
-        .ccfv-night-team {
+        .ccfv-ranking-head {
 
-            min-width: 0;
+            min-height: 46px;
 
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 3px;
-
-        }
-
-
-        .ccfv-night-team:last-child {
-
-            text-align: right;
-
-        }
-
-
-        .ccfv-night-team strong {
-
-            overflow: hidden;
-
-            color:
-                rgba(255,255,255,.76);
-
-            font-size: 7px;
-
-            font-weight: 950;
-
-            white-space: nowrap;
-
-            text-overflow: ellipsis;
-
-        }
-
-
-        .ccfv-night-team small {
-
-            overflow: hidden;
-
-            color:
-                rgba(255,255,255,.16);
-
-            font-size: 5px;
-
-            white-space: nowrap;
-
-            text-overflow: ellipsis;
-
-        }
-
-
-        .ccfv-night-score {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            gap: 4px;
-
-        }
-
-
-        .ccfv-night-score strong {
-
-            color:
-                #ffffff;
-
-            font-size: 15px;
-
-            font-weight: 950;
-
-        }
-
-
-        .ccfv-night-score span {
+            border-bottom:
+                1px solid
+                rgba(255,255,255,.05);
 
             color:
                 rgba(255,255,255,.18);
 
             font-size: 6px;
 
-        }
-
-
-        .ccfv-night-game__bottom {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            gap: 8px;
-
-            margin-top: 10px;
-
-            padding-top: 9px;
-
-            border-top:
-                1px solid
-                rgba(255,255,255,.04);
-
-        }
-
-
-        .ccfv-night-game__bottom span {
-
-            color:
-                rgba(255,255,255,.16);
-
-            font-size: 5px;
-
-        }
-
-
-        .ccfv-night-game__bottom strong {
-
-            color:
-                #43df91;
-
-            font-size: 5px;
-
             font-weight: 950;
 
-        }
-
-
-        .ccfv-night-score-form {
-
-            display: grid;
-
-            grid-template-columns:
-                1fr
-                1fr
-                auto;
-
-            gap: 7px;
-
-            margin-top: 10px;
+            letter-spacing: .10em;
 
         }
 
 
-        .ccfv-night-score-form input {
-
-            width: 100%;
-
-            height: 34px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.08);
-
-            border-radius: 7px;
+        .ccfv-ranking-row {
 
             color:
-                #ffffff;
+                rgba(255,255,255,.35);
+
+            font-size: 7px;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,.035);
+
+            transition:
+                .2s ease;
+
+        }
+
+
+        .ccfv-ranking-row:last-child {
+
+            border-bottom: 0;
+
+        }
+
+
+        .ccfv-ranking-row:hover {
 
             background:
-                #07100b;
+                rgba(67,223,145,.025);
 
-            text-align: center;
+        }
+
+
+        .ccfv-ranking-row.is-first {
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(67,223,145,.07),
+                    transparent
+                );
+
+        }
+
+
+        .ccfv-ranking-row.is-second {
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,.025),
+                    transparent
+                );
+
+        }
+
+
+        .ccfv-ranking-row.is-third {
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(255,194,82,.025),
+                    transparent
+                );
+
+        }
+
+
+        .ccfv-ranking-position {
+
+            color:
+                rgba(67,223,145,.70);
 
             font-size: 10px;
 
             font-weight: 950;
 
-            outline: none;
-
         }
 
 
-        .ccfv-night-score-form button {
-
-            min-height: 34px;
-
-            padding:
-                0 10px;
-
-            border: 0;
-
-            border-radius: 7px;
+        .ccfv-ranking-row.is-first
+        .ccfv-ranking-position {
 
             color:
-                #031008;
-
-            background:
                 #43df91;
 
-            font-size: 5px;
-
-            font-weight: 950;
-
         }
 
 
-        .ccfv-night-waiting {
-
-            margin-top: 10px;
-
-            padding:
-                8px;
-
-            border:
-                1px dashed
-                rgba(255,255,255,.06);
-
-            border-radius: 7px;
-
-            color:
-                rgba(255,255,255,.14);
-
-            text-align: center;
-
-            font-size: 5px;
-
-            font-weight: 900;
-
-        }
-
-
-        .ccfv-night-champion {
-
-            display: none;
-
-            align-items: center;
-
-            justify-content: center;
-
-            flex-direction: column;
-
-            gap: 7px;
-
-            min-height: 140px;
-
-            margin-top: 18px;
-
-            padding:
-                20px;
-
-            border:
-                1px solid
-                rgba(255,194,82,.25);
-
-            border-radius: 16px;
-
-            background:
-                radial-gradient(
-                    circle at center,
-                    rgba(255,194,82,.06),
-                    transparent 70%
-                );
-
-            text-align: center;
-
-        }
-
-
-        .ccfv-night-champion.is-visible {
+        .ccfv-ranking-player {
 
             display: flex;
 
+            align-items: center;
+
+            gap: 11px;
+
+            min-width: 0;
+
         }
 
 
-        .ccfv-night-champion span {
+        .ccfv-ranking-player__photo {
+
+            width: 40px;
+
+            height: 40px;
+
+            flex: 0 0 40px;
+
+            overflow: hidden;
+
+            display: grid;
+
+            place-items: center;
+
+            border:
+                1px solid
+                rgba(67,223,145,.12);
+
+            border-radius: 10px;
 
             color:
-                #ffc252;
+                rgba(67,223,145,.55);
+
+            background:
+                rgba(67,223,145,.025);
 
             font-size: 7px;
 
             font-weight: 950;
 
-            letter-spacing: .14em;
+        }
+
+
+        .ccfv-ranking-player__photo img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
 
         }
 
 
-        .ccfv-night-champion strong {
+        .ccfv-ranking-player__info {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 4px;
+
+            min-width: 0;
+
+        }
+
+
+        .ccfv-ranking-player__info strong {
+
+            overflow: hidden;
 
             color:
-                #ffffff;
+                rgba(255,255,255,.82);
 
-            font-size: 24px;
+            font-size: 8px;
+
+            font-weight: 950;
+
+            white-space: nowrap;
+
+            text-overflow: ellipsis;
+
+        }
+
+
+        .ccfv-ranking-player__info small {
+
+            color:
+                rgba(255,255,255,.18);
+
+            font-size: 5px;
+
+        }
+
+
+        .ccfv-ranking-elo {
+
+            color:
+                #43df91;
+
+            font-size: 12px;
 
             font-weight: 950;
 
         }
 
 
-        .ccfv-night-champion small {
+        .ccfv-ranking-positive {
 
             color:
-                rgba(255,255,255,.20);
-
-            font-size: 6px;
-
-        }
-
-
-        /* =================================================
-           PREVIEW
-           ================================================= */
-
-        .ccfv-admin-preview {
-
-            display: grid;
-
-            grid-template-columns:
-                1fr
-                1fr;
-
-            gap: 10px;
-
-        }
-
-
-        .ccfv-admin-preview > div {
-
-            min-height: 82px;
-
-            padding:
-                14px;
-
-            border:
-                1px solid
-                rgba(67,223,145,.09);
-
-            border-radius: 12px;
-
-            background:
-                rgba(67,223,145,.012);
-
-        }
-
-
-        .ccfv-admin-preview span {
-
-            display: block;
-
-            margin-bottom: 8px;
-
-            color:
-                rgba(255,255,255,.20);
-
-            font-size: 6px;
+                rgba(67,223,145,.70);
 
             font-weight: 900;
 
         }
 
 
-        .ccfv-admin-preview strong {
-
-            display: block;
+        .ccfv-ranking-negative {
 
             color:
-                #43df91;
+                rgba(255,110,110,.60);
 
-            font-size: 16px;
+            font-weight: 900;
+
+        }
+
+
+        .ccfv-ranking-title {
+
+            color:
+                #ffc252;
 
             font-weight: 950;
 
         }
 
 
-        /* =================================================
-           TOAST
-           ================================================= */
+        .ccfv-ranking-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            min-height: 24px;
+
+            padding:
+                0 9px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            border-radius: 999px;
+
+            font-size: 5px;
+
+            font-weight: 950;
+
+            letter-spacing: .08em;
+
+            white-space: nowrap;
+
+        }
+
+
+        .rank-beginner {
+
+            color:
+                #8d9a95;
+
+            border-color:
+                rgba(141,154,149,.18);
+
+        }
+
+
+        .rank-amateur {
+
+            color:
+                #69a8ff;
+
+            border-color:
+                rgba(105,168,255,.20);
+
+        }
+
+
+        .rank-professional {
+
+            color:
+                #43df91;
+
+            border-color:
+                rgba(67,223,145,.22);
+
+        }
+
+
+        .rank-legend {
+
+            color:
+                #ffc252;
+
+            border-color:
+                rgba(255,194,82,.25);
+
+        }
+
+
+        .ccfv-ranking-meta {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 12px;
+
+            margin-bottom: 14px;
+
+        }
+
+
+        .ccfv-ranking-meta strong {
+
+            color:
+                rgba(255,255,255,.25);
+
+            font-size: 6px;
+
+            font-weight: 900;
+
+            letter-spacing: .10em;
+
+        }
+
+
+        .ccfv-ranking-meta span {
+
+            color:
+                #43df91;
+
+            font-size: 6px;
+
+            font-weight: 950;
+
+        }
+
 
         .ccfv-admin-toast {
 
@@ -1844,63 +689,21 @@
         }
 
 
-        /* =================================================
-           RESPONSIVE
-           ================================================= */
-
         @media (max-width: 1100px) {
 
-            .ccfv-match-admin-grid {
+            .ccfv-ranking-table {
 
-                grid-template-columns:
-                    1fr;
-
-            }
-
-
-            .ccfv-night-bracket {
-
-                grid-template-columns:
-                    1fr;
-
-            }
-
-        }
-
-
-        @media (max-width: 900px) {
-
-            .ccfv-brasileirao-head,
-            .ccfv-brasileirao-row {
-
-                grid-template-columns:
-                    48px
-                    minmax(170px,1fr)
-                    repeat(8,43px);
-
-                padding:
-                    0 12px;
+                overflow-x:
+                    auto;
 
             }
 
 
-            .ccfv-night-player-grid {
+            .ccfv-ranking-head,
+            .ccfv-ranking-row {
 
-                grid-template-columns:
-                    repeat(2,minmax(0,1fr));
-
-            }
-
-        }
-
-
-        @media (max-width: 800px) {
-
-            .ccfv-competition-options,
-            .ccfv-admin-preview {
-
-                grid-template-columns:
-                    1fr;
+                width:
+                    900px;
 
             }
 
@@ -1909,35 +712,11 @@
 
         @media (max-width: 650px) {
 
-            .ccfv-match-side-grid {
+            .ccfv-ranking-search {
 
-                grid-template-columns:
-                    1fr;
+                width: 100%;
 
-            }
-
-
-            .ccfv-match-vs {
-
-                padding: 0;
-
-            }
-
-
-            .ccfv-night-player-grid {
-
-                grid-template-columns:
-                    1fr;
-
-            }
-
-
-            .ccfv-night-setup__footer {
-
-                align-items:
-                    flex-start;
-
-                flex-direction: column;
+                min-width: 0;
 
             }
 
@@ -2001,7 +780,9 @@
                 data-section="dashboard"
             >
 
-                <span>⌂</span>
+                <span>
+                    ⌂
+                </span>
 
                 Dashboard
 
@@ -2014,7 +795,9 @@
                 data-section="players"
             >
 
-                <span>◈</span>
+                <span>
+                    ◈
+                </span>
 
                 Jogadores
 
@@ -2027,7 +810,9 @@
                 data-section="matches"
             >
 
-                <span>⚔</span>
+                <span>
+                    ⚔
+                </span>
 
                 Partidas
 
@@ -2040,7 +825,9 @@
                 data-section="brasileirao"
             >
 
-                <span>◎</span>
+                <span>
+                    ◎
+                </span>
 
                 Brasileirão
 
@@ -2053,7 +840,9 @@
                 data-section="night"
             >
 
-                <span>✦</span>
+                <span>
+                    ✦
+                </span>
 
                 Night Cup
 
@@ -2066,7 +855,9 @@
                 data-section="ranking"
             >
 
-                <span>№</span>
+                <span>
+                    №
+                </span>
 
                 Ranking
 
@@ -2088,7 +879,9 @@
                 data-section="settings"
             >
 
-                <span>⚙</span>
+                <span>
+                    ⚙
+                </span>
 
                 Configurações
 
@@ -2107,7 +900,11 @@
             </a>
 
 
-            <div class="ccfv-admin-system-status">
+            <div
+                class="
+                    ccfv-admin-system-status
+                "
+            >
 
                 <span></span>
 
@@ -2124,14 +921,14 @@
          MAIN
          ===================================================== -->
 
-    <main class="ccfv-admin-main">
+    <main
+        class="ccfv-admin-main"
+    >
 
 
-        <!-- =================================================
-             TOPBAR
-             ================================================= -->
-
-        <header class="ccfv-admin-topbar">
+        <header
+            class="ccfv-admin-topbar"
+        >
 
             <div>
 
@@ -2144,7 +941,9 @@
                 </button>
 
                 <span
-                    class="ccfv-admin-topbar__eyebrow"
+                    class="
+                        ccfv-admin-topbar__eyebrow
+                    "
                 >
                     CCFV // ADMIN
                 </span>
@@ -2210,23 +1009,6 @@
                         Central administrativa da
                         Confederação Coliseu de Futebol Virtual.
                     </p>
-
-                </div>
-
-
-                <div
-                    class="
-                        ccfv-admin-heading__status
-                    "
-                >
-
-                    <span>
-                        STATUS
-                    </span>
-
-                    <strong>
-                        OPERACIONAL
-                    </strong>
 
                 </div>
 
@@ -2339,102 +1121,14 @@
 
                         </div>
 
-
-                        <button
-                            type="button"
-                            class="
-                                ccfv-admin-button
-                                ccfv-admin-button--primary
-                            "
-                            data-open-section="players"
-                        >
-                            ABRIR JOGADORES →
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        class="
-                            ccfv-admin-quick-grid
-                        "
-                    >
-
-                        <div>
-
-                            <span>
-                                01
-                            </span>
-
-                            <strong>
-                                JOGADORES
-                            </strong>
-
-                            <small>
-                                identidade, foto
-                                e competição
-                            </small>
-
-                        </div>
-
-
-                        <div>
-
-                            <span>
-                                02
-                            </span>
-
-                            <strong>
-                                PARTIDAS
-                            </strong>
-
-                            <small>
-                                confrontos e
-                                resultados oficiais
-                            </small>
-
-                        </div>
-
-
-                        <div>
-
-                            <span>
-                                03
-                            </span>
-
-                            <strong>
-                                ELO
-                            </strong>
-
-                            <small>
-                                evolução automática
-                            </small>
-
-                        </div>
-
-
-                        <div>
-
-                            <span>
-                                04
-                            </span>
-
-                            <strong>
-                                RANKING
-                            </strong>
-
-                            <small>
-                                classificação automática
-                            </small>
-
-                        </div>
-
                     </div>
 
                 </article>
 
 
-                <article class="ccfv-admin-panel">
+                <article
+                    class="ccfv-admin-panel"
+                >
 
                     <div
                         class="
@@ -2464,14 +1158,6 @@
                     >
 
                         <div>
-
-                            <span
-                                class="
-                                    rank-dot
-                                    rank-dot--beginner
-                                "
-                            ></span>
-
                             <strong>
                                 INICIANTE
                             </strong>
@@ -2479,19 +1165,10 @@
                             <small>
                                 0 — 999
                             </small>
-
                         </div>
 
 
                         <div>
-
-                            <span
-                                class="
-                                    rank-dot
-                                    rank-dot--amateur
-                                "
-                            ></span>
-
                             <strong>
                                 AMADOR
                             </strong>
@@ -2499,19 +1176,10 @@
                             <small>
                                 1000 — 1999
                             </small>
-
                         </div>
 
 
                         <div>
-
-                            <span
-                                class="
-                                    rank-dot
-                                    rank-dot--professional
-                                "
-                            ></span>
-
                             <strong>
                                 PROFISSIONAL
                             </strong>
@@ -2519,19 +1187,10 @@
                             <small>
                                 2000 — 2999
                             </small>
-
                         </div>
 
 
                         <div>
-
-                            <span
-                                class="
-                                    rank-dot
-                                    rank-dot--legend
-                                "
-                            ></span>
-
                             <strong>
                                 LENDA
                             </strong>
@@ -2539,7 +1198,6 @@
                             <small>
                                 3000+
                             </small>
-
                         </div>
 
                     </div>
@@ -2609,50 +1267,24 @@
                         type="search"
                         id="admin-player-search"
                         placeholder="Nome ou Instagram..."
-                        autocomplete="off"
                     >
-
-                </div>
-
-
-                <div
-                    class="
-                        ccfv-admin-filter-buttons
-                    "
-                >
-
-                    <button
-                        type="button"
-                        class="is-active"
-                        data-admin-filter="all"
-                    >
-                        TODOS
-                    </button>
-
-
-                    <button
-                        type="button"
-                        data-admin-filter="PC"
-                    >
-                        PC
-                    </button>
-
-
-                    <button
-                        type="button"
-                        data-admin-filter="CONSOLE"
-                    >
-                        CONSOLE
-                    </button>
 
                 </div>
 
             </div>
 
 
-            <div class="ccfv-admin-table-wrap">
+            <div
+                class="
+                    ccfv-admin-table-wrap
+                "
+            >
 
-                <table class="ccfv-admin-table">
+                <table
+                    class="
+                        ccfv-admin-table
+                    "
+                >
 
                     <thead>
 
@@ -2676,10 +1308,6 @@
 
                             <th>
                                 INSÍGNIA
-                            </th>
-
-                            <th>
-                                COMPETIÇÕES
                             </th>
 
                             <th>
@@ -2715,22 +1343,6 @@
                         NENHUM JOGADOR CADASTRADO.
                     </strong>
 
-                    <span>
-                        Comece cadastrando o primeiro
-                        competidor da CCFV.
-                    </span>
-
-                    <button
-                        type="button"
-                        class="
-                            ccfv-admin-button
-                            ccfv-admin-button--primary
-                        "
-                        data-open-new-player
-                    >
-                        CADASTRAR PRIMEIRO JOGADOR
-                    </button>
-
                 </div>
 
             </div>
@@ -2763,9 +1375,7 @@
                     </h1>
 
                     <p>
-                        Registre o resultado oficial,
-                        atualize o Elo e mantenha o
-                        histórico competitivo.
+                        Registro oficial de resultados.
                     </p>
 
                 </div>
@@ -2773,395 +1383,196 @@
             </div>
 
 
-            <div class="ccfv-match-admin-grid">
+            <div
+                class="
+                    ccfv-admin-panel
+                "
+            >
 
-
-                <article
+                <div
                     class="
-                        ccfv-admin-panel
-                        ccfv-match-admin-form-panel
+                        ccfv-match-admin-grid
                     "
                 >
 
-                    <div
-                        class="
-                            ccfv-admin-panel__heading
-                        "
-                    >
+                    <div>
 
-                        <div>
-
-                            <span>
-                                NOVO RESULTADO
-                            </span>
-
-                            <h2>
-                                REGISTRAR
-                                <strong>
-                                    CONFRONTO.
-                                </strong>
-                            </h2>
-
-                        </div>
-
-                    </div>
-
-
-                    <form
-                        id="match-form"
-                        class="ccfv-match-form"
-                    >
-
-                        <label>
-
-                            <span>
-                                COMPETIÇÃO
-                            </span>
-
-                            <select
-                                id="match-competition"
-                            >
-
-                                <option
-                                    value="BRASILEIRAO"
-                                >
-                                    BRASILEIRÃO
-                                </option>
-
-                                <option
-                                    value="NIGHT_CUP"
-                                >
-                                    NIGHT CUP
-                                </option>
-
-                            </select>
-
-                        </label>
-
-
-                        <label>
-
-                            <span>
-                                RODADA / FASE
-                            </span>
-
-                            <select
-                                id="match-stage"
-                            ></select>
-
-                        </label>
-
-
-                        <div
-                            class="
-                                ccfv-match-admin-divider
-                            "
-                        ></div>
-
-
-                        <div
-                            class="
-                                ccfv-match-side-grid
-                            "
+                        <form
+                            id="match-form"
+                            class="ccfv-match-form"
                         >
 
-
-                            <div
-                                class="
-                                    ccfv-match-side
-                                "
-                            >
-
-                                <span
-                                    class="
-                                        ccfv-match-side__label
-                                    "
-                                >
-                                    CASA
-                                </span>
-
-
-                                <select
-                                    id="match-home-player"
-                                >
-
-                                    <option value="">
-                                        Selecione o jogador
-                                    </option>
-
-                                </select>
-
-
-                                <div
-                                    class="
-                                        ccfv-match-side__info
-                                    "
-                                >
-
-                                    <span>
-                                        TIME
-                                    </span>
-
-                                    <strong
-                                        id="match-home-team"
-                                    >
-                                        TIME A DEFINIR
-                                    </strong>
-
-                                </div>
-
-
-                                <div
-                                    class="
-                                        ccfv-match-side__elo
-                                    "
-                                >
-
-                                    <span>
-                                        ELO ATUAL
-                                    </span>
-
-                                    <strong
-                                        id="match-home-elo"
-                                    >
-                                        ELO —
-                                    </strong>
-
-                                </div>
-
-
-                                <label>
-
-                                    <span>
-                                        PLACAR
-                                    </span>
-
-                                    <input
-                                        type="number"
-                                        id="match-home-score"
-                                        min="0"
-                                        max="99"
-                                        value="0"
-                                        required
-                                    >
-
-                                </label>
-
-                            </div>
-
-
-                            <div
-                                class="
-                                    ccfv-match-vs
-                                "
-                            >
+                            <label>
 
                                 <span>
-                                    VS
+                                    COMPETIÇÃO
                                 </span>
-
-                            </div>
-
-
-                            <div
-                                class="
-                                    ccfv-match-side
-                                "
-                            >
-
-                                <span
-                                    class="
-                                        ccfv-match-side__label
-                                    "
-                                >
-                                    FORA
-                                </span>
-
 
                                 <select
-                                    id="match-away-player"
+                                    id="match-competition"
                                 >
 
-                                    <option value="">
-                                        Selecione o jogador
+                                    <option
+                                        value="BRASILEIRAO"
+                                    >
+                                        BRASILEIRÃO
+                                    </option>
+
+                                    <option
+                                        value="NIGHT_CUP"
+                                    >
+                                        NIGHT CUP
                                     </option>
 
                                 </select>
 
+                            </label>
+
+
+                            <label>
+
+                                <span>
+                                    RODADA / FASE
+                                </span>
+
+                                <select
+                                    id="match-stage"
+                                ></select>
+
+                            </label>
+
+
+                            <div
+                                class="
+                                    ccfv-match-side-grid
+                                "
+                            >
 
                                 <div
                                     class="
-                                        ccfv-match-side__info
+                                        ccfv-match-side
                                     "
                                 >
 
-                                    <span>
-                                        TIME
+                                    <span
+                                        class="
+                                            ccfv-match-side__label
+                                        "
+                                    >
+                                        CASA
                                     </span>
 
-                                    <strong
-                                        id="match-away-team"
-                                    >
-                                        TIME A DEFINIR
-                                    </strong>
+
+                                    <select
+                                        id="match-home-player"
+                                    ></select>
+
+
+                                    <label>
+
+                                        <span>
+                                            PLACAR
+                                        </span>
+
+                                        <input
+                                            type="number"
+                                            id="match-home-score"
+                                            min="0"
+                                            value="0"
+                                        >
+
+                                    </label>
 
                                 </div>
 
 
                                 <div
                                     class="
-                                        ccfv-match-side__elo
+                                        ccfv-match-vs
                                     "
                                 >
 
                                     <span>
-                                        ELO ATUAL
+                                        VS
                                     </span>
-
-                                    <strong
-                                        id="match-away-elo"
-                                    >
-                                        ELO —
-                                    </strong>
 
                                 </div>
 
 
-                                <label>
+                                <div
+                                    class="
+                                        ccfv-match-side
+                                    "
+                                >
 
-                                    <span>
-                                        PLACAR
+                                    <span
+                                        class="
+                                            ccfv-match-side__label
+                                        "
+                                    >
+                                        FORA
                                     </span>
 
-                                    <input
-                                        type="number"
-                                        id="match-away-score"
-                                        min="0"
-                                        max="99"
-                                        value="0"
-                                        required
-                                    >
 
-                                </label>
+                                    <select
+                                        id="match-away-player"
+                                    ></select>
+
+
+                                    <label>
+
+                                        <span>
+                                            PLACAR
+                                        </span>
+
+                                        <input
+                                            type="number"
+                                            id="match-away-score"
+                                            min="0"
+                                            value="0"
+                                        >
+
+                                    </label>
+
+                                </div>
 
                             </div>
 
-                        </div>
 
-
-                        <label>
-
-                            <span>
-                                DATA E HORA DA PARTIDA
-                            </span>
-
-                            <input
-                                type="datetime-local"
-                                id="match-played-at"
-                                required
+                            <button
+                                type="submit"
+                                id="match-submit"
+                                class="
+                                    ccfv-admin-button
+                                    ccfv-admin-button--primary
+                                "
                             >
+                                REGISTRAR RESULTADO
+                            </button>
 
-                        </label>
+                        </form>
 
+                    </div>
+
+
+                    <div>
 
                         <div
+                            id="admin-matches-list"
+                        ></div>
+
+                        <div
+                            id="admin-matches-empty"
                             class="
-                                ccfv-match-admin-warning
+                                ccfv-admin-empty
                             "
                         >
-
-                            <span>
-                                ELO AUTOMÁTICO
-                            </span>
-
-                            <p>
-                                O resultado atualizará
-                                automaticamente os
-                                indicadores da partida.
-                            </p>
-
-                        </div>
-
-
-                        <button
-                            type="submit"
-                            id="match-submit"
-                            class="
-                                ccfv-admin-button
-                                ccfv-admin-button--primary
-                                ccfv-match-submit
-                            "
-                        >
-                            REGISTRAR RESULTADO
-                        </button>
-
-                    </form>
-
-                </article>
-
-
-                <article
-                    class="
-                        ccfv-admin-panel
-                        ccfv-match-history-panel
-                    "
-                >
-
-                    <div
-                        class="
-                            ccfv-admin-panel__heading
-                        "
-                    >
-
-                        <div>
-
-                            <span>
-                                MATCH CENTER
-                            </span>
-
-                            <h2>
-                                ÚLTIMAS
-                                <strong>
-                                    PARTIDAS.
-                                </strong>
-                            </h2>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="
-                            ccfv-match-admin-list
-                        "
-                        id="admin-matches-list"
-                    ></div>
-
-
-                    <div
-                        class="
-                            ccfv-admin-empty
-                        "
-                        id="admin-matches-empty"
-                    >
-
-                        <div>
-                            00
-                        </div>
-
-                        <strong>
                             NENHUMA PARTIDA REGISTRADA.
-                        </strong>
-
-                        <span>
-                            As partidas finalizadas
-                            aparecerão aqui.
-                        </span>
+                        </div>
 
                     </div>
 
-                </article>
+                </div>
 
             </div>
 
@@ -3194,66 +1605,11 @@
 
                     <p>
                         Classificação oficial,
-                        rodada e desempenho dos
-                        20 clubes.
+                        rodada e desempenho dos 20 clubes.
                     </p>
 
                 </div>
 
-
-                <div
-                    class="
-                        ccfv-brasileirao-controls
-                    "
-                    style="
-                        display:flex;
-                        align-items:flex-end;
-                        gap:10px;
-                        flex-wrap:wrap;
-                    "
-                >
-
-                    <label
-                        class="
-                            ccfv-brasileirao-control
-                        "
-                    >
-
-                        <span>
-                            VISUALIZAR ATÉ
-                        </span>
-
-
-                        <select
-                            id="brasileirao-round"
-                        ></select>
-
-                    </label>
-
-
-                    <button
-                        type="button"
-                        id="brasileirao-refresh"
-                        class="
-                            ccfv-admin-button
-                            ccfv-admin-button--primary
-                        "
-                    >
-                        ATUALIZAR
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <div
-                class="
-                    ccfv-brasileirao-round-info
-                "
-                id="brasileirao-current-round"
-            >
-                CLASSIFICAÇÃO APÓS A RODADA 01
             </div>
 
 
@@ -3270,49 +1626,52 @@
                     "
                 >
 
-                    <span>POS</span>
-                    <span>CLUBE</span>
-                    <span>J</span>
-                    <span>V</span>
-                    <span>E</span>
-                    <span>D</span>
-                    <span>GP</span>
-                    <span>GC</span>
-                    <span>SG</span>
-                    <span>PTS</span>
+                    <span>
+                        POS
+                    </span>
+
+                    <span>
+                        CLUBE
+                    </span>
+
+                    <span>
+                        J
+                    </span>
+
+                    <span>
+                        V
+                    </span>
+
+                    <span>
+                        E
+                    </span>
+
+                    <span>
+                        D
+                    </span>
+
+                    <span>
+                        GP
+                    </span>
+
+                    <span>
+                        GC
+                    </span>
+
+                    <span>
+                        SG
+                    </span>
+
+                    <span>
+                        PTS
+                    </span>
 
                 </div>
 
 
                 <div
                     id="brasileirao-standings"
-                    class="
-                        ccfv-brasileirao-table
-                    "
                 ></div>
-
-
-                <div
-                    id="brasileirao-empty"
-                    class="
-                        ccfv-admin-empty
-                    "
-                >
-
-                    <div>
-                        00
-                    </div>
-
-                    <strong>
-                        CLASSIFICAÇÃO VAZIA.
-                    </strong>
-
-                    <span>
-                        Os 20 clubes serão
-                        carregados do Supabase.
-                    </span>
-
-                </div>
 
             </div>
 
@@ -3327,7 +1686,6 @@
             class="ccfv-admin-section"
             id="section-night"
         >
-
 
             <div class="ccfv-admin-heading">
 
@@ -3354,286 +1712,42 @@
             </div>
 
 
-            <div class="ccfv-night-wrap">
-
-
-                <!-- STATUS -->
-
-                <div
-                    class="
-                        ccfv-night-statusbar
-                    "
-                >
-
-                    <div
-                        class="
-                            ccfv-night-status
-                        "
-                    >
-
-                        <i></i>
-
-                        <div>
-
-                            <strong
-                                id="night-cup-status"
-                            >
-                                SETUP
-                            </strong>
-
-                            <small>
-                                NIGHT CUP #01
-                            </small>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="
-                            ccfv-night-actions
-                        "
-                    >
-
-                        <button
-                            type="button"
-                            class="
-                                ccfv-admin-button
-                            "
-                            id="night-reset"
-                        >
-                            RESETAR COPA
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- =================================================
-                     PARTICIPANTES
-                     ================================================= -->
+            <div
+                class="
+                    ccfv-admin-panel
+                "
+            >
 
                 <div
+                    id="night-player-grid"
+                ></div>
+
+
+                <button
+                    type="button"
+                    id="night-create"
                     class="
-                        ccfv-night-setup
+                        ccfv-admin-button
+                        ccfv-admin-button--primary
                     "
                 >
+                    CRIAR CHAVE
+                </button>
 
-                    <div
-                        class="
-                            ccfv-night-setup__heading
-                        "
-                    >
-
-                        <div>
-
-                            <span>
-                                CONFIGURAÇÃO
-                            </span>
-
-                            <strong>
-                                8 PARTICIPANTES
-                            </strong>
-
-                            <small>
-                                Selecione oito jogadores
-                                inscritos na Night Cup.
-                            </small>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="
-                            ccfv-night-player-grid
-                        "
-                        id="night-player-grid"
-                    >
-
-                        <!-- JS PREENCHE -->
-
-                    </div>
-
-
-                    <div
-                        class="
-                            ccfv-night-setup__footer
-                        "
-                    >
-
-                        <div
-                            class="
-                                ccfv-night-setup__message
-                            "
-                            id="night-setup-message"
-                        >
-                            Selecione 8 jogadores para
-                            criar o chaveamento.
-                        </div>
-
-
-                        <button
-                            type="button"
-                            class="
-                                ccfv-admin-button
-                                ccfv-admin-button--primary
-                            "
-                            id="night-create"
-                        >
-                            CRIAR CHAVE
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- =================================================
-                     CHAVE
-                     ================================================= -->
 
                 <div
-                    class="
-                        ccfv-night-bracket
-                    "
-                >
+                    id="night-quarterfinals"
+                ></div>
 
-
-                    <!-- QUARTAS -->
-
-                    <div
-                        class="
-                            ccfv-night-round
-                        "
-                    >
-
-                        <div
-                            class="
-                                ccfv-night-round__header
-                            "
-                        >
-
-                            <span>
-                                QUARTAS DE FINAL
-                            </span>
-
-                            <small>
-                                04 PARTIDAS
-                            </small>
-
-                        </div>
-
-
-                        <div
-                            class="
-                                ccfv-night-games
-                            "
-                            id="night-quarterfinals"
-                        ></div>
-
-                    </div>
-
-
-                    <!-- SEMIS -->
-
-                    <div
-                        class="
-                            ccfv-night-round
-                        "
-                    >
-
-                        <div
-                            class="
-                                ccfv-night-round__header
-                            "
-                        >
-
-                            <span>
-                                SEMIFINAIS
-                            </span>
-
-                            <small>
-                                02 PARTIDAS
-                            </small>
-
-                        </div>
-
-
-                        <div
-                            class="
-                                ccfv-night-games
-                            "
-                            id="night-semifinals"
-                        ></div>
-
-                    </div>
-
-
-                    <!-- FINAL -->
-
-                    <div
-                        class="
-                            ccfv-night-round
-                        "
-                    >
-
-                        <div
-                            class="
-                                ccfv-night-round__header
-                            "
-                        >
-
-                            <span>
-                                FINAL
-                            </span>
-
-                            <small>
-                                01 PARTIDA
-                            </small>
-
-                        </div>
-
-
-                        <div
-                            class="
-                                ccfv-night-games
-                            "
-                            id="night-final"
-                        ></div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- CAMPEÃO -->
 
                 <div
-                    class="
-                        ccfv-night-champion
-                    "
-                    id="night-champion"
-                >
+                    id="night-semifinals"
+                ></div>
 
-                    <span>
-                        CAMPEÃO DA NIGHT CUP #01
-                    </span>
 
-                    <strong
-                        id="night-champion-name"
-                    >
-                        —
-                    </strong>
-
-                    <small>
-                        TÍTULO OFICIAL DA COMPETIÇÃO
-                    </small>
-
-                </div>
+                <div
+                    id="night-final"
+                ></div>
 
             </div>
 
@@ -3645,7 +1759,9 @@
              ================================================= -->
 
         <section
-            class="ccfv-admin-section"
+            class="
+                ccfv-admin-section
+            "
             id="section-ranking"
         >
 
@@ -3665,9 +1781,116 @@
                     </h1>
 
                     <p>
-                        Visão administrativa do Elo,
-                        posições e líderes.
+                        Ranking oficial alimentado
+                        automaticamente pelos resultados.
                     </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="ranking-refresh"
+                    class="
+                        ccfv-admin-button
+                        ccfv-admin-button--primary
+                    "
+                >
+                    ATUALIZAR
+                </button>
+
+            </div>
+
+
+            <div
+                class="
+                    ccfv-ranking-meta
+                "
+            >
+
+                <strong>
+                    CLASSIFICAÇÃO GERAL
+                </strong>
+
+                <span
+                    id="ranking-total"
+                >
+                    0 JOGADORES
+                </span>
+
+            </div>
+
+
+            <div
+                class="
+                    ccfv-ranking-toolbar
+                "
+            >
+
+                <label
+                    class="
+                        ccfv-ranking-search
+                    "
+                >
+
+                    <span>
+                        BUSCAR JOGADOR
+                    </span>
+
+                    <input
+                        type="search"
+                        id="ranking-search"
+                        placeholder="Nome ou Instagram..."
+                    >
+
+                </label>
+
+
+                <div
+                    class="
+                        ccfv-ranking-filters
+                    "
+                >
+
+                    <button
+                        type="button"
+                        class="is-active"
+                        data-rank-filter="ALL"
+                    >
+                        TODOS
+                    </button>
+
+
+                    <button
+                        type="button"
+                        data-rank-filter="INICIANTE"
+                    >
+                        INICIANTE
+                    </button>
+
+
+                    <button
+                        type="button"
+                        data-rank-filter="AMADOR"
+                    >
+                        AMADOR
+                    </button>
+
+
+                    <button
+                        type="button"
+                        data-rank-filter="PROFISSIONAL"
+                    >
+                        PROFISSIONAL
+                    </button>
+
+
+                    <button
+                        type="button"
+                        data-rank-filter="LENDA"
+                    >
+                        LENDA
+                    </button>
 
                 </div>
 
@@ -3676,22 +1899,81 @@
 
             <div
                 class="
-                    ccfv-admin-coming
+                    ccfv-ranking-table
                 "
             >
 
-                <span>
-                    AUTOMÁTICO
-                </span>
+                <div
+                    class="
+                        ccfv-ranking-head
+                    "
+                >
 
-                <strong>
-                    ELO + RANKING
-                </strong>
+                    <span>
+                        POS
+                    </span>
 
-                <p>
-                    O ranking público será alimentado
-                    pelos jogadores e resultados.
-                </p>
+                    <span>
+                        JOGADOR
+                    </span>
+
+                    <span>
+                        ELO
+                    </span>
+
+                    <span>
+                        J
+                    </span>
+
+                    <span>
+                        V
+                    </span>
+
+                    <span>
+                        E
+                    </span>
+
+                    <span>
+                        D
+                    </span>
+
+                    <span>
+                        TÍT.
+                    </span>
+
+                    <span>
+                        NÍVEL
+                    </span>
+
+                </div>
+
+
+                <div
+                    id="ranking-table"
+                ></div>
+
+
+                <div
+                    class="
+                        ccfv-admin-empty
+                    "
+                    id="ranking-empty"
+                >
+
+                    <div>
+                        №
+                    </div>
+
+                    <strong>
+                        RANKING VAZIO.
+                    </strong>
+
+                    <span>
+                        Os jogadores aparecerão
+                        automaticamente após o cadastro.
+                    </span>
+
+                </div>
 
             </div>
 
@@ -3722,64 +2004,7 @@
                         </strong>
                     </h1>
 
-                    <p>
-                        Parâmetros gerais da operação.
-                    </p>
-
                 </div>
-
-            </div>
-
-
-            <div
-                class="
-                    ccfv-admin-settings-grid
-                "
-            >
-
-                <article
-                    class="ccfv-admin-setting"
-                >
-
-                    <span>
-                        TEMPORADA
-                    </span>
-
-                    <strong>
-                        SEASON 01
-                    </strong>
-
-                </article>
-
-
-                <article
-                    class="ccfv-admin-setting"
-                >
-
-                    <span>
-                        ELO INICIAL
-                    </span>
-
-                    <strong>
-                        0
-                    </strong>
-
-                </article>
-
-
-                <article
-                    class="ccfv-admin-setting"
-                >
-
-                    <span>
-                        BASE
-                    </span>
-
-                    <strong>
-                        SUPABASE
-                    </strong>
-
-                </article>
 
             </div>
 
@@ -3924,108 +2149,20 @@
                 </label>
 
 
-                <div
-                    class="
-                        ccfv-admin-form-photo
-                    "
-                >
+                <label>
 
-                    <div>
+                    <span>
+                        ELO INICIAL
+                    </span>
 
-                        <span>
-                            ELO INICIAL
-                        </span>
-
-                        <small>
-                            Todo jogador começa
-                            com 0 Elo.
-                        </small>
-
-                    </div>
-
-
-                    <strong
-                        style="
-                            margin-top:10px;
-                            color:#43df91;
-                            font-size:20px;
-                            font-weight:950;
-                        "
-                    >
-                        0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <div
-                class="
-                    ccfv-competition-selector
-                "
-            >
-
-                <span
-                    class="
-                        ccfv-competition-selector__title
-                    "
-                >
-                    FOTO DO JOGADOR
-                </span>
-
-
-                <div
-                    class="
-                        ccfv-photo-upload
-                    "
-                >
-
-                    <div
-                        class="
-                            ccfv-photo-preview
-                        "
-                        id="player-photo-preview"
-                    >
-                        FOTO
-                    </div>
-
-
-                    <div
-                        class="
-                            ccfv-photo-upload__body
-                        "
+                    <input
+                        type="number"
+                        id="player-elo"
+                        value="0"
+                        min="0"
                     >
 
-                        <label
-                            for="player-photo-file"
-                            class="
-                                ccfv-photo-upload__button
-                            "
-                        >
-                            + SELECIONAR FOTO
-                        </label>
-
-
-                        <input
-                            type="file"
-                            id="player-photo-file"
-                            class="ccfv-hidden-file"
-                            accept="
-                                image/png,
-                                image/jpeg,
-                                image/webp
-                            "
-                        >
-
-
-                        <small>
-                            JPG, PNG ou WEBP.
-                        </small>
-
-                    </div>
-
-                </div>
+                </label>
 
             </div>
 
@@ -4054,9 +2191,6 @@
                     <label
                         class="
                             ccfv-competition-check
-                        "
-                        id="
-                            competition-brasileirao-label
                         "
                     >
 
@@ -4096,9 +2230,6 @@
                         class="
                             ccfv-competition-check
                         "
-                        id="
-                            competition-night-label
-                        "
                     >
 
                         <input
@@ -4131,178 +2262,6 @@
                         </span>
 
                     </label>
-
-                </div>
-
-
-                <div
-                    class="
-                        ccfv-competition-config
-                    "
-                    id="brasileirao-config"
-                >
-
-                    <span
-                        class="
-                            ccfv-competition-config__label
-                        "
-                    >
-                        TIME QUE VAI REPRESENTAR
-                    </span>
-
-
-                    <select
-                        id="brasileirao-team"
-                    >
-
-                        <option value="">
-                            Selecione o clube
-                        </option>
-
-                        <option>
-                            ATHLETICO-PR
-                        </option>
-
-                        <option>
-                            ATLÉTICO-MG
-                        </option>
-
-                        <option>
-                            BAHIA
-                        </option>
-
-                        <option>
-                            BOTAFOGO
-                        </option>
-
-                        <option>
-                            BRAGANTINO
-                        </option>
-
-                        <option>
-                            CHAPECOENSE
-                        </option>
-
-                        <option>
-                            CORINTHIANS
-                        </option>
-
-                        <option>
-                            CORITIBA
-                        </option>
-
-                        <option>
-                            CRUZEIRO
-                        </option>
-
-                        <option>
-                            FLAMENGO
-                        </option>
-
-                        <option>
-                            FLUMINENSE
-                        </option>
-
-                        <option>
-                            GRÊMIO
-                        </option>
-
-                        <option>
-                            INTERNACIONAL
-                        </option>
-
-                        <option>
-                            MIRASSOL
-                        </option>
-
-                        <option>
-                            PALMEIRAS
-                        </option>
-
-                        <option>
-                            REMO
-                        </option>
-
-                        <option>
-                            SANTOS
-                        </option>
-
-                        <option>
-                            SÃO PAULO
-                        </option>
-
-                        <option>
-                            VASCO
-                        </option>
-
-                        <option>
-                            VITÓRIA
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div
-                    class="
-                        ccfv-competition-config
-                    "
-                    id="night-config"
-                >
-
-                    <span
-                        class="
-                            ccfv-competition-config__label
-                        "
-                    >
-                        TIME DO JOGADOR
-                    </span>
-
-
-                    <input
-                        type="text"
-                        id="night-team"
-                        placeholder="Nome do time"
-                    >
-
-                </div>
-
-            </div>
-
-
-            <div
-                class="
-                    ccfv-admin-preview
-                "
-            >
-
-                <div>
-
-                    <span>
-                        INSÍGNIA AUTOMÁTICA
-                    </span>
-
-                    <strong
-                        id="player-rank-preview"
-                    >
-                        INICIANTE
-                    </strong>
-
-                </div>
-
-
-                <div>
-
-                    <span>
-                        ELO
-                    </span>
-
-                    <strong
-                        id="player-elo-preview"
-                    >
-                        0
-                    </strong>
 
                 </div>
 
@@ -4348,13 +2307,15 @@
      ===================================================== -->
 
 <div
-    class="ccfv-admin-toast"
+    class="
+        ccfv-admin-toast
+    "
     id="admin-toast"
 ></div>
 
 
 <!-- =====================================================
-     JAVASCRIPT
+     SCRIPTS
      ===================================================== -->
 
 <script
@@ -4383,6 +2344,12 @@
 
 <script
     src="/admin/js/night.js"
+    defer
+></script>
+
+
+<script
+    src="/admin/js/ranking.js"
     defer
 ></script>
 
