@@ -1,6 +1,5 @@
 /* =========================================================
-   CCFV // RANKING UI LIVE
-   CAMADA VISUAL DO RANKING
+   CCFV // LIVE DATA ENGINE
    ========================================================= */
 
 (() => {
@@ -9,24 +8,81 @@
 
 
     /* =====================================================
-       ESTADO
+       CONFIG
        ===================================================== */
 
-    let currentPlatform =
-        "all";
+    const TABLES = {
 
-    let currentSearch =
-        "";
+        players:
+            "players",
 
-    let updateTimer =
-        null;
+        playerCompetitions:
+            "player_competitions",
 
-    let observer =
-        null;
+        matches:
+            "matches",
+
+        night:
+            "night_cup_matches",
+
+        ranking:
+            "ccfv_ranking"
+
+    };
+
+
+    const REALTIME_TABLES = [
+
+        "players",
+
+        "player_competitions",
+
+        "matches",
+
+        "night_cup_matches"
+
+    ];
 
 
     /* =====================================================
-       HELPERS
+       ESTADO
+       ===================================================== */
+
+    const state = {
+
+        players: [],
+
+        playerCompetitions: [],
+
+        matches: [],
+
+        nightMatches: [],
+
+        ranking: [],
+
+        updatedAt: null
+
+    };
+
+
+    let supabaseClient =
+        null;
+
+
+    let channel =
+        null;
+
+
+    let refreshTimer =
+        null;
+
+
+    let refreshing =
+        false;
+
+
+    /* =====================================================
+       UTILITÁRIOS
        ===================================================== */
 
     function escapeHTML(
@@ -60,6 +116,17 @@
     }
 
 
+    function number(
+        value
+    ) {
+
+        return Number(
+            value || 0
+        );
+
+    }
+
+
     function normalize(
         value
     ) {
@@ -67,218 +134,28 @@
         return String(
             value || ""
         )
-            .trim()
-            .toLowerCase();
-
-    }
-
-
-    function getPlayers() {
-
-        if (
-            window.CCFVLive &&
-            Array.isArray(
-                window.CCFVLive.ranking
-            ) &&
-            window.CCFVLive.ranking.length
-        ) {
-
-            return window.CCFVLive.ranking;
-
-        }
-
-
-        if (
-            window.CCFVRanking &&
-            Array.isArray(
-                window.CCFVRanking.players
+            .normalize(
+                "NFD"
             )
-        ) {
-
-            return window.CCFVRanking.players;
-
-        }
-
-
-        return [];
-
-    }
-
-
-    function getRank(
-        elo
-    ) {
-
-        if (
-            window.CCFVRanking &&
-            typeof
-                window.CCFVRanking.getRankByPoints ===
-                "function"
-        ) {
-
-            return window.CCFVRanking.getRankByPoints(
-                elo
-            );
-
-        }
-
-
-        const value =
-            Number(
-                elo || 0
-            );
-
-
-        if (
-            value >=
-            3000
-        ) {
-
-            return {
-
-                key:
-                    "legend",
-
-                name:
-                    "LENDA"
-
-            };
-
-        }
-
-
-        if (
-            value >=
-            2000
-        ) {
-
-            return {
-
-                key:
-                    "professional",
-
-                name:
-                    "PROFISSIONAL"
-
-            };
-
-        }
-
-
-        if (
-            value >=
-            1000
-        ) {
-
-            return {
-
-                key:
-                    "amateur",
-
-                name:
-                    "AMADOR"
-
-            };
-
-        }
-
-
-        return {
-
-            key:
-                "beginner",
-
-            name:
-                "INICIANTE"
-
-        };
-
-    }
-
-
-    function getStats(
-        player
-    ) {
-
-        const wins =
-            Number(
-                player?.wins ||
-                0
-            );
-
-
-        const draws =
-            Number(
-                player?.draws ||
-                0
-            );
-
-
-        const losses =
-            Number(
-                player?.losses ||
-                0
-            );
-
-
-        const games =
-            Number(
-                player?.matches ??
-                (
-                    wins +
-                    draws +
-                    losses
-                )
-            );
-
-
-        const titles =
-            Number(
-                player?.titles ||
-                0
-            );
-
-
-        const winRate =
-            games > 0
-                ? Math.round(
-                    (
-                        wins /
-                        games
-                    ) *
-                    100
-                )
-                : 0;
-
-
-        return {
-
-            wins,
-
-            draws,
-
-            losses,
-
-            games,
-
-            titles,
-
-            winRate
-
-        };
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            )
+            .trim()
+            .toUpperCase();
 
     }
 
 
     /* =====================================================
-       ESTILO VISUAL
+       CSS DO RANKING
        ===================================================== */
 
-    function injectStyles() {
+    function injectRankingStyles() {
 
         if (
             document.querySelector(
-                "#ccfv-ranking-ui-final-style"
+                "#ccfv-ranking-live-styles"
             )
         ) {
 
@@ -294,61 +171,60 @@
 
 
         style.id =
-            "ccfv-ranking-ui-final-style";
+            "ccfv-ranking-live-styles";
 
 
         style.textContent = `
 
-            /* =================================================
-               TOPO DO RANKING
-               ================================================= */
+            /* =============================================
+               TABELA PRINCIPAL DO RANKING
+               ============================================= */
 
-            #ranking-feature-player {
-
-                width:
-                    100% !important;
-
-                min-height:
-                    360px !important;
-
-                display:
-                    block !important;
-
-                overflow:
-                    hidden !important;
-
-                box-sizing:
-                    border-box !important;
-
-            }
-
-
-            .ccfv-live-feature {
+            #ranking-list {
 
                 width:
                     100%;
 
+                max-width:
+                    100%;
+
+                overflow:
+                    hidden;
+
+            }
+
+
+            #ranking-list
+            .ccfv-ranking-row {
+
+                width:
+                    100% !important;
+
+                min-width:
+                    0 !important;
+
                 min-height:
-                    360px;
+                    78px;
 
                 display:
-                    grid;
+                    grid !important;
 
                 grid-template-columns:
-                    320px
-                    minmax(
-                        0,
-                        1fr
-                    );
-
-                gap:
-                    36px;
+                    70px
+                    minmax(280px, 1fr)
+                    110px
+                    100px
+                    80px
+                    150px;
 
                 align-items:
                     center;
 
-                padding:
-                    28px;
+                gap:
+                    16px;
+
+                overflow:
+                    hidden;
 
                 box-sizing:
                     border-box;
@@ -356,55 +232,71 @@
             }
 
 
-            .ccfv-live-feature__photo-wrap {
+            /* =============================================
+               FOTO DA LINHA
+               ============================================= */
+
+            #ranking-list
+            .ccfv-ranking-row__photo {
 
                 width:
-                    280px;
+                    52px !important;
+
+                min-width:
+                    52px !important;
+
+                max-width:
+                    52px !important;
 
                 height:
-                    300px;
+                    52px !important;
+
+                min-height:
+                    52px !important;
+
+                max-height:
+                    52px !important;
 
                 overflow:
-                    hidden;
+                    hidden !important;
+
+                display:
+                    flex !important;
+
+                align-items:
+                    center !important;
+
+                justify-content:
+                    center !important;
+
+                flex-shrink:
+                    0 !important;
 
                 border-radius:
-                    18px;
+                    10px;
 
-                border:
-                    1px solid
-                    rgba(
-                        67,
-                        223,
-                        145,
-                        .22
-                    );
+                position:
+                    relative;
 
-                background:
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .025
-                    );
-
-                box-shadow:
-                    0 30px 80px
-                    rgba(
-                        0,
-                        0,
-                        0,
-                        .35
-                    );
+                box-sizing:
+                    border-box;
 
             }
 
 
-            .ccfv-live-feature__photo {
+            #ranking-list
+            .ccfv-ranking-row__photo img {
 
                 width:
                     100% !important;
 
                 height:
+                    100% !important;
+
+                min-width:
+                    100% !important;
+
+                min-height:
                     100% !important;
 
                 max-width:
@@ -414,24 +306,26 @@
                     100% !important;
 
                 display:
-                    block;
+                    block !important;
 
                 object-fit:
-                    cover;
+                    cover !important;
 
                 object-position:
-                    center;
+                    center !important;
 
             }
 
 
-            .ccfv-live-feature__photo-placeholder {
+            /* =============================================
+               IDENTIDADE DO JOGADOR
+               ============================================= */
 
-                width:
-                    100%;
+            #ranking-list
+            .ccfv-ranking-row__player {
 
-                height:
-                    100%;
+                min-width:
+                    0;
 
                 display:
                     flex;
@@ -439,294 +333,108 @@
                 align-items:
                     center;
 
-                justify-content:
-                    center;
+                gap:
+                    12px;
 
-                font-size:
-                    56px;
-
-                font-weight:
-                    950;
-
-                color:
-                    #43df91;
-
-                background:
-                    radial-gradient(
-                        circle,
-                        rgba(
-                            67,
-                            223,
-                            145,
-                            .12
-                        ),
-                        transparent
-                    );
+                overflow:
+                    hidden;
 
             }
 
 
-            .ccfv-live-feature__content {
+            #ranking-list
+            .ccfv-ranking-row__player-info {
 
                 min-width:
                     0;
 
+                overflow:
+                    hidden;
+
             }
 
 
-            .ccfv-live-feature__eyebrow {
+            #ranking-list
+            .ccfv-ranking-row__player-info strong {
 
                 display:
                     block;
 
-                margin-bottom:
-                    10px;
+                overflow:
+                    hidden;
 
-                font-size:
-                    11px;
+                white-space:
+                    nowrap;
 
-                font-weight:
-                    900;
-
-                letter-spacing:
-                    .14em;
-
-                color:
-                    #43df91;
+                text-overflow:
+                    ellipsis;
 
             }
 
 
-            .ccfv-live-feature__position {
+            #ranking-list
+            .ccfv-ranking-row__player-info span {
 
                 display:
-                    inline-flex;
+                    block;
 
-                align-items:
-                    center;
+                overflow:
+                    hidden;
+
+                white-space:
+                    nowrap;
+
+                text-overflow:
+                    ellipsis;
+
+            }
+
+
+            /* =============================================
+               FEATURE / PRIMEIRO COLOCADO
+               ============================================= */
+
+            #ranking-feature-player
+            .ccfv-ranking-leader__visual {
+
+                max-width:
+                    240px;
+
+                overflow:
+                    hidden;
+
+            }
+
+
+            #ranking-feature-player
+            .ccfv-ranking-leader__photo {
+
+                width:
+                    220px !important;
 
                 height:
-                    28px;
+                    260px !important;
 
-                padding:
-                    0 10px;
+                max-width:
+                    220px !important;
 
-                border-radius:
-                    999px;
-
-                border:
-                    1px solid
-                    rgba(
-                        67,
-                        223,
-                        145,
-                        .25
-                    );
-
-                color:
-                    #43df91;
-
-                font-size:
-                    11px;
-
-                font-weight:
-                    900;
-
-                margin-bottom:
-                    14px;
-
-            }
-
-
-            .ccfv-live-feature__name {
-
-                margin:
-                    0;
-
-                font-size:
-                    clamp(
-                        34px,
-                        4vw,
-                        64px
-                    );
-
-                line-height:
-                    .92;
-
-                font-weight:
-                    950;
-
-                letter-spacing:
-                    -.045em;
-
-                color:
-                    #fff;
-
-            }
-
-
-            .ccfv-live-feature__instagram {
-
-                margin-top:
-                    8px;
-
-                color:
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .45
-                    );
-
-                font-weight:
-                    700;
-
-            }
-
-
-            .ccfv-live-feature__rank {
-
-                margin-top:
-                    18px;
-
-                color:
-                    #43df91;
-
-                font-size:
-                    14px;
-
-                font-weight:
-                    900;
-
-                letter-spacing:
-                    .08em;
-
-            }
-
-
-            .ccfv-live-feature__stats {
-
-                margin-top:
-                    24px;
-
-                display:
-                    grid;
-
-                grid-template-columns:
-                    repeat(
-                        6,
-                        minmax(
-                            70px,
-                            1fr
-                        )
-                    );
-
-                gap:
-                    8px;
-
-            }
-
-
-            .ccfv-live-feature__stat {
-
-                min-width:
-                    0;
-
-                padding:
-                    13px;
-
-                border:
-                    1px solid
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .07
-                    );
-
-                border-radius:
-                    10px;
-
-                background:
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .025
-                    );
-
-            }
-
-
-            .ccfv-live-feature__stat span {
-
-                display:
-                    block;
-
-                font-size:
-                    9px;
-
-                font-weight:
-                    900;
-
-                letter-spacing:
-                    .08em;
-
-                color:
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .32
-                    );
-
-            }
-
-
-            .ccfv-live-feature__stat strong {
-
-                display:
-                    block;
-
-                margin-top:
-                    5px;
-
-                font-size:
-                    18px;
-
-                font-weight:
-                    950;
-
-                color:
-                    #fff;
-
-            }
-
-
-            /* =================================================
-               PLAYER CARDS
-               ================================================= */
-
-            #player-card-grid
-            .ccfv-player-card-preview__photo-frame {
-
-                position:
-                    relative !important;
+                max-height:
+                    260px !important;
 
                 overflow:
                     hidden !important;
 
+                border-radius:
+                    16px;
+
+                box-sizing:
+                    border-box;
+
             }
 
 
-            #player-card-grid
-            .ccfv-player-card-preview__player-photo {
-
-                position:
-                    absolute !important;
-
-                inset:
-                    0 !important;
+            #ranking-feature-player
+            .ccfv-ranking-leader__photo img {
 
                 width:
                     100% !important;
@@ -749,462 +457,39 @@
                 display:
                     block !important;
 
-                z-index:
-                    2 !important;
-
             }
 
 
-            #player-card-grid
-            .ccfv-player-card-preview--occupied
-            .ccfv-player-card-preview__photo-mark,
-
-            #player-card-grid
-            .ccfv-player-card-preview--occupied
-            .ccfv-player-card-preview__silhouette,
-
-            #player-card-grid
-            .ccfv-player-card-preview--occupied
-            .ccfv-player-card-preview__target {
-
-                display:
-                    none !important;
-
-            }
-
-
-            /* =================================================
-               RANKING COMPLETO
-               ================================================= */
-
-            .ccfv-live-complete-ranking {
-
-                width:
-                    100%;
-
-                overflow:
-                    hidden;
-
-                border:
-                    1px solid
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .07
-                    );
-
-                border-radius:
-                    16px;
-
-                background:
-                    rgba(
-                        0,
-                        0,
-                        0,
-                        .22
-                    );
-
-            }
-
-
-            .ccfv-live-complete-head {
-
-                display:
-                    grid;
-
-                grid-template-columns:
-                    70px
-                    minmax(
-                        260px,
-                        1fr
-                    )
-                    100px
-                    90px
-                    70px
-                    70px
-                    70px
-                    80px
-                    140px;
-
-                gap:
-                    12px;
-
-                align-items:
-                    center;
-
-                padding:
-                    15px 18px;
-
-                border-bottom:
-                    1px solid
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .08
-                    );
-
-                color:
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .35
-                    );
-
-                font-size:
-                    10px;
-
-                font-weight:
-                    900;
-
-                letter-spacing:
-                    .08em;
-
-            }
-
-
-            .ccfv-live-complete-row {
-
-                display:
-                    grid;
-
-                grid-template-columns:
-                    70px
-                    minmax(
-                        260px,
-                        1fr
-                    )
-                    100px
-                    90px
-                    70px
-                    70px
-                    70px
-                    80px
-                    140px;
-
-                gap:
-                    12px;
-
-                align-items:
-                    center;
-
-                min-height:
-                    76px;
-
-                padding:
-                    0 18px;
-
-                border-bottom:
-                    1px solid
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .055
-                    );
-
-                box-sizing:
-                    border-box;
-
-            }
-
-
-            .ccfv-live-complete-row:last-child {
-
-                border-bottom:
-                    0;
-
-            }
-
-
-            .ccfv-live-complete-row:hover {
-
-                background:
-                    rgba(
-                        67,
-                        223,
-                        145,
-                        .035
-                    );
-
-            }
-
-
-            .ccfv-live-complete-player {
-
-                min-width:
-                    0;
-
-                display:
-                    flex;
-
-                align-items:
-                    center;
-
-                gap:
-                    12px;
-
-            }
-
-
-            .ccfv-live-complete-photo {
-
-                width:
-                    48px;
-
-                min-width:
-                    48px;
-
-                height:
-                    48px;
-
-                overflow:
-                    hidden;
-
-                display:
-                    flex;
-
-                align-items:
-                    center;
-
-                justify-content:
-                    center;
-
-                border-radius:
-                    10px;
-
-                background:
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .04
-                    );
-
-                border:
-                    1px solid
-                    rgba(
-                        67,
-                        223,
-                        145,
-                        .18
-                    );
-
-            }
-
-
-            .ccfv-live-complete-photo img {
-
-                width:
-                    100%;
-
-                height:
-                    100%;
-
-                max-width:
-                    100%;
-
-                max-height:
-                    100%;
-
-                object-fit:
-                    cover;
-
-                display:
-                    block;
-
-            }
-
-
-            .ccfv-live-complete-info {
-
-                min-width:
-                    0;
-
-                overflow:
-                    hidden;
-
-            }
-
-
-            .ccfv-live-complete-info strong {
-
-                display:
-                    block;
-
-                overflow:
-                    hidden;
-
-                white-space:
-                    nowrap;
-
-                text-overflow:
-                    ellipsis;
-
-                color:
-                    #fff;
-
-            }
-
-
-            .ccfv-live-complete-info small {
-
-                display:
-                    block;
-
-                margin-top:
-                    3px;
-
-                overflow:
-                    hidden;
-
-                white-space:
-                    nowrap;
-
-                text-overflow:
-                    ellipsis;
-
-                color:
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .35
-                    );
-
-            }
-
-
-            .ccfv-live-complete-elo {
-
-                color:
-                    #43df91;
-
-                font-weight:
-                    950;
-
-            }
-
-
-            .ccfv-live-complete-win {
-
-                color:
-                    #43df91;
-
-                font-weight:
-                    900;
-
-            }
-
-
-            .ccfv-live-complete-loss {
-
-                color:
-                    #e15d5d;
-
-                font-weight:
-                    900;
-
-            }
-
-
-            .ccfv-live-complete-rank {
-
-                font-weight:
-                    900;
-
-            }
-
-
-            .ccfv-live-complete-empty {
-
-                padding:
-                    60px 20px;
-
-                text-align:
-                    center;
-
-                color:
-                    rgba(
-                        255,
-                        255,
-                        255,
-                        .45
-                    );
-
-            }
-
+            /* =============================================
+               RESPONSIVO
+               ============================================= */
 
             @media (
                 max-width: 900px
             ) {
 
-                .ccfv-live-feature {
+                #ranking-list
+                .ccfv-ranking-row {
 
                     grid-template-columns:
-                        1fr;
-
-                }
-
-
-                .ccfv-live-feature__photo-wrap {
-
-                    width:
-                        min(
-                            240px,
-                            100%
-                        );
-
-                    height:
-                        260px;
-
-                    margin:
-                        0 auto;
-
-                }
-
-
-                .ccfv-live-feature__stats {
-
-                    grid-template-columns:
-                        repeat(
-                            3,
-                            1fr
-                        );
-
-                }
-
-
-                .ccfv-live-complete-head,
-                .ccfv-live-complete-row {
-
-                    grid-template-columns:
-                        50px
+                        55px
                         minmax(
                             180px,
                             1fr
                         )
                         80px
-                        70px
                         80px;
 
                 }
 
 
-                .ccfv-live-complete-head span:nth-child(5),
-                .ccfv-live-complete-head span:nth-child(6),
-                .ccfv-live-complete-head span:nth-child(7),
-                .ccfv-live-complete-head span:nth-child(8),
-
-                .ccfv-live-complete-row > span:nth-child(5),
-                .ccfv-live-complete-row > span:nth-child(6),
-                .ccfv-live-complete-row > span:nth-child(7),
-                .ccfv-live-complete-row > span:nth-child(8) {
+                #ranking-list
+                .ccfv-ranking-row__elo,
+                #ranking-list
+                .ccfv-ranking-row__rank {
 
                     display:
-                        none;
+                        none !important;
 
                 }
 
@@ -1221,424 +506,332 @@
 
 
     /* =====================================================
-       TOPO REAL
+       SUPABASE
        ===================================================== */
 
-    function renderFeature() {
-
-        const container =
-            document.querySelector(
-                "#ranking-feature-player"
-            );
-
+    async function getSupabase() {
 
         if (
-            !container
+            supabaseClient
         ) {
 
-            return;
+            return supabaseClient;
 
         }
 
 
-        const players =
-            getPlayers()
-                .slice()
-                .sort(
-                    (
-                        a,
-                        b
-                    ) =>
-                        Number(
-                            b.elo ||
-                            0
-                        ) -
-                        Number(
-                            a.elo ||
-                            0
-                        )
+        if (
+            window.CCFVAuth &&
+            typeof
+                window.CCFVAuth.getClient ===
+                "function"
+        ) {
+
+            supabaseClient =
+                await
+                    window.CCFVAuth
+                        .getClient();
+
+            return supabaseClient;
+
+        }
+
+
+        try {
+
+            const authScript =
+                document.querySelector(
+                    'script[src="/admin/js/auth.js"]'
                 );
 
 
-        const leader =
-            players[0] ||
-            null;
+            if (
+                !authScript
+            ) {
+
+                const script =
+                    document.createElement(
+                        "script"
+                    );
 
 
-        if (
-            !leader
+                script.src =
+                    "/admin/js/auth.js";
+
+                script.defer =
+                    true;
+
+
+                document.head.appendChild(
+                    script
+                );
+
+            }
+
+        }
+
+        catch (
+            error
         ) {
 
-            container.innerHTML = `
-
-                <div
-                    class="
-                        ccfv-live-feature
-                    "
-                >
-
-                    <div
-                        class="
-                            ccfv-live-feature__photo-wrap
-                        "
-                    >
-
-                        <div
-                            class="
-                                ccfv-live-feature__photo-placeholder
-                            "
-                        >
-                            CCFV
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="
-                            ccfv-live-feature__content
-                        "
-                    >
-
-                        <span
-                            class="
-                                ccfv-live-feature__eyebrow
-                            "
-                        >
-                            CCFV // OFFICIAL LEADER
-                        </span>
-
-
-                        <span
-                            class="
-                                ccfv-live-feature__position
-                            "
-                        >
-                            #01 · AGUARDANDO
-                        </span>
-
-
-                        <h2
-                            class="
-                                ccfv-live-feature__name
-                            "
-                        >
-                            NENHUM LÍDER
-                        </h2>
-
-
-                        <div
-                            class="
-                                ccfv-live-feature__rank
-                            "
-                        >
-                            O RANKING AINDA ESTÁ VAZIO.
-                        </div>
-
-                    </div>
-
-                </div>
-
-            `;
-
-            return;
+            console.error(
+                "CCFV // AUTH LOAD:",
+                error
+            );
 
         }
 
 
-        const rank =
-            getRank(
-                leader.elo
-            );
+        const started =
+            Date.now();
 
 
-        const stats =
-            getStats(
-                leader
-            );
-
-
-        const photo =
-            leader.photo_url ||
-            leader.photo ||
-            "";
-
-
-        const instagram =
-            leader.instagram
-                ? `@${String(
-                    leader.instagram
-                ).replace(
-                    /^@/,
-                    ""
-                )}`
-                : "SEM INSTAGRAM";
-
-
-        const initials =
-            String(
-                leader.name ||
-                "CCFV"
+        while (
+            !(
+                window.CCFVAuth &&
+                typeof
+                    window.CCFVAuth.getClient ===
+                    "function"
             )
-                .trim()
-                .slice(
-                    0,
-                    2
-                )
-                .toUpperCase();
+        ) {
+
+            if (
+                Date.now() -
+                started >
+                10000
+            ) {
+
+                break;
+
+            }
 
 
-        const photoHTML =
-            photo
-                ? `
-                    <img
-                        class="
-                            ccfv-live-feature__photo
-                        "
-                        src="${escapeHTML(
-                            photo
-                        )}"
-                        alt="${escapeHTML(
-                            leader.name
-                        )}"
-                    >
-                `
-                : `
-                    <div
-                        class="
-                            ccfv-live-feature__photo-placeholder
-                        "
-                    >
-                        ${escapeHTML(
-                            initials
-                        )}
-                    </div>
-                `;
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        100
+                    )
+            );
+
+        }
 
 
-        container.innerHTML = `
+        if (
+            window.CCFVAuth &&
+            typeof
+                window.CCFVAuth.getClient ===
+                "function"
+        ) {
 
-            <div
-                class="
-                    ccfv-live-feature
-                "
-            >
+            supabaseClient =
+                await
+                    window.CCFVAuth
+                        .getClient();
 
-                <div
-                    class="
-                        ccfv-live-feature__photo-wrap
-                    "
-                >
+            return supabaseClient;
 
-                    ${photoHTML}
-
-                </div>
+        }
 
 
-                <div
-                    class="
-                        ccfv-live-feature__content
-                    "
-                >
-
-                    <span
-                        class="
-                            ccfv-live-feature__eyebrow
-                        "
-                    >
-                        CCFV // OFFICIAL LEADER
-                    </span>
-
-
-                    <span
-                        class="
-                            ccfv-live-feature__position
-                        "
-                    >
-                        #01 · ${escapeHTML(
-                            rank.name
-                        )}
-                    </span>
-
-
-                    <h2
-                        class="
-                            ccfv-live-feature__name
-                        "
-                    >
-                        ${escapeHTML(
-                            leader.name
-                        )}
-                    </h2>
-
-
-                    <div
-                        class="
-                            ccfv-live-feature__instagram
-                        "
-                    >
-                        ${escapeHTML(
-                            instagram
-                        )}
-                    </div>
-
-
-                    <div
-                        class="
-                            ccfv-live-feature__rank
-                        "
-                    >
-                        ${escapeHTML(
-                            leader.platform ||
-                            "PLATAFORMA"
-                        )}
-                        ·
-                        ${escapeHTML(
-                            rank.name
-                        )}
-                    </div>
-
-
-                    <div
-                        class="
-                            ccfv-live-feature__stats
-                        "
-                    >
-
-                        <div
-                            class="
-                                ccfv-live-feature__stat
-                            "
-                        >
-
-                            <span>
-                                ELO
-                            </span>
-
-                            <strong>
-                                ${Number(
-                                    leader.elo ||
-                                    0
-                                )}
-                            </strong>
-
-                        </div>
-
-
-                        <div
-                            class="
-                                ccfv-live-feature__stat
-                            "
-                        >
-
-                            <span>
-                                JOGOS
-                            </span>
-
-                            <strong>
-                                ${stats.games}
-                            </strong>
-
-                        </div>
-
-
-                        <div
-                            class="
-                                ccfv-live-feature__stat
-                            "
-                        >
-
-                            <span>
-                                V
-                            </span>
-
-                            <strong>
-                                ${stats.wins}
-                            </strong>
-
-                        </div>
-
-
-                        <div
-                            class="
-                                ccfv-live-feature__stat
-                            "
-                        >
-
-                            <span>
-                                E
-                            </span>
-
-                            <strong>
-                                ${stats.draws}
-                            </strong>
-
-                        </div>
-
-
-                        <div
-                            class="
-                                ccfv-live-feature__stat
-                            "
-                        >
-
-                            <span>
-                                D
-                            </span>
-
-                            <strong>
-                                ${stats.losses}
-                            </strong>
-
-                        </div>
-
-
-                        <div
-                            class="
-                                ccfv-live-feature__stat
-                            "
-                        >
-
-                            <span>
-                                WIN
-                            </span>
-
-                            <strong>
-                                ${String(
-                                    stats.winRate
-                                ).padStart(
-                                    2,
-                                    "0"
-                                )}%
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
+        throw new Error(
+            "Supabase não está disponível."
+        );
 
     }
 
 
     /* =====================================================
-       PLAYER CARDS
+       LOADERS
        ===================================================== */
 
-    function syncPlayerCards() {
+    async function loadPlayers(
+        client
+    ) {
 
-        const grid =
-            document.querySelector(
-                "#player-card-grid"
-            );
+        const {
+            data,
+            error
+        } =
+            await client
+                .from(
+                    TABLES.players
+                )
+                .select(
+                    "*"
+                );
 
 
         if (
-            !grid
+            error
+        ) {
+
+            throw error;
+
+        }
+
+
+        return data || [];
+
+    }
+
+
+    async function loadPlayerCompetitions(
+        client
+    ) {
+
+        const {
+            data,
+            error
+        } =
+            await client
+                .from(
+                    TABLES.playerCompetitions
+                )
+                .select(
+                    "*"
+                );
+
+
+        if (
+            error
+        ) {
+
+            throw error;
+
+        }
+
+
+        return data || [];
+
+    }
+
+
+    async function loadMatches(
+        client
+    ) {
+
+        const {
+            data,
+            error
+        } =
+            await client
+                .from(
+                    TABLES.matches
+                )
+                .select(
+                    "*"
+                )
+                .order(
+                    "played_at",
+                    {
+                        ascending:
+                            false
+                    }
+                );
+
+
+        if (
+            error
+        ) {
+
+            throw error;
+
+        }
+
+
+        return data || [];
+
+    }
+
+
+    async function loadNightMatches(
+        client
+    ) {
+
+        const {
+            data,
+            error
+        } =
+            await client
+                .from(
+                    TABLES.night
+                )
+                .select(
+                    "*"
+                )
+                .order(
+                    "match_number",
+                    {
+                        ascending:
+                            true
+                    }
+                );
+
+
+        if (
+            error
+        ) {
+
+            throw error;
+
+        }
+
+
+        return data || [];
+
+    }
+
+
+    async function loadRanking(
+        client
+    ) {
+
+        const {
+            data,
+            error
+        } =
+            await client
+                .from(
+                    TABLES.ranking
+                )
+                .select(
+                    "*"
+                )
+                .order(
+                    "ranking_position",
+                    {
+                        ascending:
+                            true
+                    }
+                );
+
+
+        if (
+            error
+        ) {
+
+            throw error;
+
+        }
+
+
+        return data || [];
+
+    }
+
+
+    /* =====================================================
+       RANKING
+       ===================================================== */
+
+    function syncRanking() {
+
+        injectRankingStyles();
+
+
+        if (
+            !window.CCFVRanking
         ) {
 
             return;
@@ -1646,11 +839,313 @@
         }
 
 
-        const cards =
-            Array.from(
-                grid.querySelectorAll(
-                    ".ccfv-player-card-preview"
+        if (
+            Array.isArray(
+                window.CCFVRanking.players
+            )
+        ) {
+
+            window.CCFVRanking.players.splice(
+                0,
+                window.CCFVRanking.players.length,
+                ...state.ranking
+            );
+
+        }
+
+
+        if (
+            typeof
+                window.CCFVRanking.refresh ===
+                "function"
+        ) {
+
+            window.CCFVRanking.refresh();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       BRASILEIRÃO
+       ===================================================== */
+
+    function buildBrazilResults() {
+
+        const api =
+            window.CCFVBrasileirao;
+
+        if (
+            !api ||
+            !api.config
+        ) {
+            return [];
+        }
+
+        const teams =
+            Array.isArray(api.config.teams)
+                ? api.config.teams
+                : [];
+
+        const fixtures =
+            typeof api.getFixtures === "function"
+                ? api.getFixtures()
+                : [];
+
+        function resolveTeam(value) {
+
+            const normalized =
+                normalize(value);
+
+            const numeric =
+                Number(value);
+
+            if (
+                Number.isFinite(numeric) &&
+                numeric > 0
+            ) {
+                const byId =
+                    teams.find(
+                        team =>
+                            Number(team.id) ===
+                            numeric
+                    );
+
+                if (byId) {
+                    return byId;
+                }
+            }
+
+            return (
+                teams.find(
+                    team =>
+                        normalize(team.name) ===
+                        normalized
+                ) ||
+                teams.find(
+                    team =>
+                        normalize(team.shortName) ===
+                        normalized
+                ) ||
+                null
+            );
+        }
+
+        function resolveFixture(
+            round,
+            homeId,
+            awayId
+        ) {
+
+            if (!Array.isArray(fixtures)) {
+                return null;
+            }
+
+            return (
+                fixtures.find(
+                    fixture =>
+                        Number(fixture.round) ===
+                            Number(round) &&
+                        Number(fixture.home) ===
+                            Number(homeId) &&
+                        Number(fixture.away) ===
+                            Number(awayId)
+                ) ||
+                fixtures.find(
+                    fixture =>
+                        Number(fixture.round) ===
+                            Number(round) &&
+                        Number(fixture.home) ===
+                            Number(awayId) &&
+                        Number(fixture.away) ===
+                            Number(homeId)
+                ) ||
+                null
+            );
+        }
+
+        return state.matches
+            .filter(
+                match =>
+                    normalize(match.competition) ===
+                    "BRASILEIRAO"
+            )
+            .filter(
+                match =>
+                    normalize(match.status) ===
+                    "FINAL"
+            )
+            .map(
+                match => {
+
+                    const round =
+                        number(match.round_number);
+
+                    const home =
+                        resolveTeam(match.home_team);
+
+                    const away =
+                        resolveTeam(match.away_team);
+
+                    if (
+                        round <= 0 ||
+                        !home ||
+                        !away
+                    ) {
+                        console.warn(
+                            "CCFV // BRASILEIRÃO: não foi possível resolver os clubes",
+                            {
+                                home:
+                                    match.home_team,
+                                away:
+                                    match.away_team,
+                                round
+                            }
+                        );
+
+                        return null;
+                    }
+
+                    const fixture =
+                        resolveFixture(
+                            round,
+                            home.id,
+                            away.id
+                        );
+
+                    const matchNumber =
+                        fixture
+                            ? number(fixture.match)
+                            : 0;
+
+                    if (
+                        matchNumber <= 0
+                    ) {
+                        console.warn(
+                            "CCFV // BRASILEIRÃO: fixture não encontrado",
+                            {
+                                round,
+                                home:
+                                    home.name,
+                                away:
+                                    away.name
+                            }
+                        );
+                    }
+
+                    return {
+                        round,
+                        match:
+                            matchNumber,
+                        home:
+                            home.name,
+                        away:
+                            away.name,
+                        homeTeam:
+                            Number(home.id),
+                        awayTeam:
+                            Number(away.id),
+                        homeGoals:
+                            number(match.home_score),
+                        awayGoals:
+                            number(match.away_score),
+                        date:
+                            match.played_at ||
+                            match.created_at ||
+                            "",
+                        matchId:
+                            match.id
+                    };
+                }
+            )
+            .filter(Boolean);
+
+    }
+
+
+    function syncBrasileirao() {
+
+        const api =
+            window.CCFVBrasileirao;
+
+
+        if (
+            !api ||
+            !api.config
+        ) {
+
+            return;
+
+        }
+
+
+        const results =
+            buildBrazilResults();
+
+
+        if (
+            Array.isArray(
+                api.config.results
+            )
+        ) {
+
+            api.config.results.splice(
+                0,
+                api.config.results.length,
+                ...results
+            );
+
+        }
+
+
+        const rounds =
+            results
+                .map(
+                    result =>
+                        number(
+                            result.round
+                        )
                 )
+                .filter(
+                    round =>
+                        round > 0
+                );
+
+
+        api.config.currentRound =
+            rounds.length
+                ? Math.min(
+                    38,
+                    Math.max(
+                        ...rounds
+                    ) + 1
+                )
+                : 1;
+
+
+        if (
+            typeof
+                api.refresh ===
+                "function"
+        ) {
+
+            api.refresh();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       HOME
+       ===================================================== */
+
+    function syncHome() {
+
+        const cards =
+            document.querySelectorAll(
+                ".ccfv-data-card"
             );
 
 
@@ -1664,1014 +1159,184 @@
         }
 
 
-        const players =
-            getPlayers()
-                .slice()
-                .sort(
-                    (
-                        a,
-                        b
-                    ) =>
-                        Number(
-                            b.elo ||
-                            0
-                        ) -
-                        Number(
-                            a.elo ||
-                            0
-                        )
-                );
-
-
-        const rankKeys = [
-
-            "beginner",
-
-            "amateur",
-
-            "professional",
-
-            "legend"
-
-        ];
-
-
-        rankKeys.forEach(
-            (
-                rankKey,
-                index
-            ) => {
-
-                const card =
-                    cards[index];
-
-
-                if (
-                    !card
-                ) {
-
-                    return;
-
-                }
-
-
-                const player =
-                    players.find(
-                        item =>
-                            getRank(
-                                item.elo
-                            ).key ===
-                            rankKey
-                    );
-
-
-                const photoFrame =
-                    card.querySelector(
-                        ".ccfv-player-card-preview__photo-frame"
-                    );
-
-
-                const identity =
-                    card.querySelector(
-                        ".ccfv-player-card-preview__identity"
-                    );
-
-
-                if (
-                    !photoFrame ||
-                    !identity
-                ) {
-
-                    return;
-
-                }
-
-
-                /*
-                 * FOTO EXISTENTE
-                 */
-
-                const oldPhoto =
-                    photoFrame.querySelector(
-                        ".ccfv-player-card-preview__player-photo"
-                    );
-
-
-                if (
-                    oldPhoto
-                ) {
-
-                    oldPhoto.remove();
-
-                }
-
-
-                /*
-                 * FOTO REAL
-                 */
-
-                const photo =
-                    player?.photo_url ||
-                    player?.photo ||
-                    "";
-
-
-                if (
-                    photo
-                ) {
-
-                    const img =
-                        document.createElement(
-                            "img"
-                        );
-
-
-                    img.className =
-                        "ccfv-player-card-preview__player-photo";
-
-
-                    img.src =
-                        photo;
-
-
-                    img.alt =
-                        player?.name ||
-                        "Jogador";
-
-
-                    img.loading =
-                        "lazy";
-
-
-                    photoFrame.appendChild(
-                        img
-                    );
-
-                }
-
-
-                /*
-                 * IDENTIDADE
-                 */
-
-                const rankElement =
-                    identity.querySelector(
-                        ":scope > span"
-                    );
-
-
-                const nameElement =
-                    identity.querySelector(
-                        ":scope > strong"
-                    );
-
-
-                const subElement =
-                    identity.querySelector(
-                        ":scope > small"
-                    );
-
-
-                const rank =
-                    getRank(
-                        player?.elo ||
-                        (
-                            rankKey ===
-                            "beginner"
-                                ? 0
-                                : rankKey ===
-                                    "amateur"
-                                    ? 1000
-                                    : rankKey ===
-                                        "professional"
-                                        ? 2000
-                                        : 3000
-                        )
-                    );
-
-
-                if (
-                    rankElement
-                ) {
-
-                    rankElement.textContent =
-                        rank.name;
-
-                }
-
-
-                if (
-                    nameElement
-                ) {
-
-                    nameElement.textContent =
-                        player
-                            ? player.name
-                            : "PLAYER";
-
-                }
-
-
-                if (
-                    subElement
-                ) {
-
-                    subElement.textContent =
-                        player
-                            ? (
-                                player.instagram
-                                    ? `@${String(
-                                        player.instagram
-                                    ).replace(
-                                        /^@/,
-                                        ""
-                                    )}`
-                                    : "COMPETIDOR CCFV"
-                            )
-                            : "NOME DO COMPETIDOR";
-
-                }
-
-
-                /*
-                 * METRICAS
-                 */
-
-                const metricBoxes =
-                    card.querySelectorAll(
-                        ".ccfv-player-card-preview__metrics > div"
-                    );
-
-
-                if (
-                    metricBoxes.length >=
-                    3
-                ) {
-
-                    const stats =
-                        getStats(
-                            player
-                        );
-
-
-                    const eloElement =
-                        metricBoxes[0]
-                            .querySelector(
-                                "strong"
-                            );
-
-
-                    const posElement =
-                        metricBoxes[1]
-                            .querySelector(
-                                "strong"
-                            );
-
-
-                    const winElement =
-                        metricBoxes[2]
-                            .querySelector(
-                                "strong"
-                            );
-
-
-                    if (
-                        eloElement
-                    ) {
-
-                        eloElement.textContent =
-                            player
-                                ? String(
-                                    Number(
-                                        player.elo ||
-                                        0
-                                    )
-                                ).padStart(
-                                    4,
-                                    "0"
-                                )
-                                : "0000";
-
-                    }
-
-
-                    if (
-                        posElement
-                    ) {
-
-                        posElement.textContent =
-                            player
-                                ? `#${String(
-                                    Number(
-                                        player.ranking_position ||
-                                        0
-                                    )
-                                ).padStart(
-                                    3,
-                                    "0"
-                                )}`
-                                : "#000";
-
-                    }
-
-
-                    if (
-                        winElement
-                    ) {
-
-                        winElement.textContent =
-                            player
-                                ? `${String(
-                                    stats.winRate
-                                ).padStart(
-                                    2,
-                                    "0"
-                                )}%`
-                                : "00%";
-
-                    }
-
-                }
-
-
-                /*
-                 * CLASSE OCUPADO
-                 */
-
-                card.classList.toggle(
-                    "ccfv-player-card-preview--occupied",
-                    Boolean(
-                        player
-                    )
-                );
-
-
-                card.classList.toggle(
-                    "ccfv-player-card-preview--empty",
-                    !player
-                );
-
-
-                [
-                    ".ccfv-player-card-preview__photo-mark",
-
-                    ".ccfv-player-card-preview__silhouette",
-
-                    ".ccfv-player-card-preview__target"
-
-                ]
-                    .forEach(
-                        selector => {
-
-                            card.querySelectorAll(
-                                selector
-                            )
-                                .forEach(
-                                    element => {
-
-                                        element.style.display =
-                                            player &&
-                                            photo
-                                                ? "none"
-                                                : "";
-
-                                    }
-                                );
-
-                        }
-                    );
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       ENCONTRAR BLOCO DO RANKING COMPLETO
-       ===================================================== */
-
-    function getCompleteContainer() {
-
-        const direct =
-            document.querySelector(
-                "[data-ranking-list]"
+        const brazilMatches =
+            state.matches.filter(
+                match =>
+                    normalize(
+                        match.competition
+                    ) ===
+                    "BRASILEIRAO"
             );
 
 
-        if (
-            direct
-        ) {
-
-            return {
-
-                list:
-                    direct,
-
-                empty:
-                    document.querySelector(
-                        "[data-ranking-empty]"
-                    )
-
-            };
-
-        }
-
-
-        /*
-         * Estrutura antiga do site:
-         * encontra o bloco visual que
-         * contém "NENHUM COMPETIDOR".
-         */
-
-        const candidates =
-            Array.from(
-                document.querySelectorAll(
-                    "div, section, article"
-                )
-            )
-                .filter(
-                    element =>
-                        (
-                            element.textContent ||
-                            ""
-                        )
-                            .toUpperCase()
-                            .includes(
-                                "NENHUM COMPETIDOR CADASTRADO"
-                            )
-                )
-                .filter(
-                    element =>
-                        element.children.length >
-                        0
-                );
-
-
-        if (
-            !candidates.length
-        ) {
-
-            return null;
-
-        }
-
-
-        /*
-         * Usa o candidato menor que
-         * realmente representa o estado vazio.
-         */
-
-        const empty =
-            candidates.sort(
-                (
-                    a,
-                    b
-                ) =>
-                    a.textContent.length -
-                    b.textContent.length
-            )[0];
-
-
-        const parent =
-            empty.parentElement;
-
-
-        if (
-            !parent
-        ) {
-
-            return null;
-
-        }
-
-
-        let list =
-            parent.querySelector(
-                ".ccfv-live-complete-generated"
-            );
-
-
-        if (
-            !list
-        ) {
-
-            list =
-                document.createElement(
-                    "div"
-                );
-
-
-            list.className =
-                "ccfv-live-complete-generated";
-
-
-            empty.insertAdjacentElement(
-                "afterend",
-                list
-            );
-
-        }
-
-
-        empty.style.display =
-            "none";
-
-
-        return {
-
-            list,
-
-            empty
-
-        };
-
-    }
-
-
-    /* =====================================================
-       RANKING COMPLETO
-       ===================================================== */
-
-    function renderCompleteRanking() {
-
-        const container =
-            getCompleteContainer();
-
-
-        if (
-            !container ||
-            !container.list
-        ) {
-
-            return;
-
-        }
-
-
-        const players =
-            getPlayers()
-                .filter(
-                    player => {
-
-                        const matchesPlatform =
-                            currentPlatform ===
-                            "all"
-                                ? true
-                                : normalize(
-                                    player.platform
-                                ) ===
-                                    normalize(
-                                        currentPlatform
-                                    );
-
-
-                        const term =
-                            normalize(
-                                currentSearch
-                            );
-
-
-                        const name =
-                            normalize(
-                                player.name
-                            );
-
-
-                        const instagram =
-                            normalize(
-                                player.instagram
-                            );
-
-
-                        const matchesSearch =
-                            !term ||
-                            name.includes(
-                                term
-                            ) ||
-                            instagram.includes(
-                                term
-                            );
-
-
-                        return (
-                            matchesPlatform &&
-                            matchesSearch
-                        );
-
-                    }
-                )
-                .slice()
-                .sort(
-                    (
-                        a,
-                        b
-                    ) =>
-                        Number(
-                            b.elo ||
-                            0
-                        ) -
-                        Number(
-                            a.elo ||
-                            0
-                        )
-                );
-
-
-        if (
-            !players.length
-        ) {
-
-            container.list.innerHTML = `
-
-                <div
-                    class="
-                        ccfv-live-complete-empty
-                    "
-                >
-                    NENHUM COMPETIDOR ENCONTRADO.
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
-        const head = `
-
-            <div
-                class="
-                    ccfv-live-complete-head
-                "
-            >
-
-                <span>
-                    POS
-                </span>
-
-                <span>
-                    JOGADOR
-                </span>
-
-                <span>
-                    PLATAFORMA
-                </span>
-
-                <span>
-                    ELO
-                </span>
-
-                <span>
-                    J
-                </span>
-
-                <span>
-                    V
-                </span>
-
-                <span>
-                    E
-                </span>
-
-                <span>
-                    D
-                </span>
-
-                <span>
-                    NÍVEL
-                </span>
-
-            </div>
-
-        `;
-
-
-        const rows =
-            players
+        const rounds =
+            brazilMatches
                 .map(
-                    (
-                        player,
-                        index
-                    ) => {
-
-                        const stats =
-                            getStats(
-                                player
-                            );
-
-
-                        const rank =
-                            getRank(
-                                player.elo
-                            );
-
-
-                        const photo =
-                            player.photo_url ||
-                            player.photo ||
-                            "";
-
-
-                        const initials =
-                            String(
-                                player.name ||
-                                "CCFV"
-                            )
-                                .trim()
-                                .slice(
-                                    0,
-                                    2
-                                )
-                                .toUpperCase();
-
-
-                        const photoHTML =
-                            photo
-                                ? `
-                                    <img
-                                        src="${escapeHTML(
-                                            photo
-                                        )}"
-                                        alt="${escapeHTML(
-                                            player.name
-                                        )}"
-                                        loading="lazy"
-                                    >
-                                `
-                                : `
-                                    <span>
-                                        ${escapeHTML(
-                                            initials
-                                        )}
-                                    </span>
-                                `;
-
-
-                        return `
-
-                            <div
-                                class="
-                                    ccfv-live-complete-row
-                                "
-                            >
-
-                                <span>
-                                    ${String(
-                                        index + 1
-                                    ).padStart(
-                                        2,
-                                        "0"
-                                    )}
-                                </span>
-
-
-                                <div
-                                    class="
-                                        ccfv-live-complete-player
-                                    "
-                                >
-
-                                    <div
-                                        class="
-                                            ccfv-live-complete-photo
-                                        "
-                                    >
-
-                                        ${photoHTML}
-
-                                    </div>
-
-
-                                    <div
-                                        class="
-                                            ccfv-live-complete-info
-                                        "
-                                    >
-
-                                        <strong>
-                                            ${escapeHTML(
-                                                player.name ||
-                                                "COMPETIDOR"
-                                            )}
-                                        </strong>
-
-
-                                        <small>
-                                            ${
-                                                player.instagram
-                                                    ? `@${escapeHTML(
-                                                        String(
-                                                            player.instagram
-                                                        ).replace(
-                                                            /^@/,
-                                                            ""
-                                                        )
-                                                    )}`
-                                                    : "SEM INSTAGRAM"
-                                            }
-                                        </small>
-
-                                    </div>
-
-                                </div>
-
-
-                                <span>
-                                    ${escapeHTML(
-                                        player.platform ||
-                                        "—"
-                                    )}
-                                </span>
-
-
-                                <span
-                                    class="
-                                        ccfv-live-complete-elo
-                                    "
-                                >
-                                    ${Number(
-                                        player.elo ||
-                                        0
-                                    )}
-                                </span>
-
-
-                                <span>
-                                    ${stats.games}
-                                </span>
-
-
-                                <span
-                                    class="
-                                        ccfv-live-complete-win
-                                    "
-                                >
-                                    ${stats.wins}
-                                </span>
-
-
-                                <span>
-                                    ${stats.draws}
-                                </span>
-
-
-                                <span
-                                    class="
-                                        ccfv-live-complete-loss
-                                    "
-                                >
-                                    ${stats.losses}
-                                </span>
-
-
-                                <span
-                                    class="
-                                        ccfv-live-complete-rank
-                                    "
-                                >
-                                    ${escapeHTML(
-                                        rank.name
-                                    )}
-                                </span>
-
-                            </div>
-
-                        `;
-
-                    }
+                    match =>
+                        number(
+                            match.round_number
+                        )
                 )
-                .join("");
+                .filter(
+                    round =>
+                        round > 0
+                );
 
 
-        container.list.innerHTML =
-            `
-                <div
-                    class="
-                        ccfv-live-complete-ranking
-                    "
-                >
-
-                    ${head}
-
-                    ${rows}
-
-                </div>
-            `;
-
-    }
+        const currentRound =
+            rounds.length
+                ? Math.max(
+                    ...rounds
+                )
+                : 0;
 
 
-    /* =====================================================
-       BUSCA
-       ===================================================== */
-
-    function bindSearch() {
-
-        const inputs =
-            document.querySelectorAll(
-                'input[placeholder*="Nome do jogador" i], input[placeholder*="Nome ou Instagram" i]'
+        const clubsElement =
+            cards[0].querySelector(
+                ".ccfv-data-card__number"
             );
 
 
-        inputs.forEach(
-            input => {
-
-                if (
-                    input.dataset.ccfvLiveSearch ===
-                    "true"
-                ) {
-
-                    return;
-
-                }
+        const roundsElement =
+            cards[1].querySelector(
+                ".ccfv-data-card__number"
+            );
 
 
-                input.dataset.ccfvLiveSearch =
-                    "true";
+        const matchesElement =
+            cards[2].querySelector(
+                ".ccfv-data-card__number"
+            );
 
 
-                input.addEventListener(
-                    "input",
-                    () => {
-
-                        currentSearch =
-                            input.value ||
-                            "";
+        const championElement =
+            cards[3].querySelector(
+                ".ccfv-data-card__number"
+            );
 
 
-                        renderCompleteRanking();
+        if (
+            clubsElement
+        ) {
 
-                    }
+            clubsElement.textContent =
+                "20";
+
+        }
+
+
+        if (
+            roundsElement
+        ) {
+
+            roundsElement.textContent =
+                String(
+                    currentRound
                 );
 
-            }
-        );
+        }
+
+
+        if (
+            matchesElement
+        ) {
+
+            matchesElement.textContent =
+                String(
+                    state.matches.length
+                );
+
+        }
+
+
+        const championshipFinished =
+            brazilMatches.length >=
+            380;
+
+
+        if (
+            championElement
+        ) {
+
+            championElement.textContent =
+                championshipFinished
+                    ? "1"
+                    : "0";
+
+        }
 
     }
 
 
     /* =====================================================
-       FILTROS
+       CONTADORES
        ===================================================== */
 
-    function bindFilters() {
+    function syncCounters() {
 
         document
             .querySelectorAll(
-                "[data-platform]"
+                "[data-ccfv-player-count]"
             )
             .forEach(
-                button => {
+                element => {
 
-                    if (
-                        button.dataset.ccfvFinalFilter ===
-                        "true"
-                    ) {
+                    element.textContent =
+                        String(
+                            state.players.length
+                        );
 
-                        return;
-
-                    }
-
-
-                    button.dataset.ccfvFinalFilter =
-                        "true";
+                }
+            );
 
 
-                    button.addEventListener(
-                        "click",
-                        () => {
+        document
+            .querySelectorAll(
+                "[data-ccfv-match-count]"
+            )
+            .forEach(
+                element => {
 
-                            currentPlatform =
-                                button.dataset.platform ||
-                                "all";
+                    element.textContent =
+                        String(
+                            state.matches.length
+                        );
 
-
-                            document
-                                .querySelectorAll(
-                                    "[data-platform]"
-                                )
-                                .forEach(
-                                    item => {
-
-                                        item.classList.toggle(
-                                            "is-active",
-                                            (
-                                                item.dataset.platform ||
-                                                "all"
-                                            ) ===
-                                                currentPlatform
-                                        );
-
-                                    }
-                                );
+                }
+            );
 
 
-                            renderCompleteRanking();
+        const leader =
+            state.ranking[0];
 
-                        }
-                    );
+
+        document
+            .querySelectorAll(
+                "[data-ccfv-leader]"
+            )
+            .forEach(
+                element => {
+
+                    element.textContent =
+                        leader?.name ||
+                        "A DEFINIR";
+
+                }
+            );
+
+
+        document
+            .querySelectorAll(
+                "[data-ccfv-top-elo]"
+            )
+            .forEach(
+                element => {
+
+                    element.textContent =
+                        String(
+                            leader?.elo ||
+                            0
+                        );
 
                 }
             );
@@ -2680,172 +1345,58 @@
 
 
     /* =====================================================
-       VER RANKING COMPLETO
+       ESTADO PÚBLICO
        ===================================================== */
 
-    function bindCompleteButton() {
+    function exposeState() {
 
-        const elements =
-            Array.from(
-                document.querySelectorAll(
-                    "a, button"
-                )
-            );
+        window.CCFVLive =
+            state;
 
 
-        elements.forEach(
-            element => {
+        window.dispatchEvent(
+            new CustomEvent(
+                "ccfv:live-update",
+                {
+                    detail: {
 
-                const text =
-                    (
-                        element.textContent ||
-                        ""
-                    )
-                        .replace(
-                            /\s+/g,
-                            " "
-                        )
-                        .trim()
-                        .toUpperCase();
+                        state,
 
+                        players:
+                            state.players,
 
-                if (
-                    !text.includes(
-                        "VER RANKING COMPLETO"
-                    )
-                ) {
+                        ranking:
+                            state.ranking,
 
-                    return;
+                        matches:
+                            state.matches,
 
-                }
+                        nightMatches:
+                            state.nightMatches,
 
-
-                if (
-                    element.dataset.ccfvCompleteBound ===
-                    "true"
-                ) {
-
-                    return;
-
-                }
-
-
-                element.dataset.ccfvCompleteBound =
-                    "true";
-
-
-                element.addEventListener(
-                    "click",
-                    () => {
-
-                        window.setTimeout(
-                            () => {
-
-                                const target =
-                                    Array.from(
-                                        document.querySelectorAll(
-                                            "h1, h2, h3, section, div"
-                                        )
-                                    )
-                                        .find(
-                                            item =>
-                                                (
-                                                    item.textContent ||
-                                                    ""
-                                                )
-                                                    .replace(
-                                                        /\s+/g,
-                                                        " "
-                                                    )
-                                                    .toUpperCase()
-                                                    .includes(
-                                                        "RANKING COMPLETO"
-                                                    )
-                                        );
-
-
-                                if (
-                                    target
-                                ) {
-
-                                    target.scrollIntoView(
-                                        {
-                                            behavior:
-                                                "smooth",
-
-                                            block:
-                                                "start"
-
-                                        }
-                                    );
-
-                                }
-
-                                else {
-
-                                    const href =
-                                        element.getAttribute(
-                                            "href"
-                                        );
-
-
-                                    if (
-                                        href &&
-                                        href !==
-                                        "#"
-                                    ) {
-
-                                        window.location.href =
-                                            href;
-
-                                    }
-
-                                }
-
-                            },
-                            100
-                        );
+                        playerCompetitions:
+                            state.playerCompetitions
 
                     }
-                );
 
-            }
+                }
+            )
         );
 
     }
 
 
     /* =====================================================
-       UPDATE
+       REFRESH
        ===================================================== */
 
-    function update() {
-
-        injectStyles();
-
-        renderFeature();
-
-        syncPlayerCards();
-
-        renderCompleteRanking();
-
-        bindSearch();
-
-        bindFilters();
-
-        bindCompleteButton();
-
-    }
-
-
-    /* =====================================================
-       OBSERVER
-       ===================================================== */
-
-    function observeDom() {
+    async function refresh(
+        reason =
+            "manual"
+    ) {
 
         if (
-            observer
+            refreshing
         ) {
 
             return;
@@ -2853,36 +1404,128 @@
         }
 
 
-        observer =
-            new MutationObserver(
-                () => {
-
-                    clearTimeout(
-                        updateTimer
-                    );
+        refreshing =
+            true;
 
 
-                    updateTimer =
-                        setTimeout(
-                            update,
-                            100
-                        );
+        try {
+
+            const client =
+                await getSupabase();
+
+
+            const [
+
+                players,
+
+                playerCompetitions,
+
+                matches,
+
+                nightMatches,
+
+                ranking
+
+            ] =
+                await Promise.all([
+
+                    loadPlayers(
+                        client
+                    ),
+
+                    loadPlayerCompetitions(
+                        client
+                    ),
+
+                    loadMatches(
+                        client
+                    ),
+
+                    loadNightMatches(
+                        client
+                    ),
+
+                    loadRanking(
+                        client
+                    )
+
+                ]);
+
+
+            state.players =
+                players;
+
+
+            state.playerCompetitions =
+                playerCompetitions;
+
+
+            state.matches =
+                matches;
+
+
+            state.nightMatches =
+                nightMatches;
+
+
+            state.ranking =
+                ranking;
+
+
+            state.updatedAt =
+                new Date();
+
+
+            syncRanking();
+
+            syncBrasileirao();
+
+            syncHome();
+
+            syncCounters();
+
+            exposeState();
+
+
+            console.log(
+                "%cCCFV // LIVE",
+                "color:#43df91;font-weight:900;",
+                reason,
+                {
+                    players:
+                        state.players.length,
+
+                    ranking:
+                        state.ranking.length,
+
+                    matches:
+                        state.matches.length,
+
+                    night:
+                        state.nightMatches.length
 
                 }
             );
 
+        }
 
-        observer.observe(
-            document.body,
-            {
-                childList:
-                    true,
+        catch (
+            error
+        ) {
 
-                subtree:
-                    true
+            console.error(
+                "CCFV // LIVE ERROR:",
+                error
+            );
 
-            }
-        );
+        }
+
+        finally {
+
+            refreshing =
+                false;
+
+        }
 
     }
 
@@ -2891,13 +1534,92 @@
        REALTIME
        ===================================================== */
 
-    function bindLive() {
+    function subscribeRealtime(
+        client
+    ) {
 
-        window.addEventListener(
-            "ccfv:live-update",
-            () => {
+        if (
+            channel
+        ) {
 
-                update();
+            try {
+
+                client.removeChannel(
+                    channel
+                );
+
+            }
+
+            catch (
+                error
+            ) {
+
+                console.warn(
+                    "CCFV // CHANNEL:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        channel =
+            client.channel(
+                "ccfv-live-public"
+            );
+
+
+        REALTIME_TABLES.forEach(
+            table => {
+
+                channel.on(
+                    "postgres_changes",
+                    {
+
+                        event:
+                            "*",
+
+                        schema:
+                            "public",
+
+                        table
+
+                    },
+                    () => {
+
+                        clearTimeout(
+                            refreshTimer
+                        );
+
+
+                        refreshTimer =
+                            setTimeout(
+                                () => {
+
+                                    refresh(
+                                        `realtime:${table}`
+                                    );
+
+                                },
+                                200
+                            );
+
+                    }
+                );
+
+            }
+        );
+
+
+        channel.subscribe(
+            status => {
+
+                console.log(
+                    "%cCCFV // REALTIME",
+                    "color:#43df91;font-weight:900;",
+                    status
+                );
 
             }
         );
@@ -2906,52 +1628,86 @@
 
 
     /* =====================================================
+       API
+       ===================================================== */
+
+    window.CCFVLiveAPI = {
+
+        state,
+
+        refresh,
+
+        getState:
+            () =>
+                state
+
+    };
+
+
+    /* =====================================================
        INIT
        ===================================================== */
 
-    function init() {
+    async function init() {
 
-        update();
-
-        observeDom();
-
-        bindLive();
+        injectRankingStyles();
 
 
-        /*
-         * O ranking.js renderiza algumas
-         * partes depois do carregamento.
-         * Fazemos pequenas verificações
-         * de segurança.
-         */
-
-        let attempts =
-            0;
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    150
+                )
+        );
 
 
-        const timer =
+        try {
+
+            const client =
+                await getSupabase();
+
+
+            await refresh(
+                "initial"
+            );
+
+
+            subscribeRealtime(
+                client
+            );
+
+
             window.setInterval(
                 () => {
 
-                    update();
-
-                    attempts++;
-
-
                     if (
-                        attempts >=
-                        24
+                        document.visibilityState ===
+                        "visible"
                     ) {
 
-                        window.clearInterval(
-                            timer
+                        refresh(
+                            "fallback"
                         );
 
                     }
 
                 },
-                250
+                60000
             );
+
+        }
+
+        catch (
+            error
+        ) {
+
+            console.error(
+                "CCFV // LIVE INIT ERROR:",
+                error
+            );
+
+        }
 
     }
 
