@@ -1945,70 +1945,6 @@
 
     </style>
 
-
-<style id="ccfv-competition-selection-fix">
-
-    .ccfv-competition-check {
-        position: relative;
-        transition:
-            border-color .18s ease,
-            background .18s ease,
-            box-shadow .18s ease,
-            transform .18s ease;
-    }
-
-    .ccfv-competition-check.is-selected {
-        border-color:
-            rgba(67,223,145,.75) !important;
-
-        background:
-            rgba(67,223,145,.08) !important;
-
-        box-shadow:
-            0 0 0 1px
-            rgba(67,223,145,.18),
-            0 12px 30px
-            rgba(67,223,145,.08);
-
-        transform:
-            translateY(-1px);
-    }
-
-    .ccfv-competition-check.is-selected
-    .ccfv-competition-check__box {
-        border-color:
-            #43df91 !important;
-
-        background:
-            #43df91 !important;
-    }
-
-    #brasileirao-team
-    option:disabled {
-        color:
-            rgba(255,255,255,.22);
-
-        background:
-            #07100b;
-    }
-
-    #brasileirao-team
-    option[data-team-occupied="true"] {
-        color:
-            rgba(255,255,255,.22);
-    }
-
-    #brasileirao-team.is-valid {
-        border-color:
-            rgba(67,223,145,.55) !important;
-
-        box-shadow:
-            0 0 0 1px
-            rgba(67,223,145,.12);
-    }
-
-</style>
-
 </head>
 
 
@@ -3202,6 +3138,29 @@
                         id="admin-matches-list"
                     ></div>
 
+
+                    <div
+                        class="
+                            ccfv-admin-empty
+                        "
+                        id="admin-matches-empty"
+                    >
+
+                        <div>
+                            00
+                        </div>
+
+                        <strong>
+                            NENHUMA PARTIDA REGISTRADA.
+                        </strong>
+
+                        <span>
+                            As partidas finalizadas
+                            aparecerão aqui.
+                        </span>
+
+                    </div>
+
                 </article>
 
             </div>
@@ -3227,72 +3186,133 @@
                     </span>
 
                     <h1>
-                        CLASSIFICAÇÃO
+                        CONTROLAR
                         <strong>
-                            OFICIAL.
+                            BRASILEIRÃO.
                         </strong>
                     </h1>
 
                     <p>
                         Classificação oficial,
-                        rodada atual e controle da Season.
+                        rodada e desempenho dos
+                        20 clubes.
                     </p>
+
+                </div>
+
+
+                <div
+                    class="
+                        ccfv-brasileirao-controls
+                    "
+                    style="
+                        display:flex;
+                        align-items:flex-end;
+                        gap:10px;
+                        flex-wrap:wrap;
+                    "
+                >
+
+                    <label
+                        class="
+                            ccfv-brasileirao-control
+                        "
+                    >
+
+                        <span>
+                            VISUALIZAR ATÉ
+                        </span>
+
+
+                        <select
+                            id="brasileirao-round"
+                        ></select>
+
+                    </label>
+
+
+                    <button
+                        type="button"
+                        id="brasileirao-refresh"
+                        class="
+                            ccfv-admin-button
+                            ccfv-admin-button--primary
+                        "
+                    >
+                        ATUALIZAR
+                    </button>
 
                 </div>
 
             </div>
 
 
-            <div class="ccfv-brasileirao-panel">
+            <div
+                class="
+                    ccfv-brasileirao-round-info
+                "
+                id="brasileirao-current-round"
+            >
+                CLASSIFICAÇÃO APÓS A RODADA 01
+            </div>
 
-                <div class="ccfv-brasileirao-head">
 
-                    <span>
-                        POS
-                    </span>
+            <div
+                class="
+                    ccfv-admin-panel
+                    ccfv-brasileirao-panel
+                "
+            >
 
-                    <span>
-                        CLUBE
-                    </span>
+                <div
+                    class="
+                        ccfv-brasileirao-head
+                    "
+                >
 
-                    <span>
-                        J
-                    </span>
-
-                    <span>
-                        V
-                    </span>
-
-                    <span>
-                        E
-                    </span>
-
-                    <span>
-                        D
-                    </span>
-
-                    <span>
-                        GP
-                    </span>
-
-                    <span>
-                        GC
-                    </span>
-
-                    <span>
-                        SG
-                    </span>
-
-                    <span>
-                        PTS
-                    </span>
+                    <span>POS</span>
+                    <span>CLUBE</span>
+                    <span>J</span>
+                    <span>V</span>
+                    <span>E</span>
+                    <span>D</span>
+                    <span>GP</span>
+                    <span>GC</span>
+                    <span>SG</span>
+                    <span>PTS</span>
 
                 </div>
 
 
                 <div
-                    id="admin-brasileirao-table"
+                    id="brasileirao-standings"
+                    class="
+                        ccfv-brasileirao-table
+                    "
                 ></div>
+
+
+                <div
+                    id="brasileirao-empty"
+                    class="
+                        ccfv-admin-empty
+                    "
+                >
+
+                    <div>
+                        00
+                    </div>
+
+                    <strong>
+                        CLASSIFICAÇÃO VAZIA.
+                    </strong>
+
+                    <span>
+                        Os 20 clubes serão
+                        carregados do Supabase.
+                    </span>
+
+                </div>
 
             </div>
 
@@ -3308,6 +3328,7 @@
             id="section-night"
         >
 
+
             <div class="ccfv-admin-heading">
 
                 <div>
@@ -3317,16 +3338,15 @@
                     </span>
 
                     <h1>
-                        NIGHT
+                        CONTROLAR
                         <strong>
-                            CUP.
+                            NIGHT CUP.
                         </strong>
                     </h1>
 
                     <p>
-                        Monte os oito participantes,
-                        gere o chaveamento e registre
-                        os resultados oficiais.
+                        Oito participantes,
+                        mata-mata e campeão.
                     </p>
 
                 </div>
@@ -3337,34 +3357,53 @@
             <div class="ccfv-night-wrap">
 
 
-                <div class="ccfv-night-statusbar">
+                <!-- STATUS -->
 
-                    <div class="ccfv-night-status">
+                <div
+                    class="
+                        ccfv-night-statusbar
+                    "
+                >
+
+                    <div
+                        class="
+                            ccfv-night-status
+                        "
+                    >
 
                         <i></i>
 
-                        <strong>
-                            NIGHT CUP ATIVA
-                        </strong>
+                        <div>
 
-                        <small>
-                            SEASON 01
-                        </small>
+                            <strong
+                                id="night-cup-status"
+                            >
+                                SETUP
+                            </strong>
+
+                            <small>
+                                NIGHT CUP #01
+                            </small>
+
+                        </div>
 
                     </div>
 
 
-                    <div class="ccfv-night-actions">
+                    <div
+                        class="
+                            ccfv-night-actions
+                        "
+                    >
 
                         <button
                             type="button"
                             class="
                                 ccfv-admin-button
-                                ccfv-admin-button--primary
                             "
-                            id="night-create-cup"
+                            id="night-reset"
                         >
-                            NOVA NIGHT CUP
+                            RESETAR COPA
                         </button>
 
                     </div>
@@ -3372,7 +3411,15 @@
                 </div>
 
 
-                <div class="ccfv-night-setup">
+                <!-- =================================================
+                     PARTICIPANTES
+                     ================================================= -->
+
+                <div
+                    class="
+                        ccfv-night-setup
+                    "
+                >
 
                     <div
                         class="
@@ -3383,7 +3430,7 @@
                         <div>
 
                             <span>
-                                PARTICIPANTES
+                                CONFIGURAÇÃO
                             </span>
 
                             <strong>
@@ -3404,110 +3451,10 @@
                         class="
                             ccfv-night-player-grid
                         "
+                        id="night-player-grid"
                     >
 
-                        <div class="ccfv-night-player">
-                            <span>01</span>
-                            <select
-                                id="night-player-1"
-                            >
-                                <option value="">
-                                    Selecione
-                                </option>
-                            </select>
-                            <small id="night-player-1-info"></small>
-                        </div>
-
-
-                        <div class="ccfv-night-player">
-                            <span>02</span>
-                            <select
-                                id="night-player-2"
-                            >
-                                <option value="">
-                                    Selecione
-                                </option>
-                            </select>
-                            <small id="night-player-2-info"></small>
-                        </div>
-
-
-                        <div class="ccfv-night-player">
-                            <span>03</span>
-                            <select
-                                id="night-player-3"
-                            >
-                                <option value="">
-                                    Selecione
-                                </option>
-                            </select>
-                            <small id="night-player-3-info"></small>
-                        </div>
-
-
-                        <div class="ccfv-night-player">
-                            <span>04</span>
-                            <select
-                                id="night-player-4"
-                            >
-                                <option value="">
-                                    Selecione
-                                </option>
-                            </select>
-                            <small id="night-player-4-info"></small>
-                        </div>
-
-
-                        <div class="ccfv-night-player">
-                            <span>05</span>
-                            <select
-                                id="night-player-5"
-                            >
-                                <option value="">
-                                    Selecione
-                                </option>
-                            </select>
-                            <small id="night-player-5-info"></small>
-                        </div>
-
-
-                        <div class="ccfv-night-player">
-                            <span>06</span>
-                            <select
-                                id="night-player-6"
-                            >
-                                <option value="">
-                                    Selecione
-                                </option>
-                            </select>
-                            <small id="night-player-6-info"></small>
-                        </div>
-
-
-                        <div class="ccfv-night-player">
-                            <span>07</span>
-                            <select
-                                id="night-player-7"
-                            >
-                                <option value="">
-                                    Selecione
-                                </option>
-                            </select>
-                            <small id="night-player-7-info"></small>
-                        </div>
-
-
-                        <div class="ccfv-night-player">
-                            <span>08</span>
-                            <select
-                                id="night-player-8"
-                            >
-                                <option value="">
-                                    Selecione
-                                </option>
-                            </select>
-                            <small id="night-player-8-info"></small>
-                        </div>
+                        <!-- JS PREENCHE -->
 
                     </div>
 
@@ -3535,9 +3482,9 @@
                                 ccfv-admin-button
                                 ccfv-admin-button--primary
                             "
-                            id="night-generate"
+                            id="night-create"
                         >
-                            CRIAR CHAVEAMENTO
+                            CRIAR CHAVE
                         </button>
 
                     </div>
@@ -3545,12 +3492,59 @@
                 </div>
 
 
+                <!-- =================================================
+                     CHAVE
+                     ================================================= -->
+
                 <div
-                    class="ccfv-night-bracket"
-                    id="night-bracket"
+                    class="
+                        ccfv-night-bracket
+                    "
                 >
 
-                    <div class="ccfv-night-round">
+
+                    <!-- QUARTAS -->
+
+                    <div
+                        class="
+                            ccfv-night-round
+                        "
+                    >
+
+                        <div
+                            class="
+                                ccfv-night-round__header
+                            "
+                        >
+
+                            <span>
+                                QUARTAS DE FINAL
+                            </span>
+
+                            <small>
+                                04 PARTIDAS
+                            </small>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                ccfv-night-games
+                            "
+                            id="night-quarterfinals"
+                        ></div>
+
+                    </div>
+
+
+                    <!-- SEMIS -->
+
+                    <div
+                        class="
+                            ccfv-night-round
+                        "
+                    >
 
                         <div
                             class="
@@ -3563,21 +3557,29 @@
                             </span>
 
                             <small>
-                                JOGOS 01 — 04
+                                02 PARTIDAS
                             </small>
 
                         </div>
 
 
                         <div
-                            class="ccfv-night-games"
-                            id="night-semis"
+                            class="
+                                ccfv-night-games
+                            "
+                            id="night-semifinals"
                         ></div>
 
                     </div>
 
 
-                    <div class="ccfv-night-round">
+                    <!-- FINAL -->
+
+                    <div
+                        class="
+                            ccfv-night-round
+                        "
+                    >
 
                         <div
                             class="
@@ -3590,63 +3592,46 @@
                             </span>
 
                             <small>
-                                JOGO 05
+                                01 PARTIDA
                             </small>
 
                         </div>
 
 
                         <div
-                            class="ccfv-night-games"
+                            class="
+                                ccfv-night-games
+                            "
                             id="night-final"
                         ></div>
 
                     </div>
 
-
-                    <div class="ccfv-night-round">
-
-                        <div
-                            class="
-                                ccfv-night-round__header
-                            "
-                        >
-
-                            <span>
-                                CAMPEÃO
-                            </span>
-
-                            <small>
-                                NIGHT CUP
-                            </small>
-
-                        </div>
+                </div>
 
 
-                        <div
-                            class="
-                                ccfv-night-champion
-                            "
-                            id="night-champion"
-                        >
+                <!-- CAMPEÃO -->
 
-                            <span>
-                                CAMPEÃO
-                            </span>
+                <div
+                    class="
+                        ccfv-night-champion
+                    "
+                    id="night-champion"
+                >
 
-                            <strong
-                                id="night-champion-name"
-                            >
-                                A DEFINIR
-                            </strong>
+                    <span>
+                        CAMPEÃO DA NIGHT CUP #01
+                    </span>
 
-                            <small>
-                                TÍTULO OFICIAL DA NIGHT CUP
-                            </small>
+                    <strong
+                        id="night-champion-name"
+                    >
+                        —
+                    </strong>
 
-                        </div>
-
-                    </div>
+                    <small>
+                        TÍTULO OFICIAL DA COMPETIÇÃO
+                    </small>
 
                 </div>
 
@@ -3669,20 +3654,19 @@
                 <div>
 
                     <span>
-                        CCFV // ELO + RANKING
+                        CCFV // OFFICIAL RANKING
                     </span>
 
                     <h1>
-                        RANKING
+                        CONTROLAR
                         <strong>
-                            OFICIAL.
+                            RANKING.
                         </strong>
                     </h1>
 
                     <p>
-                        A classificação é atualizada
-                        automaticamente pelos resultados
-                        oficiais.
+                        Visão administrativa do Elo,
+                        posições e líderes.
                     </p>
 
                 </div>
@@ -3691,68 +3675,23 @@
 
 
             <div
-                class="ccfv-admin-preview"
-                id="admin-ranking-preview"
+                class="
+                    ccfv-admin-coming
+                "
             >
 
-                <div>
+                <span>
+                    AUTOMÁTICO
+                </span>
 
-                    <span>
-                        JOGADORES
-                    </span>
+                <strong>
+                    ELO + RANKING
+                </strong>
 
-                    <strong
-                        id="admin-ranking-players"
-                    >
-                        00
-                    </strong>
-
-                </div>
-
-
-                <div>
-
-                    <span>
-                        MAIOR ELO
-                    </span>
-
-                    <strong
-                        id="admin-ranking-elo"
-                    >
-                        0000
-                    </strong>
-
-                </div>
-
-
-                <div>
-
-                    <span>
-                        LÍDER
-                    </span>
-
-                    <strong
-                        id="admin-ranking-leader"
-                    >
-                        A DEFINIR
-                    </strong>
-
-                </div>
-
-
-                <div>
-
-                    <span>
-                        TÍTULOS
-                    </span>
-
-                    <strong
-                        id="admin-ranking-titles"
-                    >
-                        00
-                    </strong>
-
-                </div>
+                <p>
+                    O ranking público será alimentado
+                    pelos jogadores e resultados.
+                </p>
 
             </div>
 
@@ -3779,7 +3718,7 @@
                     <h1>
                         CONFIGURAÇÕES
                         <strong>
-                            GERAIS.
+                            DO SISTEMA.
                         </strong>
                     </h1>
 
@@ -3792,94 +3731,60 @@
             </div>
 
 
-            <article
-                class="ccfv-admin-panel"
+            <div
+                class="
+                    ccfv-admin-settings-grid
+                "
             >
 
-                <div
-                    class="
-                        ccfv-admin-panel__heading
-                    "
+                <article
+                    class="ccfv-admin-setting"
                 >
 
-                    <div>
+                    <span>
+                        TEMPORADA
+                    </span>
 
-                        <span>
-                            SISTEMA
-                        </span>
+                    <strong>
+                        SEASON 01
+                    </strong>
 
-                        <h2>
-                            CONFIGURAÇÃO
-                            <strong>
-                                CCFV.
-                            </strong>
-                        </h2>
-
-                    </div>
-
-                </div>
+                </article>
 
 
-                <div
-                    class="ccfv-admin-preview"
+                <article
+                    class="ccfv-admin-setting"
                 >
 
-                    <div>
+                    <span>
+                        ELO INICIAL
+                    </span>
 
-                        <span>
-                            TEMPORADA
-                        </span>
+                    <strong>
+                        0
+                    </strong>
 
-                        <strong>
-                            SEASON 01
-                        </strong>
-
-                    </div>
+                </article>
 
 
-                    <div>
+                <article
+                    class="ccfv-admin-setting"
+                >
 
-                        <span>
-                            STATUS
-                        </span>
+                    <span>
+                        BASE
+                    </span>
 
-                        <strong>
-                            ONLINE
-                        </strong>
+                    <strong>
+                        SUPABASE
+                    </strong>
 
-                    </div>
+                </article>
 
-
-                    <div>
-
-                        <span>
-                            BRASILEIRÃO
-                        </span>
-
-                        <strong>
-                            ATIVO
-                        </strong>
-
-                    </div>
-
-
-                    <div>
-
-                        <span>
-                            NIGHT CUP
-                        </span>
-
-                        <strong>
-                            ATIVA
-                        </strong>
-
-                    </div>
-
-                </div>
-
-            </article>
+            </div>
 
         </section>
+
 
     </main>
 
@@ -3887,7 +3792,7 @@
 
 
 <!-- =====================================================
-     MODAL — NOVO / EDITAR JOGADOR
+     MODAL PLAYER
      ===================================================== -->
 
 <div
@@ -3897,43 +3802,45 @@
 >
 
     <div
-        class="ccfv-admin-modal__backdrop"
+        class="
+            ccfv-admin-modal__backdrop
+        "
         data-close-player-modal
     ></div>
 
 
     <div
-        class="ccfv-admin-modal__dialog"
+        class="
+            ccfv-admin-modal__panel
+        "
     >
 
+        <button
+            type="button"
+            class="
+                ccfv-admin-modal__close
+            "
+            data-close-player-modal
+        >
+            ×
+        </button>
+
+
         <div
-            class="ccfv-admin-modal__header"
+            class="
+                ccfv-admin-modal__header
+            "
         >
 
-            <div>
+            <span>
+                CCFV // PLAYER
+            </span>
 
-                <span>
-                    CCFV // PLAYER MANAGEMENT
-                </span>
-
-                <h2>
-                    NOVO
-                    <strong>
-                        JOGADOR.
-                    </strong>
-                </h2>
-
-            </div>
-
-
-            <button
-                type="button"
-                class="ccfv-admin-modal__close"
-                data-close-player-modal
-                aria-label="Fechar"
+            <h2
+                id="player-modal-title"
             >
-                ×
-            </button>
+                NOVO JOGADOR.
+            </h2>
 
         </div>
 
@@ -3949,87 +3856,59 @@
             >
 
 
-            <!-- IDENTIDADE -->
-
             <div
-                class="ccfv-admin-form__section"
+                class="
+                    ccfv-admin-form-grid
+                "
             >
 
-                <div
-                    class="
-                        ccfv-admin-form__section-title
-                    "
-                >
-                    IDENTIDADE
-                </div>
+                <label>
 
+                    <span>
+                        NOME COMPLETO
+                    </span>
 
-                <div
-                    class="
-                        ccfv-admin-form__grid
-                    "
-                >
+                    <input
+                        type="text"
+                        id="player-name"
+                        placeholder="Nome do competidor"
+                        required
+                    >
 
-                    <label>
-
-                        <span>
-                            NOME DO COMPETIDOR
-                        </span>
-
-                        <input
-                            type="text"
-                            id="player-name"
-                            required
-                            autocomplete="off"
-                        >
-
-                    </label>
-
-
-                    <label>
-
-                        <span>
-                            INSTAGRAM
-                        </span>
-
-                        <input
-                            type="text"
-                            id="player-instagram"
-                            placeholder="@usuario"
-                            autocomplete="off"
-                        >
-
-                    </label>
-
-                </div>
-
-            </div>
-
-
-            <!-- PLATAFORMA -->
-
-            <div
-                class="ccfv-admin-form__section"
-            >
-
-                <div
-                    class="
-                        ccfv-admin-form__section-title
-                    "
-                >
-                    PLATAFORMA
-                </div>
+                </label>
 
 
                 <label>
 
                     <span>
-                        PLATAFORMA OFICIAL
+                        @ INSTAGRAM
+                    </span>
+
+                    <input
+                        type="text"
+                        id="player-instagram"
+                        placeholder="ex: ccfv.oficial"
+                    >
+
+                </label>
+
+            </div>
+
+
+            <div
+                class="
+                    ccfv-admin-form-grid
+                "
+            >
+
+                <label>
+
+                    <span>
+                        PLATAFORMA
                     </span>
 
                     <select
                         id="player-platform"
-                        required
                     >
 
                         <option value="PC">
@@ -4044,28 +3923,68 @@
 
                 </label>
 
-            </div>
-
-
-            <!-- FOTO -->
-
-            <div
-                class="ccfv-admin-form__section"
-            >
 
                 <div
                     class="
-                        ccfv-admin-form__section-title
+                        ccfv-admin-form-photo
                     "
                 >
-                    FOTO
+
+                    <div>
+
+                        <span>
+                            ELO INICIAL
+                        </span>
+
+                        <small>
+                            Todo jogador começa
+                            com 0 Elo.
+                        </small>
+
+                    </div>
+
+
+                    <strong
+                        style="
+                            margin-top:10px;
+                            color:#43df91;
+                            font-size:20px;
+                            font-weight:950;
+                        "
+                    >
+                        0
+                    </strong>
+
                 </div>
 
+            </div>
 
-                <div class="ccfv-photo-upload">
+
+            <div
+                class="
+                    ccfv-competition-selector
+                "
+            >
+
+                <span
+                    class="
+                        ccfv-competition-selector__title
+                    "
+                >
+                    FOTO DO JOGADOR
+                </span>
+
+
+                <div
+                    class="
+                        ccfv-photo-upload
+                    "
+                >
 
                     <div
-                        class="ccfv-photo-preview"
+                        class="
+                            ccfv-photo-preview
+                        "
                         id="player-photo-preview"
                     >
                         FOTO
@@ -4084,15 +4003,21 @@
                                 ccfv-photo-upload__button
                             "
                         >
-                            SELECIONAR FOTO
+                            + SELECIONAR FOTO
                         </label>
+
 
                         <input
                             type="file"
                             id="player-photo-file"
                             class="ccfv-hidden-file"
-                            accept="image/*"
+                            accept="
+                                image/png,
+                                image/jpeg,
+                                image/webp
+                            "
                         >
+
 
                         <small>
                             JPG, PNG ou WEBP.
@@ -4102,294 +4027,254 @@
 
                 </div>
 
-                <input
-                    type="hidden"
-                    id="player-photo-url"
-                >
-
             </div>
 
 
-            <!-- COMPETIÇÕES -->
-
             <div
-                class="ccfv-admin-form__section"
+                class="
+                    ccfv-competition-selector
+                "
             >
 
-                <div
+                <span
                     class="
-                        ccfv-admin-form__section-title
+                        ccfv-competition-selector__title
                     "
                 >
                     COMPETIÇÕES
+                </span>
+
+
+                <div
+                    class="
+                        ccfv-competition-options
+                    "
+                >
+
+                    <label
+                        class="
+                            ccfv-competition-check
+                        "
+                        id="
+                            competition-brasileirao-label
+                        "
+                    >
+
+                        <input
+                            type="checkbox"
+                            id="competition-brasileirao"
+                        >
+
+                        <span
+                            class="
+                                ccfv-competition-check__box
+                            "
+                        >
+                            ✓
+                        </span>
+
+                        <span
+                            class="
+                                ccfv-competition-check__content
+                            "
+                        >
+
+                            <strong>
+                                BRASILEIRÃO
+                            </strong>
+
+                            <small>
+                                Representa um clube
+                            </small>
+
+                        </span>
+
+                    </label>
+
+
+                    <label
+                        class="
+                            ccfv-competition-check
+                        "
+                        id="
+                            competition-night-label
+                        "
+                    >
+
+                        <input
+                            type="checkbox"
+                            id="competition-night"
+                        >
+
+                        <span
+                            class="
+                                ccfv-competition-check__box
+                            "
+                        >
+                            ✓
+                        </span>
+
+                        <span
+                            class="
+                                ccfv-competition-check__content
+                            "
+                        >
+
+                            <strong>
+                                NIGHT CUP
+                            </strong>
+
+                            <small>
+                                Time próprio
+                            </small>
+
+                        </span>
+
+                    </label>
+
                 </div>
 
 
                 <div
-                    class="ccfv-competition-selector"
+                    class="
+                        ccfv-competition-config
+                    "
+                    id="brasileirao-config"
                 >
 
-                    <div
+                    <span
                         class="
-                            ccfv-competition-selector__title
+                            ccfv-competition-config__label
                         "
                     >
-                        SELECIONE AS COMPETIÇÕES
-                    </div>
+                        TIME QUE VAI REPRESENTAR
+                    </span>
 
 
-                    <div
-                        class="
-                            ccfv-competition-options
-                        "
+                    <select
+                        id="brasileirao-team"
                     >
 
+                        <option value="">
+                            Selecione o clube
+                        </option>
 
-                        <label
-                            id="competition-brasileirao-label"
-                            class="
-                                ccfv-competition-check
-                            "
-                        >
+                        <option>
+                            ATHLETICO-PR
+                        </option>
 
-                            <input
-                                type="checkbox"
-                                id="competition-brasileirao"
-                                value="BRASILEIRAO"
-                            >
+                        <option>
+                            ATLÉTICO-MG
+                        </option>
 
-                            <span
-                                class="
-                                    ccfv-competition-check__box
-                                "
-                            >
-                                ✓
-                            </span>
+                        <option>
+                            BAHIA
+                        </option>
 
-                            <span
-                                class="
-                                    ccfv-competition-check__content
-                                "
-                            >
+                        <option>
+                            BOTAFOGO
+                        </option>
 
-                                <strong>
-                                    BRASILEIRÃO
-                                </strong>
+                        <option>
+                            BRAGANTINO
+                        </option>
 
-                                <small>
-                                    Representa um clube
-                                </small>
+                        <option>
+                            CHAPECOENSE
+                        </option>
 
-                            </span>
+                        <option>
+                            CORINTHIANS
+                        </option>
 
-                        </label>
+                        <option>
+                            CORITIBA
+                        </option>
+
+                        <option>
+                            CRUZEIRO
+                        </option>
+
+                        <option>
+                            FLAMENGO
+                        </option>
+
+                        <option>
+                            FLUMINENSE
+                        </option>
+
+                        <option>
+                            GRÊMIO
+                        </option>
+
+                        <option>
+                            INTERNACIONAL
+                        </option>
+
+                        <option>
+                            MIRASSOL
+                        </option>
+
+                        <option>
+                            PALMEIRAS
+                        </option>
+
+                        <option>
+                            REMO
+                        </option>
+
+                        <option>
+                            SANTOS
+                        </option>
+
+                        <option>
+                            SÃO PAULO
+                        </option>
+
+                        <option>
+                            VASCO
+                        </option>
+
+                        <option>
+                            VITÓRIA
+                        </option>
+
+                    </select>
+
+                </div>
 
 
-                        <label
-                            id="competition-night-label"
-                            class="
-                                ccfv-competition-check
-                            "
-                        >
+                <div
+                    class="
+                        ccfv-competition-config
+                    "
+                    id="night-config"
+                >
 
-                            <input
-                                type="checkbox"
-                                id="competition-night"
-                                value="NIGHT_CUP"
-                            >
-
-                            <span
-                                class="
-                                    ccfv-competition-check__box
-                                "
-                            >
-                                ✓
-                            </span>
-
-                            <span
-                                class="
-                                    ccfv-competition-check__content
-                                "
-                            >
-
-                                <strong>
-                                    NIGHT CUP
-                                </strong>
-
-                                <small>
-                                    Time próprio
-                                </small>
-
-                            </span>
-
-                        </label>
-
-                    </div>
-
-
-                    <!-- BRASILEIRÃO CONFIG -->
-
-                    <div
+                    <span
                         class="
-                            ccfv-competition-config
-                            is-visible
+                            ccfv-competition-config__label
                         "
-                        id="brasileirao-config"
                     >
-
-                        <label>
-
-                            <span
-                                class="
-                                    ccfv-competition-config__label
-                                "
-                            >
-                                TIME QUE VAI REPRESENTAR
-                            </span>
-
-                            <select
-                                id="brasileirao-team"
-                            >
-
-                                <option value="">
-                                    Selecione o clube
-                                </option>
-
-                                <option value="ATHLETICO-PR">
-                                    ATHLETICO-PR
-                                </option>
-
-                                <option value="ATLÉTICO-MG">
-                                    ATLÉTICO-MG
-                                </option>
-
-                                <option value="BAHIA">
-                                    BAHIA
-                                </option>
-
-                                <option value="BOTAFOGO">
-                                    BOTAFOGO
-                                </option>
-
-                                <option value="BRAGANTINO">
-                                    BRAGANTINO
-                                </option>
-
-                                <option value="CORINTHIANS">
-                                    CORINTHIANS
-                                </option>
-
-                                <option value="CRUZEIRO">
-                                    CRUZEIRO
-                                </option>
-
-                                <option value="FLAMENGO">
-                                    FLAMENGO
-                                </option>
-
-                                <option value="FLUMINENSE">
-                                    FLUMINENSE
-                                </option>
-
-                                <option value="FORTALEZA">
-                                    FORTALEZA
-                                </option>
-
-                                <option value="GRÊMIO">
-                                    GRÊMIO
-                                </option>
-
-                                <option value="INTERNACIONAL">
-                                    INTERNACIONAL
-                                </option>
-
-                                <option value="MIRASSOL">
-                                    MIRASSOL
-                                </option>
-
-                                <option value="PALMEIRAS">
-                                    PALMEIRAS
-                                </option>
-
-                                <option value="SANTOS">
-                                    SANTOS
-                                </option>
-
-                                <option value="SÃO PAULO">
-                                    SÃO PAULO
-                                </option>
-
-                                <option value="SPORT">
-                                    SPORT
-                                </option>
-
-                                <option value="VASCO">
-                                    VASCO
-                                </option>
-
-                                <option value="VITÓRIA">
-                                    VITÓRIA
-                                </option>
-
-                                <option value="JUVENTUDE">
-                                    JUVENTUDE
-                                </option>
-
-                            </select>
-
-                            <small
-                                class="
-                                    ccfv-competition-config__help
-                                "
-                            >
-                                Cada clube pode ser escolhido
-                                por apenas um competidor ativo.
-                            </small>
-
-                        </label>
-
-                    </div>
+                        TIME DO JOGADOR
+                    </span>
 
 
-                    <!-- NIGHT CONFIG -->
-
-                    <div
-                        class="
-                            ccfv-competition-config
-                        "
-                        id="night-config"
+                    <input
+                        type="text"
+                        id="night-team"
+                        placeholder="Nome do time"
                     >
-
-                        <label>
-
-                            <span
-                                class="
-                                    ccfv-competition-config__label
-                                "
-                            >
-                                TIME DA NIGHT CUP
-                            </span>
-
-                            <input
-                                type="text"
-                                id="night-team"
-                                placeholder="Nome do time"
-                                autocomplete="off"
-                            >
-
-                        </label>
-
-                    </div>
 
                 </div>
 
             </div>
 
 
-            <!-- PRÉVIA -->
-
             <div
-                class="ccfv-admin-preview"
+                class="
+                    ccfv-admin-preview
+                "
             >
 
                 <div>
@@ -4399,7 +4284,7 @@
                     </span>
 
                     <strong
-                        id="player-preview-badge"
+                        id="player-rank-preview"
                     >
                         INICIANTE
                     </strong>
@@ -4414,7 +4299,7 @@
                     </span>
 
                     <strong
-                        id="player-preview-elo"
+                        id="player-elo-preview"
                     >
                         0
                     </strong>
@@ -4424,20 +4309,15 @@
             </div>
 
 
-            <!-- AÇÕES -->
-
             <div
                 class="
-                    ccfv-admin-form__actions
+                    ccfv-admin-form-actions
                 "
             >
 
                 <button
                     type="button"
-                    class="
-                        ccfv-admin-button
-                        ccfv-admin-button--secondary
-                    "
+                    class="ccfv-admin-button"
                     data-close-player-modal
                 >
                     CANCELAR
@@ -4450,7 +4330,6 @@
                         ccfv-admin-button
                         ccfv-admin-button--primary
                     "
-                    id="save-player-button"
                 >
                     SALVAR JOGADOR
                 </button>
@@ -4507,15 +4386,6 @@
     defer
 ></script>
 
-<script
-    src="/admin/js/ranking.js"
-    defer
-></script>
-
-<script
-    src="/admin/js/competition-guard.js"
-    defer
-></script>
 
 </body>
 
