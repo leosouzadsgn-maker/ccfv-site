@@ -50,6 +50,11 @@
                 "#brasileirao-refresh"
             ),
 
+        resetTest:
+            document.querySelector(
+                "#brasileirao-reset-test"
+            ),
+
         roundLabel:
             document.querySelector(
                 "#brasileirao-current-round"
@@ -608,6 +613,81 @@
                 dom.refresh.textContent =
                     "ATUALIZAR";
 
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       RESET DE TESTE
+       ===================================================== */
+
+    async function resetBrazilTest() {
+
+        if (
+            !window.confirm(
+                "Isso vai apagar somente as partidas do Brasileirão e voltar para a Rodada 01. A Night Cup não será alterada. Continuar?"
+            )
+        ) {
+
+            return;
+
+        }
+
+        try {
+
+            const client =
+                await getSupabase();
+
+            if (dom.resetTest) {
+                dom.resetTest.disabled = true;
+                dom.resetTest.textContent = "RESETANDO...";
+            }
+
+            const { data, error } =
+                await client.rpc(
+                    "reset_ccfv_brasileirao"
+                );
+
+            if (error) {
+                throw error;
+            }
+
+            selectedRound = 1;
+            buildRounds();
+            await loadStandings();
+
+            const count = Number(data || 0);
+
+            showToast(
+                count > 0
+                    ? `${count} partida(s) do Brasileirão removida(s). Rodada 01 restaurada.`
+                    : "Brasileirão já estava zerado. Rodada 01 restaurada."
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "CCFV // BRASILEIRÃO RESET ERROR:",
+                error
+            );
+
+            showToast(
+                error?.message ||
+                "ERRO AO RESETAR O BRASILEIRÃO."
+            );
+
+        }
+
+        finally {
+
+            if (dom.resetTest) {
+                dom.resetTest.disabled = false;
+                dom.resetTest.textContent = "RESETAR TESTE";
             }
 
         }
