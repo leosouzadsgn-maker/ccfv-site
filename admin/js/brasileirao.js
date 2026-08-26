@@ -50,6 +50,11 @@
                 "#brasileirao-refresh"
             ),
 
+        resetTest:
+            document.querySelector(
+                "#brasileirao-reset-test"
+            ),
+
         roundLabel:
             document.querySelector(
                 "#brasileirao-current-round"
@@ -177,6 +182,78 @@
 
         updateRoundLabel();
 
+    }
+
+
+    /* =====================================================
+       RESETAR DADOS DE TESTE DO BRASILEIRÃO
+       ===================================================== */
+
+    async function resetBrazilTest() {
+
+        const confirmed = window.confirm(
+            "ZERAR O TESTE DO BRASILEIRÃO?\n\n" +
+            "Isso apagará somente os registros da tabela matches cuja competição é Brasileirão. A Night Cup não será alterada.\n\n" +
+            "Depois disso, a rodada pública voltará para a RODADA 01."
+        );
+
+        if (!confirmed) return;
+
+        try {
+            const client = await getSupabase();
+
+            if (dom.resetTest) {
+                dom.resetTest.disabled = true;
+                dom.resetTest.textContent = "ZERANDO...";
+            }
+
+            const { data, error } = await client
+                .from("matches")
+                .select("id, competition");
+
+            if (error) throw error;
+
+            const normalize = value => String(value ?? "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .trim()
+                .toUpperCase();
+
+            const ids = (data || [])
+                .filter(row => normalize(row.competition).startsWith("BRASILEIRAO"))
+                .map(row => row.id)
+                .filter(Boolean);
+
+            if (!ids.length) {
+                selectedRound = 1;
+                await loadStandings();
+                showToast("TESTE JÁ ESTÁ ZERADO.");
+                return;
+            }
+
+            for (let i = 0; i < ids.length; i += 100) {
+                const chunk = ids.slice(i, i + 100);
+                const { error: deleteError } = await client
+                    .from("matches")
+                    .delete()
+                    .in("id", chunk);
+                if (deleteError) throw deleteError;
+            }
+
+            selectedRound = 1;
+            await loadStandings();
+            showToast(`${ids.length} PARTIDA(S) DO BRASILEIRÃO REMOVIDA(S). RODADA 01 RESTAURADA.`);
+
+        } catch (error) {
+            console.error("CCFV // BRASILEIRÃO RESET ERROR:", error);
+            showToast(error?.message || "ERRO AO ZERAR O BRASILEIRÃO.");
+
+        } finally {
+            if (dom.resetTest) {
+                dom.resetTest.disabled = false;
+                dom.resetTest.textContent = "RESETAR TESTE";
+            }
+        }
     }
 
 
@@ -682,6 +759,12 @@
         dom.refresh?.addEventListener(
             "click",
             refresh
+        );
+
+
+        dom.resetTest?.addEventListener(
+            "click",
+            resetBrazilTest
         );
 
     }
