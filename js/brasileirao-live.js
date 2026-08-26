@@ -490,226 +490,45 @@
     ) {
 
         const teams =
-            api.config?.teams ||
-            [];
+            api.config?.teams || [];
 
+        const home = resolveTeam(
+            match.home_team ?? match.homeTeam ?? match.home,
+            teams
+        );
 
-        const home =
-            resolveTeam(
-                match.home_team,
-                teams
-            );
+        const away = resolveTeam(
+            match.away_team ?? match.awayTeam ?? match.away,
+            teams
+        );
 
-
-        const away =
-            resolveTeam(
-                match.away_team,
-                teams
-            );
-
-
-        if (
-            !home ||
-            !away
-        ) {
-
+        if (!home || !away) {
             console.warn(
-                "CCFV // BRASILEIRÃO: clubes não encontrados",
-                {
-                    home:
-                        match.home_team,
-                    away:
-                        match.away_team
-                }
+                "CCFV // BRASILEIRÃO: clube não encontrado",
+                { home: match.home_team, away: match.away_team }
             );
-
             return null;
-
         }
 
-
-        const roundNumber =
-            resolveRoundNumber(
-                match
-            );
-
-
-        if (
-            roundNumber <= 0
-        ) {
-
-            console.warn(
-                "CCFV // BRASILEIRÃO: rodada não encontrada",
-                match
-            );
-
-            return null;
-
-        }
-
-
-        const fixture =
-            resolveFixture(
-                {
-                    ...match,
-                    round_number:
-                        roundNumber
-                },
-                api
-            );
-
-
-        /*
-         * O banco não precisa possuir match_number.
-         * O número oficial vem dos fixtures do próprio
-         * Brasileirão.
-         */
-
-        let matchNumber =
-            fixture
-                ? number(
-                    fixture.match
-                )
-                : number(
-                    match.match_number ??
-                    match.match ??
-                    match.game_number
-                );
-
-
-        /*
-         * Último fallback: localizar a partida pelo
-         * confronto dentro da rodada. Isso evita que
-         * um resultado válido seja descartado só porque
-         * a linha do banco não possui o número do jogo.
-         */
-
-        if (
-            matchNumber <= 0
-        ) {
-
-            const fixtures =
-                typeof api.getFixtures ===
-                    "function"
-                    ? api.getFixtures()
-                    : [];
-
-
-            const fallbackFixture =
-                Array.isArray(fixtures)
-                    ? fixtures.find(
-                        item => {
-
-                            if (
-                                number(item.round) !==
-                                roundNumber
-                            ) {
-
-                                return false;
-
-                            }
-
-                            const normalHome =
-                                number(item.home) ===
-                                number(home.id);
-
-                            const normalAway =
-                                number(item.away) ===
-                                number(away.id);
-
-                            const inverseHome =
-                                number(item.home) ===
-                                number(away.id);
-
-                            const inverseAway =
-                                number(item.away) ===
-                                number(home.id);
-
-                            return (
-                                (normalHome && normalAway) ||
-                                (inverseHome && inverseAway)
-                            );
-
-                        }
-                    )
-                    : null;
-
-
-            matchNumber =
-                fallbackFixture
-                    ? number(
-                        fallbackFixture.match
-                    )
-                    : 0;
-
-        }
-
-
-        if (
-            matchNumber <= 0
-        ) {
-
-            console.warn(
-                "CCFV // BRASILEIRÃO: número do jogo não encontrado",
-                {
-                    round:
-                        roundNumber,
-                    home:
-                        home.name,
-                    away:
-                        away.name
-                }
-            );
-
-            return null;
-
-        }
-
+        // A classificação não depende da numeração do fixture.
+        // Rodada, clubes e placar vindos do Admin são suficientes.
+        const roundNumber = resolveRoundNumber(match) || 1;
+        const matchNumber = number(
+            match.match_number ?? match.match ?? match.game_number
+        );
 
         return {
-
-            round:
-                roundNumber,
-
-            match:
-                matchNumber,
-
-            home:
-                home.name,
-
-            away:
-                away.name,
-
-            homeTeam:
-                Number(
-                    home.id
-                ),
-
-            awayTeam:
-                Number(
-                    away.id
-                ),
-
-            homeGoals:
-                number(
-                    match.home_score
-                ),
-
-            awayGoals:
-                number(
-                    match.away_score
-                ),
-
-            date:
-                match.played_at ||
-                match.created_at ||
-                "",
-
-            matchId:
-                match.id
-
+            round: roundNumber,
+            match: matchNumber,
+            home: home.name,
+            away: away.name,
+            homeTeam: Number(home.id),
+            awayTeam: Number(away.id),
+            homeGoals: number(match.home_score ?? match.homeGoals),
+            awayGoals: number(match.away_score ?? match.awayGoals),
+            date: match.played_at || match.created_at || "",
+            matchId: match.id
         };
-
     }
 
 
