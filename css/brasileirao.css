@@ -5721,3 +5721,154 @@
     }
 
 }
+/* =========================================================
+   RODADA — SELETOR COMPLETO
+   ========================================================= */
+
+.ccfv-brasileirao-round-control {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.ccfv-brasileirao-round-control label {
+    color: rgba(255,255,255,.30);
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .13em;
+}
+
+.ccfv-round-select {
+    appearance: none;
+    min-width: 142px;
+    padding: 11px 35px 11px 13px;
+    border: 1px solid rgba(67,223,145,.20);
+    border-radius: 11px;
+    outline: none;
+    color: #fff;
+    background: rgba(31,143,95,.08);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .08em;
+    cursor: pointer;
+    transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.ccfv-round-select:hover,
+.ccfv-round-select:focus {
+    border-color: rgba(67,223,145,.60);
+    box-shadow: 0 0 0 3px rgba(67,223,145,.08), 0 0 25px rgba(67,223,145,.08);
+    transform: translateY(-1px);
+}
+
+.ccfv-round-select option {
+    color: #fff;
+    background: #07110d;
+}
+
+/* =========================================================
+   SEASON — VIDA / STATUS
+   ========================================================= */
+
+.ccfv-brasileirao-season__pulse {
+    position: relative;
+    margin-top: 25px;
+    padding: 15px;
+    overflow: hidden;
+    border: 1px solid rgba(67,223,145,.13);
+    border-radius: 16px;
+    background:
+        radial-gradient(circle at 100% 0%, rgba(67,223,145,.11), transparent 45%),
+        rgba(255,255,255,.025);
+}
+
+.ccfv-brasileirao-season__pulse-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.ccfv-brasileirao-season__pulse-head span {
+    color: #43df91;
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: .15em;
+}
+
+.ccfv-brasileirao-season__pulse-head strong {
+    color: rgba(255,255,255,.75);
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: .10em;
+}
+
+.ccfv-brasileirao-season__pulse-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.ccfv-brasileirao-season__pulse-grid > div {
+    min-width: 0;
+    padding: 10px 9px;
+    border: 1px solid rgba(255,255,255,.055);
+    border-radius: 11px;
+    background: rgba(0,0,0,.16);
+}
+
+.ccfv-brasileirao-season__pulse-grid span {
+    display: block;
+    color: rgba(255,255,255,.27);
+    font-size: 6px;
+    font-weight: 900;
+    letter-spacing: .11em;
+}
+
+.ccfv-brasileirao-season__pulse-grid strong {
+    display: block;
+    margin-top: 4px;
+    overflow: hidden;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 950;
+    letter-spacing: -.02em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ccfv-brasileirao-season__pulse-line {
+    position: relative;
+    height: 3px;
+    margin-top: 12px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255,255,255,.06);
+}
+
+.ccfv-brasileirao-season__pulse-line span {
+    position: absolute;
+    inset: 0 auto 0 -25%;
+    width: 25%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, transparent, #43df91, transparent);
+    animation: ccfvSeasonPulse 2.8s linear infinite;
+}
+
+@keyframes ccfvSeasonPulse {
+    from { transform: translateX(0); }
+    to { transform: translateX(500%); }
+}
+
+@media (max-width: 900px) {
+    .ccfv-brasileirao-round-control {
+        justify-content: flex-start;
+    }
+
+    .ccfv-brasileirao-season__pulse-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -2466,65 +2466,6 @@
        EXCLUIR
        ===================================================== */
 
-    function confirmPlayerDeletion(player) {
-
-        return new Promise((resolve) => {
-
-            const overlay = document.createElement("div");
-
-            overlay.className = "ccfv-delete-modal-overlay";
-            overlay.innerHTML = `
-                <div class="ccfv-delete-modal" role="dialog" aria-modal="true" aria-labelledby="ccfv-delete-title">
-                    <div class="ccfv-delete-modal-kicker">CCFV // CONFIRMAÇÃO</div>
-                    <h3 id="ccfv-delete-title">EXCLUIR JOGADOR?</h3>
-                    <p>Você está prestes a excluir <strong>${escapeHtml(player.name || "este jogador")}</strong>.</p>
-                    <span class="ccfv-delete-modal-warning">As partidas vinculadas a este jogador também serão removidas.</span>
-                    <div class="ccfv-delete-modal-actions">
-                        <button type="button" class="ccfv-delete-cancel">CANCELAR</button>
-                        <button type="button" class="ccfv-delete-confirm">EXCLUIR</button>
-                    </div>
-                </div>
-            `;
-
-            const cleanup = (result) => {
-                overlay.remove();
-                document.removeEventListener("keydown", onKeyDown);
-                resolve(result);
-            };
-
-            const onKeyDown = (event) => {
-                if (event.key === "Escape") {
-                    cleanup(false);
-                }
-            };
-
-            overlay.addEventListener("click", (event) => {
-                if (event.target === overlay) {
-                    cleanup(false);
-                }
-            });
-
-            overlay.querySelector(".ccfv-delete-cancel")
-                .addEventListener("click", () => cleanup(false));
-
-            overlay.querySelector(".ccfv-delete-confirm")
-                .addEventListener("click", () => cleanup(true));
-
-            document.addEventListener("keydown", onKeyDown);
-            document.body.appendChild(overlay);
-            overlay.querySelector(".ccfv-delete-confirm")?.focus();
-        });
-    }
-
-    function escapeHtml(value) {
-        return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/\"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
     async function deletePlayer(
         id
     ) {
@@ -2551,12 +2492,17 @@
 
 
         const confirmed =
-            await confirmPlayerDeletion(
-                player
+            window.confirm(
+                `Excluir o jogador "${player.name}"?`
             );
 
-        if (!confirmed) {
+
+        if (
+            !confirmed
+        ) {
+
             return;
+
         }
 
 
@@ -2567,26 +2513,25 @@
 
 
             /*
-             * A tabela matches possui FKs para players e o RLS impede
-             * DELETE direto pelo navegador. A exclusão oficial é feita
-             * pela RPC segura, que remove primeiro os jogos ligados ao
-             * jogador e só então o registro do jogador.
+             * As competições serão excluídas
+             * automaticamente pelo ON DELETE CASCADE.
              */
 
             const {
-                data: deletedCount,
                 error
             } =
-                await client.rpc(
-                    "delete_ccfv_player_cascade",
-                    {
-                        p_player_id: id
-                    }
-                );
+                await client
 
-            if (error) {
-                throw error;
-            }
+                    .from(
+                        PLAYERS_TABLE
+                    )
+
+                    .delete()
+
+                    .eq(
+                        "id",
+                        id
+                    );
 
 
             if (
@@ -2602,9 +2547,7 @@
 
 
             showToast(
-                Number(deletedCount || 0) > 0
-                    ? `JOGADOR EXCLUÍDO. ${Number(deletedCount)} partida(s) vinculada(s) removida(s).`
-                    : "JOGADOR EXCLUÍDO."
+                "JOGADOR EXCLUÍDO."
             );
 
         }

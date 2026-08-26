@@ -273,9 +273,8 @@
                 match =>
                     normalize(
                         match.competition
-                    ).startsWith(
-                        "BRASILEIRAO"
-                    )
+                    ) ===
+                    "BRASILEIRAO"
             )
 
             .filter(
@@ -285,10 +284,7 @@
                         "FINISHED",
                         "COMPLETED",
                         "CONCLUIDA",
-                        "CONCLUIDO",
-                        "ENCERRADA",
-                        "FINALIZADA",
-                        "FINALIZADO"
+                        "ENCERRADA"
                     ].includes(
                         normalize(match.status)
                     )
@@ -393,15 +389,19 @@
                         round > 0
                 );
 
-        api.config.currentRound =
-            rounds.length
-                ? Math.min(
-                    38,
-                    Math.max(
-                        ...rounds
-                    ) + 1
-                )
-                : 1;
+        if (!api.config.userSelectedRound) {
+
+            api.config.currentRound =
+                rounds.length
+                    ? Math.min(
+                        38,
+                        Math.max(
+                            ...rounds
+                        ) + 1
+                    )
+                    : 1;
+
+        }
 
         if (
             typeof api.refresh ===
@@ -1616,9 +1616,8 @@
                 match =>
                     normalize(
                         match.competition
-                    ).startsWith(
-                        "BRASILEIRAO"
-                    )
+                    ) ===
+                    "BRASILEIRAO"
             );
 
 
@@ -1894,14 +1893,7 @@
                 new Date();
 
 
-            /*
-             * O Brasileirão possui um sincronizador próprio
-             * (brasileirao-live.js), que converte os clubes
-             * para os IDs oficiais dos fixtures antes de
-             * recalcular a tabela. Não sobrescreva aqui com
-             * nomes crus do banco, pois isso faria a tabela
-             * zerar.
-             */
+            syncBrasileirao();
 
             syncNightCup();
 

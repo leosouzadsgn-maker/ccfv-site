@@ -536,6 +536,43 @@
                     </div>
 
 
+                    <!-- SEASON LIVE -->
+
+                    <div
+                        class="ccfv-brasileirao-season__pulse"
+                    >
+
+                        <div class="ccfv-brasileirao-season__pulse-head">
+                            <span>
+                                CCFV // STATUS DA TEMPORADA
+                            </span>
+                            <strong id="ccfv-season-live-status">
+                                PREPARANDO
+                            </strong>
+                        </div>
+
+                        <div class="ccfv-brasileirao-season__pulse-grid">
+                            <div>
+                                <span>RODADA ATUAL</span>
+                                <strong id="ccfv-season-current-round">01</strong>
+                            </div>
+                            <div>
+                                <span>JOGOS</span>
+                                <strong id="ccfv-season-matches-played">0/380</strong>
+                            </div>
+                            <div>
+                                <span>ÚLTIMO RESULTADO</span>
+                                <strong id="ccfv-season-last-result">A DEFINIR</strong>
+                            </div>
+                        </div>
+
+                        <div class="ccfv-brasileirao-season__pulse-line" aria-hidden="true">
+                            <span></span>
+                        </div>
+
+                    </div>
+
+
                     <!-- NEXT MATCH -->
 
                     <div
@@ -1002,11 +1039,27 @@
                     </div>
 
 
-                    <span
-                        class="ccfv-brasileirao-heading-status"
+                    <div
+                        class="ccfv-brasileirao-round-control"
                     >
-                        RODADA 01
-                    </span>
+
+                        <label for="ccfv-round-select">
+                            VISUALIZAR ATÉ
+                        </label>
+
+                        <select
+                            id="ccfv-round-select"
+                            class="ccfv-round-select"
+                            aria-label="Selecionar rodada do Brasileirão CCFV"
+                        ></select>
+
+                        <span
+                            class="ccfv-brasileirao-heading-status"
+                        >
+                            RODADA 01
+                        </span>
+
+                    </div>
 
                 </div>
 

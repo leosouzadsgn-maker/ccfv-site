@@ -2296,23 +2296,3 @@ select {
         rgba(67, 223, 145, 0.08);
 
 }
-
-/* CCFV // PLAYER DELETE MODAL */
-.ccfv-delete-modal-overlay {
-    position: fixed; inset: 0; z-index: 99999; display: grid; place-items: center; padding: 24px;
-    background: rgba(0, 0, 0, 0.78); backdrop-filter: blur(10px);
-}
-.ccfv-delete-modal {
-    width: min(520px, 100%); padding: 28px; border: 1px solid rgba(61, 221, 145, 0.28);
-    border-radius: 20px; background: #07100c; box-shadow: 0 30px 100px rgba(0, 0, 0, 0.55);
-}
-.ccfv-delete-modal-kicker { margin-bottom: 8px; color: #43e09a; font-size: 11px; font-weight: 800; letter-spacing: .14em; }
-.ccfv-delete-modal h3 { margin: 0 0 10px; font-size: clamp(28px, 5vw, 46px); line-height: .95; }
-.ccfv-delete-modal p { margin: 0 0 12px; color: rgba(255,255,255,.82); }
-.ccfv-delete-modal-warning { display: block; margin-bottom: 22px; color: #ffb5b5; font-size: 13px; }
-.ccfv-delete-modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-.ccfv-delete-modal-actions button { border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 12px 16px; font: inherit; font-weight: 800; cursor: pointer; }
-.ccfv-delete-cancel { background: transparent; color: rgba(255,255,255,.8); }
-.ccfv-delete-confirm { background: #e84c4c; border-color: #e84c4c !important; color: #fff; }
-.ccfv-delete-confirm:focus, .ccfv-delete-cancel:focus { outline: 2px solid #43e09a; outline-offset: 2px; }
-

@@ -30,6 +30,8 @@
 
         currentRound: 1,
 
+        userSelectedRound: false,
+
         featuredMatch: 0,
 
 
@@ -227,6 +229,46 @@
                 ".ccfv-brasileirao-rounds .ccfv-brasileirao-heading-status"
             ),
 
+        roundSelect:
+            document.querySelector(
+                "#ccfv-round-select"
+            ),
+
+        seasonPulseStatus:
+            document.querySelector(
+                "#ccfv-season-live-status"
+            ),
+
+        seasonPulseRound:
+            document.querySelector(
+                "#ccfv-season-current-round"
+            ),
+
+        seasonPulseMatches:
+            document.querySelector(
+                "#ccfv-season-matches-played"
+            ),
+
+        seasonPulseLastResult:
+            document.querySelector(
+                "#ccfv-season-last-result"
+            ),
+
+        seasonNextRound:
+            document.querySelector(
+                ".ccfv-brasileirao-season__next-round"
+            ),
+
+        seasonNextMatch:
+            document.querySelector(
+                ".ccfv-brasileirao-season__next-match"
+            ),
+
+        seasonNextDate:
+            document.querySelector(
+                ".ccfv-brasileirao-season__next-date"
+            ),
+
         results:
             document.querySelector(
                 "#ccfv-results-list"
@@ -303,6 +345,159 @@
     function pad(value) {
 
         return String(value).padStart(2, "0");
+
+    }
+
+
+    /* =====================================================
+       RODADAS / TEMPORADA AO VIVO
+       ===================================================== */
+
+    function getCompletedRound() {
+
+        const rounds =
+            CCFV_BRASILEIRAO.results
+                .map(result => Number(result.round || 0))
+                .filter(round => round > 0);
+
+        return rounds.length
+            ? Math.min(38, Math.max(...rounds))
+            : 0;
+
+    }
+
+
+    function getNextRound() {
+
+        return Math.min(
+            38,
+            getCompletedRound() + 1
+        );
+
+    }
+
+
+    function getResultForMatch(match) {
+
+        return CCFV_BRASILEIRAO.results.find(result =>
+            Number(result.round) === Number(match.round) &&
+            Number(result.match) === Number(match.match)
+        );
+
+    }
+
+
+    function renderRoundSelector() {
+
+        if (!elements.roundSelect) return;
+
+        if (!elements.roundSelect.options.length) {
+
+            for (let round = 1; round <= 38; round += 1) {
+
+                const option = document.createElement("option");
+                option.value = String(round);
+                option.textContent = `RODADA ${pad(round)}`;
+                elements.roundSelect.appendChild(option);
+
+            }
+
+        }
+
+        elements.roundSelect.value = String(
+            CCFV_BRASILEIRAO.currentRound
+        );
+
+    }
+
+
+    function renderSeasonPulse() {
+
+        const completedMatches = CCFV_BRASILEIRAO.results.length;
+        const totalMatches = CCFV_BRASILEIRAO.totalRounds * 10;
+        const completedRound = getCompletedRound();
+        const liveStatus =
+            completedMatches >= totalMatches
+                ? "FINALIZADA"
+                : completedMatches > 0
+                    ? "EM ANDAMENTO"
+                    : "PREPARANDO";
+
+        if (elements.seasonPulseStatus) {
+            elements.seasonPulseStatus.textContent = liveStatus;
+        }
+
+        if (elements.seasonPulseRound) {
+            elements.seasonPulseRound.textContent =
+                pad(completedRound || 1);
+        }
+
+        if (elements.seasonPulseMatches) {
+            elements.seasonPulseMatches.textContent =
+                `${completedMatches}/${totalMatches}`;
+        }
+
+        const latest =
+            [...CCFV_BRASILEIRAO.results]
+                .sort((a, b) => {
+                    const dateA = new Date(a.date || 0).getTime();
+                    const dateB = new Date(b.date || 0).getTime();
+                    return dateB - dateA;
+                })[0];
+
+        if (elements.seasonPulseLastResult) {
+
+            if (!latest) {
+                elements.seasonPulseLastResult.textContent =
+                    "A DEFINIR";
+            } else {
+                elements.seasonPulseLastResult.textContent =
+                    `${latest.homeTeam || getTeam(latest.home)?.name || "CASA"} ${latest.homeGoals ?? 0} x ${latest.awayGoals ?? 0} ${latest.awayTeam || getTeam(latest.away)?.name || "FORA"}`;
+            }
+
+        }
+
+    }
+
+
+    function renderNextRound() {
+
+        const nextRound = getNextRound();
+        const nextMatch =
+            fixtures.find(match => Number(match.round) === nextRound) || null;
+        const result = nextMatch ? getResultForMatch(nextMatch) : null;
+
+        if (elements.seasonNextRound) {
+            elements.seasonNextRound.textContent =
+                `RODADA ${pad(nextRound)}`;
+        }
+
+        if (elements.seasonNextMatch && nextMatch) {
+
+            const home = getTeam(nextMatch.home);
+            const away = getTeam(nextMatch.away);
+
+            elements.seasonNextMatch.innerHTML = `
+                <div>
+                    <span class="ccfv-team-placeholder">${home?.shortName || "?"}</span>
+                    <small>CASA · ${escapeHTML(home?.name || "A DEFINIR")}</small>
+                </div>
+
+                <strong>VS</strong>
+
+                <div>
+                    <span class="ccfv-team-placeholder">${away?.shortName || "?"}</span>
+                    <small>FORA · ${escapeHTML(away?.name || "A DEFINIR")}</small>
+                </div>
+            `;
+
+        }
+
+        if (elements.seasonNextDate) {
+            elements.seasonNextDate.textContent = result
+                ? "RESULTADO REGISTRADO"
+                : "DATA A DEFINIR · 21:00";
+        }
 
     }
 
@@ -1414,9 +1609,7 @@
                     RODADA
                     ${
                         completedMatches
-                            ? pad(
-                                CCFV_BRASILEIRAO.currentRound
-                            )
+                            ? pad(getCompletedRound())
                             : "00"
                     }
                 </span>
@@ -1602,6 +1795,12 @@
 
                 updateSeasonStatus();
 
+                renderSeasonPulse();
+
+                renderNextRound();
+
+                renderRoundSelector();
+
                 updateChampion();
 
             }
@@ -1639,6 +1838,13 @@
         updateSeasonStatus();
 
 
+        renderSeasonPulse();
+
+        renderNextRound();
+
+        renderRoundSelector();
+
+
         updateChampion();
 
 
@@ -1648,6 +1854,25 @@
                 `SEASON ${pad(
                     CCFV_BRASILEIRAO.season
                 )}`;
+
+        }
+
+
+        if (elements.roundSelect) {
+
+            elements.roundSelect.addEventListener("change", event => {
+
+                const round = Math.min(
+                    38,
+                    Math.max(1, Number(event.target.value) || 1)
+                );
+
+                CCFV_BRASILEIRAO.userSelectedRound = true;
+                CCFV_BRASILEIRAO.currentRound = round;
+                renderRoundSelector();
+                renderRound(round);
+
+            });
 
         }
 
