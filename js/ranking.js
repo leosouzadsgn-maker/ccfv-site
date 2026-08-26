@@ -2921,6 +2921,72 @@
 
 
     /* =====================================================
+       HERO DO RANKING
+       ===================================================== */
+
+    function renderHero() {
+
+        if (!elements.heroLeader) {
+            return;
+        }
+
+        const leader = players
+            .slice()
+            .sort((a, b) => Number(b?.elo || 0) - Number(a?.elo || 0))[0] || null;
+
+        if (!leader) {
+            elements.heroLeader.innerHTML = `
+                <div class="ccfv-ranking-hero__leader-card ccfv-ranking-hero__leader-card--empty">
+                    <div class="ccfv-ranking-hero__leader-copy">
+                        <span>CCFV // OFFICIAL RANKING</span>
+                        <strong>O TOPO ESTÁ ESPERANDO.</strong>
+                        <small>Cadastre os competidores no Admin para o líder aparecer automaticamente aqui.</small>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        const elo = Number(leader.elo || 0);
+        const rank = getRankByPoints(elo);
+        const photo = leader.photo || leader.photo_url || "";
+        const initials = String(leader.name || "CC").trim().slice(0, 2).toUpperCase();
+        const games = Number(leader.matches ?? (Number(leader.wins || 0) + Number(leader.draws || 0) + Number(leader.losses || 0)));
+        const wins = Number(leader.wins || 0);
+        const titles = Number(leader.titles || 0);
+        const photoHTML = photo
+            ? `<img src="${escapeHTML(photo)}" alt="${escapeHTML(leader.name || "Jogador")}" loading="eager">`
+            : `<span>${escapeHTML(initials)}</span>`;
+
+        elements.heroLeader.innerHTML = `
+            <article class="ccfv-ranking-hero__leader-card ccfv-ranking-hero__leader-card--${rank.key}">
+                <div class="ccfv-ranking-hero__leader-photo">
+                    ${photoHTML}
+                </div>
+
+                <div class="ccfv-ranking-hero__leader-badge">
+                    ${renderBadge(rank, "small")}
+                </div>
+
+                <div class="ccfv-ranking-hero__leader-content">
+                    <span>CCFV // OFFICIAL LEADER</span>
+                    <div class="ccfv-ranking-hero__leader-position">#01 ABSOLUTO</div>
+                    <h2>${escapeHTML(leader.name || "Jogador")}</h2>
+                    <small>${leader.instagram ? `@${escapeHTML(String(leader.instagram).replace(/^@/, ""))}` : rank.name}</small>
+
+                    <div class="ccfv-ranking-hero__leader-meta">
+                        <div><span>ELO</span><strong>${elo}</strong></div>
+                        <div><span>JOGOS</span><strong>${games}</strong></div>
+                        <div><span>VITÓRIAS</span><strong>${wins}</strong></div>
+                        <div><span>TÍTULOS</span><strong>${titles}</strong></div>
+                    </div>
+                </div>
+            </article>
+        `;
+    }
+
+
+    /* =====================================================
        REFRESH
        ===================================================== */
 
