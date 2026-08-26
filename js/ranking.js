@@ -2377,6 +2377,211 @@
 }
 
     /* =====================================================
+       PLAYER CARDS — DADOS REAIS
+       ===================================================== */
+
+    function getPlayerPhoto(player) {
+
+        return String(
+            player?.photo ||
+            player?.photo_url ||
+            player?.avatar_url ||
+            player?.image_url ||
+            ""
+        ).trim();
+
+    }
+
+
+    function getPlayerGames(player) {
+
+        const direct = Number(
+            player?.matches_played ??
+            player?.matches ??
+            NaN
+        );
+
+        if (Number.isFinite(direct)) {
+            return direct;
+        }
+
+        return Number(player?.wins || 0) +
+            Number(player?.draws || 0) +
+            Number(player?.losses || 0);
+
+    }
+
+
+    function getWinRate(player) {
+
+        const games = getPlayerGames(player);
+        const wins = Number(player?.wins || 0);
+
+        if (!games) {
+            return 0;
+        }
+
+        return Math.round((wins / games) * 100);
+
+    }
+
+
+    function createPlayerCard(player, position) {
+
+        const rank = getRankByPoints(player?.elo || 0);
+        const photo = getPlayerPhoto(player);
+        const initials = getInitials(player?.name || "CC");
+        const elo = Number(player?.elo || 0);
+        const games = getPlayerGames(player);
+        const wins = Number(player?.wins || 0);
+        const titles = Number(player?.titles || 0);
+        const winRate = getWinRate(player);
+        const instagram = player?.instagram
+            ? `@${String(player.instagram).replace(/^@/, "")}`
+            : "CCFV OFFICIAL";
+
+        const photoHTML = photo
+            ? `<img src="${escapeHTML(photo)}" alt="${escapeHTML(player?.name || "Jogador")}" loading="lazy" crossorigin="anonymous">`
+            : `<span class="ccfv-player-card-real__initials">${escapeHTML(initials)}</span>`;
+
+        return `
+            <div class="ccfv-player-card-item" data-player-name="${escapeHTML(player?.name || "")}" data-player-id="${escapeHTML(player?.id ?? position)}">
+                <article
+                    class="ccfv-player-card-preview ccfv-player-card-preview--${rank.key} ccfv-player-card-preview--animated ccfv-player-card-real"
+                    data-card-player-id="${escapeHTML(player?.id ?? position)}"
+                >
+
+                    <div class="ccfv-player-card-preview__holo"></div>
+                    <div class="ccfv-player-card-preview__noise"></div>
+                    <div class="ccfv-player-card-preview__energy"></div>
+                    <div class="ccfv-player-card-preview__grid"></div>
+
+                    <div class="ccfv-player-card-preview__corner ccfv-player-card-preview__corner--tl"></div>
+                    <div class="ccfv-player-card-preview__corner ccfv-player-card-preview__corner--tr"></div>
+                    <div class="ccfv-player-card-preview__corner ccfv-player-card-preview__corner--bl"></div>
+                    <div class="ccfv-player-card-preview__corner ccfv-player-card-preview__corner--br"></div>
+
+                    <div class="ccfv-player-card-preview__top">
+                        <div>
+                            <span>CCFV PLAYER</span>
+                            <strong>#${String(position).padStart(3, "0")}</strong>
+                        </div>
+                        <div class="ccfv-player-card-preview__mini-badge">
+                            ${renderBadge(rank, "small")}
+                        </div>
+                    </div>
+
+                    <div class="ccfv-player-card-preview__scanline"></div>
+
+                    <div class="ccfv-player-card-preview__photo">
+                        <div class="ccfv-player-card-preview__photo-frame ccfv-player-card-real__photo-frame">
+                            ${photoHTML}
+                        </div>
+                    </div>
+
+                    <div class="ccfv-player-card-preview__badge-floating">
+                        ${renderBadge(rank, "medium")}
+                    </div>
+
+                    <div class="ccfv-player-card-preview__identity">
+                        <span>${escapeHTML(rank.name)}</span>
+                        <strong>${escapeHTML(player?.name || "JOGADOR")}</strong>
+                        <small>${escapeHTML(instagram)}</small>
+                    </div>
+
+                    <div class="ccfv-player-card-preview__metrics">
+                        <div><span>ELO</span><strong>${elo}</strong></div>
+                        <div><span>POS</span><strong>#${String(position).padStart(2, "0")}</strong></div>
+                        <div><span>WIN</span><strong>${String(winRate).padStart(2, "0")}%</strong></div>
+                    </div>
+
+                    <div class="ccfv-player-card-preview__footer">
+                        <span>CCFV OFFICIAL</span>
+                        <strong>${escapeHTML(rank.name)}</strong>
+                    </div>
+
+                    <div class="ccfv-player-card-preview__particles">
+                        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                    </div>
+                </article>
+
+                <button
+                    type="button"
+                    class="ccfv-player-card-download"
+                    data-download-card="${escapeHTML(player?.id ?? position)}"
+                >
+                    <span>BAIXAR CARD</span>
+                    <span>↓</span>
+                </button>
+            </div>
+        `;
+
+    }
+
+
+    async function downloadPlayerCard(button) {
+
+        const playerId = button?.dataset?.downloadCard;
+        const card = document.querySelector(
+            `[data-card-player-id="${CSS.escape(String(playerId))}"]`
+        );
+
+        if (!card) {
+            return;
+        }
+
+        if (typeof window.html2canvas !== "function") {
+            alert("O gerador do card ainda está carregando. Tente novamente em alguns segundos.");
+            return;
+        }
+
+        const originalText = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = "<span>GERANDO...</span><span>…</span>";
+
+        try {
+            const canvas = await window.html2canvas(card, {
+                backgroundColor: null,
+                scale: 2,
+                useCORS: true,
+                allowTaint: false,
+                imageTimeout: 15000,
+                logging: false
+            });
+
+            const anchor = document.createElement("a");
+            const player = players.find(item => String(item?.id) === String(playerId));
+            const safeName = String(player?.name || "jogador")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-zA-Z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "")
+                .toLowerCase();
+
+            anchor.download = `ccfv-card-${safeName || "jogador"}.png`;
+            anchor.href = canvas.toDataURL("image/png");
+            anchor.click();
+        } catch (error) {
+            console.error("CCFV // ERRO AO GERAR CARD:", error);
+            alert("Não foi possível gerar o card agora. Se o jogador tiver foto externa, confira se a imagem está pública.");
+        } finally {
+            button.disabled = false;
+            button.innerHTML = originalText;
+        }
+
+    }
+
+
+    function bindPlayerCardDownloads() {
+
+        document.querySelectorAll("[data-download-card]").forEach(button => {
+            button.addEventListener("click", () => downloadPlayerCard(button));
+        });
+
+    }
+
+
+    /* =====================================================
        CARD PRÉVIA
        ===================================================== */
 
@@ -2671,69 +2876,46 @@
 
     function renderCards() {
 
-        if (
-            !elements.cards
-        ) {
-
+        if (!elements.cards) {
             return;
-
         }
 
+        const search = document
+            .querySelector("#player-card-search")?.value
+            ?.trim()
+            ?.toLowerCase() || "";
 
-        const cards = [
+        const sortedPlayers = players
+            .slice()
+            .sort((a, b) => {
+                const eloDiff = Number(b?.elo || 0) - Number(a?.elo || 0);
+                if (eloDiff !== 0) return eloDiff;
+                return String(a?.name || "").localeCompare(String(b?.name || ""), "pt-BR");
+            })
+            .filter(player =>
+                !search ||
+                String(player?.name || "").toLowerCase().includes(search) ||
+                String(player?.instagram || "").toLowerCase().includes(search)
+            );
 
-            {
-                rank:
-                    RANK_CONFIG.beginner,
+        elements.cards.innerHTML = sortedPlayers.length
+            ? sortedPlayers
+                .map((player, index) => createPlayerCard(player, index + 1))
+                .join("")
+            : `
+                <div class="ccfv-player-cards-empty">
+                    <strong>NENHUM COMPETIDOR ENCONTRADO.</strong>
+                    <span>Ajuste a busca ou cadastre jogadores pelo Admin.</span>
+                </div>
+            `;
 
-                number:
-                    "001"
-
-            },
-
-            {
-                rank:
-                    RANK_CONFIG.amateur,
-
-                number:
-                    "002"
-
-            },
-
-            {
-                rank:
-                    RANK_CONFIG.professional,
-
-                number:
-                    "003"
-
-            },
-
-            {
-                rank:
-                    RANK_CONFIG.legend,
-
-                number:
-                    "004"
-
-            }
-
-        ];
-
-
-        elements.cards.innerHTML =
-            cards
-                .map(
-                    card =>
-                        createPreviewCard(
-                            card.rank,
-                            card.number
-                        )
-                )
-                .join("");
-
+        const count = document.querySelector("#player-card-count");
+        if (count) {
+            count.textContent = `${sortedPlayers.length} JOGADOR${sortedPlayers.length === 1 ? "" : "ES"}`;
+        }
 
         bindCardMotion();
+        bindPlayerCardDownloads();
 
     }
 
@@ -2897,6 +3079,20 @@
     }
 
 
+    function bindPlayerCardSearch() {
+
+        const input = document.querySelector("#player-card-search");
+
+        if (!input || input.dataset.bound === "true") {
+            return;
+        }
+
+        input.dataset.bound = "true";
+        input.addEventListener("input", () => renderCards());
+
+    }
+
+
     /* =====================================================
        CONTADOR
        ===================================================== */
@@ -3044,6 +3240,7 @@
         refreshAll();
 
         bindFilters();
+        bindPlayerCardSearch();
 
 
         console.log(

@@ -4241,3 +4241,178 @@
         display: none !important;
     }
 }
+
+
+/* =========================================================
+   CCFV // TODOS OS CARDS REAIS + DOWNLOAD
+   ========================================================= */
+
+.ccfv-player-cards-intro {
+    max-width: 620px;
+    margin-top: 16px;
+    color: rgba(255,255,255,.34);
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.ccfv-player-card-toolbar {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 32px 0 22px;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(255,255,255,.025), rgba(255,255,255,.01));
+}
+
+.ccfv-player-card-search {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: min(100%, 420px);
+}
+
+.ccfv-player-card-search span,
+.ccfv-player-card-count {
+    color: rgba(255,255,255,.30);
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: .16em;
+}
+
+.ccfv-player-card-search input {
+    width: 100%;
+    height: 42px;
+    padding: 0 14px;
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 10px;
+    outline: none;
+    color: #fff;
+    background: rgba(255,255,255,.025);
+    font: inherit;
+}
+
+.ccfv-player-card-search input:focus {
+    border-color: rgba(67,223,145,.42);
+    box-shadow: 0 0 0 3px rgba(67,223,145,.06);
+}
+
+.ccfv-player-card-count {
+    padding-bottom: 11px;
+    color: #43df91;
+}
+
+.ccfv-player-card-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+}
+
+.ccfv-player-card-real__photo-frame {
+    align-items: center;
+}
+
+.ccfv-player-card-real__photo-frame img {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.ccfv-player-card-real__initials {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    color: rgba(255,255,255,.35);
+    font-size: 54px;
+    font-weight: 950;
+    letter-spacing: -.08em;
+}
+
+.ccfv-player-card-download {
+    width: 100%;
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 14px 0 18px;
+    border: 1px solid rgba(67,223,145,.16);
+    border-radius: 12px;
+    color: #43df91;
+    background: linear-gradient(135deg, rgba(67,223,145,.075), rgba(67,223,145,.012));
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .13em;
+    cursor: pointer;
+    transition: transform .2s ease, border-color .2s ease, background .2s ease, opacity .2s ease;
+}
+
+.ccfv-player-card-download > span:last-child {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(67,223,145,.18);
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.ccfv-player-card-download:hover {
+    transform: translateY(-2px);
+    border-color: rgba(67,223,145,.46);
+    background: rgba(67,223,145,.09);
+}
+
+.ccfv-player-card-download:disabled {
+    opacity: .62;
+    cursor: wait;
+}
+
+.ccfv-player-cards-empty {
+    grid-column: 1 / -1;
+    min-height: 220px;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 10px;
+    text-align: center;
+    border: 1px dashed rgba(67,223,145,.18);
+    border-radius: 18px;
+    background: rgba(67,223,145,.015);
+}
+
+.ccfv-player-cards-empty strong {
+    color: rgba(255,255,255,.70);
+    font-size: 11px;
+}
+
+.ccfv-player-cards-empty span {
+    color: rgba(255,255,255,.28);
+    font-size: 9px;
+}
+
+@media (max-width: 900px) {
+    .ccfv-player-card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .ccfv-player-card-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 620px) {
+    .ccfv-player-card-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -326,57 +326,6 @@
 
 
         <!-- =================================================
-             ELOS
-             ================================================= -->
-
-        <section
-            class="ccfv-ranking-levels"
-        >
-
-            <div
-                class="ccfv-ranking-container"
-            >
-
-                <div
-                    class="ccfv-ranking-section-heading"
-                >
-
-                    <div>
-
-                        <span>
-                            CCFV // ELO SYSTEM
-                        </span>
-
-                        <h2>
-                            CONQUISTE SUA
-                            <strong>INSÍGNIA.</strong>
-                        </h2>
-
-                    </div>
-
-
-                    <p>
-
-                        Todos começam de baixo.
-                        A evolução precisa ser conquistada.
-
-                    </p>
-
-                </div>
-
-
-                <div
-                    class="ccfv-ranking-level-grid"
-                    id="ranking-level-grid"
-                ></div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
              TOP 1 ABSOLUTO
              ================================================= -->
 
@@ -479,10 +428,10 @@
             </div>
 
             <a
-    href="jogadores.html"
+    href="#player-cards"
     class="ccfv-ranking-view-all"
 >
-    VER RANKING COMPLETO
+    VER TODOS OS CARDS
     <span>→</span>
 </a>
 
@@ -496,6 +445,7 @@
 
         <section
             class="ccfv-player-cards-section"
+            id="player-cards"
         >
 
             <div
@@ -513,14 +463,35 @@
                         </span>
 
                         <h2>
-                            ROSTER DE
+                            TODOS OS
                             <strong>COMPETIDORES.</strong>
                         </h2>
+
+                        <p class="ccfv-player-cards-intro">
+                            Todos os jogadores cadastrados no sistema aparecem aqui.
+                            Cada competidor possui seu card oficial da CCFV para compartilhar.
+                        </p>
 
                     </div>
 
                 </div>
 
+
+                <div class="ccfv-player-card-toolbar">
+
+                    <label class="ccfv-player-card-search">
+                        <span>BUSCAR COMPETIDOR</span>
+                        <input
+                            type="search"
+                            id="player-card-search"
+                            placeholder="Nome do jogador..."
+                            autocomplete="off"
+                        >
+                    </label>
+
+                    <div class="ccfv-player-card-count" id="player-card-count">0 JOGADORES</div>
+
+                </div>
 
                 <div
                     class="ccfv-player-card-grid"
@@ -532,12 +503,68 @@
         </section>
 
 
+        <!-- =================================================
+             ELOS
+             ================================================= -->
+
+        <section
+            class="ccfv-ranking-levels"
+        >
+
+            <div
+                class="ccfv-ranking-container"
+            >
+
+                <div
+                    class="ccfv-ranking-section-heading"
+                >
+
+                    <div>
+
+                        <span>
+                            CCFV // ELO SYSTEM
+                        </span>
+
+                        <h2>
+                            CONQUISTE SUA
+                            <strong>INSÍGNIA.</strong>
+                        </h2>
+
+                    </div>
+
+
+                    <p>
+
+                        Todos começam de baixo.
+                        A evolução precisa ser conquistada.
+
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="ccfv-ranking-level-grid"
+                    id="ranking-level-grid"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+
     </main>
 
 
 
        <script
     src="../js/main.js"
+    defer
+></script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"
     defer
 ></script>
 
