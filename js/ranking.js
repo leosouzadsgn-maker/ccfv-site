@@ -1286,6 +1286,38 @@
     }
 
 
+    function bindLevelCardMotion() {
+
+        if (!elements.levelGrid) return;
+
+        elements.levelGrid
+            .querySelectorAll('.ccfv-ranking-level')
+            .forEach(card => {
+
+                card.addEventListener('pointermove', event => {
+                    const rect = card.getBoundingClientRect();
+                    const px = (event.clientX - rect.left) / rect.width;
+                    const py = (event.clientY - rect.top) / rect.height;
+                    const rx = (0.5 - py) * 6;
+                    const ry = (px - 0.5) * 8;
+                    card.style.setProperty('--level-rx', `${rx}deg`);
+                    card.style.setProperty('--level-ry', `${ry}deg`);
+                    card.style.setProperty('--level-mx', `${px * 100}%`);
+                    card.style.setProperty('--level-my', `${py * 100}%`);
+                    card.classList.add('is-hovering');
+                });
+
+                card.addEventListener('pointerleave', () => {
+                    card.style.setProperty('--level-rx', '0deg');
+                    card.style.setProperty('--level-ry', '0deg');
+                    card.style.setProperty('--level-mx', '50%');
+                    card.style.setProperty('--level-my', '50%');
+                    card.classList.remove('is-hovering');
+                });
+            });
+    }
+
+
     function renderLevels() {
 
         if (
@@ -1479,6 +1511,8 @@
                     }
                 )
                 .join("");
+
+        bindLevelCardMotion();
 
     }
 
@@ -2075,7 +2109,8 @@
                     Number(
                         a.elo || 0
                     )
-            );
+            )
+            .slice(0, 10);
 
 
     if (

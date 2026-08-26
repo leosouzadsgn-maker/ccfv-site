@@ -273,6 +273,53 @@
     }
 
 
+
+
+    /* =====================================================
+       DADOS AO VIVO DA CCFV
+       ===================================================== */
+
+    function syncPlayersFromLive() {
+
+        const live = window.CCFVLiveAPI;
+
+        if (!live || !live.isReady()) {
+            return false;
+        }
+
+        const state = live.getState();
+        const liveRanking = Array.isArray(state?.ranking) ? state.ranking : [];
+        const livePlayers = Array.isArray(state?.players) ? state.players : [];
+        const source = liveRanking.length ? liveRanking : livePlayers;
+
+        players.splice(
+            0,
+            players.length,
+            ...source.map(player => ({ ...player }))
+        );
+
+        return true;
+    }
+
+
+    async function waitForLivePlayers() {
+
+        try {
+            const live = window.CCFVLiveAPI;
+            if (live) {
+                if (!live.isReady()) {
+                    await live.refresh('players-directory');
+                }
+                if (syncPlayersFromLive()) {
+                    renderPlayers();
+                }
+            }
+        } catch (error) {
+            console.error('CCFV // ERRO AO CARREGAR DIRETORIO:', error);
+        }
+
+    }
+
     /* =====================================================
        AVISO
        ===================================================== */
@@ -2400,6 +2447,18 @@
         bindEvents();
 
         openFromURL();
+
+        waitForLivePlayers();
+
+        window.addEventListener(
+            'ccfv:live-update',
+            () => {
+                if (syncPlayersFromLive()) {
+                    renderPlayers();
+                    openFromURL();
+                }
+            }
+        );
 
 
         console.log(
