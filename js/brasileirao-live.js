@@ -442,6 +442,7 @@
         const direct =
             number(
                 match.round_number ??
+                match.round_number_value ??
                 match.round
             );
 
@@ -570,7 +571,9 @@
                     fixture.match
                 )
                 : number(
-                    match.match_number
+                    match.match_number ??
+                    match.match ??
+                    match.game_number
                 );
 
 
@@ -719,6 +722,13 @@
         const api =
             getBrazilApi();
 
+        console.log(
+            "%cCCFV // BRASILEIRÃO SOURCE",
+            "color:#43df91;font-weight:900;",
+            "matches:",
+            window.CCFVLive?.matches?.length || 0
+        );
+
 
         if (
             !api
@@ -750,19 +760,27 @@
 
         state.matches
             .filter(
-                match =>
-                    normalize(
-                        match.competition
-                    ).startsWith(
-                        "BRASILEIRAO"
-                    )
+                match => {
+                    const competition = normalize(
+                        match.competition ||
+                        match.competition_name ||
+                        match.championship ||
+                        match.tournament ||
+                        ""
+                    );
+
+                    return competition.startsWith("BRASILEIRAO");
+                }
             )
             .filter(
                 match => {
 
                     const status =
                         normalize(
-                            match.status
+                            match.status ||
+                            match.state ||
+                            match.match_status ||
+                            ""
                         );
 
                     return (
@@ -773,7 +791,8 @@
                         status === "CONCLUIDO" ||
                         status === "ENCERRADA" ||
                         status === "FINALIZADA" ||
-                        status === "FINALIZADO"
+                        status === "FINALIZADO" ||
+                        status === "DONE"
                     );
 
                 }
@@ -954,6 +973,11 @@
         const results =
             buildResults();
 
+        console.log(
+            "%cCCFV // BRASILEIRÃO APPLY",
+            "color:#43df91;font-weight:900;",
+            results
+        );
 
         if (
             !Array.isArray(
@@ -1089,6 +1113,18 @@
 
         applyResults();
 
+        /*
+         * Reforço inicial: a tabela confere várias vezes
+         * enquanto o Supabase/Live Engine termina de carregar.
+         */
+        let bootstrapChecks = 0;
+        const bootstrapTimer = window.setInterval(() => {
+            bootstrapChecks += 1;
+            applyResults();
+            if (bootstrapChecks >= 12) {
+                window.clearInterval(bootstrapTimer);
+            }
+        }, 1000);
 
         /*
          * Fallback de segurança.
@@ -1099,9 +1135,7 @@
 
         window.setInterval(
             () => {
-
                 applyResults();
-
             },
             30000
         );

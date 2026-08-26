@@ -1894,7 +1894,14 @@
                 new Date();
 
 
-            syncBrasileirao();
+            /*
+             * O Brasileirão possui um sincronizador próprio
+             * (brasileirao-live.js), que converte os clubes
+             * para os IDs oficiais dos fixtures antes de
+             * recalcular a tabela. Não sobrescreva aqui com
+             * nomes crus do banco, pois isso faria a tabela
+             * zerar.
+             */
 
             syncNightCup();
 
