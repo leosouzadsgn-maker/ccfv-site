@@ -10,7 +10,8 @@
         players: "players",
         playerCompetitions: "player_competitions",
         matches: "matches",
-        night: "night_cup_matches"
+        night: "night_cup_matches",
+        ranking: "ccfv_ranking"
     };
 
     const REALTIME_TABLES = [
@@ -136,6 +137,36 @@
         return data || [];
     }
 
+
+
+    async function loadRanking(client) {
+
+        try {
+
+            const { data, error } = await client
+                .from(TABLES.ranking)
+                .select("*")
+                .order("ranking_position", { ascending: true });
+
+            if (error) {
+                throw error;
+            }
+
+            return Array.isArray(data) ? data : [];
+
+        } catch (error) {
+
+            console.warn(
+                "CCFV // RANKING VIEW: usando fallback dos jogadores.",
+                error
+            );
+
+            return [];
+
+        }
+
+    }
+
     async function loadNightMatches(client) {
         const { data, error } = await client
             .from(TABLES.night)
@@ -248,10 +279,15 @@
 
             .filter(
                 match =>
-                    normalize(
-                        match.status
-                    ) ===
-                    "FINAL"
+                    [
+                        "FINAL",
+                        "FINISHED",
+                        "COMPLETED",
+                        "CONCLUIDA",
+                        "ENCERRADA"
+                    ].includes(
+                        normalize(match.status)
+                    )
             )
 
             .map(
@@ -1603,23 +1639,22 @@
                 : 0;
 
 
+        const completedBrazil =
+            brazilMatches.filter(match =>
+                [
+                    "FINAL",
+                    "FINISHED",
+                    "COMPLETED",
+                    "CONCLUIDA",
+                    "ENCERRADA"
+                ].includes(normalize(match.status))
+            ).length;
+
         const values = [
-
             "20",
-
-            String(
-                currentRound
-            ),
-
-            String(
-                state.matches.length
-            ),
-
-            brazilMatches.length >=
-                380
-                ? "1"
-                : "0"
-
+            String(currentRound),
+            String(completedBrazil),
+            completedBrazil >= 380 ? "1" : "0"
         ];
 
 
@@ -1803,58 +1838,51 @@
                 await getSupabase();
 
 
-            const [
-
-                players,
-
-                playerCompetitions,
-
-                matches,
-
-                nightMatches
-
-            ] =
-                await Promise.all([
-
-                    loadPlayers(
-                        client
-                    ),
-
-                    loadPlayerCompetitions(
-                        client
-                    ),
-
-                    loadMatches(
-                        client
-                    ),
-
-                    loadNightMatches(
-                        client
-                    )
-
+            const results =
+                await Promise.allSettled([
+                    loadPlayers(client),
+                    loadPlayerCompetitions(client),
+                    loadMatches(client),
+                    loadNightMatches(client),
+                    loadRanking(client)
                 ]);
 
+            const [
+                playersResult,
+                playerCompetitionsResult,
+                matchesResult,
+                nightMatchesResult,
+                rankingResult
+            ] = results;
+
+            const readResult = (result, label) => {
+                if (result.status === "fulfilled") {
+                    return Array.isArray(result.value) ? result.value : [];
+                }
+
+                console.error(`CCFV // LIVE ${label}:`, result.reason);
+                return [];
+            };
 
             state.players =
-                players;
-
+                readResult(playersResult, "PLAYERS");
 
             state.playerCompetitions =
-                playerCompetitions;
-
+                readResult(playerCompetitionsResult, "PLAYER_COMPETITIONS");
 
             state.matches =
-                matches;
-
+                readResult(matchesResult, "MATCHES");
 
             state.nightMatches =
-                nightMatches;
+                readResult(nightMatchesResult, "NIGHT CUP");
 
+            const officialRanking =
+                readResult(rankingResult, "RANKING");
 
             state.ranking =
-                buildLiveRanking(
-                    players
-                );
+                officialRanking.length
+                    ? officialRanking
+                    : buildLiveRanking(state.players);
 
 
             state.updatedAt =
@@ -2024,9 +2052,9 @@
 
         refresh,
 
-        getState:
-            () =>
-                state
+        getState: () => state,
+
+        isReady: () => Boolean(state.updatedAt)
 
     };
 

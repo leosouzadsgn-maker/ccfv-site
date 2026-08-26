@@ -184,171 +184,52 @@
        LOCALIZAR TIME
        ===================================================== */
 
-   function resolveTeam(
-    value,
-    teams
-) {
-
-    const normalized =
-        normalize(
-            value
-        );
-
-
-    const numeric =
-        Number(
-            value
-        );
-
-
-    /*
-     * 1. ID direto
-     */
-
-    if (
-        Number.isFinite(
-            numeric
-        ) &&
-        numeric > 0
+    function resolveTeam(
+        value,
+        teams
     ) {
 
-        const byId =
-            teams.find(
-                team =>
-                    Number(
-                        team.id
-                    ) ===
-                    numeric
+        const normalized =
+            normalize(
+                value
+            );
+
+
+        /*
+         * ID direto
+         */
+
+        const numeric =
+            Number(
+                value
             );
 
 
         if (
-            byId
+            Number.isFinite(
+                numeric
+            ) &&
+            numeric > 0
         ) {
 
-            return byId;
-
-        }
-
-    }
-
-
-    /*
-     * 2. Nome exato
-     */
-
-    const byName =
-        teams.find(
-            team =>
-                normalize(
-                    team.name
-                ) ===
-                normalized
-        );
-
-
-    if (
-        byName
-    ) {
-
-        return byName;
-
-    }
-
-
-    /*
-     * 3. Short name exato
-     */
-
-    const byShortName =
-        teams.find(
-            team =>
-                normalize(
-                    team.shortName
-                ) ===
-                normalized
-        );
-
-
-    if (
-        byShortName
-    ) {
-
-        return byShortName;
-
-    }
-
-
-    /*
-     * 4. Nome do clube dentro do texto.
-     *
-     * Exemplo:
-     *
-     * "PALMEIRAS TESTE PALMEIRAS"
-     *
-     * encontra:
-     *
-     * "PALMEIRAS"
-     */
-
-    const byContainedName =
-        teams.find(
-            team => {
-
-                const teamName =
-                    normalize(
-                        team.name
-                    );
-
-
-                const shortName =
-                    normalize(
-                        team.shortName
-                    );
-
-
-                return (
-                    (
-                        teamName &&
-                        (
-                            normalized.includes(
-                                teamName
-                            ) ||
-                            teamName.includes(
-                                normalized
-                            )
-                        )
-                    )
-                    ||
-                    (
-                        shortName &&
-                        (
-                            normalized.includes(
-                                shortName
-                            ) ||
-                            shortName.includes(
-                                normalized
-                            )
-                        )
-                    )
+            const byId =
+                teams.find(
+                    team =>
+                        Number(
+                            team.id
+                        ) ===
+                        numeric
                 );
 
+
+            if (
+                byId
+            ) {
+
+                return byId;
+
             }
-        );
 
-
-    if (
-        byContainedName
-    ) {
-
-        return byContainedName;
-
-    }
-
-
-    return null;
-
-}
         }
 
 

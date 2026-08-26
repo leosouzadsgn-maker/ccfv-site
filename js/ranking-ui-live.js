@@ -783,40 +783,51 @@
     }
 
 
-    async function loadRanking(
-        client
-    ) {
+    async function loadRanking() {
 
-        const {
-            data,
-            error
-        } =
-            await client
-                .from(
-                    TABLES.ranking
-                )
-                .select(
-                    "*"
-                )
-                .order(
-                    "ranking_position",
-                    {
-                        ascending:
-                            true
-                    }
-                );
+        const live =
+            window.CCFVLiveAPI;
 
-
-        if (
-            error
-        ) {
-
-            throw error;
-
+        if (!live) {
+            throw new Error(
+                "CCFVLiveAPI ainda não está disponível."
+            );
         }
 
+        if (!live.isReady()) {
+            await live.refresh("ranking-ui");
+        }
 
-        return data || [];
+        const sharedState =
+            live.getState();
+
+        state.players =
+            Array.isArray(sharedState.players)
+                ? sharedState.players
+                : [];
+
+        state.playerCompetitions =
+            Array.isArray(sharedState.playerCompetitions)
+                ? sharedState.playerCompetitions
+                : [];
+
+        state.matches =
+            Array.isArray(sharedState.matches)
+                ? sharedState.matches
+                : [];
+
+        state.nightMatches =
+            Array.isArray(sharedState.nightMatches)
+                ? sharedState.nightMatches
+                : [];
+
+        state.ranking =
+            Array.isArray(sharedState.ranking)
+                ? sharedState.ranking
+                : [];
+
+        state.updatedAt =
+            sharedState.updatedAt || new Date();
 
     }
 
@@ -1395,135 +1406,42 @@
             "manual"
     ) {
 
-        if (
-            refreshing
-        ) {
-
+        if (refreshing) {
             return;
-
         }
 
-
-        refreshing =
-            true;
-
+        refreshing = true;
 
         try {
 
-            const client =
-                await getSupabase();
+            const live =
+                window.CCFVLiveAPI;
 
+            if (!live) {
+                throw new Error(
+                    "CCFVLiveAPI não está disponível."
+                );
+            }
 
-            const [
-
-                players,
-
-                playerCompetitions,
-
-                matches,
-
-                nightMatches,
-
-                ranking
-
-            ] =
-                await Promise.all([
-
-                    loadPlayers(
-                        client
-                    ),
-
-                    loadPlayerCompetitions(
-                        client
-                    ),
-
-                    loadMatches(
-                        client
-                    ),
-
-                    loadNightMatches(
-                        client
-                    ),
-
-                    loadRanking(
-                        client
-                    )
-
-                ]);
-
-
-            state.players =
-                players;
-
-
-            state.playerCompetitions =
-                playerCompetitions;
-
-
-            state.matches =
-                matches;
-
-
-            state.nightMatches =
-                nightMatches;
-
-
-            state.ranking =
-                ranking;
-
-
-            state.updatedAt =
-                new Date();
-
+            await live.refresh(`ranking-ui:${reason}`);
+            await loadRanking();
 
             syncRanking();
-
             syncBrasileirao();
-
             syncHome();
-
             syncCounters();
-
             exposeState();
 
-
-            console.log(
-                "%cCCFV // LIVE",
-                "color:#43df91;font-weight:900;",
-                reason,
-                {
-                    players:
-                        state.players.length,
-
-                    ranking:
-                        state.ranking.length,
-
-                    matches:
-                        state.matches.length,
-
-                    night:
-                        state.nightMatches.length
-
-                }
-            );
-
-        }
-
-        catch (
-            error
-        ) {
+        } catch (error) {
 
             console.error(
-                "CCFV // LIVE ERROR:",
+                "CCFV // RANKING UI ERROR:",
                 error
             );
 
-        }
+        } finally {
 
-        finally {
-
-            refreshing =
-                false;
+            refreshing = false;
 
         }
 
@@ -1534,92 +1452,53 @@
        REALTIME
        ===================================================== */
 
-    function subscribeRealtime(
-        client
-    ) {
+    function subscribeRealtime() {
 
-        if (
-            channel
-        ) {
+        window.addEventListener(
+            "ccfv:live-update",
+            event => {
 
-            try {
+                const shared =
+                    event?.detail?.state ||
+                    window.CCFVLiveAPI?.getState?.();
 
-                client.removeChannel(
-                    channel
-                );
+                if (!shared) {
+                    return;
+                }
 
-            }
+                state.players =
+                    Array.isArray(shared.players)
+                        ? shared.players
+                        : [];
 
-            catch (
-                error
-            ) {
+                state.playerCompetitions =
+                    Array.isArray(shared.playerCompetitions)
+                        ? shared.playerCompetitions
+                        : [];
 
-                console.warn(
-                    "CCFV // CHANNEL:",
-                    error
-                );
+                state.matches =
+                    Array.isArray(shared.matches)
+                        ? shared.matches
+                        : [];
 
-            }
+                state.nightMatches =
+                    Array.isArray(shared.nightMatches)
+                        ? shared.nightMatches
+                        : [];
 
-        }
+                state.ranking =
+                    Array.isArray(shared.ranking)
+                        ? shared.ranking
+                        : [];
 
+                state.updatedAt =
+                    shared.updatedAt || new Date();
 
-        channel =
-            client.channel(
-                "ccfv-live-public"
-            );
-
-
-        REALTIME_TABLES.forEach(
-            table => {
-
-                channel.on(
-                    "postgres_changes",
-                    {
-
-                        event:
-                            "*",
-
-                        schema:
-                            "public",
-
-                        table
-
-                    },
-                    () => {
-
-                        clearTimeout(
-                            refreshTimer
-                        );
-
-
-                        refreshTimer =
-                            setTimeout(
-                                () => {
-
-                                    refresh(
-                                        `realtime:${table}`
-                                    );
-
-                                },
-                                200
-                            );
-
-                    }
-                );
-
-            }
-        );
-
-
-        channel.subscribe(
-            status => {
-
-                console.log(
-                    "%cCCFV // REALTIME",
-                    "color:#43df91;font-weight:900;",
-                    status
-                );
+                syncRanking();
+                syncBrasileirao();
+                syncHome();
+                syncCounters();
+                exposeState();
 
             }
         );
@@ -1631,15 +1510,11 @@
        API
        ===================================================== */
 
-    window.CCFVLiveAPI = {
+    window.CCFVRankingUIAPI = {
 
         state,
-
         refresh,
-
-        getState:
-            () =>
-                state
+        getState: () => state
 
     };
 
@@ -1664,17 +1539,10 @@
 
         try {
 
-            const client =
-                await getSupabase();
-
+            subscribeRealtime();
 
             await refresh(
                 "initial"
-            );
-
-
-            subscribeRealtime(
-                client
             );
 
 
