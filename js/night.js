@@ -444,68 +444,45 @@
             window.CCFVLive;
 
 
-        if (
-            !state
-        ) {
-
+        if (!state) {
             return [];
-
         }
 
+        /*
+         * FONTE OFICIAL DA NIGHT CUP
+         *
+         * O Admin grava os confrontos/resultados em
+         * `night_cup_matches`. O motor CCFVLive carrega essa
+         * tabela em `state.nightMatches`. Antes, esta página
+         * consultava `state.matches` (a tabela geral de partidas),
+         * o que fazia o bracket ficar defasado quando o resultado
+         * era atualizado somente no módulo da Night Cup.
+         *
+         * Mantemos um fallback para `state.matches` apenas quando
+         * `state.nightMatches` ainda não estiver disponível, sem
+         * duplicar os dados oficiais quando estiver carregado.
+         */
+        const source =
+            Array.isArray(state.nightMatches) &&
+            state.nightMatches.length
+                ? state.nightMatches
+                : Array.isArray(state.matches)
+                    ? state.matches
+                    : [];
 
-        if (
-            !Array.isArray(
-                state.matches
-            )
-        ) {
+        return source
+            .filter(match => {
+                const competition = normalize(match.competition);
 
-            return [];
-
-        }
-
-
-        return state.matches
-
-            .filter(
-                match =>
-                    normalize(
-                        match.competition
-                    ) ===
-                    "NIGHT_CUP"
-            )
-
-            .filter(
-                match =>
-                    getStage(
-                        match
-                    ) !==
-                    ""
-            )
-
-            .sort(
-                (
-                    a,
-                    b
-                ) => {
-
-                    const aNumber =
-                        getMatchNumber(
-                            a
-                        );
-
-
-                    const bNumber =
-                        getMatchNumber(
-                            b
-                        );
-
-
-                    return (
-                        aNumber -
-                        bNumber
-                    );
-
-                }
+                return (
+                    competition === "NIGHT_CUP" ||
+                    competition === "NIGHT CUP" ||
+                    !competition
+                );
+            })
+            .filter(match => getStage(match) !== "")
+            .sort((a, b) =>
+                getMatchNumber(a) - getMatchNumber(b)
             );
 
     }
