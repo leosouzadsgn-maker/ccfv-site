@@ -904,6 +904,23 @@
        RODADA
        ===================================================== */
 
+    function shuffleMatches(items) {
+
+        const shuffled = [...items];
+
+        for (let i = shuffled.length - 1; i > 0; i -= 1) {
+
+            const j = Math.floor(Math.random() * (i + 1));
+
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+
+        }
+
+        return shuffled;
+
+    }
+
+
     function renderRound(round) {
 
         if (!elements.matches) {
@@ -913,10 +930,19 @@
         }
 
 
-        const matches =
+        const roundMatches =
             fixtures.filter(
                 match =>
                     match.round === Number(round)
+            );
+
+
+        // A ordem visual da rodada é aleatória.
+        // O número oficial da partida permanece ligado ao confronto,
+        // então a identificação da partida não é perdida.
+        const matches =
+            shuffleMatches(
+                roundMatches
             );
 
 
@@ -929,11 +955,21 @@
                 .join("");
 
 
-        renderFeatured(
-            matches[
-                CCFV_BRASILEIRAO.featuredMatch
-            ]
-        );
+        // O destaque também é sorteado a cada renderização da rodada.
+        if (matches.length) {
+
+            CCFV_BRASILEIRAO.featuredMatch =
+                Math.floor(
+                    Math.random() * matches.length
+                );
+
+            renderFeatured(
+                matches[
+                    CCFV_BRASILEIRAO.featuredMatch
+                ]
+            );
+
+        }
 
 
         if (elements.roundStatus) {
