@@ -453,15 +453,18 @@
         }
 
 
-       if (
-    !Array.isArray(
-        state.nightMatches
-    )
-) {
-    return [];
-}
+        if (
+            !Array.isArray(
+                state.matches
+            )
+        ) {
 
-return state.nightMatches
+            return [];
+
+        }
+
+
+        return state.matches
 
             .filter(
                 match =>
