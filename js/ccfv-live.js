@@ -284,7 +284,10 @@
                         "FINISHED",
                         "COMPLETED",
                         "CONCLUIDA",
-                        "ENCERRADA"
+                        "CONCLUIDO",
+                        "ENCERRADA",
+                        "FINALIZADA",
+                        "FINALIZADO"
                     ].includes(
                         normalize(match.status)
                     )

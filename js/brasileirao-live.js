@@ -769,8 +769,10 @@
                         status === "FINISHED" ||
                         status === "COMPLETED" ||
                         status === "CONCLUIDA" ||
-                        status === "CONCLUÍDA" ||
-                        status === "ENCERRADA"
+                        status === "CONCLUIDO" ||
+                        status === "ENCERRADA" ||
+                        status === "FINALIZADA" ||
+                        status === "FINALIZADO"
                     );
 
                 }
