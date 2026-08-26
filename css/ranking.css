@@ -4709,3 +4709,64 @@
         transition: none !important;
     }
 }
+
+
+/* =========================================================
+   CCFV // ELO CARDS — FOTO PRINCIPAL MAIOR
+   ========================================================= */
+
+.ccfv-ranking-level__leader-photo {
+    top: 112px !important;
+    right: 22px !important;
+    width: 126px !important;
+    height: 158px !important;
+    border-radius: 18px !important;
+}
+
+.ccfv-ranking-level__leader-photo img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center top !important;
+}
+
+.ccfv-ranking-level__leader-photo > span {
+    font-size: 30px !important;
+}
+
+.ccfv-ranking-level__name {
+    margin-top: 182px !important;
+    padding-right: 150px !important;
+}
+
+.ccfv-ranking-level__range {
+    padding-right: 150px !important;
+}
+
+.ccfv-ranking-level__leader {
+    padding-right: 150px !important;
+}
+
+.ccfv-ranking-level__leader-photo,
+.ccfv-ranking-level__badge-art {
+    pointer-events: none;
+}
+
+@media (max-width: 900px) {
+    .ccfv-ranking-level__leader-photo {
+        width: 108px !important;
+        height: 138px !important;
+        top: 108px !important;
+    }
+
+    .ccfv-ranking-level__name {
+        margin-top: 160px !important;
+        padding-right: 126px !important;
+    }
+
+    .ccfv-ranking-level__range,
+    .ccfv-ranking-level__leader {
+        padding-right: 126px !important;
+    }
+}
+

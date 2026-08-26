@@ -2565,7 +2565,10 @@
             return;
         }
 
-        if (typeof window.html2canvas !== "function") {
+        const exporter = window.htmlToImage;
+        const legacyExporter = window.html2canvas;
+
+        if (!exporter && typeof legacyExporter !== "function") {
             alert("O gerador do card ainda está carregando. Tente novamente em alguns segundos.");
             return;
         }
@@ -2575,17 +2578,49 @@
         button.innerHTML = "<span>GERANDO...</span><span>…</span>";
 
         try {
-            const canvas = await window.html2canvas(card, {
-                backgroundColor: null,
-                scale: 2,
-                useCORS: true,
-                allowTaint: false,
-                imageTimeout: 15000,
-                logging: false
-            });
+            await document.fonts.ready;
 
-            const anchor = document.createElement("a");
-            const player = players.find(item => String(item?.id) === String(playerId));
+            const options = {
+                cacheBust: true,
+                pixelRatio: 3,
+                backgroundColor: "transparent",
+                imagePlaceholder: "",
+                skipFonts: false,
+                style: {
+                    transform: "none"
+                },
+                filter: (node) => {
+                    return !(
+                        node instanceof Element &&
+                        node.matches(".ccfv-player-card-download")
+                    );
+                }
+            };
+
+            let dataUrl = "";
+
+            if (exporter && typeof exporter.toPng === "function") {
+                dataUrl = await exporter.toPng(card, options);
+            } else {
+                const canvas = await legacyExporter(card, {
+                    backgroundColor: null,
+                    scale: 3,
+                    useCORS: true,
+                    allowTaint: false,
+                    imageTimeout: 15000,
+                    logging: false
+                });
+                dataUrl = canvas.toDataURL("image/png");
+            }
+
+            if (!dataUrl || !dataUrl.startsWith("data:image/png")) {
+                throw new Error("PNG inválido.");
+            }
+
+            const player = players.find(
+                item => String(item?.id) === String(playerId)
+            );
+
             const safeName = String(player?.name || "jogador")
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "")
@@ -2593,19 +2628,23 @@
                 .replace(/^-+|-+$/g, "")
                 .toLowerCase();
 
+            const anchor = document.createElement("a");
             anchor.download = `ccfv-card-${safeName || "jogador"}.png`;
-            anchor.href = canvas.toDataURL("image/png");
+            anchor.href = dataUrl;
+            anchor.style.display = "none";
+            document.body.appendChild(anchor);
             anchor.click();
+            anchor.remove();
+
         } catch (error) {
             console.error("CCFV // ERRO AO GERAR CARD:", error);
-            alert("Não foi possível gerar o card agora. Se o jogador tiver foto externa, confira se a imagem está pública.");
+            alert("Não foi possível gerar o card agora. A foto precisa estar em uma URL pública com CORS habilitado para entrar no PNG.");
         } finally {
             button.disabled = false;
             button.innerHTML = originalText;
         }
 
     }
-
 
     function bindPlayerCardDownloads() {
 
