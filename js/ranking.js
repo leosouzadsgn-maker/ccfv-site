@@ -1298,8 +1298,8 @@
                     const rect = card.getBoundingClientRect();
                     const px = (event.clientX - rect.left) / rect.width;
                     const py = (event.clientY - rect.top) / rect.height;
-                    const rx = (0.5 - py) * 6;
-                    const ry = (px - 0.5) * 8;
+                    const rx = (0.5 - py) * 9;
+                    const ry = (px - 0.5) * 12;
                     card.style.setProperty('--level-rx', `${rx}deg`);
                     card.style.setProperty('--level-ry', `${ry}deg`);
                     card.style.setProperty('--level-mx', `${px * 100}%`);

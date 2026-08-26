@@ -4507,3 +4507,205 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* =========================================================
+   CCFV // ELO CARDS — PREMIUM 3D FINISH
+   ========================================================= */
+
+.ccfv-ranking-level-grid {
+    perspective: 1500px;
+    gap: 18px;
+}
+
+.ccfv-ranking-level {
+    --card-accent: #43df91;
+    --card-glow: rgba(67,223,145,.18);
+    --card-sheen: rgba(255,255,255,.10);
+    position: relative;
+    min-height: 405px;
+    padding: 26px 24px 24px;
+    border-radius: 24px;
+    transform-style: preserve-3d;
+    will-change: transform;
+    backface-visibility: hidden;
+    transition:
+        transform .18s cubic-bezier(.2,.75,.25,1),
+        box-shadow .24s ease,
+        border-color .24s ease,
+        filter .24s ease;
+    box-shadow:
+        0 18px 40px rgba(0,0,0,.24),
+        inset 0 1px 0 rgba(255,255,255,.035);
+}
+
+.ccfv-ranking-level::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    z-index: 0;
+    border-radius: 23px;
+    pointer-events: none;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.08),
+            transparent 20%,
+            transparent 74%,
+            rgba(255,255,255,.03)
+        );
+    opacity: .7;
+}
+
+.ccfv-ranking-level::after {
+    inset: -25%;
+    z-index: 1;
+    background:
+        radial-gradient(
+            330px circle at var(--level-mx, 50%) var(--level-my, 50%),
+            var(--card-glow),
+            transparent 60%
+        );
+    mix-blend-mode: screen;
+}
+
+.ccfv-ranking-level > * {
+    position: relative;
+    z-index: 3;
+    transform-style: preserve-3d;
+}
+
+.ccfv-ranking-level__top {
+    transform: translateZ(30px);
+}
+
+.ccfv-ranking-level__number {
+    text-shadow: 0 0 22px rgba(255,255,255,.04);
+}
+
+.ccfv-ranking-level__leader-label {
+    color: rgba(255,255,255,.35);
+}
+
+.ccfv-ranking-level__badge-art {
+    transform: translateZ(62px);
+    animation: ccfv-level-badge-float 4.8s ease-in-out infinite;
+    filter: drop-shadow(0 18px 22px var(--card-glow));
+    transition: filter .22s ease, transform .22s ease;
+}
+
+.ccfv-ranking-level__badge-art .ccfv-badge {
+    transition: transform .22s ease;
+}
+
+.ccfv-ranking-level__leader-photo {
+    transform: translateZ(42px);
+    box-shadow:
+        inset 0 0 28px rgba(0,0,0,.30),
+        0 14px 28px rgba(0,0,0,.22);
+    transition:
+        transform .22s cubic-bezier(.2,.75,.25,1),
+        box-shadow .22s ease,
+        border-color .22s ease;
+}
+
+.ccfv-ranking-level__leader-photo img {
+    transform: scale(1.03);
+    transition: transform .35s ease, filter .35s ease;
+}
+
+.ccfv-ranking-level__name {
+    position: relative;
+    z-index: 4;
+    transform: translateZ(34px);
+    text-shadow: 0 8px 28px rgba(0,0,0,.28);
+}
+
+.ccfv-ranking-level__range,
+.ccfv-ranking-level__leader {
+    transform: translateZ(24px);
+}
+
+.ccfv-ranking-level.is-hovering {
+    transform:
+        perspective(1200px)
+        rotateX(var(--level-rx, 0deg))
+        rotateY(var(--level-ry, 0deg))
+        translateY(-14px)
+        scale(1.025);
+    border-color: color-mix(in srgb, var(--card-accent) 42%, rgba(255,255,255,.12));
+    filter: saturate(1.08) brightness(1.035);
+    box-shadow:
+        0 30px 70px rgba(0,0,0,.34),
+        0 0 42px var(--card-glow),
+        inset 0 1px 0 rgba(255,255,255,.07),
+        inset 0 0 70px rgba(255,255,255,.015);
+}
+
+.ccfv-ranking-level.is-hovering .ccfv-ranking-level__badge-art {
+    transform: translateZ(82px) translateY(-7px) rotate(-1deg) scale(1.035);
+    filter: drop-shadow(0 24px 30px var(--card-glow));
+}
+
+.ccfv-ranking-level.is-hovering .ccfv-ranking-level__badge-art .ccfv-badge {
+    transform: rotate(1.2deg) scale(1.015);
+}
+
+.ccfv-ranking-level.is-hovering .ccfv-ranking-level__leader-photo {
+    transform: translateZ(58px) translateY(-7px) scale(1.03);
+    border-color: color-mix(in srgb, var(--card-accent) 28%, rgba(255,255,255,.10));
+    box-shadow:
+        inset 0 0 28px rgba(0,0,0,.26),
+        0 20px 36px rgba(0,0,0,.28),
+        0 0 22px var(--card-glow);
+}
+
+.ccfv-ranking-level.is-hovering .ccfv-ranking-level__leader-photo img {
+    transform: scale(1.07);
+}
+
+.ccfv-ranking-level--beginner {
+    --card-accent: #b9c5bf;
+    --card-glow: rgba(185,197,191,.16);
+}
+
+.ccfv-ranking-level--amateur {
+    --card-accent: #69a8ff;
+    --card-glow: rgba(105,168,255,.20);
+}
+
+.ccfv-ranking-level--professional {
+    --card-accent: #43df91;
+    --card-glow: rgba(67,223,145,.20);
+}
+
+.ccfv-ranking-level--legend {
+    --card-accent: #ffc252;
+    --card-glow: rgba(255,194,82,.24);
+}
+
+.ccfv-ranking-level--legend.is-hovering {
+    box-shadow:
+        0 30px 75px rgba(0,0,0,.36),
+        0 0 52px rgba(255,194,82,.16),
+        inset 0 1px 0 rgba(255,255,255,.08),
+        inset 0 0 80px rgba(255,194,82,.03);
+}
+
+@keyframes ccfv-level-badge-float {
+    0%, 100% {
+        transform: translateZ(62px) translateY(0);
+    }
+    50% {
+        transform: translateZ(62px) translateY(-5px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ccfv-ranking-level,
+    .ccfv-ranking-level__badge-art,
+    .ccfv-ranking-level__leader-photo,
+    .ccfv-ranking-level__leader-photo img {
+        animation: none !important;
+        transition: none !important;
+    }
+}
