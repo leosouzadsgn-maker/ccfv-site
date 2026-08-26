@@ -446,13 +446,250 @@
        BASE DE PARTIDAS
        ===================================================== */
 
-    const partidas = [
+    let partidas = [
 
         ...generateBrasileiraoRoundOne(),
 
         ...generateNightCup()
 
     ];
+
+
+    /* =====================================================
+       DADOS AO VIVO — ADMIN -> SUPABASE -> MATCH CENTER
+       ===================================================== */
+
+    function normalize(value) {
+
+        return String(value ?? "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim()
+            .toUpperCase();
+
+    }
+
+
+    function liveStatus(value) {
+
+        const status = normalize(value);
+
+        if (
+            status === "FINAL" ||
+            status === "FINALIZADA" ||
+            status === "FINALIZADO" ||
+            status === "FINISHED" ||
+            status === "COMPLETED" ||
+            status === "CONCLUIDA" ||
+            status === "ENCERRADA"
+        ) {
+
+            return "finished";
+
+        }
+
+        if (
+            status === "CANCELLED" ||
+            status === "CANCELED"
+        ) {
+
+            return "cancelled";
+
+        }
+
+        return "upcoming";
+
+    }
+
+
+    function formatLiveDate(value) {
+
+        if (!value) {
+
+            return "DATA A DEFINIR";
+
+        }
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+
+            return "DATA A DEFINIR";
+
+        }
+
+        return date.toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        });
+
+    }
+
+
+    function formatLiveTime(value) {
+
+        if (!value) {
+
+            return "HORÁRIO A DEFINIR";
+
+        }
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+
+            return "HORÁRIO A DEFINIR";
+
+        }
+
+        return date.toLocaleTimeString("pt-BR", {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+
+    }
+
+
+    function teamFromLive(value, fallbackCrest = null) {
+
+        const raw = String(value ?? "").trim();
+
+        const numeric = Number(value);
+        const byId = Number.isFinite(numeric)
+            ? getTeam(numeric)
+            : null;
+
+        const byName = teams.find(
+            team => normalize(team.name) === normalize(raw)
+        );
+
+        const team = byId || byName;
+
+        if (team) {
+
+            return team;
+
+        }
+
+        return {
+            id: raw,
+            name: raw || "A DEFINIR",
+            crest: fallbackCrest
+        };
+
+    }
+
+
+    function liveMatchToView(match, competition) {
+
+        const source = match || {};
+        const status = liveStatus(source.status);
+        const playedAt = source.played_at || source.created_at || null;
+        const home = teamFromLive(source.home_team);
+        const away = teamFromLive(source.away_team);
+
+        const homeScore = Number(source.home_score);
+        const awayScore = Number(source.away_score);
+
+        return {
+
+            id: `live-${competition}-${source.id}`,
+            sourceId: source.id,
+            competition,
+            competitionName: competition === "brasileirao"
+                ? "BRASILEIRÃO CCFV"
+                : "NIGHT CUP",
+            stage: source.stage || (competition === "brasileirao"
+                ? `RODADA ${String(source.round_number || 1).padStart(2, "0")}`
+                : "NIGHT CUP"),
+            status,
+            home,
+            away,
+            score: status === "finished"
+                ? {
+                    home: Number.isFinite(homeScore) ? homeScore : 0,
+                    away: Number.isFinite(awayScore) ? awayScore : 0
+                }
+                : null,
+            date: formatLiveDate(playedAt),
+            time: formatLiveTime(playedAt),
+            playedAt: playedAt || ""
+
+        };
+
+    }
+
+
+    function loadLivePartidas() {
+
+        const live = window.CCFVLive;
+
+        if (!live) {
+
+            return false;
+
+        }
+
+        const matches = Array.isArray(live.matches)
+            ? live.matches
+            : [];
+
+        const nightMatches = Array.isArray(live.nightMatches)
+            ? live.nightMatches
+            : [];
+
+        const mappedMatches = matches
+            .filter(match => normalize(match.competition) === "BRASILEIRAO")
+            .map(match => liveMatchToView(match, "brasileirao"));
+
+        const mappedNight = nightMatches
+            .map(match => liveMatchToView(match, "night"));
+
+        const all = [
+            ...mappedMatches,
+            ...mappedNight
+        ];
+
+        if (!all.length) {
+
+            return false;
+
+        }
+
+        all.sort((a, b) => {
+
+            const aTime = a.playedAt ? new Date(a.playedAt).getTime() : 0;
+            const bTime = b.playedAt ? new Date(b.playedAt).getTime() : 0;
+
+            return bTime - aTime;
+
+        });
+
+        partidas = all;
+
+        return true;
+
+    }
+
+
+    function refreshFromLive() {
+
+        const changed = loadLivePartidas();
+
+        if (!changed) {
+
+            return;
+
+        }
+
+        updateCounters();
+        updateFilterButtons();
+        renderNextMatch();
+        renderMatches();
+        renderResults();
+
+    }
 
 
     /* =====================================================
@@ -1141,6 +1378,27 @@
 
 
     /* =====================================================
+       SINCRONIZAÇÃO COM O LIVE ENGINE
+       ===================================================== */
+
+    function bindLiveUpdates() {
+
+        window.addEventListener(
+            "ccfv:live-update",
+            () => {
+                refreshFromLive();
+            }
+        );
+
+        window.setTimeout(
+            refreshFromLive,
+            250
+        );
+
+    }
+
+
+    /* =====================================================
        API
        ===================================================== */
 
@@ -1191,6 +1449,8 @@
         renderMatches();
 
         renderResults();
+
+        bindLiveUpdates();
 
 
         console.log(
