@@ -274,6 +274,24 @@
 
 
 
+    function getPlayerPhoto(player) {
+
+        return String(
+            player?.photo ||
+            player?.photo_url ||
+            player?.avatar_url ||
+            player?.image_url ||
+            player?.profile_photo ||
+            player?.profile_photo_url ||
+            player?.foto ||
+            player?.foto_url ||
+            player?.avatar ||
+            ""
+        ).trim();
+
+    }
+
+
 
     /* =====================================================
        DADOS AO VIVO DA CCFV
@@ -295,7 +313,11 @@
         players.splice(
             0,
             players.length,
-            ...source.map(player => ({ ...player }))
+            ...source.map(player => ({
+                ...player,
+                photo: getPlayerPhoto(player),
+                photo_url: getPlayerPhoto(player) || player?.photo_url || "",
+            }))
         );
 
         return true;
@@ -1357,18 +1379,21 @@
                 >
 
                     ${
-                        player.photo
+                        getPlayerPhoto(player)
 
                         ?
 
                         `
                             <img
                                 src="${escapeHTML(
-                                    player.photo
+                                    getPlayerPhoto(player)
                                 )}"
                                 alt="${escapeHTML(
                                     player.name
                                 )}"
+                                loading="eager"
+                                crossorigin="anonymous"
+                                referrerpolicy="no-referrer"
                             >
                         `
 
@@ -1517,15 +1542,7 @@
                     "
                 >
 
-                    @${escapeHTML(
-                        String(
-                            player.instagram
-                        )
-                        .replace(
-                            /^@/,
-                            ""
-                        )
-                    )}
+                    @ccfv.oficial
 
                 </span>
 
