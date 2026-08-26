@@ -2513,25 +2513,26 @@
 
 
             /*
-             * As competições serão excluídas
-             * automaticamente pelo ON DELETE CASCADE.
+             * A tabela matches possui FKs para players e o RLS impede
+             * DELETE direto pelo navegador. A exclusão oficial é feita
+             * pela RPC segura, que remove primeiro os jogos ligados ao
+             * jogador e só então o registro do jogador.
              */
 
             const {
+                data: deletedCount,
                 error
             } =
-                await client
+                await client.rpc(
+                    "delete_ccfv_player_cascade",
+                    {
+                        p_player_id: id
+                    }
+                );
 
-                    .from(
-                        PLAYERS_TABLE
-                    )
-
-                    .delete()
-
-                    .eq(
-                        "id",
-                        id
-                    );
+            if (error) {
+                throw error;
+            }
 
 
             if (
@@ -2547,7 +2548,9 @@
 
 
             showToast(
-                "JOGADOR EXCLUÍDO."
+                Number(deletedCount || 0) > 0
+                    ? `JOGADOR EXCLUÍDO. ${Number(deletedCount)} partida(s) vinculada(s) removida(s).`
+                    : "JOGADOR EXCLUÍDO."
             );
 
         }
