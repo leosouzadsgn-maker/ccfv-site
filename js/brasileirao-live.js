@@ -753,8 +753,9 @@
                 match =>
                     normalize(
                         match.competition
-                    ) ===
-                    "BRASILEIRAO"
+                    ).startsWith(
+                        "BRASILEIRAO"
+                    )
             )
             .filter(
                 match => {
