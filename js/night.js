@@ -494,24 +494,45 @@
 
     function findMatch(
         matches,
-        matchNumber
+        stageOrNumber,
+        legacyNumber
     ) {
 
-        return (
+        const stage =
+            typeof stageOrNumber === "string"
+                ? normalize(stageOrNumber)
+                : "";
 
-            matches.find(
-                match =>
-                    getMatchNumber(
-                        match
-                    ) ===
-                    matchNumber
-            )
+        const matchNumber =
+            stage
+                ? number(legacyNumber)
+                : number(stageOrNumber);
 
-            ||
+        /*
+         * Formato oficial do Admin:
+         * QUARTERFINAL 1..4
+         * SEMIFINAL    1..2
+         * FINAL         1
+         *
+         * Mantemos também o formato legado 1..7 como fallback para
+         * não quebrar edições antigas já cadastradas.
+         */
+        if (stage) {
+            const byStage = matches.find(match =>
+                normalize(match.stage) === stage &&
+                getMatchNumber(match) === matchNumber
+            );
 
-            null
+            if (byStage) {
+                return byStage;
+            }
+        }
 
+        const legacyNumberMatch = matches.find(match =>
+            getMatchNumber(match) === matchNumber
         );
+
+        return legacyNumberMatch || null;
 
     }
 
@@ -659,6 +680,7 @@
                 match:
                     findMatch(
                         matches,
+                        "QUARTERFINAL",
                         1
                     ),
 
@@ -677,6 +699,7 @@
                 match:
                     findMatch(
                         matches,
+                        "QUARTERFINAL",
                         2
                     ),
 
@@ -695,6 +718,7 @@
                 match:
                     findMatch(
                         matches,
+                        "QUARTERFINAL",
                         3
                     ),
 
@@ -713,6 +737,7 @@
                 match:
                     findMatch(
                         matches,
+                        "QUARTERFINAL",
                         4
                     ),
 
@@ -854,14 +879,16 @@
         const semifinal1 =
             findMatch(
                 matches,
-                5
+                "SEMIFINAL",
+                1
             );
 
 
         const semifinal2 =
             findMatch(
                 matches,
-                6
+                "SEMIFINAL",
+                2
             );
 
 
@@ -876,6 +903,7 @@
         const qf1 =
             findMatch(
                 matches,
+                "QUARTERFINAL",
                 1
             );
 
@@ -883,6 +911,7 @@
         const qf2 =
             findMatch(
                 matches,
+                "QUARTERFINAL",
                 2
             );
 
@@ -890,6 +919,7 @@
         const qf3 =
             findMatch(
                 matches,
+                "QUARTERFINAL",
                 3
             );
 
@@ -897,6 +927,7 @@
         const qf4 =
             findMatch(
                 matches,
+                "QUARTERFINAL",
                 4
             );
 
@@ -1097,21 +1128,24 @@
         const finalMatch =
             findMatch(
                 matches,
-                7
+                "FINAL",
+                1
             );
 
 
         const semifinal1 =
             findMatch(
                 matches,
-                5
+                "SEMIFINAL",
+                1
             );
 
 
         const semifinal2 =
             findMatch(
                 matches,
-                6
+                "SEMIFINAL",
+                2
             );
 
 
@@ -1410,7 +1444,8 @@
         const final =
             findMatch(
                 matches,
-                7
+                "FINAL",
+                1
             );
 
 
