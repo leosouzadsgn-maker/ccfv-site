@@ -169,6 +169,11 @@
                 "#ranking-player-count"
             ),
 
+        heroLeader:
+            document.querySelector(
+                "#ranking-hero-leader"
+            ),
+
         filters:
             document.querySelectorAll(
                 "[data-platform]"
@@ -1244,6 +1249,43 @@
        ELOS
        ===================================================== */
 
+    function getTopPlayerForRank(rank) {
+
+        return players
+            .filter(
+                player => {
+
+                    const elo =
+                        Number(
+                            player?.elo ||
+                            0
+                        );
+
+                    return (
+                        elo >= rank.min &&
+                        elo <= rank.max
+                    );
+
+                }
+            )
+            .sort(
+                (
+                    first,
+                    second
+                ) =>
+                    Number(
+                        second?.elo ||
+                        0
+                    ) -
+                    Number(
+                        first?.elo ||
+                        0
+                    )
+            )[0] || null;
+
+    }
+
+
     function renderLevels() {
 
         if (
@@ -1254,7 +1296,6 @@
 
         }
 
-
         const levels = [
 
             RANK_CONFIG.beginner,
@@ -1263,7 +1304,6 @@
             RANK_CONFIG.legend
 
         ];
-
 
         elements.levelGrid.innerHTML =
             levels
@@ -1278,6 +1318,49 @@
                                 ? "3000+ ELO"
                                 : `${rank.min} → ${rank.max} ELO`;
 
+                        const topPlayer =
+                            getTopPlayerForRank(
+                                rank
+                            );
+
+                        const photo =
+                            topPlayer?.photo ||
+                            topPlayer?.photo_url ||
+                            "";
+
+                        const initials =
+                            topPlayer?.name
+                                ? String(
+                                    topPlayer.name
+                                )
+                                    .trim()
+                                    .slice(
+                                        0,
+                                        2
+                                    )
+                                    .toUpperCase()
+                                : "--";
+
+                        const topPhoto =
+                            photo
+                                ? `
+                                    <img
+                                        src="${escapeHTML(
+                                            photo
+                                        )}"
+                                        alt="${escapeHTML(
+                                            topPlayer.name
+                                        )}"
+                                        loading="lazy"
+                                    >
+                                `
+                                : `
+                                    <span>
+                                        ${escapeHTML(
+                                            initials
+                                        )}
+                                    </span>
+                                `;
 
                         return `
 
@@ -1285,6 +1368,7 @@
                                 class="
                                     ccfv-ranking-level
                                     ccfv-ranking-level--${rank.key}
+                                    ${topPlayer ? "has-leader" : "is-empty"}
                                 "
                             >
 
@@ -1299,18 +1383,23 @@
                                             ccfv-ranking-level__number
                                         "
                                     >
-
                                         ${String(
                                             index + 1
                                         ).padStart(
                                             2,
                                             "0"
                                         )}
+                                    </span>
 
+                                    <span
+                                        class="
+                                            ccfv-ranking-level__leader-label
+                                        "
+                                    >
+                                        TOP 1 DO ELO
                                     </span>
 
                                 </div>
-
 
                                 <div
                                     class="
@@ -1325,40 +1414,61 @@
 
                                 </div>
 
+                                <div
+                                    class="
+                                        ccfv-ranking-level__leader-photo
+                                    "
+                                >
+                                    ${topPhoto}
+                                </div>
 
                                 <div
                                     class="
                                         ccfv-ranking-level__name
                                     "
                                 >
-
                                     ${escapeHTML(
                                         rank.name
                                     )}
-
                                 </div>
-
 
                                 <div
                                     class="
                                         ccfv-ranking-level__range
                                     "
                                 >
-
                                     ${range}
-
                                 </div>
-
 
                                 <div
                                     class="
-                                        ccfv-ranking-level__description
+                                        ccfv-ranking-level__leader
                                     "
                                 >
 
-                                    ${escapeHTML(
-                                        rank.description
-                                    )}
+                                    ${
+                                        topPlayer
+                                            ? `
+                                                <strong>
+                                                    ${escapeHTML(
+                                                        topPlayer.name
+                                                    )}
+                                                </strong>
+                                                <span>
+                                                    ${Number(
+                                                        topPlayer.elo || 0
+                                                    )} ELO
+                                                </span>
+                                            `
+                                            : `
+                                                <strong>
+                                                    A DEFINIR
+                                                </strong>
+                                                <span>
+                                                    NENHUM JOGADOR NESTA FAIXA
+                                                </span>
+                                            `
+                                    }
 
                                 </div>
 
@@ -2819,6 +2929,8 @@
         updateCount();
 
         renderLevels();
+
+        renderHero();
 
         renderFeature();
 
