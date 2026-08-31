@@ -239,6 +239,11 @@
                 "#new-player-button"
             ),
 
+        mobileNewPlayerButton:
+            document.querySelector(
+                "#mobile-new-player"
+            ),
+
         openNewPlayerButtons:
             document.querySelectorAll(
                 "[data-open-new-player]"
@@ -273,6 +278,45 @@
             document.querySelector(
                 "#stat-matches"
             ),
+
+        seasonNumber:
+            document.querySelector("#season-number"),
+
+        seasonName:
+            document.querySelector("#season-name"),
+
+        seasonStatus:
+            document.querySelector("#season-status"),
+
+        seasonCurrentRound:
+            document.querySelector("#season-current-round"),
+
+        seasonTotalRounds:
+            document.querySelector("#season-total-rounds"),
+
+        seasonStartDate:
+            document.querySelector("#season-start-date"),
+
+        seasonEndDate:
+            document.querySelector("#season-end-date"),
+
+        seasonIsActive:
+            document.querySelector("#season-is-active"),
+
+        seasonPreviewName:
+            document.querySelector("#season-preview-name"),
+
+        seasonPreviewStatus:
+            document.querySelector("#season-preview-status"),
+
+        seasonPreviewRound:
+            document.querySelector("#season-preview-round"),
+
+        saveSeasonSettings:
+            document.querySelector("#save-season-settings"),
+
+        seasonSettingsFeedback:
+            document.querySelector("#season-settings-feedback"),
 
         playerId:
             document.querySelector(
@@ -560,6 +604,96 @@
 
         return supabaseClient;
 
+    }
+
+
+    /* =====================================================
+       CONFIGURAÇÃO GLOBAL DA SEASON
+       ===================================================== */
+
+    const formatSeasonNumber = (value) =>
+        String(Math.max(1, Number(value || 1))).padStart(2, "0");
+
+    function updateSeasonPreview() {
+        const number = Math.max(1, Number(dom.seasonNumber?.value || 1));
+        const name = (dom.seasonName?.value || `SEASON ${formatSeasonNumber(number)}`).trim();
+        const status = dom.seasonStatus?.value || "PREPARANDO";
+        const round = Math.max(1, Number(dom.seasonCurrentRound?.value || 1));
+        const total = Math.max(round, Number(dom.seasonTotalRounds?.value || 38));
+
+        if (dom.seasonPreviewName) dom.seasonPreviewName.textContent = name;
+        if (dom.seasonPreviewStatus) dom.seasonPreviewStatus.textContent = status;
+        if (dom.seasonPreviewRound) dom.seasonPreviewRound.textContent = `${formatSeasonNumber(round)} / ${formatSeasonNumber(total)}`;
+    }
+
+    async function loadSeasonSettings() {
+        const client = await getSupabase();
+        const { data, error } = await client
+            .rpc("get_ccfv_settings");
+
+        if (error) throw error;
+        const row = data?.[0] || data;
+        if (!row) return;
+
+        if (dom.seasonNumber) dom.seasonNumber.value = row.season_number ?? 1;
+        if (dom.seasonName) dom.seasonName.value = row.season_name || `SEASON ${formatSeasonNumber(row.season_number || 1)}`;
+        if (dom.seasonStatus) dom.seasonStatus.value = row.season_status || "PREPARANDO";
+        if (dom.seasonCurrentRound) dom.seasonCurrentRound.value = row.current_round ?? 1;
+        if (dom.seasonTotalRounds) dom.seasonTotalRounds.value = row.total_rounds ?? 38;
+        if (dom.seasonStartDate) dom.seasonStartDate.value = row.start_date || "";
+        if (dom.seasonEndDate) dom.seasonEndDate.value = row.end_date || "";
+        if (dom.seasonIsActive) dom.seasonIsActive.checked = row.is_active !== false;
+
+        updateSeasonPreview();
+    }
+
+    async function saveSeasonSettings() {
+        const client = await getSupabase();
+        const seasonNumber = Math.max(1, Number(dom.seasonNumber?.value || 1));
+        const totalRounds = Math.max(1, Number(dom.seasonTotalRounds?.value || 38));
+        const currentRound = Math.min(totalRounds, Math.max(1, Number(dom.seasonCurrentRound?.value || 1)));
+        const seasonName = (dom.seasonName?.value || `SEASON ${formatSeasonNumber(seasonNumber)}`).trim();
+
+        if (dom.saveSeasonSettings) dom.saveSeasonSettings.disabled = true;
+        if (dom.seasonSettingsFeedback) dom.seasonSettingsFeedback.textContent = "SALVANDO...";
+
+        try {
+            const { error } = await client.rpc("save_ccfv_settings", {
+                p_season_number: seasonNumber,
+                p_season_name: seasonName,
+                p_season_status: dom.seasonStatus?.value || "PREPARANDO",
+                p_current_round: currentRound,
+                p_total_rounds: totalRounds,
+                p_start_date: dom.seasonStartDate?.value || null,
+                p_end_date: dom.seasonEndDate?.value || null,
+                p_is_active: dom.seasonIsActive?.checked !== false
+            });
+
+            if (error) throw error;
+            if (dom.seasonCurrentRound) dom.seasonCurrentRound.value = currentRound;
+            updateSeasonPreview();
+            if (dom.seasonSettingsFeedback) dom.seasonSettingsFeedback.textContent = "CONFIGURAÇÃO SALVA.";
+            showToast("Season atualizada com sucesso.");
+        } catch (error) {
+            console.error("CCFV // SEASON SETTINGS ERROR:", error);
+            if (dom.seasonSettingsFeedback) dom.seasonSettingsFeedback.textContent = error?.message || "ERRO AO SALVAR.";
+            showToast(error?.message || "ERRO AO SALVAR CONFIGURAÇÃO.");
+        } finally {
+            if (dom.saveSeasonSettings) dom.saveSeasonSettings.disabled = false;
+        }
+    }
+
+    function bindSeasonSettings() {
+        [
+            dom.seasonNumber, dom.seasonName, dom.seasonStatus,
+            dom.seasonCurrentRound, dom.seasonTotalRounds
+        ].forEach((element) => {
+            element?.addEventListener("input", updateSeasonPreview);
+            element?.addEventListener("change", updateSeasonPreview);
+        });
+
+        dom.saveSeasonSettings?.addEventListener("click", saveSeasonSettings);
+        updateSeasonPreview();
     }
 
 
@@ -1742,6 +1876,25 @@
     }
 
 
+    function openNewMobilePlayer() {
+
+        openNewPlayer();
+
+        dom.playerPlatform.value =
+            "MOBILE";
+
+        dom.competitionBrasileirao.checked =
+            false;
+
+        dom.competitionNight.checked =
+            false;
+
+        updateCompetitionUI();
+        updateRankPreview();
+
+    }
+
+
     /* =====================================================
        EDITAR
        ===================================================== */
@@ -2071,9 +2224,19 @@
             selected.length === 0
         ) {
 
-            throw new Error(
-                "SELECIONE PELO MENOS UMA COMPETIÇÃO."
-            );
+            const platform =
+                dom.playerPlatform?.value ||
+                "PC";
+
+            if (
+                platform !== "MOBILE"
+            ) {
+
+                throw new Error(
+                    "SELECIONE PELO MENOS UMA COMPETIÇÃO."
+                );
+
+            }
 
         }
 
@@ -2742,6 +2905,11 @@
             openNewPlayer
         );
 
+        dom.mobileNewPlayerButton?.addEventListener(
+            "click",
+            openNewMobilePlayer
+        );
+
 
         dom.openNewPlayerButtons.forEach(
             button => {
@@ -3001,6 +3169,8 @@
 
         bindSearchAndFilters();
 
+        bindSeasonSettings();
+
 
         rebuildOccupiedBrasileiraoTeams();
 
@@ -3014,6 +3184,12 @@
         try {
 
             await getSupabase();
+
+            try {
+                await loadSeasonSettings();
+            } catch (seasonError) {
+                console.warn("CCFV // SEASON SETTINGS UNAVAILABLE:", seasonError);
+            }
 
 
             await loadPlayers();
