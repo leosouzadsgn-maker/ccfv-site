@@ -48,6 +48,11 @@
         href="/admin/css/admin.css"
     >
 
+    <link
+        rel="stylesheet"
+        href="/css/mobile.css"
+    >
+
 
     <!-- =====================================================
          CSS ESPECÍFICO
@@ -2063,7 +2068,16 @@
             <button
                 type="button"
                 class="ccfv-admin-nav__item"
-                data-section="ranking"
+                data-section="mobile"
+                >
+                    <span class="ccfv-admin-nav__icon">M</span>
+                    <span>Mobile</span>
+                </button>
+
+                <button
+                    type="button"
+                    class="ccfv-admin-nav__item"
+                    data-section="ranking"
             >
 
                 <span>№</span>
@@ -3644,6 +3658,30 @@
              RANKING
              ================================================= -->
 
+        <section class="ccfv-admin-section" id="section-mobile">
+            <div class="ccfv-admin-heading">
+                <div><span>CCFV // MOBILE</span><h1>CONTROLAR <strong>MOBILE.</strong></h1><p>Brasileirão Mobile, Arena Cup e partidas exclusivas.</p></div>
+                <div class="ccfv-admin-heading__actions"><button class="ccfv-admin-button ccfv-admin-button--primary" id="mobile-refresh">ATUALIZAR</button></div>
+            </div>
+            <div class="ccfv-admin-dashboard-grid">
+                <article class="ccfv-admin-panel"><div class="ccfv-admin-panel__heading"><div><span>BRASILEIRÃO MOBILE</span><h2>REGISTRAR RESULTADO.</h2></div></div>
+                    <form id="mobile-match-form" class="ccfv-mobile-form">
+                        <label>COMPETIÇÃO<select id="mobile-competition"><option value="BRASILEIRAO_MOBILE">BRASILEIRÃO MOBILE</option><option value="ARENA_CUP">ARENA CUP</option></select></label>
+                        <label>FASE / RODADA<select id="mobile-stage"></select></label>
+                        <label>JOGADOR CASA<select id="mobile-home-player"><option value="">Selecione</option></select></label>
+                        <label>JOGADOR FORA<select id="mobile-away-player"><option value="">Selecione</option></select></label>
+                        <label>CLUBE CASA<select id="mobile-home-team"><option>ATHLETICO-PR</option><option>ATLÉTICO-MG</option><option>BAHIA</option><option>BOTAFOGO</option><option>BRAGANTINO</option><option>CHAPECOENSE</option><option>CORINTHIANS</option><option>CORITIBA</option><option>CRUZEIRO</option><option>FLAMENGO</option><option>FLUMINENSE</option><option>GRÊMIO</option><option>INTERNACIONAL</option><option>MIRASSOL</option><option>PALMEIRAS</option><option>REMO</option><option>SANTOS</option><option>SÃO PAULO</option><option>VASCO</option><option>VITÓRIA</option></select></label>
+                        <label>CLUBE FORA<select id="mobile-away-team"><option>ATHLETICO-PR</option><option>ATLÉTICO-MG</option><option>BAHIA</option><option>BOTAFOGO</option><option>BRAGANTINO</option><option>CHAPECOENSE</option><option>CORINTHIANS</option><option>CORITIBA</option><option>CRUZEIRO</option><option>FLAMENGO</option><option>FLUMINENSE</option><option>GRÊMIO</option><option>INTERNACIONAL</option><option>MIRASSOL</option><option>PALMEIRAS</option><option>REMO</option><option>SANTOS</option><option>SÃO PAULO</option><option>VASCO</option><option>VITÓRIA</option></select></label>
+                        <label>PLACAR CASA<input id="mobile-home-score" type="number" min="0" max="99" value="0"></label>
+                        <label>PLACAR FORA<input id="mobile-away-score" type="number" min="0" max="99" value="0"></label>
+                        <label class="full">DATA E HORA<input id="mobile-played-at" type="datetime-local"></label>
+                        <button type="submit" class="ccfv-admin-button ccfv-admin-button--primary full" id="mobile-match-submit">REGISTRAR RESULTADO MOBILE</button>
+                    </form>
+                </article>
+                <article class="ccfv-admin-panel"><div class="ccfv-admin-panel__heading"><div><span>STATUS</span><h2>ECOSSISTEMA MOBILE.</h2></div></div><div class="ccfv-admin-stats"><article class="ccfv-admin-stat"><span>JOGADORES MOBILE</span><strong id="mobile-stat-players">00</strong></article><article class="ccfv-admin-stat"><span>PARTIDAS MOBILE</span><strong id="mobile-stat-matches">00</strong></article><article class="ccfv-admin-stat"><span>RANKING MOBILE</span><strong id="mobile-stat-ranking">00</strong></article></div><div id="mobile-admin-list" class="ccfv-mobile-empty">CARREGANDO DADOS MOBILE.</div></article>
+            </div>
+        </section>
+
         <section
             class="ccfv-admin-section"
             id="section-ranking"
@@ -3917,6 +3955,10 @@
 
                         <option value="CONSOLE">
                             CONSOLE
+                        </option>
+
+                        <option value="MOBILE">
+                            MOBILE
                         </option>
 
                     </select>
@@ -4383,6 +4425,11 @@
 
 <script
     src="/admin/js/night.js"
+    defer
+></script>
+
+<script
+    src="/admin/js/mobile.js"
     defer
 ></script>
 
