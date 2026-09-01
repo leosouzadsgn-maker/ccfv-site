@@ -182,9 +182,6 @@
     let occupiedBrasileiraoTeams =
         new Set();
 
-    let occupiedBrasileiraoMobileTeams =
-        new Set();
-
 
     /* =====================================================
        DOM
@@ -282,45 +279,6 @@
                 "#stat-matches"
             ),
 
-        seasonNumber:
-            document.querySelector("#season-number"),
-
-        seasonName:
-            document.querySelector("#season-name"),
-
-        seasonStatus:
-            document.querySelector("#season-status"),
-
-        seasonCurrentRound:
-            document.querySelector("#season-current-round"),
-
-        seasonTotalRounds:
-            document.querySelector("#season-total-rounds"),
-
-        seasonStartDate:
-            document.querySelector("#season-start-date"),
-
-        seasonEndDate:
-            document.querySelector("#season-end-date"),
-
-        seasonIsActive:
-            document.querySelector("#season-is-active"),
-
-        seasonPreviewName:
-            document.querySelector("#season-preview-name"),
-
-        seasonPreviewStatus:
-            document.querySelector("#season-preview-status"),
-
-        seasonPreviewRound:
-            document.querySelector("#season-preview-round"),
-
-        saveSeasonSettings:
-            document.querySelector("#save-season-settings"),
-
-        seasonSettingsFeedback:
-            document.querySelector("#season-settings-feedback"),
-
         playerId:
             document.querySelector(
                 "#player-id"
@@ -381,9 +339,9 @@
                 "#brasileirao-team"
             ),
 
-        mobilePlayerCompetitions:
+        nightConfig:
             document.querySelector(
-                "#mobile-player-competitions"
+                "#night-config"
             ),
 
         competitionBrasileiraoMobile:
@@ -416,9 +374,14 @@
                 "#brasileirao-mobile-team"
             ),
 
-        nightConfig:
+        arenaMobileConfig:
             document.querySelector(
-                "#night-config"
+                "#arena-mobile-config"
+            ),
+
+        arenaMobileTeam:
+            document.querySelector(
+                "#arena-mobile-team"
             ),
 
         nightTeam:
@@ -608,46 +571,6 @@
     }
 
 
-    const MOBILE_BRASILEIRAO_COMPETITION = "BRASILEIRAO_MOBILE";
-    const ARENA_CUP_MOBILE_COMPETITION = "ARENA_CUP_MOBILE";
-
-    function rebuildOccupiedBrasileiraoMobileTeams(exceptPlayerId = null) {
-        occupiedBrasileiraoMobileTeams = new Set();
-        players.forEach((player) => {
-            if (exceptPlayerId && String(player.id) === String(exceptPlayerId)) return;
-            (player.competitions || []).forEach((competition) => {
-                if (String(competition.competition || "").toUpperCase() !== MOBILE_BRASILEIRAO_COMPETITION) return;
-                const team = normalizeTeamName(competition.team_name);
-                if (team) occupiedBrasileiraoMobileTeams.add(team);
-            });
-        });
-    }
-
-    function refreshBrasileiraoMobileTeamOptions() {
-        const select = dom.brasileiraoMobileTeam;
-        if (!select) return;
-
-        rebuildOccupiedBrasileiraoMobileTeams(editingPlayerId);
-
-        const current = normalizeTeamName(select.value);
-        const availableTeams = BRASILEIRAO_TEAMS.filter((team) => {
-            const normalized = normalizeTeamName(team);
-            return !occupiedBrasileiraoMobileTeams.has(normalized) || normalized === current;
-        });
-
-        select.innerHTML = '<option value="">Selecione o clube</option>' +
-            availableTeams
-                .map((team) => `<option value="${escapeHTML(team)}">${escapeHTML(team)}</option>`)
-                .join("");
-
-        if (current && availableTeams.some((team) => normalizeTeamName(team) === current)) {
-            select.value = availableTeams.find((team) => normalizeTeamName(team) === current) || "";
-        } else {
-            select.value = "";
-        }
-    }
-
-
     /* =====================================================
        SUPABASE
        ===================================================== */
@@ -682,96 +605,6 @@
 
         return supabaseClient;
 
-    }
-
-
-    /* =====================================================
-       CONFIGURAÇÃO GLOBAL DA SEASON
-       ===================================================== */
-
-    const formatSeasonNumber = (value) =>
-        String(Math.max(1, Number(value || 1))).padStart(2, "0");
-
-    function updateSeasonPreview() {
-        const number = Math.max(1, Number(dom.seasonNumber?.value || 1));
-        const name = (dom.seasonName?.value || `SEASON ${formatSeasonNumber(number)}`).trim();
-        const status = dom.seasonStatus?.value || "PREPARANDO";
-        const round = Math.max(1, Number(dom.seasonCurrentRound?.value || 1));
-        const total = Math.max(round, Number(dom.seasonTotalRounds?.value || 38));
-
-        if (dom.seasonPreviewName) dom.seasonPreviewName.textContent = name;
-        if (dom.seasonPreviewStatus) dom.seasonPreviewStatus.textContent = status;
-        if (dom.seasonPreviewRound) dom.seasonPreviewRound.textContent = `${formatSeasonNumber(round)} / ${formatSeasonNumber(total)}`;
-    }
-
-    async function loadSeasonSettings() {
-        const client = await getSupabase();
-        const { data, error } = await client
-            .rpc("get_ccfv_settings");
-
-        if (error) throw error;
-        const row = data?.[0] || data;
-        if (!row) return;
-
-        if (dom.seasonNumber) dom.seasonNumber.value = row.season_number ?? 1;
-        if (dom.seasonName) dom.seasonName.value = row.season_name || `SEASON ${formatSeasonNumber(row.season_number || 1)}`;
-        if (dom.seasonStatus) dom.seasonStatus.value = row.season_status || "PREPARANDO";
-        if (dom.seasonCurrentRound) dom.seasonCurrentRound.value = row.current_round ?? 1;
-        if (dom.seasonTotalRounds) dom.seasonTotalRounds.value = row.total_rounds ?? 38;
-        if (dom.seasonStartDate) dom.seasonStartDate.value = row.start_date || "";
-        if (dom.seasonEndDate) dom.seasonEndDate.value = row.end_date || "";
-        if (dom.seasonIsActive) dom.seasonIsActive.checked = row.is_active !== false;
-
-        updateSeasonPreview();
-    }
-
-    async function saveSeasonSettings() {
-        const client = await getSupabase();
-        const seasonNumber = Math.max(1, Number(dom.seasonNumber?.value || 1));
-        const totalRounds = Math.max(1, Number(dom.seasonTotalRounds?.value || 38));
-        const currentRound = Math.min(totalRounds, Math.max(1, Number(dom.seasonCurrentRound?.value || 1)));
-        const seasonName = (dom.seasonName?.value || `SEASON ${formatSeasonNumber(seasonNumber)}`).trim();
-
-        if (dom.saveSeasonSettings) dom.saveSeasonSettings.disabled = true;
-        if (dom.seasonSettingsFeedback) dom.seasonSettingsFeedback.textContent = "SALVANDO...";
-
-        try {
-            const { error } = await client.rpc("save_ccfv_settings", {
-                p_season_number: seasonNumber,
-                p_season_name: seasonName,
-                p_season_status: dom.seasonStatus?.value || "PREPARANDO",
-                p_current_round: currentRound,
-                p_total_rounds: totalRounds,
-                p_start_date: dom.seasonStartDate?.value || null,
-                p_end_date: dom.seasonEndDate?.value || null,
-                p_is_active: dom.seasonIsActive?.checked !== false
-            });
-
-            if (error) throw error;
-            if (dom.seasonCurrentRound) dom.seasonCurrentRound.value = currentRound;
-            updateSeasonPreview();
-            if (dom.seasonSettingsFeedback) dom.seasonSettingsFeedback.textContent = "CONFIGURAÇÃO SALVA.";
-            showToast("Season atualizada com sucesso.");
-        } catch (error) {
-            console.error("CCFV // SEASON SETTINGS ERROR:", error);
-            if (dom.seasonSettingsFeedback) dom.seasonSettingsFeedback.textContent = error?.message || "ERRO AO SALVAR.";
-            showToast(error?.message || "ERRO AO SALVAR CONFIGURAÇÃO.");
-        } finally {
-            if (dom.saveSeasonSettings) dom.saveSeasonSettings.disabled = false;
-        }
-    }
-
-    function bindSeasonSettings() {
-        [
-            dom.seasonNumber, dom.seasonName, dom.seasonStatus,
-            dom.seasonCurrentRound, dom.seasonTotalRounds
-        ].forEach((element) => {
-            element?.addEventListener("input", updateSeasonPreview);
-            element?.addEventListener("change", updateSeasonPreview);
-        });
-
-        dom.saveSeasonSettings?.addEventListener("click", saveSeasonSettings);
-        updateSeasonPreview();
     }
 
 
@@ -952,7 +785,6 @@
             rebuildOccupiedBrasileiraoTeams(
                 editingPlayerId
             );
-            rebuildOccupiedBrasileiraoMobileTeams(editingPlayerId);
 
 
             renderPlayers();
@@ -1030,16 +862,16 @@
                     .forEach(
                         competition => {
 
-                            const competitionName = String(competition.competition || "").toUpperCase();
+                            if (
+                                String(
+                                    competition.competition ||
+                                        ""
+                                ).toUpperCase() !==
+                                "BRASILEIRAO"
+                            ) {
 
-                            if (competitionName === MOBILE_BRASILEIRAO_COMPETITION) {
-                                const mobileTeam = normalizeTeamName(competition.team_name);
-                                if (mobileTeam) occupiedBrasileiraoMobileTeams.add(mobileTeam);
                                 return;
-                            }
 
-                            if (competitionName !== "BRASILEIRAO") {
-                                return;
                             }
 
 
@@ -1786,12 +1618,31 @@
        ===================================================== */
 
     function updateCompetitionUI() {
-        const isMobile = String(dom.playerPlatform?.value || "PC").toUpperCase() === "MOBILE";
-        const brasileirao = Boolean(dom.competitionBrasileirao?.checked) && !isMobile;
-        const night = Boolean(dom.competitionNight?.checked) && !isMobile;
-        const brasileiraoMobile = Boolean(dom.competitionBrasileiraoMobile?.checked) && isMobile;
-        const arenaMobile = Boolean(dom.competitionArenaMobile?.checked) && isMobile;
 
+        const platform = String(dom.playerPlatform?.value || "PC").toUpperCase();
+        const isMobile = platform === "MOBILE";
+        const brasileirao = Boolean(dom.competitionBrasileirao?.checked);
+        const night = Boolean(dom.competitionNight?.checked);
+        const brasileiraoMobile = Boolean(dom.competitionBrasileiraoMobile?.checked);
+        const arenaMobile = Boolean(dom.competitionArenaMobile?.checked);
+
+        // PC/Console: somente competições de PC/Console.
+        [
+            dom.competitionBrasileiraoLabel,
+            dom.competitionNightLabel
+        ].forEach(label => {
+            if (label) label.style.display = isMobile ? "none" : "";
+        });
+
+        // Mobile: somente competições Mobile.
+        [
+            dom.competitionBrasileiraoMobileLabel,
+            dom.competitionArenaMobileLabel
+        ].forEach(label => {
+            if (label) label.style.display = isMobile ? "" : "none";
+        });
+
+        // Se trocar de plataforma, limpa competições da outra plataforma.
         if (isMobile) {
             if (dom.competitionBrasileirao) dom.competitionBrasileirao.checked = false;
             if (dom.competitionNight) dom.competitionNight.checked = false;
@@ -1800,23 +1651,108 @@
             if (dom.competitionArenaMobile) dom.competitionArenaMobile.checked = false;
         }
 
-        dom.competitionBrasileiraoLabel?.classList.toggle("is-selected", brasileirao);
-        dom.competitionNightLabel?.classList.toggle("is-selected", night);
-        dom.competitionBrasileiraoMobileLabel?.classList.toggle("is-selected", brasileiraoMobile);
-        dom.competitionArenaMobileLabel?.classList.toggle("is-selected", arenaMobile);
+        const pcBrazil = !isMobile && Boolean(dom.competitionBrasileirao?.checked);
+        const pcNight = !isMobile && Boolean(dom.competitionNight?.checked);
+        const mobBrazil = isMobile && Boolean(dom.competitionBrasileiraoMobile?.checked);
+        const mobArena = isMobile && Boolean(dom.competitionArenaMobile?.checked);
 
-        dom.competitionBrasileiraoLabel?.setAttribute("aria-checked", brasileirao ? "true" : "false");
-        dom.competitionNightLabel?.setAttribute("aria-checked", night ? "true" : "false");
-        dom.competitionBrasileiraoMobileLabel?.setAttribute("aria-checked", brasileiraoMobile ? "true" : "false");
-        dom.competitionArenaMobileLabel?.setAttribute("aria-checked", arenaMobile ? "true" : "false");
+        if (dom.competitionBrasileiraoLabel) {
+            dom.competitionBrasileiraoLabel.classList.toggle("is-selected", pcBrazil);
+            dom.competitionBrasileiraoLabel.setAttribute("aria-checked", String(pcBrazil));
+        }
+        if (dom.competitionNightLabel) {
+            dom.competitionNightLabel.classList.toggle("is-selected", pcNight);
+            dom.competitionNightLabel.setAttribute("aria-checked", String(pcNight));
+        }
+        if (dom.competitionBrasileiraoMobileLabel) {
+            dom.competitionBrasileiraoMobileLabel.classList.toggle("is-selected", mobBrazil);
+            dom.competitionBrasileiraoMobileLabel.setAttribute("aria-checked", String(mobBrazil));
+        }
+        if (dom.competitionArenaMobileLabel) {
+            dom.competitionArenaMobileLabel.classList.toggle("is-selected", mobArena);
+            dom.competitionArenaMobileLabel.setAttribute("aria-checked", String(mobArena));
+        }
 
-        if (dom.mobilePlayerCompetitions) dom.mobilePlayerCompetitions.style.display = isMobile ? "grid" : "none";
-        if (dom.brasileiraoConfig) { dom.brasileiraoConfig.classList.toggle("is-visible", brasileirao); dom.brasileiraoConfig.style.display = brasileirao ? "block" : "none"; }
-        if (dom.nightConfig) { dom.nightConfig.classList.toggle("is-visible", night); dom.nightConfig.style.display = night ? "block" : "none"; }
-        if (dom.brasileiraoMobileConfig) { dom.brasileiraoMobileConfig.classList.toggle("is-visible", brasileiraoMobile); dom.brasileiraoMobileConfig.style.display = brasileiraoMobile ? "block" : "none"; }
+        const showPCBrazilConfig = pcBrazil;
+        const showPCNightConfig = pcNight;
+        const showMobileBrazilConfig = mobBrazil;
+        const showMobileArenaConfig = mobArena;
+
+        [[dom.brasileiraoConfig, showPCBrazilConfig],
+         [dom.nightConfig, showPCNightConfig],
+         [dom.brasileiraoMobileConfig, showMobileBrazilConfig],
+         [dom.arenaMobileConfig, showMobileArenaConfig]].forEach(([el, show]) => {
+            if (el) {
+                el.classList.toggle("is-visible", show);
+                el.style.display = show ? "block" : "none";
+            }
+        });
 
         refreshBrasileiraoTeamOptions();
         refreshBrasileiraoMobileTeamOptions();
+        updateCompetitionSummary();
+    }
+
+    function updateCompetitionSummary() {
+        const summary = document.querySelector("#player-competition-summary");
+        if (!summary) return;
+
+        const platform = String(dom.playerPlatform?.value || "PC").toUpperCase();
+        const selected = [];
+
+        if (platform !== "MOBILE") {
+            if (dom.competitionBrasileirao?.checked) {
+                const team = dom.brasileiraoTeam?.value || "A DEFINIR";
+                selected.push(`BRASILEIRÃO${team ? ` — ${team}` : ""}`);
+            }
+            if (dom.competitionNight?.checked) {
+                const team = dom.nightTeam?.value?.trim() || "A DEFINIR";
+                selected.push(`NIGHT CUP${team ? ` — ${team}` : ""}`);
+            }
+        } else {
+            if (dom.competitionBrasileiraoMobile?.checked) {
+                const team = dom.brasileiraoMobileTeam?.value || "A DEFINIR";
+                selected.push(`BRASILEIRÃO MOBILE${team ? ` — ${team}` : ""}`);
+            }
+            if (dom.competitionArenaMobile?.checked) {
+                const team = dom.arenaMobileTeam?.value?.trim() || "A DEFINIR";
+                selected.push(`ARENA CUP MOBILE${team ? ` — ${team}` : ""}`);
+            }
+        }
+
+        summary.innerHTML = selected.length
+            ? selected.map(item => `<span class="ccfv-admin-competition-pill">${escapeHTML(item)}</span>`).join("")
+            : `<span class="ccfv-admin-competition-summary__empty">NENHUMA COMPETIÇÃO SELECIONADA.</span>`;
+    }
+
+    function rebuildOccupiedBrasileiraoMobileTeams(exceptPlayerId = null) {
+        const occupied = new Set();
+        players.forEach(player => {
+            if (exceptPlayerId && String(player.id) === String(exceptPlayerId)) return;
+            (player.competitions || []).forEach(competition => {
+                if (String(competition.competition || "").toUpperCase() !== "BRASILEIRAO_MOBILE") return;
+                const team = normalizeTeamName(competition.team_name);
+                if (team) occupied.add(team);
+            });
+        });
+        return occupied;
+    }
+
+    function refreshBrasileiraoMobileTeamOptions() {
+        if (!dom.brasileiraoMobileTeam) return;
+        const occupied = rebuildOccupiedBrasileiraoMobileTeams(editingPlayerId);
+        Array.from(dom.brasileiraoMobileTeam.options).forEach(option => {
+            const team = normalizeTeamName(option.value);
+            if (!team) {
+                option.disabled = false;
+                return;
+            }
+            const isOccupied = occupied.has(team);
+            option.disabled = isOccupied;
+            option.title = isOccupied ? "Clube já escolhido por outro jogador Mobile." : "";
+        });
+        const current = normalizeTeamName(dom.brasileiraoMobileTeam.value);
+        if (current && occupied.has(current)) dom.brasileiraoMobileTeam.value = "";
     }
 
 
@@ -1851,8 +1787,14 @@
 
         dom.competitionNight.checked =
             false;
-        if (dom.competitionBrasileiraoMobile) dom.competitionBrasileiraoMobile.checked = false;
-        if (dom.competitionArenaMobile) dom.competitionArenaMobile.checked = false;
+
+
+        dom.competitionBrasileiraoMobile.checked =
+            false;
+
+
+        dom.competitionArenaMobile.checked =
+            false;
 
 
         dom.brasileiraoTeam.value =
@@ -1861,14 +1803,20 @@
 
         dom.nightTeam.value =
             "";
-        if (dom.brasileiraoMobileTeam) dom.brasileiraoMobileTeam.value = "";
+
+
+        dom.brasileiraoMobileTeam.value =
+            "";
+
+
+        dom.arenaMobileTeam.value =
+            "";
 
 
         resetPhotoPreview();
 
 
         rebuildOccupiedBrasileiraoTeams();
-        rebuildOccupiedBrasileiraoMobileTeams();
 
 
         updateCompetitionUI();
@@ -1897,14 +1845,15 @@
 
         openNewPlayer();
 
-        dom.playerPlatform.value =
-            "MOBILE";
+        dom.playerPlatform.value = "MOBILE";
 
-        dom.competitionBrasileirao.checked =
-            false;
+        dom.competitionBrasileirao.checked = false;
+        dom.competitionNight.checked = false;
+        dom.competitionBrasileiraoMobile.checked = false;
+        dom.competitionArenaMobile.checked = false;
 
-        dom.competitionNight.checked =
-            false;
+        dom.brasileiraoMobileTeam.value = "";
+        dom.arenaMobileTeam.value = "";
 
         updateCompetitionUI();
         updateRankPreview();
@@ -1976,8 +1925,14 @@
 
         dom.competitionNight.checked =
             false;
-        if (dom.competitionBrasileiraoMobile) dom.competitionBrasileiraoMobile.checked = false;
-        if (dom.competitionArenaMobile) dom.competitionArenaMobile.checked = false;
+
+
+        dom.competitionBrasileiraoMobile.checked =
+            false;
+
+
+        dom.competitionArenaMobile.checked =
+            false;
 
 
         dom.brasileiraoTeam.value =
@@ -1986,7 +1941,14 @@
 
         dom.nightTeam.value =
             "";
-        if (dom.brasileiraoMobileTeam) dom.brasileiraoMobileTeam.value = "";
+
+
+        dom.brasileiraoMobileTeam.value =
+            "";
+
+
+        dom.arenaMobileTeam.value =
+            "";
 
 
         (
@@ -2025,13 +1987,33 @@
 
                     }
 
-                    if (item.competition === MOBILE_BRASILEIRAO_COMPETITION) {
-                        if (dom.competitionBrasileiraoMobile) dom.competitionBrasileiraoMobile.checked = true;
-                        if (dom.brasileiraoMobileTeam) dom.brasileiraoMobileTeam.value = item.team_name || "";
+
+                    if (
+                        item.competition ===
+                        "BRASILEIRAO_MOBILE"
+                    ) {
+
+                        dom.competitionBrasileiraoMobile.checked =
+                            true;
+
+                        dom.brasileiraoMobileTeam.value =
+                            item.team_name || "";
+
                     }
 
-                    if (item.competition === ARENA_CUP_MOBILE_COMPETITION) {
-                        if (dom.competitionArenaMobile) dom.competitionArenaMobile.checked = true;
+
+                    if (
+                        item.competition ===
+                        "ARENA_CUP" &&
+                        String(player.platform || "").toUpperCase() === "MOBILE"
+                    ) {
+
+                        dom.competitionArenaMobile.checked =
+                            true;
+
+                        dom.arenaMobileTeam.value =
+                            item.team_name || "";
+
                     }
 
                 }
@@ -2158,43 +2140,143 @@
        ===================================================== */
 
     function collectCompetitions() {
-        const selected = [];
-        const isMobile = String(dom.playerPlatform?.value || "PC").toUpperCase() === "MOBILE";
 
-        if (isMobile) {
+        const selected =
+            [];
+
+
+        if (
+            dom.playerPlatform?.value !== "MOBILE" &&
+            dom.competitionBrasileirao.checked
+        ) {
+
+            const team =
+                dom.brasileiraoTeam.value
+                    .trim();
+
+
+            if (
+                !team
+            ) {
+
+                throw new Error(
+                    "SELECIONE O CLUBE DO BRASILEIRÃO."
+                );
+
+            }
+
+
+            rebuildOccupiedBrasileiraoTeams(
+                editingPlayerId
+            );
+
+
+            if (
+                occupiedBrasileiraoTeams.has(
+                    normalizeTeamName(
+                        team
+                    )
+                )
+            ) {
+
+                throw new Error(
+                    "ESSE CLUBE JÁ FOI ESCOLHIDO POR OUTRO JOGADOR."
+                );
+
+            }
+
+
+            selected.push({
+
+                competition:
+                    "BRASILEIRAO",
+
+                team_name:
+                    team
+
+            });
+
+        }
+
+
+        if (
+            dom.playerPlatform?.value !== "MOBILE" &&
+            dom.competitionNight.checked
+        ) {
+
+            const team =
+                dom.nightTeam.value
+                    .trim();
+
+
+            if (
+                !team
+            ) {
+
+                throw new Error(
+                    "INFORME O TIME DA NIGHT CUP."
+                );
+
+            }
+
+
+            selected.push({
+
+                competition:
+                    "NIGHT_CUP",
+
+                team_name:
+                    team
+
+            });
+
+        }
+
+
+        if (dom.playerPlatform?.value === "MOBILE") {
+
+            // Competições PC/Console não são válidas para jogadores Mobile.
             if (dom.competitionBrasileiraoMobile?.checked) {
-                const team = dom.brasileiraoMobileTeam?.value?.trim() || "";
+                const team = dom.brasileiraoMobileTeam.value.trim();
                 if (!team) throw new Error("SELECIONE O CLUBE DO BRASILEIRÃO MOBILE.");
-                rebuildOccupiedBrasileiraoMobileTeams(editingPlayerId);
-                if (occupiedBrasileiraoMobileTeams.has(normalizeTeamName(team))) {
+                const occupied = rebuildOccupiedBrasileiraoMobileTeams(editingPlayerId);
+                if (occupied.has(normalizeTeamName(team))) {
                     throw new Error("ESSE CLUBE JÁ FOI ESCOLHIDO POR OUTRO JOGADOR MOBILE.");
                 }
-                selected.push({ competition: MOBILE_BRASILEIRAO_COMPETITION, team_name: team });
+                selected.push({ competition: "BRASILEIRAO_MOBILE", team_name: team });
             }
 
             if (dom.competitionArenaMobile?.checked) {
-                selected.push({ competition: ARENA_CUP_MOBILE_COMPETITION, team_name: "" });
-            }
-        } else {
-            if (dom.competitionBrasileirao.checked) {
-                const team = dom.brasileiraoTeam.value.trim();
-                if (!team) throw new Error("SELECIONE O CLUBE DO BRASILEIRÃO.");
-                rebuildOccupiedBrasileiraoTeams(editingPlayerId);
-                if (occupiedBrasileiraoTeams.has(normalizeTeamName(team))) throw new Error("ESSE CLUBE JÁ FOI ESCOLHIDO POR OUTRO JOGADOR.");
-                selected.push({ competition: "BRASILEIRAO", team_name: team });
-            }
-
-            if (dom.competitionNight.checked) {
-                const team = dom.nightTeam.value.trim();
-                if (!team) throw new Error("INFORME O TIME DA NIGHT CUP.");
-                selected.push({ competition: "NIGHT_CUP", team_name: team });
+                const team = dom.arenaMobileTeam.value.trim();
+                if (!team) throw new Error("INFORME O NOME DA EQUIPE DA ARENA CUP MOBILE.");
+                selected.push({ competition: "ARENA_CUP", team_name: team });
             }
         }
 
-        if (selected.length === 0 && !isMobile) throw new Error("SELECIONE PELO MENOS UMA COMPETIÇÃO.");
-        return selected;
-    }
+        if (
+            selected.length === 0
+        ) {
 
+            const platform =
+                dom.playerPlatform?.value ||
+                "PC";
+
+            if (
+                platform !== "MOBILE"
+            ) {
+
+                throw new Error(
+                    "SELECIONE PELO MENOS UMA COMPETIÇÃO."
+                );
+
+            }
+
+        }
+
+
+        return selected;
+
+    }
 
 
     /* =====================================================
@@ -2927,6 +3009,44 @@
                 updateCompetitionUI
             );
 
+        dom.playerPlatform
+            ?.addEventListener(
+                "change",
+                () => {
+                    // Ao trocar de plataforma, remove seleções incompatíveis.
+                    if (dom.playerPlatform.value === "MOBILE") {
+                        dom.competitionBrasileirao.checked = false;
+                        dom.competitionNight.checked = false;
+                    } else {
+                        dom.competitionBrasileiraoMobile.checked = false;
+                        dom.competitionArenaMobile.checked = false;
+                    }
+                    updateCompetitionUI();
+                    refreshBrasileiraoMobileTeamOptions();
+                }
+            );
+
+        dom.competitionBrasileiraoMobile
+            ?.addEventListener("change", updateCompetitionUI);
+
+        dom.competitionArenaMobile
+            ?.addEventListener("change", updateCompetitionUI);
+
+        dom.brasileiraoMobileTeam
+            ?.addEventListener("change", () => {
+                refreshBrasileiraoMobileTeamOptions();
+                updateCompetitionSummary();
+            });
+
+        dom.arenaMobileTeam
+            ?.addEventListener("input", updateCompetitionSummary);
+
+        dom.brasileiraoTeam
+            ?.addEventListener("change", updateCompetitionSummary);
+
+        dom.nightTeam
+            ?.addEventListener("input", updateCompetitionSummary);
+
 
         /*
          * Clique no card inteiro.
@@ -2977,23 +3097,6 @@
                 }
             );
 
-
-        dom.playerPlatform?.addEventListener("change", () => {
-            updateCompetitionUI();
-        });
-
-        dom.competitionBrasileiraoMobile?.addEventListener("change", updateCompetitionUI);
-        dom.competitionArenaMobile?.addEventListener("change", updateCompetitionUI);
-
-        dom.brasileiraoMobileTeam?.addEventListener("change", () => {
-            const selectedTeam = normalizeTeamName(dom.brasileiraoMobileTeam.value);
-            rebuildOccupiedBrasileiraoMobileTeams(editingPlayerId);
-            if (selectedTeam && occupiedBrasileiraoMobileTeams.has(selectedTeam)) {
-                dom.brasileiraoMobileTeam.value = "";
-                showToast("ESSE CLUBE JÁ FOI ESCOLHIDO POR OUTRO JOGADOR MOBILE.");
-            }
-            refreshBrasileiraoMobileTeamOptions();
-        });
 
         document.addEventListener(
             "keydown",
@@ -3137,8 +3240,6 @@
 
         bindSearchAndFilters();
 
-        bindSeasonSettings();
-
 
         rebuildOccupiedBrasileiraoTeams();
 
@@ -3152,12 +3253,6 @@
         try {
 
             await getSupabase();
-
-            try {
-                await loadSeasonSettings();
-            } catch (seasonError) {
-                console.warn("CCFV // SEASON SETTINGS UNAVAILABLE:", seasonError);
-            }
 
 
             await loadPlayers();

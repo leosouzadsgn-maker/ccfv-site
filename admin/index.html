@@ -1948,23 +1948,7 @@
 
         }
 
-    
-        .ccfv-season-settings { display:flex; flex-direction:column; gap:18px; margin-top:20px; }
-        .ccfv-season-settings__grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
-        .ccfv-season-field { display:flex; flex-direction:column; gap:7px; padding:14px; border:1px solid rgba(255,255,255,.06); border-radius:12px; background:rgba(255,255,255,.015); }
-        .ccfv-season-field span { color:rgba(255,255,255,.25); font-size:7px; font-weight:900; letter-spacing:.12em; }
-        .ccfv-season-field input, .ccfv-season-field select { width:100%; min-height:42px; padding:0 11px; border:1px solid rgba(67,223,145,.12); border-radius:9px; outline:none; color:#fff; background:#07100b; font-size:8px; font-weight:800; }
-        .ccfv-season-field--switch { justify-content:space-between; }
-        .ccfv-season-field--switch input { width:18px; min-height:18px; accent-color:#43df91; align-self:flex-start; margin-top:5px; }
-        .ccfv-season-settings__summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
-        .ccfv-season-settings__summary > div { display:flex; flex-direction:column; gap:6px; padding:15px; border:1px solid rgba(67,223,145,.10); border-radius:12px; background:rgba(67,223,145,.025); }
-        .ccfv-season-settings__summary span { color:rgba(255,255,255,.22); font-size:7px; font-weight:900; letter-spacing:.12em; }
-        .ccfv-season-settings__summary strong { color:#43df91; font-size:16px; font-weight:950; }
-        .ccfv-season-settings__actions { display:flex; align-items:center; gap:12px; }
-        .ccfv-season-feedback { color:rgba(255,255,255,.45); font-size:8px; font-weight:800; }
-        @media (max-width:900px) { .ccfv-season-settings__grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-        @media (max-width:600px) { .ccfv-season-settings__grid, .ccfv-season-settings__summary { grid-template-columns:1fr; } .ccfv-season-settings__actions { flex-direction:column; align-items:flex-start; } }
-</style>
+    </style>
 
 </head>
 
@@ -3785,64 +3769,55 @@
             </div>
 
 
-            <div class="ccfv-season-settings">
+            <div
+                class="
+                    ccfv-admin-settings-grid
+                "
+            >
 
-                <div class="ccfv-season-settings__grid">
-                    <label class="ccfv-season-field">
-                        <span>NÚMERO DA SEASON</span>
-                        <input id="season-number" type="number" min="1" step="1" value="1">
-                    </label>
+                <article
+                    class="ccfv-admin-setting"
+                >
 
-                    <label class="ccfv-season-field">
-                        <span>NOME DA SEASON</span>
-                        <input id="season-name" type="text" maxlength="60" value="SEASON 01">
-                    </label>
+                    <span>
+                        TEMPORADA
+                    </span>
 
-                    <label class="ccfv-season-field">
-                        <span>STATUS</span>
-                        <select id="season-status">
-                            <option value="PREPARANDO">PREPARANDO</option>
-                            <option value="EM ANDAMENTO">EM ANDAMENTO</option>
-                            <option value="FINALIZADA">FINALIZADA</option>
-                        </select>
-                    </label>
+                    <strong>
+                        SEASON 01
+                    </strong>
 
-                    <label class="ccfv-season-field">
-                        <span>RODADA ATUAL</span>
-                        <input id="season-current-round" type="number" min="1" step="1" value="1">
-                    </label>
+                </article>
 
-                    <label class="ccfv-season-field">
-                        <span>TOTAL DE RODADAS</span>
-                        <input id="season-total-rounds" type="number" min="1" step="1" value="38">
-                    </label>
 
-                    <label class="ccfv-season-field">
-                        <span>DATA DE INÍCIO</span>
-                        <input id="season-start-date" type="date">
-                    </label>
+                <article
+                    class="ccfv-admin-setting"
+                >
 
-                    <label class="ccfv-season-field">
-                        <span>DATA DE ENCERRAMENTO</span>
-                        <input id="season-end-date" type="date">
-                    </label>
+                    <span>
+                        ELO INICIAL
+                    </span>
 
-                    <label class="ccfv-season-field ccfv-season-field--switch">
-                        <span>SEASON ATIVA</span>
-                        <input id="season-is-active" type="checkbox" checked>
-                    </label>
-                </div>
+                    <strong>
+                        0
+                    </strong>
 
-                <div class="ccfv-season-settings__summary">
-                    <div><span>SEASON</span><strong id="season-preview-name">SEASON 01</strong></div>
-                    <div><span>STATUS</span><strong id="season-preview-status">PREPARANDO</strong></div>
-                    <div><span>RODADA</span><strong id="season-preview-round">01 / 38</strong></div>
-                </div>
+                </article>
 
-                <div class="ccfv-season-settings__actions">
-                    <button type="button" class="ccfv-admin-button ccfv-admin-button--primary" id="save-season-settings">SALVAR CONFIGURAÇÃO</button>
-                    <span id="season-settings-feedback" class="ccfv-season-feedback"></span>
-                </div>
+
+                <article
+                    class="ccfv-admin-setting"
+                >
+
+                    <span>
+                        BASE
+                    </span>
+
+                    <strong>
+                        SUPABASE
+                    </strong>
+
+                </article>
 
             </div>
 
@@ -4199,13 +4174,85 @@
 
                     </label>
 
+
+                    <label
+                        class="ccfv-competition-check ccfv-platform-mobile-only"
+                        id="competition-brasileirao-mobile-label"
+                        style="display:none"
+                    >
+
+                        <input
+                            type="checkbox"
+                            id="competition-brasileirao-mobile"
+                        >
+
+                        <span class="ccfv-competition-check__box">✓</span>
+
+                        <span class="ccfv-competition-check__content">
+                            <strong>BRASILEIRÃO MOBILE</strong>
+                            <small>Representa um clube no Mobile</small>
+                        </span>
+
+                    </label>
+
+
+                    <label
+                        class="ccfv-competition-check ccfv-platform-mobile-only"
+                        id="competition-arena-mobile-label"
+                        style="display:none"
+                    >
+
+                        <input
+                            type="checkbox"
+                            id="competition-arena-mobile"
+                        >
+
+                        <span class="ccfv-competition-check__box">✓</span>
+
+                        <span class="ccfv-competition-check__content">
+                            <strong>ARENA CUP MOBILE</strong>
+                            <small>Equipe própria</small>
+                        </span>
+
+                    </label>
+
+                </div>
+
+                <div
+                    class="ccfv-admin-competition-summary"
+                >
+                    <span class="ccfv-competition-config__label">COMPETIÇÕES SELECIONADAS</span>
+                    <div id="player-competition-summary">
+                        <span class="ccfv-admin-competition-summary__empty">NENHUMA COMPETIÇÃO SELECIONADA.</span>
+                    </div>
                 </div>
 
 
                 <div
-                    class="
-                        ccfv-competition-config
-                    "
+                    class="ccfv-competition-config"
+                    id="brasileirao-mobile-config"
+                    style="display:none"
+                >
+                    <span class="ccfv-competition-config__label">TIME QUE VAI REPRESENTAR NO MOBILE</span>
+                    <select id="brasileirao-mobile-team">
+                        <option value="">Selecione o clube</option>
+                        <option>ATHLETICO-PR</option><option>ATLÉTICO-MG</option><option>BAHIA</option><option>BOTAFOGO</option><option>BRAGANTINO</option><option>CHAPECOENSE</option><option>CORINTHIANS</option><option>CORITIBA</option><option>CRUZEIRO</option><option>FLAMENGO</option><option>FLUMINENSE</option><option>GRÊMIO</option><option>INTERNACIONAL</option><option>MIRASSOL</option><option>PALMEIRAS</option><option>REMO</option><option>SANTOS</option><option>SÃO PAULO</option><option>VASCO</option><option>VITÓRIA</option>
+                    </select>
+                </div>
+
+
+                <div
+                    class="ccfv-competition-config"
+                    id="arena-mobile-config"
+                    style="display:none"
+                >
+                    <span class="ccfv-competition-config__label">NOME DA EQUIPE — ARENA CUP MOBILE</span>
+                    <input type="text" id="arena-mobile-team" placeholder="Ex: CCFV Wolves">
+                </div>
+
+
+                <div
+                    class="ccfv-competition-config"
                     id="brasileirao-config"
                 >
 
@@ -4333,37 +4380,6 @@
                         placeholder="Nome do time"
                     >
 
-                </div>
-
-
-                <div
-                    class="ccfv-competition-options ccfv-mobile-competition-options"
-                    id="mobile-player-competitions"
-                >
-                    <label class="ccfv-competition-check" id="competition-brasileirao-mobile-label">
-                        <input type="checkbox" id="competition-brasileirao-mobile">
-                        <span class="ccfv-competition-check__box">✓</span>
-                        <span class="ccfv-competition-check__content">
-                            <strong>BRASILEIRÃO MOBILE</strong>
-                            <small>Representa um clube</small>
-                        </span>
-                    </label>
-
-                    <label class="ccfv-competition-check" id="competition-arena-mobile-label">
-                        <input type="checkbox" id="competition-arena-mobile">
-                        <span class="ccfv-competition-check__box">✓</span>
-                        <span class="ccfv-competition-check__content">
-                            <strong>ARENA CUP MOBILE</strong>
-                            <small>Competição eliminatória</small>
-                        </span>
-                    </label>
-                </div>
-
-                <div class="ccfv-competition-config" id="brasileirao-mobile-config">
-                    <span class="ccfv-competition-config__label">TIME DO BRASILEIRÃO MOBILE</span>
-                    <select id="brasileirao-mobile-team">
-                        <option value="">Selecione o clube</option>
-                    </select>
                 </div>
 
             </div>

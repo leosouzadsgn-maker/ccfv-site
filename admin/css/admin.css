@@ -2296,3 +2296,8 @@ select {
         rgba(67, 223, 145, 0.08);
 
 }
+
+/* Competition selection summary */
+#player-competition-summary{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;min-height:30px;align-items:center}
+.ccfv-admin-competition-pill{display:inline-flex;align-items:center;padding:8px 11px;border:1px solid rgba(67,223,145,.28);border-radius:999px;background:rgba(67,223,145,.07);color:#43df91;font-size:11px;font-weight:800;letter-spacing:.04em}
+.ccfv-admin-competition-summary__empty{color:rgba(255,255,255,.38);font-size:11px;font-weight:700}
