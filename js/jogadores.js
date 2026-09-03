@@ -306,7 +306,7 @@
     player?.competition_team ||
     player?.team_name_mobile ||
     player?.mobile_club ||
-    "CCFV OFICIAL";
+    "teamName";
 
         return String(team).trim() || "SEM EQUIPE";
 
