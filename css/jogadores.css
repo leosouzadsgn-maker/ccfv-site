@@ -1332,56 +1332,48 @@
 
 /* =========================================================
    REAL CARD
-   CCFV PLAYER CARD — INSTAGRAM 1080x1920
-   Visual: premium, clean, spacious, information-first.
+   ========================================================= */
+
+/* =========================================================
+   CCFV — PLAYER CARD
+   HARMONIC INSTAGRAM / 1080x1920
    ========================================================= */
 
 .ccfv-real-card {
     --card-accent: #43df91;
+    container-type: inline-size;
     position: relative;
     width: 100%;
     max-width: 1080px;
     aspect-ratio: 9 / 16;
     overflow: hidden;
-    isolation: isolate;
     border: 1px solid color-mix(in srgb, var(--card-accent) 42%, transparent);
-    border-radius: 42px;
+    border-radius: 30px;
+    isolation: isolate;
     background:
-        radial-gradient(circle at 52% 29%, color-mix(in srgb, var(--card-accent) 14%, transparent), transparent 28%),
-        radial-gradient(circle at 18% 78%, color-mix(in srgb, var(--card-accent) 7%, transparent), transparent 28%),
-        linear-gradient(145deg, #07140d 0%, #030805 52%, #010302 100%);
-    box-shadow:
-        0 28px 95px rgba(0, 0, 0, .58),
-        inset 0 0 120px rgba(67, 223, 145, .03);
+        radial-gradient(circle at 50% 25%, color-mix(in srgb, var(--card-accent) 13%, transparent), transparent 31%),
+        radial-gradient(circle at 82% 72%, color-mix(in srgb, var(--card-accent) 7%, transparent), transparent 34%),
+        linear-gradient(155deg, #07150d 0%, #020705 54%, #010302 100%);
+    box-shadow: 0 26px 85px rgba(0,0,0,.52), inset 0 0 80px rgba(67,223,145,.03);
 }
 
-.ccfv-real-card--amateur {
-    --card-accent: #69a8ff;
-    background:
-        radial-gradient(circle at 52% 28%, rgba(105,168,255,.14), transparent 28%),
-        radial-gradient(circle at 18% 78%, rgba(105,168,255,.07), transparent 28%),
-        linear-gradient(145deg, #07111d 0%, #03070c 55%, #010205 100%);
-}
-
+.ccfv-real-card--amateur { --card-accent: #69a8ff; }
 .ccfv-real-card--professional { --card-accent: #43df91; }
-
 .ccfv-real-card--legend {
     --card-accent: #ffc252;
     background:
-        radial-gradient(circle at 52% 26%, rgba(255,194,82,.15), transparent 28%),
-        radial-gradient(circle at 18% 78%, rgba(255,194,82,.06), transparent 28%),
-        linear-gradient(145deg, #1a1105 0%, #070503 56%, #010101 100%);
-    box-shadow:
-        0 34px 110px rgba(255,194,82,.14),
-        inset 0 0 110px rgba(255,194,82,.03);
+        radial-gradient(circle at 50% 25%, rgba(255,194,82,.13), transparent 31%),
+        radial-gradient(circle at 82% 72%, rgba(255,194,82,.07), transparent 34%),
+        linear-gradient(155deg, #1a1105 0%, #070503 56%, #010101 100%);
+    box-shadow: 0 30px 95px rgba(255,194,82,.12), inset 0 0 90px rgba(255,194,82,.03);
 }
 
 .ccfv-real-card::before {
     content: "";
     position: absolute;
-    inset: 18px;
-    border: 1px solid color-mix(in srgb, var(--card-accent) 21%, transparent);
-    border-radius: 32px;
+    inset: 2.1%;
+    border: 1px solid color-mix(in srgb, var(--card-accent) 20%, transparent);
+    border-radius: 2.1%;
     pointer-events: none;
     z-index: 30;
 }
@@ -1391,23 +1383,23 @@
     position: absolute;
     inset: 0;
     background:
-        linear-gradient(112deg, transparent 31%, color-mix(in srgb, var(--card-accent) 9%, transparent) 31.2%, transparent 32%),
-        linear-gradient(292deg, transparent 72%, color-mix(in srgb, var(--card-accent) 7%, transparent) 72.2%, transparent 73%);
-    opacity: .6;
+        linear-gradient(120deg, transparent 36%, color-mix(in srgb, var(--card-accent) 10%, transparent) 36.2%, transparent 36.7%),
+        linear-gradient(300deg, transparent 67%, color-mix(in srgb, var(--card-accent) 7%, transparent) 67.2%, transparent 67.7%);
+    opacity: .65;
     pointer-events: none;
     z-index: 2;
 }
 
 .ccfv-real-card__glow {
     position: absolute;
-    width: 58%;
+    width: 55%;
     aspect-ratio: 1;
-    left: 21%;
-    top: 22%;
+    left: 22.5%;
+    top: 24%;
     border-radius: 50%;
-    background: color-mix(in srgb, var(--card-accent) 14%, transparent);
-    filter: blur(75px);
-    opacity: .48;
+    background: color-mix(in srgb, var(--card-accent) 12%, transparent);
+    filter: blur(70px);
+    opacity: .55;
     pointer-events: none;
     z-index: 1;
 }
@@ -1415,108 +1407,84 @@
 .ccfv-real-card__grid {
     position: absolute;
     inset: 0;
-    opacity: .08;
+    opacity: .10;
     background-image:
-        linear-gradient(color-mix(in srgb, var(--card-accent) 18%, transparent) 1px, transparent 1px),
-        linear-gradient(90deg, color-mix(in srgb, var(--card-accent) 18%, transparent) 1px, transparent 1px);
-    background-size: 46px 46px;
+        linear-gradient(color-mix(in srgb, var(--card-accent) 15%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--card-accent) 15%, transparent) 1px, transparent 1px);
+    background-size: 4.2% 4.2%;
     pointer-events: none;
     z-index: 3;
 }
 
-/* ----------------------------
-   HEADER
-   ---------------------------- */
-
 .ccfv-real-card__top {
     position: absolute;
-    top: 5.6%;
-    left: 8%;
-    right: 8%;
+    top: 5.2%;
+    left: 7.2%;
+    right: 7.2%;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 22px;
+    gap: 3%;
     z-index: 8;
 }
 
-.ccfv-real-card__brand {
-    max-width: 64%;
-}
+.ccfv-real-card__brand { max-width: 70%; }
 
 .ccfv-real-card__brand-kicker {
     display: block;
     color: #fff;
-    font-size: clamp(12px, 1.55vw, 17px);
-    font-weight: 900;
-    letter-spacing: .09em;
-    line-height: 1.05;
+    font-size: clamp(11px, 1.65cqw, 18px);
+    font-weight: 950;
+    letter-spacing: .08em;
+    line-height: 1.02;
 }
 
 .ccfv-real-card__brand-name {
     display: block;
-    margin-top: 6px;
-    max-width: 430px;
+    margin-top: .7%;
     color: rgba(255,255,255,.42);
-    font-size: clamp(7px, .82vw, 9px);
-    font-weight: 800;
-    letter-spacing: .14em;
-    line-height: 1.35;
+    font-size: clamp(6px, .95cqw, 10px);
+    font-weight: 850;
+    letter-spacing: .12em;
+    line-height: 1.18;
 }
 
 .ccfv-real-card__season {
-    min-width: 98px;
-    padding-left: 16px;
-    border-left: 1px solid color-mix(in srgb, var(--card-accent) 38%, transparent);
+    min-width: 9.5%;
+    padding: .5% 1% .7%;
+    border-left: 1px solid color-mix(in srgb, var(--card-accent) 42%, transparent);
     text-align: right;
 }
 
 .ccfv-real-card__season span {
     display: block;
-    color: rgba(255,255,255,.36);
-    font-size: clamp(7px, .82vw, 9px);
+    color: rgba(255,255,255,.40);
+    font-size: clamp(6px, .85cqw, 9px);
     font-weight: 900;
-    letter-spacing: .17em;
+    letter-spacing: .16em;
 }
 
 .ccfv-real-card__season strong {
     display: block;
-    margin-top: 4px;
+    margin-top: 1%;
     color: var(--card-accent);
-    font-size: clamp(22px, 2.9vw, 31px);
+    font-size: clamp(17px, 2.65cqw, 28px);
     font-weight: 950;
-    line-height: .88;
+    line-height: .9;
 }
-
-/* ----------------------------
-   PHOTO
-   ---------------------------- */
 
 .ccfv-real-card__photo {
     position: absolute;
-    top: 14.8%;
-    left: 7.5%;
-    right: 7.5%;
-    height: 41.8%;
+    top: 15.3%;
+    left: 7.2%;
+    right: 7.2%;
+    height: 42.5%;
     overflow: hidden;
     border: 1px solid rgba(255,255,255,.10);
-    border-radius: 34px 34px 92px 28px;
-    background:
-        linear-gradient(180deg, rgba(255,255,255,.035), rgba(0,0,0,.32));
+    border-radius: 3.2% 3.2% 8% 2.7%;
+    background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(0,0,0,.30));
     z-index: 6;
-    box-shadow:
-        0 18px 55px rgba(0,0,0,.26),
-        inset 0 0 0 1px rgba(255,255,255,.025);
-}
-
-.ccfv-real-card__photo::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border: 1px solid color-mix(in srgb, var(--card-accent) 13%, transparent);
-    border-radius: inherit;
-    pointer-events: none;
-    z-index: 2;
+    box-shadow: 0 18px 56px rgba(0,0,0,.28);
 }
 
 .ccfv-real-card__photo::after {
@@ -1525,10 +1493,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 34%;
+    height: 28%;
     background: linear-gradient(180deg, transparent, rgba(0,0,0,.62));
     pointer-events: none;
-    z-index: 2;
 }
 
 .ccfv-real-card__photo img {
@@ -1544,151 +1511,125 @@
     width: 100%;
     height: 100%;
     color: color-mix(in srgb, var(--card-accent) 72%, transparent);
-    font-size: clamp(45px, 8vw, 90px);
+    font-size: clamp(30px, 7cqw, 76px);
     font-weight: 950;
+    background: radial-gradient(circle, color-mix(in srgb, var(--card-accent) 10%, transparent), transparent 64%);
 }
-
-/* ----------------------------
-   BADGE
-   ---------------------------- */
 
 .ccfv-real-card__badge {
     position: absolute;
-    top: 17%;
+    top: 16.9%;
     right: 7.5%;
-    width: clamp(90px, 13.5vw, 145px);
+    width: 13.6%;
     z-index: 10;
-    filter:
-        drop-shadow(0 15px 24px rgba(0,0,0,.44))
-        drop-shadow(0 0 18px color-mix(in srgb, var(--card-accent) 12%, transparent));
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,.48));
 }
-
-/* ----------------------------
-   PLAYER IDENTITY
-   ---------------------------- */
 
 .ccfv-real-card__identity {
     position: absolute;
-    top: 59%;
     left: 8%;
     right: 8%;
+    top: 58.4%;
     z-index: 9;
 }
 
 .ccfv-real-card__identity-rank {
     display: block;
     color: var(--card-accent);
-    font-size: clamp(9px, 1vw, 11px);
+    font-size: clamp(8px, 1.15cqw, 12px);
     font-weight: 950;
-    letter-spacing: .16em;
+    letter-spacing: .12em;
 }
 
 .ccfv-real-card__identity strong {
     display: block;
-    max-width: 88%;
-    margin-top: 5px;
+    max-width: 86%;
+    margin-top: .9%;
     color: #fff;
-    font-size: clamp(27px, 4.05vw, 44px);
+    font-size: clamp(18px, 3.15cqw, 34px);
     font-weight: 950;
-    letter-spacing: -.045em;
-    line-height: .96;
+    letter-spacing: -.035em;
+    line-height: .98;
     text-wrap: balance;
 }
 
 .ccfv-real-card__identity small {
     display: block;
-    margin-top: 7px;
-    color: rgba(255,255,255,.34);
-    font-size: clamp(7px, .86vw, 9px);
-    font-weight: 800;
-    letter-spacing: .07em;
+    margin-top: .9%;
+    color: rgba(255,255,255,.38);
+    font-size: clamp(6px, .85cqw, 9px);
+    font-weight: 850;
+    letter-spacing: .06em;
 }
-
-/* ----------------------------
-   TEAM
-   ---------------------------- */
 
 .ccfv-real-card__team {
     position: absolute;
-    top: 69.4%;
     left: 8%;
     right: 8%;
-    height: 7.2%;
+    top: 69.2%;
+    min-height: 7.1%;
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: 11% 1fr auto;
     align-items: center;
-    gap: 12px;
-    padding: 10px 12px;
-    box-sizing: border-box;
-    border: 1px solid color-mix(in srgb, var(--card-accent) 28%, transparent);
-    border-radius: 16px;
-    background:
-        linear-gradient(90deg, rgba(255,255,255,.035), rgba(0,0,0,.16));
+    gap: 2.5%;
+    padding: 1.3% 1.5%;
+    border: 1px solid color-mix(in srgb, var(--card-accent) 24%, transparent);
+    border-radius: 1.7%;
+    background: linear-gradient(90deg, rgba(255,255,255,.035), rgba(0,0,0,.13));
     z-index: 9;
 }
 
 .ccfv-real-card__team-mark {
     display: grid;
     place-items: center;
-    width: 46px;
-    height: 46px;
-    border: 1px solid color-mix(in srgb, var(--card-accent) 40%, transparent);
-    border-radius: 12px;
+    width: 100%;
+    aspect-ratio: 1;
+    border: 1px solid color-mix(in srgb, var(--card-accent) 36%, transparent);
+    border-radius: 15%;
     color: var(--card-accent);
-    font-size: 9px;
+    font-size: clamp(6px, .95cqw, 10px);
     font-weight: 950;
-    letter-spacing: .04em;
-}
-
-.ccfv-real-card__team-copy {
-    min-width: 0;
 }
 
 .ccfv-real-card__team-copy span {
     display: block;
-    color: rgba(255,255,255,.29);
-    font-size: 7px;
+    color: rgba(255,255,255,.30);
+    font-size: clamp(5px, .72cqw, 8px);
     font-weight: 900;
-    letter-spacing: .13em;
-    line-height: 1;
+    letter-spacing: .12em;
 }
 
 .ccfv-real-card__team-copy strong {
     display: block;
-    margin-top: 5px;
-    overflow: hidden;
+    margin-top: .7%;
     color: #fff;
-    font-size: clamp(11px, 1.45vw, 15px);
+    font-size: clamp(8px, 1.35cqw, 15px);
     font-weight: 950;
     line-height: 1;
     white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .ccfv-real-card__platform {
     color: var(--card-accent);
-    font-size: 8px;
+    font-size: clamp(6px, .85cqw, 9px);
     font-weight: 950;
-    letter-spacing: .12em;
+    letter-spacing: .10em;
 }
-
-/* ----------------------------
-   STATS
-   ---------------------------- */
 
 .ccfv-real-card__stats {
     position: absolute;
-    top: 78.2%;
     left: 8%;
     right: 8%;
-    height: 8.3%;
+    top: 78.1%;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     overflow: hidden;
     border: 1px solid rgba(255,255,255,.08);
-    border-radius: 16px;
-    background: rgba(0,0,0,.18);
+    border-radius: 1.8%;
     z-index: 9;
+    background: rgba(0,0,0,.18);
 }
 
 .ccfv-real-card__stats div {
@@ -1696,81 +1637,70 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    min-width: 0;
-    padding: 8px 4px;
-    background: linear-gradient(180deg, rgba(255,255,255,.032), rgba(255,255,255,.008));
+    min-height: 6.8cqw;
+    padding: 1.2% .5%;
+    background: linear-gradient(180deg, rgba(255,255,255,.032), rgba(255,255,255,.01));
 }
 
-.ccfv-real-card__stats div + div {
-    border-left: 1px solid rgba(255,255,255,.06);
-}
+.ccfv-real-card__stats div + div { border-left: 1px solid rgba(255,255,255,.065); }
 
 .ccfv-real-card__stats span {
-    color: rgba(255,255,255,.31);
-    font-size: 6px;
+    color: rgba(255,255,255,.34);
+    font-size: clamp(5px, .72cqw, 8px);
     font-weight: 900;
     letter-spacing: .08em;
     text-align: center;
 }
 
 .ccfv-real-card__stats strong {
+    margin-top: .6%;
     color: var(--card-accent);
     font-family: monospace;
-    font-size: clamp(14px, 1.75vw, 19px);
+    font-size: clamp(11px, 1.65cqw, 18px);
     font-weight: 950;
 }
 
-/* ----------------------------
-   FOOTER
-   ---------------------------- */
-
 .ccfv-real-card__tagline {
     position: absolute;
-    top: 88.3%;
     left: 8%;
     right: 8%;
+    top: 87.5%;
     display: grid;
-    gap: 4px;
+    gap: .4%;
     z-index: 9;
 }
 
 .ccfv-real-card__tagline span {
-    color: rgba(255,255,255,.48);
-    font-size: clamp(7px, .82vw, 9px);
-    font-weight: 850;
-    letter-spacing: .07em;
+    color: rgba(255,255,255,.56);
+    font-size: clamp(6px, .82cqw, 9px);
+    font-weight: 950;
+    letter-spacing: .065em;
 }
 
 .ccfv-real-card__tagline strong {
     color: var(--card-accent);
-    font-size: clamp(7px, .82vw, 9px);
+    font-size: clamp(5px, .78cqw, 8px);
     font-weight: 950;
     letter-spacing: .11em;
 }
 
 .ccfv-real-card__footer-line {
     position: absolute;
-    top: 93%;
     left: 8%;
     right: 8%;
+    top: 93.1%;
     height: 1px;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        color-mix(in srgb, var(--card-accent) 42%, transparent),
-        transparent
-    );
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--card-accent) 40%, transparent), transparent);
     z-index: 9;
 }
 
 .ccfv-real-card__instagram {
     position: absolute;
     left: 8%;
-    bottom: 3.9%;
-    color: rgba(255,255,255,.42);
-    font-size: clamp(7px, .82vw, 9px);
-    font-weight: 850;
+    bottom: 4.0%;
+    color: rgba(255,255,255,.46);
+    font-size: clamp(6px, .82cqw, 9px);
+    font-weight: 900;
     letter-spacing: .05em;
     z-index: 9;
 }
@@ -1780,27 +1710,18 @@
     right: 8%;
     bottom: 3.9%;
     color: var(--card-accent);
-    font-size: clamp(7px, .82vw, 9px);
+    font-size: clamp(6px, .82cqw, 9px);
     font-weight: 950;
-    letter-spacing: .11em;
+    letter-spacing: .10em;
     z-index: 9;
 }
 
 @media (max-width: 560px) {
-    .ccfv-real-card { border-radius: 24px; }
-    .ccfv-real-card__top { top: 5.3%; }
-    .ccfv-real-card__photo { border-radius: 24px 24px 66px 22px; }
-    .ccfv-real-card__team { gap: 8px; padding: 8px 10px; }
-    .ccfv-real-card__team-mark { width: 38px; height: 38px; }
-    .ccfv-real-card__stats { top: 78.1%; }
+    .ccfv-real-card { border-radius: 22px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .ccfv-real-card,
-    .ccfv-real-card * {
-        animation: none !important;
-        transition: none !important;
-    }
+    .ccfv-real-card, .ccfv-real-card * { animation: none !important; transition: none !important; }
 }
 
 /* =========================================================
