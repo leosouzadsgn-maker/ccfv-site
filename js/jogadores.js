@@ -326,56 +326,18 @@
         const liveRanking = Array.isArray(state?.ranking) ? state.ranking : [];
         const livePlayers = Array.isArray(state?.players) ? state.players : [];
         const source = liveRanking.length ? liveRanking : livePlayers;
-        const playerCompetitions = Array.isArray(state?.playerCompetitions)
-            ? state.playerCompetitions
-            : [];
-
-        const teamByPlayer = new Map();
-
-        playerCompetitions.forEach(item => {
-            const playerId = String(item?.player_id ?? "");
-            if (!playerId) return;
-
-            const team = String(
-                item?.team_name ||
-                item?.team ||
-                item?.club_name ||
-                item?.club ||
-                ""
-            ).trim();
-
-            if (!team) return;
-
-            const competition = String(item?.competition || "").toUpperCase();
-            const priority =
-                competition === "BRASILEIRAO" ? 1 :
-                competition === "BRASILEIRAO_MOBILE" ? 2 :
-                competition === "NIGHT_CUP" ? 3 :
-                competition === "ARENA_CUP" ? 4 : 9;
-
-            const current = teamByPlayer.get(playerId);
-            if (!current || priority < current.priority) {
-                teamByPlayer.set(playerId, { team, priority });
-            }
-        });
 
         players.splice(
             0,
             players.length,
-            ...source.map(player => {
-                const playerId = String(player?.id ?? "");
-                const mappedTeam = teamByPlayer.get(playerId)?.team || getPlayerTeam(player);
-                return {
-                    ...player,
-                    photo: getPlayerPhoto(player),
-                    photo_url: getPlayerPhoto(player) || player?.photo_url || "",
-                    team_name: mappedTeam
-                };
-            })
+            ...source.map(player => ({
+                ...player,
+                photo: getPlayerPhoto(player),
+                photo_url: getPlayerPhoto(player) || player?.photo_url || "",
+            }))
         );
 
         return true;
-
     }
 
 
@@ -1391,6 +1353,13 @@
                 ></div>
 
 
+                <div class="ccfv-real-card__shine"></div>
+                <div class="ccfv-real-card__orb ccfv-real-card__orb--one"></div>
+                <div class="ccfv-real-card__orb ccfv-real-card__orb--two"></div>
+                <div class="ccfv-real-card__curve"></div>
+                <div class="ccfv-real-card__watermark">CCFV</div>
+
+
                 <div
                     class="
                         ccfv-real-card__top
@@ -1530,6 +1499,9 @@
                     </small>
 
                 </div>
+
+
+                <div class="ccfv-real-card__rankline">RANKING OFICIAL • TEMPORADA ATIVA</div>
 
 
                 <div
@@ -2120,8 +2092,14 @@
                     card,
                     {
 
+                        width:
+                            1080,
+
+                        height:
+                            1920,
+
                         pixelRatio:
-                            3,
+                            1,
 
                         cacheBust:
                             true,
@@ -2134,6 +2112,12 @@
 
                         style:
                         {
+
+                            width:
+                                "1080px",
+
+                            height:
+                                "1920px",
 
                             transform:
                                 "none"
