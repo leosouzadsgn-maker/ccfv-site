@@ -304,6 +304,10 @@
             player?.brasileirao_team ||
             player?.mobile_team ||
             player?.competition_team ||
+            player?.team_name_mobile ||
+            player?.mobile_club ||
+            player?.club ||
+            player?.team
             "CCFV OFICIAL";
 
         return String(team).trim() || "CCFV OFICIAL";
