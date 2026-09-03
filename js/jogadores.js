@@ -308,7 +308,7 @@
             player?.mobile_club ||
             player?.club ||
             player?.team
-            "CCFV OFICIAL";
+            "SEM EQUIPE";
 
         return String(team).trim() || "CCFV OFICIAL";
 
