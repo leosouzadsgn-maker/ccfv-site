@@ -306,9 +306,9 @@
     player?.competition_team ||
     player?.team_name_mobile ||
     player?.mobile_club ||
-    "teamName";
+    "DESPERADOS FC";
 
-        return String(team).trim() || "SEM EQUIPE";
+        return String(team).trim() || "CCFV OFICIAL";
 
     }
 
