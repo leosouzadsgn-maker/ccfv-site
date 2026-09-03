@@ -1384,7 +1384,7 @@
                     </div>
 
                     <div class="ccfv-real-card__season">
-                        <span>SEASON</span>
+                        <span>TEMPORADA</span>
                         <strong>01</strong>
                     </div>
 
@@ -1451,7 +1451,7 @@
                 <div class="ccfv-real-card__team">
                     <div class="ccfv-real-card__team-mark">CCFV</div>
                     <div class="ccfv-real-card__team-copy">
-                        <span>COMPETIDOR / EQUIPE</span>
+                        <span>EQUIPE / CLUBE</span>
                         <strong>${escapeHTML(teamName)}</strong>
                     </div>
                     <div class="ccfv-real-card__platform">
@@ -1740,13 +1740,21 @@
             await document.fonts.ready;
 
 
+            const rect =
+                card.getBoundingClientRect();
+
+            const exportScale =
+                rect.width > 0
+                    ? 1080 / rect.width
+                    : 3;
+
             const dataUrl =
                 await window.htmlToImage.toPng(
                     card,
                     {
 
                         pixelRatio:
-                            3,
+                            exportScale,
 
                         cacheBust:
                             true,
@@ -2001,13 +2009,21 @@
             await document.fonts.ready;
 
 
+            const rect =
+                card.getBoundingClientRect();
+
+            const exportScale =
+                rect.width > 0
+                    ? 1080 / rect.width
+                    : 3;
+
             const dataUrl =
                 await window.htmlToImage.toPng(
                     card,
                     {
 
                         pixelRatio:
-                            3,
+                            exportScale,
 
                         cacheBust:
                             true,
