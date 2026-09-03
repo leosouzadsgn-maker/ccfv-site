@@ -1346,7 +1346,7 @@
         100%;
 
     aspect-ratio:
-        0.70;
+        9 / 16;
 
     overflow:
         hidden;
@@ -1356,7 +1356,7 @@
         rgba(67,223,145,.32);
 
     border-radius:
-        24px;
+        30px;
 
     background:
         radial-gradient(
@@ -1504,13 +1504,13 @@
         absolute;
 
     top:
-        20px;
+        24px;
 
     left:
-        20px;
+        24px;
 
     right:
-        20px;
+        24px;
 
     z-index:
         4;
@@ -1533,7 +1533,7 @@
         monospace;
 
     font-size:
-        8px;
+        9px;
 
     font-weight:
         900;
@@ -1570,10 +1570,10 @@
         10%;
 
     top:
-        13%;
+        12%;
 
     height:
-        48%;
+        53%;
 
     z-index:
         3;
@@ -1589,7 +1589,7 @@
         hidden;
 
     border-radius:
-        20px;
+        24px;
 
     border:
         1px solid
@@ -1652,7 +1652,7 @@
         5%;
 
     width:
-        85px;
+        102px;
 
     z-index:
         5;
@@ -1672,7 +1672,7 @@
         7%;
 
     bottom:
-        27%;
+        23%;
 
     z-index:
         5;
@@ -1747,6 +1747,61 @@
 }
 
 
+.ccfv-real-card__team {
+
+    display:
+        block;
+
+    margin-top:
+        8px;
+
+    color:
+        #ffffff;
+
+    font-size:
+        11px;
+
+    font-weight:
+        950;
+
+    letter-spacing:
+        .055em;
+
+    text-transform:
+        uppercase;
+
+    white-space:
+        nowrap;
+
+    overflow:
+        hidden;
+
+    text-overflow:
+        ellipsis;
+
+}
+
+
+.ccfv-real-card__instagram-player {
+
+    display:
+        block;
+
+    margin-top:
+        5px;
+
+    color:
+        rgba(255,255,255,.34);
+
+    font-size:
+        8px;
+
+    font-weight:
+        800;
+
+}
+
+
 .ccfv-real-card__stats {
 
     position:
@@ -1759,7 +1814,7 @@
         7%;
 
     bottom:
-        12%;
+        10%;
 
     z-index:
         5;

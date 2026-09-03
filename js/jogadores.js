@@ -292,6 +292,23 @@
     }
 
 
+    function getPlayerTeam(player) {
+
+        return String(
+            player?.team_name ||
+            player?.team ||
+            player?.club_name ||
+            player?.club ||
+            player?.brasileirao_team_name ||
+            player?.brasileirao_team ||
+            player?.equipe_nome ||
+            player?.equipe ||
+            ""
+        ).trim();
+
+    }
+
+
 
     /* =====================================================
        DADOS AO VIVO DA CCFV
@@ -309,18 +326,56 @@
         const liveRanking = Array.isArray(state?.ranking) ? state.ranking : [];
         const livePlayers = Array.isArray(state?.players) ? state.players : [];
         const source = liveRanking.length ? liveRanking : livePlayers;
+        const playerCompetitions = Array.isArray(state?.playerCompetitions)
+            ? state.playerCompetitions
+            : [];
+
+        const teamByPlayer = new Map();
+
+        playerCompetitions.forEach(item => {
+            const playerId = String(item?.player_id ?? "");
+            if (!playerId) return;
+
+            const team = String(
+                item?.team_name ||
+                item?.team ||
+                item?.club_name ||
+                item?.club ||
+                ""
+            ).trim();
+
+            if (!team) return;
+
+            const competition = String(item?.competition || "").toUpperCase();
+            const priority =
+                competition === "BRASILEIRAO" ? 1 :
+                competition === "BRASILEIRAO_MOBILE" ? 2 :
+                competition === "NIGHT_CUP" ? 3 :
+                competition === "ARENA_CUP" ? 4 : 9;
+
+            const current = teamByPlayer.get(playerId);
+            if (!current || priority < current.priority) {
+                teamByPlayer.set(playerId, { team, priority });
+            }
+        });
 
         players.splice(
             0,
             players.length,
-            ...source.map(player => ({
-                ...player,
-                photo: getPlayerPhoto(player),
-                photo_url: getPlayerPhoto(player) || player?.photo_url || "",
-            }))
+            ...source.map(player => {
+                const playerId = String(player?.id ?? "");
+                const mappedTeam = teamByPlayer.get(playerId)?.team || getPlayerTeam(player);
+                return {
+                    ...player,
+                    photo: getPlayerPhoto(player),
+                    photo_url: getPlayerPhoto(player) || player?.photo_url || "",
+                    team_name: mappedTeam
+                };
+            })
         );
 
         return true;
+
     }
 
 
@@ -1348,11 +1403,7 @@
                         "
                     >
 
-                        CCFV //
-                        PLAYER
-                        #${escapeHTML(
-                            player.id
-                        )}
+                        CCFV // OFFICIAL PLAYER CARD
 
                     </span>
 
@@ -1450,7 +1501,23 @@
                     </strong>
 
 
-                    <small>
+                    ${
+                        getPlayerTeam(player)
+                            ? `
+                                <small
+                                    class="ccfv-real-card__team"
+                                >
+                                    ${escapeHTML(
+                                        getPlayerTeam(player)
+                                    )}
+                                </small>
+                            `
+                            : ""
+                    }
+
+                    <small
+                        class="ccfv-real-card__instagram-player"
+                    >
                         @${escapeHTML(
                             String(
                                 player.instagram
@@ -1793,7 +1860,7 @@
                     {
 
                         pixelRatio:
-                            3,
+                            1080 / Math.max(1, card.getBoundingClientRect().width),
 
                         cacheBust:
                             true,
