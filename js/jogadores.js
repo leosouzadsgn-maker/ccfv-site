@@ -295,22 +295,20 @@
     function getPlayerTeam(player) {
 
         const team =
-            player?.team_name ||
-            player?.teamName ||
-            player?.club_name ||
-            player?.clubName ||
-            player?.team ||
-            player?.club ||
-            player?.brasileirao_team ||
-            player?.mobile_team ||
-            player?.competition_team ||
-            player?.team_name_mobile ||
-            player?.mobile_club ||
-            player?.club ||
-            player?.team
-            "SEM EQUIPE";
+    player?.team_name ||
+    player?.teamName ||
+    player?.club_name ||
+    player?.clubName ||
+    player?.team ||
+    player?.club ||
+    player?.brasileirao_team ||
+    player?.mobile_team ||
+    player?.competition_team ||
+    player?.team_name_mobile ||
+    player?.mobile_club ||
+    "CCFV OFICIAL";
 
-        return String(team).trim() || "CCFV OFICIAL";
+        return String(team).trim() || "SEM EQUIPE";
 
     }
 
