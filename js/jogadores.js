@@ -306,7 +306,7 @@
     player?.competition_team ||
     player?.team_name_mobile ||
     player?.mobile_club ||
-    "DESPERADOS FC";
+    "CCFV OFICIAL";
 
         return String(team).trim() || "CCFV OFICIAL";
 
