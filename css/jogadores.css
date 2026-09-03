@@ -1463,9 +1463,9 @@
 
 .ccfv-real-card__header {
     position: absolute;
-    top: 6.2%;
-    left: 7.2%;
-    right: 7.2%;
+    top: 5.6%;
+    left: 7.0%;
+    right: 7.0%;
     z-index: 8;
     display: flex;
     justify-content: space-between;
@@ -1481,14 +1481,14 @@
 
 .ccfv-real-card__brand span {
     color: var(--card-accent);
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 1000;
     letter-spacing: .16em;
 }
 
 .ccfv-real-card__brand strong {
     color: rgba(255,255,255,.68);
-    font-size: 9px;
+    font-size: 8px;
     line-height: 1.35;
     letter-spacing: .18em;
 }
@@ -1509,17 +1509,17 @@
 
 .ccfv-real-card__season b {
     color: var(--card-accent);
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 1000;
 }
 
 .ccfv-real-card__eyebrow {
     position: absolute;
-    top: 15%;
-    left: 7.2%;
+    top: 14.1%;
+    left: 7.0%;
     z-index: 8;
     color: #fff;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 1000;
     letter-spacing: .15em;
 }
@@ -1531,13 +1531,13 @@
 
 .ccfv-real-card__portrait-frame {
     position: absolute;
-    top: 19%;
-    left: 7.5%;
-    right: 7.5%;
-    height: 44.5%;
+    top: 18.5%;
+    left: 7.0%;
+    right: 7.0%;
+    height: 41.5%;
     z-index: 5;
     overflow: hidden;
-    border-radius: 28px 28px 96px 28px;
+    border-radius: 30px 30px 88px 30px;
     border: 1px solid color-mix(in srgb, var(--card-accent) 40%, rgba(255,255,255,.06));
     background: #020504;
     clip-path: polygon(0 0, 100% 0, 100% 88%, 84% 100%, 0 100%);
@@ -1582,25 +1582,25 @@
     inset: 0;
     pointer-events: none;
     background:
-        linear-gradient(180deg, transparent 46%, rgba(0,0,0,.03) 58%, rgba(0,0,0,.72) 100%),
+        linear-gradient(180deg, transparent 46%, rgba(0,0,0,.03) 58%, rgba(0,0,0,.82) 100%),
         linear-gradient(90deg, rgba(0,0,0,.13), transparent 25%, transparent 75%, rgba(0,0,0,.18));
 }
 
 .ccfv-real-card__badge {
     position: absolute;
-    top: 20%;
-    right: 5.6%;
-    width: 128px;
+    top: 19.2%;
+    right: 5.2%;
+    width: 122px;
     z-index: 9;
-    filter: drop-shadow(0 16px 18px rgba(0,0,0,.48));
-    transform: rotate(4deg);
+    filter: drop-shadow(0 18px 22px rgba(0,0,0,.52)) drop-shadow(0 0 14px color-mix(in srgb, var(--card-accent) 18%, transparent));
+    transform: rotate(3deg);
 }
 
 .ccfv-real-card__identity {
     position: absolute;
     left: 7.4%;
     right: 7.4%;
-    top: 57.2%;
+    top: 58.9%;
     z-index: 10;
 }
 
@@ -1615,12 +1615,13 @@
 
 .ccfv-real-card__identity h2 {
     margin: 0;
-    max-width: 82%;
+    max-width: 94%;
     color: #fff;
-    font-size: clamp(38px, 7.1vw, 54px);
+    font-size: clamp(34px, 6.4vw, 47px);
     font-weight: 1000;
-    line-height: .88;
-    letter-spacing: -.045em;
+    line-height: .92;
+    letter-spacing: -.035em;
+    overflow-wrap: anywhere;
     text-transform: uppercase;
     text-wrap: balance;
     text-shadow: 0 8px 28px rgba(0,0,0,.28);
@@ -1629,43 +1630,43 @@
 .ccfv-real-card__meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
+    gap: 10px;
+    margin-top: 7px;
 }
 
 .ccfv-real-card__meta span {
     color: rgba(255,255,255,.52);
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 900;
 }
 
 .ccfv-real-card__team-bar {
     position: absolute;
     left: 7.4%;
-    right: 7.4%;
-    top: 69.2%;
+    right: 7.0%;
+    top: 69.6%;
     z-index: 10;
     display: grid;
     grid-template-columns: 54px 1fr auto;
     align-items: center;
     gap: 12px;
-    min-height: 68px;
-    padding: 8px 12px 8px 8px;
+    min-height: 64px;
+    padding: 7px 11px 7px 8px;
     border: 1px solid color-mix(in srgb, var(--card-accent) 32%, rgba(255,255,255,.07));
-    border-radius: 18px;
+    border-radius: 16px;
     background: linear-gradient(90deg, rgba(5,16,10,.94), rgba(2,5,4,.80));
     box-shadow: inset 0 0 30px rgba(0,0,0,.25);
 }
 
 .ccfv-real-card__team-icon {
-    width: 54px;
-    height: 54px;
+    width: 50px;
+    height: 50px;
     display: grid;
     place-items: center;
     border: 1px solid color-mix(in srgb, var(--card-accent) 34%, transparent);
     border-radius: 14px;
     color: var(--card-accent);
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 1000;
     letter-spacing: .12em;
     background: color-mix(in srgb, var(--card-accent) 8%, transparent);
@@ -1687,7 +1688,7 @@
     display: block;
     margin-top: 3px;
     color: #fff;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 1000;
     white-space: nowrap;
     overflow: hidden;
@@ -1706,13 +1707,13 @@
     position: absolute;
     left: 7.4%;
     right: 7.4%;
-    top: 78.5%;
+    top: 78.1%;
     z-index: 10;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     overflow: hidden;
     border: 1px solid rgba(255,255,255,.09);
-    border-radius: 18px;
+    border-radius: 16px;
     background: rgba(255,255,255,.025);
     backdrop-filter: blur(7px);
 }
@@ -1723,7 +1724,7 @@
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    padding: 13px 6px;
+    padding: 11px 6px;
     border-right: 1px solid rgba(255,255,255,.06);
 }
 
@@ -1741,7 +1742,7 @@
 .ccfv-real-card__stats strong {
     color: var(--card-accent);
     font-family: monospace;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 1000;
 }
 
@@ -1749,13 +1750,13 @@
     position: absolute;
     left: 7.4%;
     right: 7.4%;
-    top: 87.3%;
+    top: 87.0%;
     z-index: 10;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    padding-bottom: 14px;
+    padding-bottom: 11px;
     border-bottom: 1px solid rgba(255,255,255,.08);
 }
 
@@ -1778,7 +1779,7 @@
     position: absolute;
     left: 7.4%;
     right: 7.4%;
-    bottom: 5.1%;
+    bottom: 4.8%;
     z-index: 10;
     display: flex;
     justify-content: space-between;
@@ -1787,20 +1788,20 @@
 
 .ccfv-real-card__footer span {
     color: rgba(255,255,255,.60);
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 900;
 }
 
 .ccfv-real-card__footer strong {
     color: var(--card-accent);
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 1000;
     letter-spacing: .14em;
 }
 
 .ccfv-real-card__serial {
     position: absolute;
-    bottom: 2.1%;
+    bottom: 1.9%;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
@@ -1821,12 +1822,18 @@
     }
 
     .ccfv-real-card__identity h2 {
-        font-size: clamp(27px, 10vw, 40px);
+        font-size: clamp(26px, 9vw, 36px);
+        line-height: .94;
     }
 
     .ccfv-real-card__team-content strong {
-        font-size: 13px;
+        font-size: 12px;
     }
+}
+
+
+.ccfv-jogador-card-viewer__card .ccfv-real-card {
+    box-sizing: border-box;
 }
 
 /* =========================================================
