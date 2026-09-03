@@ -292,6 +292,31 @@
     }
 
 
+    function getPlayerTeam(player) {
+
+        return String(
+            player?.team_name ||
+            player?.team ||
+            player?.club_name ||
+            player?.club ||
+            player?.brasileirao_team_name ||
+            player?.brasileirao_team ||
+            player?.brasileirao_mobile_team_name ||
+            player?.brasileirao_mobile_team ||
+            player?.mobile_team_name ||
+            player?.mobile_team ||
+            player?.arena_cup_team_name ||
+            player?.arena_cup_team ||
+            player?.arena_team_name ||
+            player?.arena_team ||
+            player?.equipe_nome ||
+            player?.equipe ||
+            ""
+        ).trim();
+
+    }
+
+
 
     /* =====================================================
        DADOS AO VIVO DA CCFV
@@ -1305,41 +1330,6 @@
     }
 
 
-    function getPlayerTeamName(player) {
-
-        const live = window.CCFVLiveAPI;
-
-        try {
-            const state = live && live.isReady()
-                ? live.getState()
-                : null;
-
-            const links = Array.isArray(state?.playerCompetitions)
-                ? state.playerCompetitions
-                : [];
-
-            const playerId = String(player?.id || "");
-
-            const matches = links.filter(item => {
-                const id = item?.player_id ?? item?.playerId ?? item?.player;
-                return String(id || "") === playerId;
-            });
-
-            const preferred = matches.find(item => {
-                const name = String(item?.competition || item?.competition_name || "").toUpperCase();
-                return name.includes("BRASILEIRAO") || name.includes("BRASILEIRÃO");
-            }) || matches[0];
-
-            const raw = preferred?.team_name || preferred?.team || preferred?.club_name || "";
-            return String(raw).trim();
-
-        } catch {
-            return "";
-        }
-
-    }
-
-
     /* =====================================================
        CARD
        ===================================================== */
@@ -1348,87 +1338,238 @@
         player
     ) {
 
-        const rank = getRank(player.elo);
-        const photo = getPlayerPhoto(player);
-        const team = getPlayerTeamName(player) || "CCFV OFFICIAL";
-        const instagram = String(player.instagram || "").replace(/^@/, "");
+        const rank =
+            getRank(
+                player.elo
+            );
+
+
+        const photo =
+            getPlayerPhoto(
+                player
+            );
+
+
+        const team =
+            getPlayerTeam(
+                player
+            );
+
+
+        const instagram =
+            String(
+                player.instagram ||
+                ""
+            )
+            .replace(
+                /^@/,
+                ""
+            );
+
+
+        const platform =
+            String(
+                player.platform ||
+                player.plataforma ||
+                ""
+            )
+            .trim()
+            .toUpperCase();
+
+
+        const season =
+            String(
+                window.CCFVLiveAPI?.getState?.()?.settings?.season_name ||
+                window.CCFVLiveAPI?.getState?.()?.season ||
+                "SEASON 01"
+            ).trim();
+
+
+        const playerName =
+            String(
+                player.name ||
+                "COMPETIDOR CCFV"
+            );
+
+
+        const initials =
+            getInitials(
+                playerName
+            );
+
 
         return `
-            <article class="ccfv-real-card ccfv-real-card--${rank.key}" id="ccfv-download-card">
+
+            <article
+                class="
+                    ccfv-real-card
+                    ccfv-real-card--${rank.key}
+                "
+                id="ccfv-download-card"
+            >
 
                 <div class="ccfv-real-card__noise"></div>
-                <div class="ccfv-real-card__grid"></div>
                 <div class="ccfv-real-card__glow ccfv-real-card__glow--one"></div>
                 <div class="ccfv-real-card__glow ccfv-real-card__glow--two"></div>
-                <div class="ccfv-real-card__slash ccfv-real-card__slash--one"></div>
-                <div class="ccfv-real-card__slash ccfv-real-card__slash--two"></div>
+                <div class="ccfv-real-card__slash"></div>
+                <div class="ccfv-real-card__grid"></div>
 
-                <div class="ccfv-real-card__top">
-                    <div class="ccfv-real-card__brand-lockup">
-                        <span class="ccfv-real-card__eyebrow">CONFEDERAÇÃO COLISEU DE FUTEBOL VIRTUAL</span>
-                        <strong>CCFV // OFFICIAL PLAYER CARD</strong>
+
+                <header class="ccfv-real-card__header">
+
+                    <div class="ccfv-real-card__brand">
+                        <span>CCFV</span>
+                        <strong>CONFEDERAÇÃO COLISEU DE FUTEBOL VIRTUAL</strong>
                     </div>
+
                     <div class="ccfv-real-card__season">
-                        <span>SEASON</span>
-                        <strong>01</strong>
+                        <small>TEMPORADA</small>
+                        <b>${escapeHTML(season)}</b>
                     </div>
+
+                </header>
+
+
+                <div class="ccfv-real-card__eyebrow">
+                    OFFICIAL PLAYER CARD
+                    <span>${escapeHTML(rank.name)}</span>
                 </div>
 
-                <div class="ccfv-real-card__side-label">
-                    <span>CCFV</span>
-                    <span>RESPEITO</span>
-                    <span>FOCO</span>
-                    <span>DISCIPLINA</span>
-                    <span>EVOLUÇÃO</span>
+
+                <div class="ccfv-real-card__portrait-frame">
+
+                    <div class="ccfv-real-card__portrait">
+
+                        ${
+                            photo
+                                ? `
+                                    <img
+                                        src="${escapeHTML(photo)}"
+                                        alt="${escapeHTML(playerName)}"
+                                        loading="eager"
+                                        crossorigin="anonymous"
+                                        referrerpolicy="no-referrer"
+                                    >
+                                `
+                                : `
+                                    <div class="ccfv-real-card__photo-placeholder">
+                                        ${escapeHTML(initials)}
+                                    </div>
+                                `
+                        }
+
+                    </div>
+
+                    <div class="ccfv-real-card__portrait-fade"></div>
+
                 </div>
 
-                <div class="ccfv-real-card__media">
-                    <div class="ccfv-real-card__media-frame"></div>
-                    ${photo
-                        ? `<img src="${escapeHTML(photo)}" alt="${escapeHTML(player.name || "Jogador CCFV")}" loading="eager" crossorigin="anonymous" referrerpolicy="no-referrer">`
-                        : `<span class="ccfv-real-card__photo-placeholder">${getInitials(player.name)}</span>`
-                    }
-                    <div class="ccfv-real-card__media-fade"></div>
+
+                <div class="ccfv-real-card__badge">
+                    ${renderBadge(rank)}
                 </div>
 
-                <div class="ccfv-real-card__badge">${renderBadge(rank)}</div>
 
                 <div class="ccfv-real-card__identity">
-                    <span class="ccfv-real-card__rank">${escapeHTML(rank.name)}</span>
-                    <strong>${escapeHTML(player.name)}</strong>
-                    <small>@${escapeHTML(instagram || "ccfv.oficial")}</small>
+
+                    <span class="ccfv-real-card__rank-line">
+                        ${escapeHTML(rank.name)}
+                    </span>
+
+                    <h2>
+                        ${escapeHTML(playerName)}
+                    </h2>
+
+                    <div class="ccfv-real-card__meta">
+
+                        ${
+                            instagram
+                                ? `<span>@${escapeHTML(instagram)}</span>`
+                                : ""
+                        }
+
+                        ${
+                            platform
+                                ? `<span>${escapeHTML(platform)}</span>`
+                                : ""
+                        }
+
+                    </div>
+
                 </div>
 
-                <div class="ccfv-real-card__teambar">
-                    <div class="ccfv-real-card__teammark">CCFV</div>
-                    <div>
-                        <span>EQUIPE / CLUBE</span>
-                        <strong>${escapeHTML(team)}</strong>
+
+                <div class="ccfv-real-card__team-bar">
+                    <div class="ccfv-real-card__team-icon">
+                        CCFV
                     </div>
-                    <b>${escapeHTML(rank.name)}</b>
+
+                    <div class="ccfv-real-card__team-content">
+                        <small>${team ? "EQUIPE / CLUBE" : "COMPETIDOR OFICIAL"}</small>
+                        <strong>
+                            ${escapeHTML(
+                                team ||
+                                "CCFV OFICIAL"
+                            )}
+                        </strong>
+                    </div>
+
+                    <span class="ccfv-real-card__team-season">
+                        ${escapeHTML(rank.name)}
+                    </span>
                 </div>
+
 
                 <div class="ccfv-real-card__stats">
-                    <div><span>ELO</span><strong>${Number(player.elo) || 0}</strong></div>
-                    <div><span>VITÓRIAS</span><strong>${Number(player.wins) || 0}</strong></div>
-                    <div><span>EMPATES</span><strong>${Number(player.draws) || 0}</strong></div>
-                    <div><span>DERROTAS</span><strong>${Number(player.losses) || 0}</strong></div>
+
+                    <div>
+                        <span>ELO</span>
+                        <strong>${Number(player.elo || 0)}</strong>
+                    </div>
+
+                    <div>
+                        <span>VITÓRIAS</span>
+                        <strong>${Number(player.wins || 0)}</strong>
+                    </div>
+
+                    <div>
+                        <span>EMPATES</span>
+                        <strong>${Number(player.draws || 0)}</strong>
+                    </div>
+
+                    <div>
+                        <span>DERROTAS</span>
+                        <strong>${Number(player.losses || 0)}</strong>
+                    </div>
+
                 </div>
 
-                <div class="ccfv-real-card__footer-message">
-                    AQUI É COMPETIÇÃO DE VERDADE.
-                    <span>MUDA O NOME. FAZ HISTÓRIA.</span>
+
+                <div class="ccfv-real-card__tagline">
+                    <span>AQUI É COMPETIÇÃO DE VERDADE.</span>
+                    <strong>AQUI SE FAZ HISTÓRIA.</strong>
                 </div>
 
-                <div class="ccfv-real-card__instagram">@ccfv.oficial</div>
-                <div class="ccfv-real-card__logo">CCFV</div>
-                <div class="ccfv-real-card__serial">OFFICIAL • ${escapeHTML(String(player.id || "").slice(0, 8).toUpperCase())}</div>
+
+                <footer class="ccfv-real-card__footer">
+                    <span>@ccfv.oficial</span>
+                    <strong>CCFV // ${escapeHTML(season)}</strong>
+                </footer>
+
+
+                <div class="ccfv-real-card__serial">
+                    OFFICIAL • ${escapeHTML(
+                        String(player.id || "PLAYER")
+                        .slice(0, 8)
+                        .toUpperCase()
+                    )}
+                </div>
 
             </article>
+
         `;
 
     }
-
 
     /* =====================================================
        ABRIR CARD
@@ -1659,7 +1800,7 @@
                     {
 
                         pixelRatio:
-                            3,
+                            1080 / Math.max(1, card.getBoundingClientRect().width),
 
                         cacheBust:
                             true,
@@ -1920,7 +2061,7 @@
                     {
 
                         pixelRatio:
-                            3,
+                            1080 / Math.max(1, card.getBoundingClientRect().width),
 
                         cacheBust:
                             true,
@@ -1934,22 +2075,10 @@
                         style:
                         {
 
-                            width:
-                                "1080px",
-
-                            height:
-                                "1920px",
-
-                            aspectRatio:
-                                "9 / 16",
-
                             transform:
                                 "none"
 
-                        },
-
-                        pixelRatio:
-                            1
+                        }
 
                     }
                 );
