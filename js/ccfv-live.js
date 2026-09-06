@@ -267,155 +267,191 @@
 
     function buildBrazilResults() {
 
-        return state.matches
+    const api =
+        window.CCFVBrasileirao;
 
-            .filter(
-                match =>
-                    normalize(
-                        match.competition
-                    ) ===
-                    "BRASILEIRAO"
-            )
 
-           .filter(
-    match =>
-        [
-            "FINAL",
-            "FINALIZADO",
-            "FINALIZADA",
-            "FINISHED",
-            "COMPLETED",
-            "CONCLUIDA",
-            "CONCLUÍDA",
-            "ENCERRADA",
-            "ENCERRADO"
-        ].includes(
-            normalize(match.status)
+    if (
+        !api ||
+        !api.config ||
+        !Array.isArray(api.config.teams)
+    ) {
+
+        return [];
+
+    }
+
+
+    const teams =
+        api.config.teams;
+
+
+    function findTeam(
+        value
+    ) {
+
+        const normalized =
+            normalize(
+                value
+            );
+
+
+        return teams.find(
+            team =>
+                normalize(
+                    team.name
+                ) === normalized
+
+                ||
+
+                normalize(
+                    team.shortName
+                ) === normalized
+
+                ||
+
+                Number(
+                    team.id
+                ) === Number(
+                    value
+                )
+        ) || null;
+
+    }
+
+
+    return state.matches
+
+        .filter(
+            match =>
+                normalize(
+                    match.competition
+                ) ===
+                "BRASILEIRAO"
         )
-)
-            .map(
-                match => ({
+
+        .filter(
+            match =>
+                [
+                    "FINAL",
+                    "FINALIZADO",
+                    "FINALIZADA",
+                    "FINISHED",
+                    "COMPLETED",
+                    "CONCLUIDA",
+                    "CONCLUÍDA",
+                    "ENCERRADA",
+                    "ENCERRADO"
+                ].includes(
+                    normalize(
+                        match.status
+                    )
+                )
+        )
+
+        .map(
+            match => {
+
+                const home =
+                    findTeam(
+                        match.home_team
+                    );
+
+
+                const away =
+                    findTeam(
+                        match.away_team
+                    );
+
+
+                if (
+                    !home ||
+                    !away
+                ) {
+
+                    console.warn(
+                        "CCFV // BRASILEIRÃO: clube não encontrado",
+                        {
+                            home:
+                                match.home_team,
+
+                            away:
+                                match.away_team
+                        }
+                    );
+
+
+                    return null;
+
+                }
+
+
+                return {
 
                     round:
                         number(
                             match.round_number
                         ),
 
+
                     match:
                         number(
                             match.match_number
                         ),
 
+
                     home:
-                        match.home_team,
+                        home.name,
+
 
                     away:
-                        match.away_team,
+                        away.name,
+
 
                     homeTeam:
-                        match.home_team,
+                        Number(
+                            home.id
+                        ),
+
 
                     awayTeam:
-                        match.away_team,
+                        Number(
+                            away.id
+                        ),
+
 
                     homeGoals:
                         number(
                             match.home_score
                         ),
 
+
                     awayGoals:
                         number(
                             match.away_score
                         ),
+
 
                     date:
                         match.played_at ||
                         match.created_at ||
                         "",
 
+
                     matchId:
                         match.id
 
-                })
-            );
+                };
 
-    }
+            }
+        )
 
+        .filter(
+            result =>
+                result !== null
+        );
 
-    function syncBrasileirao() {
-
-        const api =
-            window.CCFVBrasileirao;
-
-        if (
-            !api?.config
-        ) {
-
-            return;
-
-        }
-
-        const results =
-            buildBrazilResults();
-
-        if (
-            Array.isArray(
-                api.config.results
-            )
-        ) {
-
-            api.config.results.splice(
-                0,
-                api.config.results.length,
-                ...results
-            );
-
-        }
-
-        else {
-
-            api.config.results =
-                results;
-
-        }
-
-        const rounds =
-            results
-                .map(
-                    item =>
-                        number(
-                            item.round
-                        )
-                )
-                .filter(
-                    round =>
-                        round > 0
-                );
-
-        if (!api.config.userSelectedRound) {
-
-            api.config.currentRound =
-                rounds.length
-                    ? Math.min(
-                        38,
-                        Math.max(
-                            ...rounds
-                        ) + 1
-                    )
-                    : 1;
-
-        }
-
-        if (
-            typeof api.refresh ===
-            "function"
-        ) {
-
-            api.refresh();
-
-        }
-
-    }
+}
 
 
     /* =========================================================
@@ -1650,10 +1686,14 @@
             brazilMatches.filter(match =>
                 [
                     "FINAL",
-                    "FINISHED",
-                    "COMPLETED",
-                    "CONCLUIDA",
-                    "ENCERRADA"
+    "FINALIZADO",
+    "FINALIZADA",
+    "FINISHED",
+    "COMPLETED",
+    "CONCLUIDA",
+    "CONCLUÍDA",
+    "ENCERRADA",
+    "ENCERRADO"
                 ].includes(normalize(match.status))
             ).length;
 
