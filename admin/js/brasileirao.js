@@ -236,7 +236,7 @@
 
                 const position =
                     Number(
-                        team.ranking_position ||
+                        team.position ||
                         0
                     );
 
@@ -274,7 +274,7 @@
 
                 const games =
                     Number(
-                        team.games || 0
+                        team.played || 0
                     );
 
 
@@ -354,7 +354,7 @@
 
                         <strong>
                             ${escapeHTML(
-                                team.team
+                                team.team_name
                             )}
                         </strong>
 
