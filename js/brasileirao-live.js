@@ -757,24 +757,28 @@
                     "BRASILEIRAO"
             )
             .filter(
-                match => {
+    match => {
 
-                    const status =
-                        normalize(
-                            match.status
-                        );
+        const status =
+            normalize(
+                match.status
+            );
 
-                    return (
-                        status === "FINAL" ||
-                        status === "FINISHED" ||
-                        status === "COMPLETED" ||
-                        status === "CONCLUIDA" ||
-                        status === "CONCLUÍDA" ||
-                        status === "ENCERRADA"
-                    );
+        return (
+            status === "FINAL" ||
+            status === "FINALIZADO" ||
+            status === "FINALIZADA" ||
+            status === "FINISHED" ||
+            status === "COMPLETED" ||
+            status === "CONCLUIDA" ||
+            status === "CONCLUÍDA" ||
+            status === "ENCERRADA" ||
+            status === "ENCERRADO"
+        );
 
-                }
-            )
+    }
+)
+            
             .forEach(
                 match => {
 
