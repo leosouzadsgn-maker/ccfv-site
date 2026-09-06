@@ -277,19 +277,22 @@
                     "BRASILEIRAO"
             )
 
-            .filter(
-                match =>
-                    [
-                        "FINAL",
-                        "FINISHED",
-                        "COMPLETED",
-                        "CONCLUIDA",
-                        "ENCERRADA"
-                    ].includes(
-                        normalize(match.status)
-                    )
-            )
-
+           .filter(
+    match =>
+        [
+            "FINAL",
+            "FINALIZADO",
+            "FINALIZADA",
+            "FINISHED",
+            "COMPLETED",
+            "CONCLUIDA",
+            "CONCLUÍDA",
+            "ENCERRADA",
+            "ENCERRADO"
+        ].includes(
+            normalize(match.status)
+        )
+)
             .map(
                 match => ({
 
