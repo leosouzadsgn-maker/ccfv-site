@@ -1936,8 +1936,7 @@
                 new Date();
 
 
-            syncBrasileirao();
-
+            
             syncNightCup();
 
             syncHome();
