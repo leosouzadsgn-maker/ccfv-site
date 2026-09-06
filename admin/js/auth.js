@@ -13,7 +13,7 @@
        ===================================================== */
 
     const SUPABASE_URL =
-        "https://hfiwndvshzorikfzkiiw.supabase.co";
+        "https://msqvkcnywokhakmqgiso.supabase.co";
 
 
     /*
@@ -25,7 +25,7 @@
      */
 
     const SUPABASE_PUBLISHABLE_KEY =
-        "sb_publishable_VykAaaP_0PfIW_n4HYHbTA_VlvrkjMu";
+        "sb_publishable_sanJ5WpLoquv4JH2ryYR6w_LxdaS2Q2";
 
 
     let supabaseClient = null;
