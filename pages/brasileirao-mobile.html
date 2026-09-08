@@ -17,16 +17,16 @@
 
     <meta
         name="description"
-        content="Brasileirão Mobile CCFV — Season 01."
+        content="Brasileirão Mobile CCFV — Campeonato Brasileiro Mobile da Confederação Coliseu de Futebol Virtual."
     >
 
     <title>
-        Brasileirão Mobile — CCFV
+        Brasileirão Mobile CCFV — Season 01
     </title>
 
 
     <!-- =====================================================
-         FONTES
+         FONTS
          ===================================================== -->
 
     <link
@@ -48,6 +48,7 @@
 
     <!-- =====================================================
          CSS
+         MESMA BASE VISUAL DO BRASILEIRÃO PC/CONSOLE
          ===================================================== -->
 
     <link
@@ -95,7 +96,9 @@
         id="site-header"
     >
 
-        <div class="ccfv-header__inner">
+        <div
+            class="ccfv-header__inner"
+        >
 
 
             <a
@@ -109,13 +112,19 @@
                     class="ccfv-header__logo"
                 >
 
-                <span class="ccfv-header__brand-text">
+                <span
+                    class="ccfv-header__brand-text"
+                >
 
-                    <span class="ccfv-header__brand-name">
+                    <span
+                        class="ccfv-header__brand-name"
+                    >
                         CCFV
                     </span>
 
-                    <span class="ccfv-header__brand-subtitle">
+                    <span
+                        class="ccfv-header__brand-subtitle"
+                    >
                         Confederação Coliseu de Futebol Virtual
                     </span>
 
@@ -189,10 +198,14 @@
                 aria-expanded="false"
             >
 
-                <span class="ccfv-header__menu-lines">
+                <span
+                    class="ccfv-header__menu-lines"
+                >
+
                     <span></span>
                     <span></span>
                     <span></span>
+
                 </span>
 
             </button>
@@ -294,7 +307,7 @@
                         BRASILEIRÃO
 
                         <span>
-                            MOBILE.
+                            MOBILE
                         </span>
 
                     </h1>
@@ -304,10 +317,10 @@
                         class="ccfv-brasileirao-hero__description"
                     >
 
-                        A competição oficial Mobile da CCFV.
-                        Os mesmos 20 clubes, 38 rodadas,
-                        ida e volta e uma temporada inteira
-                        até o campeão.
+                        O campeonato oficial da CCFV para
+                        jogadores Mobile, com 20 clubes,
+                        pontos corridos, ida e volta e uma
+                        temporada completa até o campeão.
 
                     </p>
 
@@ -401,14 +414,23 @@
                             href="#classificacao"
                             class="ccfv-brasileirao-button ccfv-brasileirao-button--primary"
                         >
-                            Ver classificação
+
+                            <span>
+                                Ver classificação
+                            </span>
+
                         </a>
+
 
                         <a
                             href="#rodadas"
                             class="ccfv-brasileirao-button ccfv-brasileirao-button--secondary"
                         >
-                            Próximos jogos
+
+                            <span>
+                                Próximos jogos
+                            </span>
+
                         </a>
 
                     </div>
@@ -417,7 +439,7 @@
 
 
                 <!-- =========================================
-                     TEMPORADA
+                     SEASON PANEL
                      ========================================= -->
 
                 <aside
@@ -481,7 +503,9 @@
                                 CAMPEONATO
                             </span>
 
-                            <strong id="mobile-season-progress">
+                            <strong
+                                id="mobile-season-progress"
+                            >
                                 00%
                             </strong>
 
@@ -505,10 +529,13 @@
 
                             <span>
                                 RODADA
+                                <span id="mobile-season-round">
+                                    01
+                                </span>
                             </span>
 
-                            <span id="mobile-season-round">
-                                01
+                            <span>
+                                38
                             </span>
 
                         </div>
@@ -525,7 +552,7 @@
                         >
 
                             <span>
-                                CCFV // STATUS MOBILE
+                                CCFV // STATUS DA TEMPORADA
                             </span>
 
                             <strong>
@@ -542,10 +569,12 @@
                             <div>
 
                                 <span>
-                                    RODADA
+                                    RODADA ATUAL
                                 </span>
 
-                                <strong id="mobile-season-current-round">
+                                <strong
+                                    id="mobile-season-current-round"
+                                >
                                     01
                                 </strong>
 
@@ -558,7 +587,9 @@
                                     JOGOS
                                 </span>
 
-                                <strong id="mobile-season-matches-played">
+                                <strong
+                                    id="mobile-season-matches-played"
+                                >
                                     0/380
                                 </strong>
 
@@ -696,7 +727,7 @@
 
 
         <!-- =================================================
-             STATUS DA TEMPORADA
+             SEASON STATUS
              ================================================= -->
 
         <section
@@ -733,10 +764,10 @@
 
                     <p>
 
-                        A Season 01 Mobile segue o mesmo
-                        formato competitivo do Brasileirão
-                        CCFV, com vinte clubes em pontos
-                        corridos e confrontos de ida e volta.
+                        A Season 01 Mobile será disputada
+                        em formato de pontos corridos,
+                        com todos os clubes se enfrentando
+                        duas vezes.
 
                     </p>
 
@@ -800,7 +831,7 @@
                         </strong>
 
                         <small>
-                            Temporada completa
+                            Uma temporada completa
                             até o campeão.
                         </small>
 
@@ -835,10 +866,11 @@
 
         <!-- =================================================
              CLASSIFICAÇÃO
+             MESMA ESTRUTURA DO PC/CONSOLE
              ================================================= -->
 
         <section
-            class="ccfv-brasileirao-standings"
+            class="ccfv-brasileirao-table-section"
             id="classificacao"
         >
 
@@ -856,30 +888,146 @@
                             CCFV // MOBILE // STANDINGS
                         </span>
 
-                        <h2
-                            id="mobile-round-title"
-                        >
+                        <h2>
+
                             CLASSIFICAÇÃO
 
                             <strong>
-                                MOBILE.
+                                OFICIAL.
                             </strong>
+
                         </h2>
 
                     </div>
 
 
                     <div
-                        id="mobile-round-picker"
-                    ></div>
+                        class="ccfv-table-heading-season"
+                    >
+
+                        <span>
+                            CAMPEONATO BRASILEIRO MOBILE
+                        </span>
+
+                        <strong>
+                            SEASON 01
+                        </strong>
+
+                    </div>
 
                 </div>
 
 
                 <div
-                    id="mobile-standings"
-                    class="ccfv-mobile-standings"
-                ></div>
+                    class="ccfv-table-wrapper"
+                >
+
+                    <table
+                        class="ccfv-brasileirao-table"
+                    >
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    POS
+                                </th>
+
+                                <th>
+                                    CLUBE
+                                </th>
+
+                                <th>
+                                    J
+                                </th>
+
+                                <th>
+                                    V
+                                </th>
+
+                                <th>
+                                    E
+                                </th>
+
+                                <th>
+                                    D
+                                </th>
+
+                                <th>
+                                    GP
+                                </th>
+
+                                <th>
+                                    GC
+                                </th>
+
+                                <th>
+                                    SG
+                                </th>
+
+                                <th>
+                                    PTS
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="mobile-standings-body"
+                        >
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div
+                    class="ccfv-table-legend"
+                >
+
+                    <div>
+
+                        <span
+                            class="ccfv-legend-dot ccfv-legend-dot--champion"
+                        ></span>
+
+                        <span>
+                            CAMPEÃO
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        <span
+                            class="ccfv-legend-dot ccfv-legend-dot--top"
+                        ></span>
+
+                        <span>
+                            ZONA SUPERIOR
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        <span
+                            class="ccfv-legend-dot ccfv-legend-dot--bottom"
+                        ></span>
+
+                        <span>
+                            ZONA INFERIOR
+                        </span>
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -887,12 +1035,245 @@
 
 
         <!-- =================================================
-             RODADAS
+             RODADA ATUAL
              ================================================= -->
 
         <section
             class="ccfv-brasileirao-rounds"
             id="rodadas"
+        >
+
+            <div
+                class="ccfv-brasileirao-section-container"
+            >
+
+
+                <div
+                    class="ccfv-brasileirao-section-heading"
+                >
+
+                    <div>
+
+                        <span>
+                            CCFV // MOBILE // MATCH CENTER
+                        </span>
+
+                        <h2>
+
+                            RODADA
+
+                            <strong>
+                                ATUAL.
+                            </strong>
+
+                        </h2>
+
+                    </div>
+
+
+                    <div
+                        class="ccfv-brasileirao-round-control"
+                    >
+
+                        <label
+                            for="ccfv-mobile-round-select"
+                        >
+                            VISUALIZAR ATÉ
+                        </label>
+
+
+                        <select
+                            id="ccfv-mobile-round-select"
+                            class="ccfv-round-select"
+                            aria-label="Selecionar rodada do Brasileirão Mobile"
+                        >
+
+                        </select>
+
+
+                        <span
+                            class="ccfv-brasileirao-heading-status"
+                            id="ccfv-mobile-round-status"
+                        >
+                            RODADA 01
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     LAYOUT DA RODADA
+                     ========================================= -->
+
+                <div
+                    class="ccfv-round-layout"
+                    id="mobile-round-layout"
+                >
+
+
+                    <!-- =====================================
+                         10 CONFRONTOS
+                         ===================================== -->
+
+                    <div
+                        class="ccfv-round-matches"
+                        id="mobile-round-matches"
+                    >
+
+                    </div>
+
+
+                    <!-- =====================================
+                         DESTAQUE DA RODADA
+                         ===================================== -->
+
+                    <aside
+                        class="ccfv-round-feature"
+                        id="mobile-round-feature"
+                    >
+
+                        <div
+                            class="ccfv-round-feature__scan"
+                        ></div>
+
+
+                        <div
+                            class="ccfv-round-feature__top"
+                        >
+
+                            <span>
+                                ⭐ DESTAQUE DA RODADA
+                            </span>
+
+                            <small
+                                id="mobile-feature-round"
+                            >
+                                RODADA 01
+                            </small>
+
+                        </div>
+
+
+                        <div
+                            class="ccfv-round-feature__label"
+                        >
+                            JOGO DA RODADA
+                        </div>
+
+
+                        <div
+                            class="ccfv-round-feature__teams"
+                        >
+
+                            <div
+                                class="ccfv-round-feature__team"
+                            >
+
+                                <div
+                                    class="ccfv-round-feature__crest"
+                                    id="mobile-feature-home-crest"
+                                >
+                                    ?
+                                </div>
+
+                                <strong
+                                    id="mobile-feature-home"
+                                >
+                                    A DEFINIR
+                                </strong>
+
+                                <span>
+                                    CASA
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="ccfv-round-feature__versus"
+                            >
+
+                                <span>
+                                    VS
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="ccfv-round-feature__team"
+                            >
+
+                                <div
+                                    class="ccfv-round-feature__crest"
+                                    id="mobile-feature-away-crest"
+                                >
+                                    ?
+                                </div>
+
+                                <strong
+                                    id="mobile-feature-away"
+                                >
+                                    A DEFINIR
+                                </strong>
+
+                                <span>
+                                    FORA
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="ccfv-round-feature__info"
+                        >
+
+                            <span
+                                id="mobile-feature-date"
+                            >
+                                DATA A DEFINIR
+                            </span>
+
+                            <strong>
+                                21:00
+                            </strong>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="ccfv-round-feature__button"
+                        >
+
+                            VER CONFRONTO
+
+                            <span>
+                                →
+                            </span>
+
+                        </button>
+
+                    </aside>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             ÚLTIMOS RESULTADOS
+             ================================================= -->
+
+        <section
+            class="ccfv-brasileirao-results"
+            id="resultados"
         >
 
             <div
@@ -906,15 +1287,15 @@
                     <div>
 
                         <span>
-                            CCFV // MOBILE // RODADA
+                            CCFV // MOBILE // MATCH RESULTS
                         </span>
 
                         <h2>
 
-                            PARTIDAS
+                            ÚLTIMOS
 
                             <strong>
-                                DA RODADA.
+                                RESULTADOS.
                             </strong>
 
                         </h2>
@@ -922,20 +1303,268 @@
                     </div>
 
 
-                    <p>
-
-                        Acompanhe os confrontos Mobile
-                        e os resultados oficiais registrados
-                        pelo sistema da CCFV.
-
-                    </p>
+                    <span
+                        class="ccfv-brasileirao-heading-status"
+                        id="mobile-results-season"
+                    >
+                        SEASON 01
+                    </span>
 
                 </div>
 
 
                 <div
-                    id="mobile-round-matches"
-                ></div>
+                    class="ccfv-results-list"
+                    id="mobile-results-list"
+                >
+
+                    <div
+                        class="ccfv-results-empty"
+                    >
+                        NENHUM RESULTADO MOBILE.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             CAMPEÃO / LEGADO
+             ================================================= -->
+
+        <section
+            class="ccfv-brasileirao-champion"
+            id="campeao"
+        >
+
+            <div
+                class="ccfv-brasileirao-champion__container"
+            >
+
+                <div
+                    class="ccfv-brasileirao-champion__identity"
+                >
+
+                    <span>
+                        CCFV // MOBILE // LEGACY
+                    </span>
+
+                    <strong>
+                        SEASON 01
+                    </strong>
+
+                </div>
+
+
+                <div
+                    class="ccfv-brasileirao-champion__main"
+                >
+
+                    <div
+                        class="ccfv-brasileirao-champion__seal"
+                    >
+
+                        <span>
+                            CCFV
+                        </span>
+
+                        <strong>
+                            01
+                        </strong>
+
+                        <small>
+                            CAMPEÃO
+                        </small>
+
+                    </div>
+
+
+                    <div
+                        class="ccfv-brasileirao-champion__content"
+                    >
+
+                        <span>
+                            CAMPEÃO DA SEASON
+                        </span>
+
+                        <h2
+                            id="mobile-champion-name"
+                        >
+                            A DEFINIR
+                        </h2>
+
+                        <p>
+
+                            O primeiro campeão do
+                            Brasileirão Mobile CCFV
+                            entrará oficialmente para
+                            a história da competição.
+
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="ccfv-brasileirao-champion__status"
+                    >
+
+                        <span>
+                            STATUS
+                        </span>
+
+                        <strong>
+                            EM DISPUTA
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             REGULAMENTO
+             ================================================= -->
+
+        <section
+            class="ccfv-brasileirao-rules"
+            id="regulamento"
+        >
+
+            <div
+                class="ccfv-brasileirao-section-container"
+            >
+
+                <div
+                    class="ccfv-brasileirao-section-heading"
+                >
+
+                    <div>
+
+                        <span>
+                            CCFV // MOBILE // OFFICIAL RULES
+                        </span>
+
+                        <h2>
+
+                            COMO FUNCIONA
+
+                            <strong>
+                                O BRASILEIRÃO.
+                            </strong>
+
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="ccfv-brasileirao-rules-grid"
+                >
+
+                    <article>
+
+                        <span>
+                            01
+                        </span>
+
+                        <strong>
+                            20 CLUBES
+                        </strong>
+
+                        <p>
+
+                            Cada participante assume
+                            um dos 20 clubes definidos
+                            para a Season Mobile.
+
+                        </p>
+
+                    </article>
+
+
+                    <article>
+
+                        <span>
+                            02
+                        </span>
+
+                        <strong>
+                            IDA + VOLTA
+                        </strong>
+
+                        <p>
+
+                            Todos os clubes se enfrentam
+                            duas vezes durante a temporada.
+
+                        </p>
+
+                    </article>
+
+
+                    <article>
+
+                        <span>
+                            03
+                        </span>
+
+                        <strong>
+                            PONTOS CORRIDOS
+                        </strong>
+
+                        <p>
+
+                            A classificação é definida
+                            pelo desempenho ao longo
+                            das 38 rodadas.
+
+                        </p>
+
+                    </article>
+
+
+                    <article>
+
+                        <span>
+                            04
+                        </span>
+
+                        <strong>
+                            CAMPEÃO
+                        </strong>
+
+                        <p>
+
+                            O clube que terminar no topo
+                            será o campeão da Season Mobile.
+
+                        </p>
+
+                    </article>
+
+                </div>
+
+
+                <a
+                    href="regulamento.html"
+                    class="ccfv-brasileirao-button ccfv-brasileirao-button--secondary"
+                >
+
+                    <span>
+                        Ler regulamento completo
+                    </span>
+
+                </a>
 
             </div>
 
@@ -946,7 +1575,7 @@
 
 
     <!-- =====================================================
-         SCRIPTS
+         JS
          ===================================================== -->
 
     <script
@@ -954,10 +1583,12 @@
         defer
     ></script>
 
+
     <script
         src="../js/mobile.js"
         defer
     ></script>
+
 
 </body>
 
