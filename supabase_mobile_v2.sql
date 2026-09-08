@@ -53,29 +53,27 @@ language sql
 security definer
 set search_path=public
 as $$
-  select
-    p.id,
-    p.name,
-    p.instagram,
-    p.photo_url as photo_url,
-    p.platform,
-    coalesce(r.elo,0) as elo,
-    coalesce(r.matches_played,0) as matches_played,
-    coalesce(r.wins,0) as wins,
-    coalesce(r.draws,0) as draws,
-    coalesce(r.losses,0) as losses,
-    coalesce(r.titles,0) as titles,
-    case
-      when coalesce(r.elo,0) >= 3000 then 'LENDA'
-      when coalesce(r.elo,0) >= 2000 then 'PROFISSIONAL'
-      when coalesce(r.elo,0) >= 1000 then 'AMADOR'
-      else 'INICIANTE'
-    end as rank_name
-  from public.players p
-  left join public.ccfv_mobile_ranking r on r.player_id=p.id
-  where upper(coalesce(p.platform,''))='MOBILE'
-    and upper(coalesce(p.status,'ACTIVE'))='ACTIVE'
-  order by coalesce(r.elo,0) desc, p.name asc;
+select
+  r.player_id,
+  r.name,
+  r.instagram,
+  r.photo_url,
+  r.platform,
+  coalesce(r.elo,0),
+  coalesce(r.matches_played,0),
+  coalesce(r.wins,0),
+  coalesce(r.draws,0),
+  coalesce(r.losses,0),
+  coalesce(r.titles,0),
+  case
+    when coalesce(r.elo,0) >= 3000 then 'LENDA'
+    when coalesce(r.elo,0) >= 2000 then 'PROFISSIONAL'
+    when coalesce(r.elo,0) >= 1000 then 'AMADOR'
+    else 'INICIANTE'
+  end
+from public.ccfv_ranking r
+where upper(coalesce(r.platform,''))='MOBILE'
+order by coalesce(r.ranking_position,999999), r.name asc;
 $$;
 
 revoke all on function public.get_ccfv_mobile_matches() from public;

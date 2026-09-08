@@ -809,3 +809,36 @@ body[data-mobile-page="ranking"]
     }
 
 }
+/* =========================================================
+   BADGE COMPARTILHADO DO RANKING PRINCIPAL
+   ========================================================= */
+body[data-mobile-page="ranking"] .ccfv-mobile-rank-badge {
+    width: 94px;
+    height: 112px;
+    clip-path: polygon(50% 0, 92% 18%, 84% 78%, 50% 100%, 16% 78%, 8% 18%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    background: linear-gradient(145deg, #fff, #777);
+    box-shadow: 0 12px 35px rgba(0,0,0,.35);
+}
+body[data-mobile-page="ranking"] .ccfv-mobile-rank-badge span {
+    width: 72px;
+    height: 88px;
+    clip-path: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #07100b;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .08em;
+}
+body[data-mobile-page="ranking"] .ccfv-mobile-rank-badge--beginner { background: linear-gradient(145deg, #d9e0dd, #66716d); }
+body[data-mobile-page="ranking"] .ccfv-mobile-rank-badge--amateur { background: linear-gradient(145deg, #d9ecff, #4f83bd); }
+body[data-mobile-page="ranking"] .ccfv-mobile-rank-badge--professional { background: linear-gradient(145deg, #bfffe0, #199a62); }
+body[data-mobile-page="ranking"] .ccfv-mobile-rank-badge--legend { background: linear-gradient(145deg, #fff7c5, #c28a22); }
+body[data-mobile-page="ranking"] .ccfv-ranking-hero__leader-badge .ccfv-mobile-rank-badge { width: 65px; height: 76px; }
+body[data-mobile-page="ranking"] .ccfv-ranking-hero__leader-badge .ccfv-mobile-rank-badge span { width: 50px; height: 60px; font-size: 8px; }

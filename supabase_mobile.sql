@@ -91,14 +91,45 @@ set search_path=public
 as $$ select * from public.ccfv_mobile_matches order by played_at desc $$;
 
 create or replace function public.get_ccfv_mobile_ranking()
-returns table(player_id uuid,name text,instagram text,photo_url text,elo integer,matches_played integer,wins integer,draws integer,losses integer,titles integer,rank_name text)
+returns table(
+  player_id uuid,
+  name text,
+  instagram text,
+  photo_url text,
+  platform text,
+  elo integer,
+  matches_played integer,
+  wins integer,
+  draws integer,
+  losses integer,
+  titles integer,
+  rank_name text
+)
 language sql
 security definer
 set search_path=public
 as $$
-select r.player_id,p.name,p.instagram,p.photo_url,r.elo,r.matches_played,r.wins,r.draws,r.losses,r.titles,
-case when r.elo>=3000 then 'LENDA' when r.elo>=2000 then 'PROFISSIONAL' when r.elo>=1000 then 'AMADOR' else 'INICIANTE' end
-from ccfv_mobile_ranking r join players p on p.id=r.player_id where upper(p.platform)='MOBILE' order by r.elo desc,p.name;
+select
+  r.player_id,
+  r.name,
+  r.instagram,
+  r.photo_url,
+  r.platform,
+  coalesce(r.elo,0),
+  coalesce(r.matches_played,0),
+  coalesce(r.wins,0),
+  coalesce(r.draws,0),
+  coalesce(r.losses,0),
+  coalesce(r.titles,0),
+  case
+    when coalesce(r.elo,0) >= 3000 then 'LENDA'
+    when coalesce(r.elo,0) >= 2000 then 'PROFISSIONAL'
+    when coalesce(r.elo,0) >= 1000 then 'AMADOR'
+    else 'INICIANTE'
+  end
+from public.ccfv_ranking r
+where upper(coalesce(r.platform,''))='MOBILE'
+order by coalesce(r.ranking_position,999999), r.name asc;
 $$;
 
 revoke all on function public.register_ccfv_mobile_match(text,text,integer,uuid,uuid,text,text,integer,integer,timestamptz) from public;
