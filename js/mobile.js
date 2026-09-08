@@ -1,4 +1,4 @@
-(() => {
+() => 
 
     "use strict";
 
@@ -575,9 +575,8 @@
 
     /* =========================================================
        CLASSIFICAÇÃO MOBILE
-       IMPORTANTE:
        QUALQUER PARTIDA MOBILE FINALIZADA
-       JÁ CONTA, MESMO SE FOR DE OUTRA RODADA.
+       JÁ CONTA NA TABELA
        ========================================================= */
 
     function standingsForRound() {
@@ -850,14 +849,20 @@
         round = 1
     ) {
 
-        const holder =
+        const select =
             document.querySelector(
-                "#mobile-round-picker"
+                "#ccfv-mobile-round-select"
+            );
+
+
+        const status =
+            document.querySelector(
+                "#ccfv-mobile-round-status"
             );
 
 
         if (
-            !holder
+            !select
         ) {
 
             return;
@@ -865,83 +870,86 @@
         }
 
 
-        holder.innerHTML = `
+        select.innerHTML =
+            Array.from(
 
-            <label
-                class="ccfv-mobile-round-select"
-            >
+                {
+                    length: 38
+                },
 
-                <span>
-                    VISUALIZAR ATÉ
-                </span>
+                (
+                    _,
+                    index
+                ) => {
 
-                <select
-                    id="mobile-round-select"
-                    aria-label="Selecionar rodada"
-                >
-
-                    ${Array.from(
-
-                        {
-                            length: 38
-                        },
-
-                        (
-                            _,
-                            index
-                        ) => {
-
-                            const value =
-                                index + 1;
+                    const value =
+                        index + 1;
 
 
-                            return `
+                    return `
 
-                                <option
-                                    value="${value}"
-                                    ${
-                                        value ===
-                                        Number(
-                                            round
-                                        )
-                                            ? "selected"
-                                            : ""
-                                    }
-                                >
+                        <option
+                            value="${value}"
+                            ${
+                                value ===
+                                Number(
+                                    round
+                                )
+                                    ? "selected"
+                                    : ""
+                            }
+                        >
 
-                                    RODADA ${
-                                        String(
-                                            value
-                                        ).padStart(
-                                            2,
-                                            "0"
-                                        )
-                                    }
+                            RODADA
+                            ${
+                                String(
+                                    value
+                                ).padStart(
+                                    2,
+                                    "0"
+                                )
+                            }
 
-                                </option>
+                        </option>
 
-                            `;
+                    `;
 
-                        }
+                }
 
-                    ).join("")}
-
-                </select>
-
-            </label>
-
-        `;
+            ).join("");
 
 
-        const select =
-            holder.querySelector(
-                "#mobile-round-select"
+        select.value =
+            String(
+                round
             );
 
 
         if (
-            select
+            status
         ) {
+
+            status.textContent =
+                `RODADA ${
+                    String(
+                        round
+                    ).padStart(
+                        2,
+                        "0"
+                    )
+                }`;
+
+        }
+
+
+        if (
+            select.dataset.bound !==
+            "true"
+        ) {
+
+            select.dataset.bound =
+                "true";
+
 
             select.addEventListener(
                 "change",
@@ -962,7 +970,7 @@
 
 
     /* =========================================================
-       TABELA MOBILE
+       TABELA
        ========================================================= */
 
     function renderMobileBrasileiraoTable(
@@ -970,14 +978,14 @@
         round
     ) {
 
-        const element =
+        const body =
             document.querySelector(
-                "#mobile-standings"
+                "#mobile-standings-body"
             );
 
 
         if (
-            !element
+            !body
         ) {
 
             return;
@@ -985,416 +993,448 @@
         }
 
 
-        element.innerHTML = `
+        body.innerHTML =
+            table.map(
 
-            <div
-                class="
-                    ccfv-mobile-standing
-                    ccfv-mobile-standing--head
-                "
-            >
+                row => {
 
-                <span>
-                    POS
-                </span>
-
-                <span>
-                    CLUBE
-                </span>
-
-                <span>
-                    J
-                </span>
-
-                <span>
-                    V
-                </span>
-
-                <span>
-                    E
-                </span>
-
-                <span>
-                    D
-                </span>
-
-                <span>
-                    GP
-                </span>
-
-                <span>
-                    GC
-                </span>
-
-                <span>
-                    SG
-                </span>
-
-                <strong>
-                    PTS
-                </strong>
-
-            </div>
+                    let zoneClass =
+                        "";
 
 
-            ${table.map(
+                    if (
+                        row.position ===
+                        1
+                    ) {
 
-                row => `
+                        zoneClass =
+                            "is-champion";
 
-                    <div
-                        class="
-                            ccfv-mobile-standing
-                            ${
-                                row.position === 1
-                                    ? "is-first"
-                                    : ""
-                            }
-                        "
-                    >
+                    }
 
-                        <span>
+                    else if (
+                        row.position <=
+                        6
+                    ) {
 
-                            ${String(
-                                row.position
-                            ).padStart(
-                                2,
-                                "0"
-                            )}
+                        zoneClass =
+                            "is-top";
 
-                        </span>
+                    }
+
+                    else if (
+                        row.position >=
+                        17
+                    ) {
+
+                        zoneClass =
+                            "is-bottom";
+
+                    }
 
 
-                        <strong
-                            class="
-                                ccfv-mobile-standing__club
-                            "
+                    return `
+
+                        <tr
+                            class="${zoneClass}"
                         >
 
-                            <img
-                                src="${teamLogo(
-                                    row.team
-                                )}"
-                                alt=""
+                            <td
+                                data-label="POS"
                             >
 
-                            ${esc(
-                                row.team
-                            )}
+                                ${
+                                    String(
+                                        row.position
+                                    ).padStart(
+                                        2,
+                                        "0"
+                                    )
+                                }
 
-                        </strong>
-
-
-                        <span>
-                            ${row.j}
-                        </span>
-
-                        <span>
-                            ${row.v}
-                        </span>
-
-                        <span>
-                            ${row.e}
-                        </span>
-
-                        <span>
-                            ${row.d}
-                        </span>
-
-                        <span>
-                            ${row.gp}
-                        </span>
-
-                        <span>
-                            ${row.gc}
-                        </span>
-
-                        <span>
-
-                            ${
-                                row.sg > 0
-                                    ? `+${row.sg}`
-                                    : row.sg
-                            }
-
-                        </span>
+                            </td>
 
 
-                        <strong>
-                            ${row.pts}
-                        </strong>
+                            <td
+                                data-label="CLUBE"
+                            >
 
-                    </div>
+                                <div
+                                    class="
+                                        ccfv-table-club
+                                    "
+                                >
 
-                `
+                                    <span
+                                        class="
+                                            ccfv-table-club__number
+                                        "
+                                    >
 
-            ).join("")}
+                                        ${
+                                            row.position
+                                        }
 
-        `;
+                                    </span>
 
 
-        const title =
+                                    <img
+                                        src="${teamLogo(
+                                            row.team
+                                        )}"
+                                        alt=""
+                                        loading="lazy"
+                                    >
+
+
+                                    <strong>
+
+                                        ${esc(
+                                            row.team
+                                        )}
+
+                                    </strong>
+
+                                </div>
+
+                            </td>
+
+
+                            <td
+                                data-label="J"
+                            >
+                                ${row.j}
+                            </td>
+
+
+                            <td
+                                data-label="V"
+                            >
+                                ${row.v}
+                            </td>
+
+
+                            <td
+                                data-label="E"
+                            >
+                                ${row.e}
+                            </td>
+
+
+                            <td
+                                data-label="D"
+                            >
+                                ${row.d}
+                            </td>
+
+
+                            <td
+                                data-label="GP"
+                            >
+                                ${row.gp}
+                            </td>
+
+
+                            <td
+                                data-label="GC"
+                            >
+                                ${row.gc}
+                            </td>
+
+
+                            <td
+                                data-label="SG"
+                            >
+
+                                ${
+                                    row.sg > 0
+                                        ? `+${row.sg}`
+                                        : row.sg
+                                }
+
+                            </td>
+
+
+                            <td
+                                data-label="PTS"
+                                class="
+                                    ccfv-table-points
+                                "
+                            >
+
+                                ${row.pts}
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }
+
+            ).join("");
+
+    }
+
+
+    /* =========================================================
+       RODADA
+       ========================================================= */
+
+    function renderRoundFixtures(
+        round
+    ) {
+
+        const container =
             document.querySelector(
-                "#mobile-round-title"
+                "#mobile-round-matches"
             );
 
 
         if (
-            title
+            !container
         ) {
 
-            title.innerHTML = `
-
-                CLASSIFICAÇÃO
-
-                <strong>
-
-                    APÓS A RODADA
-                    ${
-                        String(
-                            round
-                        ).padStart(
-                            2,
-                            "0"
-                        )
-                    }.
-
-                </strong>
-
-            `;
+            return;
 
         }
 
-    }
 
-
-    /* =========================================================
-       JOGO MOBILE
-       ========================================================= */
-
-    function renderFixtureRow(
-        game
-    ) {
-
-        const match =
-            game.result;
-
-
-        const finished =
-
-            Boolean(
-
-                match &&
-
-                isFinal(
-                    match.status
-                )
-
+        const games =
+            fixturesForRound(
+                round
             );
 
 
-        return `
+        container.innerHTML = `
 
-            <article
+            <div
                 class="
-                    ccfv-mobile-fixture-card
-                    ${
-                        finished
-                            ? "is-finished"
-                            : ""
-                    }
+                    ccfv-round-matches-list
                 "
             >
 
-                <div
-                    class="
-                        ccfv-mobile-fixture-card__top
-                    "
-                >
+                ${games.map(
 
-                    <span>
+                    game => {
 
-                        JOGO
-                        ${
-                            String(
-                                game.number
-                            ).padStart(
-                                2,
-                                "0"
-                            )
-                        }
-
-                    </span>
+                        const match =
+                            game.result;
 
 
-                    <span>
-
-                        ${
-                            finished
-                                ? "FINALIZADA"
-                                : "A DEFINIR"
-                        }
-
-                    </span>
-
-                </div>
-
-
-                <div
-                    class="
-                        ccfv-mobile-fixture-card__teams
-                    "
-                >
-
-                    <div>
-
-                        <img
-                            src="${teamLogo(
-                                game.home
-                            )}"
-                            alt=""
-                        >
-
-                        <strong>
-
-                            ${esc(
-                                game.home
-                            )}
-
-                        </strong>
-
-                        <small>
-
-                            ${
-                                esc(
-                                    match?.home_player_name ||
-                                    "JOGADOR MOBILE"
+                        const finished =
+                            Boolean(
+                                match &&
+                                isFinal(
+                                    match.status
                                 )
-                            }
-
-                        </small>
-
-                    </div>
+                            );
 
 
-                    <div
-                        class="
-                            ccfv-mobile-fixture-card__score
-                        "
-                    >
+                        return `
 
-                        ${
-                            finished
+                            <article
+                                class="
+                                    ccfv-round-match
+                                    ${
+                                        finished
+                                            ? "is-finished"
+                                            : ""
+                                    }
+                                "
+                            >
 
-                                ? `
+                                <div
+                                    class="
+                                        ccfv-round-match__number
+                                    "
+                                >
 
-                                    ${num(
-                                        match.home_score
-                                    )}
+                                    ${
+                                        String(
+                                            game.number
+                                        ).padStart(
+                                            2,
+                                            "0"
+                                        )
+                                    }
 
-                                    <span>
-                                        ×
-                                    </span>
-
-                                    ${num(
-                                        match.away_score
-                                    )}
-
-                                `
-
-                                : `
-
-                                    <span>
-                                        VS
-                                    </span>
-
-                                `
-                        }
-
-                    </div>
+                                </div>
 
 
-                    <div>
+                                <div
+                                    class="
+                                        ccfv-round-match__home
+                                    "
+                                >
 
-                        <img
-                            src="${teamLogo(
-                                game.away
-                            )}"
-                            alt=""
-                        >
-
-                        <strong>
-
-                            ${esc(
-                                game.away
-                            )}
-
-                        </strong>
-
-                        <small>
-
-                            ${
-                                esc(
-                                    match?.away_player_name ||
-                                    "JOGADOR MOBILE"
-                                )
-                            }
-
-                        </small>
-
-                    </div>
-
-                </div>
+                                    <img
+                                        src="${teamLogo(
+                                            game.home
+                                        )}"
+                                        alt=""
+                                        loading="lazy"
+                                    >
 
 
-                <div
-                    class="
-                        ccfv-mobile-fixture-card__bottom
-                    "
-                >
-
-                    <span>
-
-                        RODADA
-                        ${
-                            String(
-                                game.round
-                            ).padStart(
-                                2,
-                                "0"
-                            )
-                        }
-
-                    </span>
+                                    <strong>
+                                        ${esc(
+                                            game.home
+                                        )}
+                                    </strong>
 
 
-                    <span>
+                                    <small>
 
-                        ${
-                            finished
+                                        ${
+                                            finished
+                                                ? esc(
+                                                    match.home_player_name ||
+                                                    "JOGADOR MOBILE"
+                                                )
+                                                : "JOGADOR MOBILE"
+                                        }
 
-                                ? new Date(
-                                    match.played_at ||
-                                    match.created_at ||
-                                    Date.now()
-                                ).toLocaleDateString(
-                                    "pt-BR"
-                                )
+                                    </small>
 
-                                : "DATA A DEFINIR"
-                        }
+                                </div>
 
-                    </span>
 
-                </div>
+                                <div
+                                    class="
+                                        ccfv-round-match__center
+                                    "
+                                >
 
-            </article>
+                                    ${
+                                        finished
+
+                                            ? `
+
+                                                <strong>
+
+                                                    ${num(
+                                                        match.home_score
+                                                    )}
+
+                                                    ×
+
+                                                    ${num(
+                                                        match.away_score
+                                                    )}
+
+                                                </strong>
+
+
+                                                <small>
+                                                    FINALIZADA
+                                                </small>
+
+                                            `
+
+                                            : `
+
+                                                <strong>
+                                                    VS
+                                                </strong>
+
+
+                                                <small>
+                                                    DATA A DEFINIR
+                                                </small>
+
+                                            `
+                                    }
+
+                                </div>
+
+
+                                <div
+                                    class="
+                                        ccfv-round-match__away
+                                    "
+                                >
+
+                                    <img
+                                        src="${teamLogo(
+                                            game.away
+                                        )}"
+                                        alt=""
+                                        loading="lazy"
+                                    >
+
+
+                                    <strong>
+                                        ${esc(
+                                            game.away
+                                        )}
+                                    </strong>
+
+
+                                    <small>
+
+                                        ${
+                                            finished
+                                                ? esc(
+                                                    match.away_player_name ||
+                                                    "JOGADOR MOBILE"
+                                                )
+                                                : "JOGADOR MOBILE"
+                                        }
+
+                                    </small>
+
+                                </div>
+
+
+                                <div
+                                    class="
+                                        ccfv-round-match__date
+                                    "
+                                >
+
+                                    ${
+                                        finished
+
+                                            ? new Date(
+                                                match.played_at ||
+                                                match.created_at ||
+                                                Date.now()
+                                            ).toLocaleDateString(
+                                                "pt-BR"
+                                            )
+
+                                            : "DATA A DEFINIR"
+                                    }
+
+                                </div>
+
+                            </article>
+
+                        `;
+
+                    }
+
+                ).join("")}
+
+            </div>
 
         `;
 
+
+        renderMobileFeaturedMatch(
+            games,
+            round
+        );
+
+
+        updateMobileSeasonPanel(
+            round,
+            games
+        );
+
     }
-
-
-    /* =========================================================
+        /* =========================================================
        DESTAQUE DA RODADA
        ========================================================= */
 
@@ -1418,13 +1458,12 @@
 
             return (
                 [...finished].sort(
-
                     (
                         a,
                         b
                     ) => {
 
-                        const ga =
+                        const aGoals =
                             num(
                                 a.result.home_score
                             ) +
@@ -1433,7 +1472,7 @@
                             );
 
 
-                        const gb =
+                        const bGoals =
                             num(
                                 b.result.home_score
                             ) +
@@ -1442,12 +1481,10 @@
                             );
 
 
-                        return gb - ga;
+                        return bGoals - aGoals;
 
                     }
-
                 )[0]
-
             );
 
         }
@@ -1458,28 +1495,44 @@
     }
 
 
-    function renderRoundFixtures(
+    function renderMobileFeaturedMatch(
+        games,
         round
     ) {
 
-        const element =
+        const roundLabel =
             document.querySelector(
-                "#mobile-round-matches"
+                "#mobile-feature-round"
             );
 
 
-        if (
-            !element
-        ) {
-
-            return;
-
-        }
+        const home =
+            document.querySelector(
+                "#mobile-feature-home"
+            );
 
 
-        const games =
-            fixturesForRound(
-                round
+        const away =
+            document.querySelector(
+                "#mobile-feature-away"
+            );
+
+
+        const homeCrest =
+            document.querySelector(
+                "#mobile-feature-home-crest"
+            );
+
+
+        const awayCrest =
+            document.querySelector(
+                "#mobile-feature-away-crest"
+            );
+
+
+        const date =
+            document.querySelector(
+                "#mobile-feature-date"
             );
 
 
@@ -1489,246 +1542,162 @@
             );
 
 
-        element.innerHTML = `
+        if (
+            roundLabel
+        ) {
 
-            <div
-                class="
-                    ccfv-mobile-round-layout
-                "
-            >
+            roundLabel.textContent =
+                `RODADA ${
+                    String(
+                        round
+                    ).padStart(
+                        2,
+                        "0"
+                    )
+                }`;
 
-                <div
-                    class="
-                        ccfv-mobile-round-games
-                    "
+        }
+
+
+        if (
+            !featured
+        ) {
+
+            if (
+                home
+            ) {
+
+                home.textContent =
+                    "A DEFINIR";
+
+            }
+
+
+            if (
+                away
+            ) {
+
+                away.textContent =
+                    "A DEFINIR";
+
+            }
+
+
+            if (
+                homeCrest
+            ) {
+
+                homeCrest.innerHTML =
+                    "?";
+
+            }
+
+
+            if (
+                awayCrest
+            ) {
+
+                awayCrest.innerHTML =
+                    "?";
+
+            }
+
+
+            if (
+                date
+            ) {
+
+                date.textContent =
+                    "DATA A DEFINIR";
+
+            }
+
+
+            return;
+
+        }
+
+
+        if (
+            home
+        ) {
+
+            home.textContent =
+                featured.home;
+
+        }
+
+
+        if (
+            away
+        ) {
+
+            away.textContent =
+                featured.away;
+
+        }
+
+
+        if (
+            homeCrest
+        ) {
+
+            homeCrest.innerHTML = `
+
+                <img
+                    src="${teamLogo(
+                        featured.home
+                    )}"
+                    alt=""
+                    loading="lazy"
                 >
 
-                    <div
-                        class="
-                            ccfv-mobile-fixtures-grid
-                        "
-                    >
+            `;
 
-                        ${games.map(
-                            renderFixtureRow
-                        ).join("")}
-
-                    </div>
-
-                </div>
+        }
 
 
-                <aside
-                    class="
-                        ccfv-mobile-round-feature
-                    "
+        if (
+            awayCrest
+        ) {
+
+            awayCrest.innerHTML = `
+
+                <img
+                    src="${teamLogo(
+                        featured.away
+                    )}"
+                    alt=""
+                    loading="lazy"
                 >
 
-                    <div
-                        class="
-                            ccfv-mobile-round-feature__top
-                        "
-                    >
+            `;
 
-                        <span>
-                            ★ DESTAQUE DA RODADA
-                        </span>
-
-                        <strong>
-                            RODADA ${
-                                String(
-                                    round
-                                ).padStart(
-                                    2,
-                                    "0"
-                                )
-                            }
-                        </strong>
-
-                    </div>
+        }
 
 
-                    <div
-                        class="
-                            ccfv-mobile-round-feature__body
-                        "
-                    >
+        if (
+            date
+        ) {
 
-                        <span>
-                            JOGO DA RODADA
-                        </span>
+            date.textContent =
 
+                featured.result &&
+                isFinal(
+                    featured.result.status
+                )
 
-                        ${
-                            featured
+                    ? new Date(
+                        featured.result.played_at ||
+                        featured.result.created_at ||
+                        Date.now()
+                    ).toLocaleDateString(
+                        "pt-BR"
+                    )
 
-                                ? `
+                    : "DATA A DEFINIR";
 
-                                    <div
-                                        class="
-                                            ccfv-mobile-round-feature__match
-                                        "
-                                    >
-
-                                        <div>
-
-                                            <img
-                                                src="${teamLogo(
-                                                    featured.home
-                                                )}"
-                                                alt=""
-                                            >
-
-                                            <strong>
-                                                ${esc(
-                                                    featured.home
-                                                )}
-                                            </strong>
-
-                                            <small>
-                                                CASA
-                                            </small>
-
-                                        </div>
-
-
-                                        <div
-                                            class="
-                                                ccfv-mobile-round-feature__score
-                                            "
-                                        >
-
-                                            ${
-                                                featured.result &&
-                                                isFinal(
-                                                    featured.result.status
-                                                )
-
-                                                    ? `
-
-                                                        ${num(
-                                                            featured.result.home_score
-                                                        )}
-
-                                                        <span>
-                                                            ×
-                                                        </span>
-
-                                                        ${num(
-                                                            featured.result.away_score
-                                                        )}
-
-                                                    `
-
-                                                    : `
-
-                                                        <span>
-                                                            VS
-                                                        </span>
-
-                                                    `
-                                            }
-
-                                        </div>
-
-
-                                        <div>
-
-                                            <img
-                                                src="${teamLogo(
-                                                    featured.away
-                                                )}"
-                                                alt=""
-                                            >
-
-                                            <strong>
-                                                ${esc(
-                                                    featured.away
-                                                )}
-                                            </strong>
-
-                                            <small>
-                                                FORA
-                                            </small>
-
-                                        </div>
-
-                                    </div>
-
-                                `
-
-                                : `
-
-                                    <div
-                                        class="
-                                            ccfv-mobile-round-feature__empty
-                                        "
-                                    >
-
-                                        JOGO DA RODADA
-                                        <br>
-                                        A DEFINIR
-
-                                    </div>
-
-                                `
-
-                        }
-
-                    </div>
-
-
-                    <div
-                        class="
-                            ccfv-mobile-round-feature__bottom
-                        "
-                    >
-
-                        <span>
-                            ${
-                                featured?.result
-                                    ?.played_at
-                                    ? new Date(
-                                        featured.result.played_at
-                                    ).toLocaleDateString(
-                                        "pt-BR"
-                                    )
-                                    : "DATA A DEFINIR"
-                            }
-                        </span>
-
-
-                        <span>
-                            21:00
-                        </span>
-
-                    </div>
-
-
-                    <div
-                        class="
-                            ccfv-mobile-round-feature__button
-                        "
-                    >
-
-                        VER CONFRONTO
-                        <span>
-                            →
-                        </span>
-
-                    </div>
-
-                </aside>
-
-            </div>
-
-        `;
-
-
-        updateMobileSeasonPanel(
-            round,
-            games
-        );
+        }
 
     }
 
@@ -1743,13 +1712,10 @@
     ) {
 
         const completed =
-
             matches
-
                 .filter(
                     isMobileBrazilMatch
                 )
-
                 .filter(
                     match =>
                         isFinal(
@@ -1916,11 +1882,12 @@
         ) {
 
             nextDate.textContent =
-                nextGame?.result
 
-                    ? "RESULTADO REGISTRADO"
+                nextGame
 
-                    : "DATA A DEFINIR · 21:00";
+                    ? "DATA A DEFINIR"
+
+                    : "TODOS OS JOGOS FINALIZADOS";
 
         }
 
@@ -1937,7 +1904,7 @@
 
         const standings =
             document.querySelector(
-                "#mobile-standings"
+                "#mobile-standings-body"
             );
 
 
@@ -1974,6 +1941,9 @@
                 round
             );
 
+
+            await renderMobileResults();
+
         }
 
         catch (
@@ -1988,32 +1958,24 @@
 
             standings.innerHTML = `
 
-                <div
-                    class="ccfv-mobile-empty"
-                >
+                <tr>
 
-                    NÃO FOI POSSÍVEL CARREGAR
-                    O BRASILEIRÃO MOBILE.
+                    <td
+                        colspan="10"
+                        style="
+                            text-align:center;
+                            padding:40px;
+                        "
+                    >
 
-                </div>
+                        NÃO FOI POSSÍVEL CARREGAR
+                        O BRASILEIRÃO MOBILE.
+
+                    </td>
+
+                </tr>
 
             `;
-
-
-            const games =
-                document.querySelector(
-                    "#mobile-round-matches"
-                );
-
-
-            if (
-                games
-            ) {
-
-                games.innerHTML =
-                    "";
-
-            }
 
         }
 
@@ -2021,140 +1983,268 @@
 
 
     /* =========================================================
+       RESULTADOS MOBILE
+       ========================================================= */
+
+    async function renderMobileResults() {
+
+        const element =
+            document.querySelector(
+                "#mobile-results-list"
+            );
+
+
+        if (
+            !element
+        ) {
+
+            return;
+
+        }
+
+
+        const results =
+            matches
+
+                .filter(
+                    isMobileBrazilMatch
+                )
+
+                .filter(
+                    match =>
+                        isFinal(
+                            match.status
+                        )
+                )
+
+                .sort(
+                    (
+                        a,
+                        b
+                    ) =>
+
+                        new Date(
+                            b.played_at ||
+                            b.created_at ||
+                            0
+                        )
+
+                        -
+
+                        new Date(
+                            a.played_at ||
+                            a.created_at ||
+                            0
+                        )
+
+                );
+
+
+        if (
+            !results.length
+        ) {
+
+            element.innerHTML = `
+
+                <div
+                    class="
+                        ccfv-results-empty
+                    "
+                >
+
+                    NENHUM RESULTADO MOBILE.
+
+                </div>
+
+            `;
+
+
+            return;
+
+        }
+
+
+        element.innerHTML =
+
+            results
+
+                .slice(
+                    0,
+                    10
+                )
+
+                .map(
+
+                    match => `
+
+                        <article
+                            class="
+                                ccfv-result-item
+                            "
+                        >
+
+                            <div
+                                class="
+                                    ccfv-result-item__competition
+                                "
+                            >
+
+                                BRASILEIRÃO MOBILE
+
+                            </div>
+
+
+                            <div
+                                class="
+                                    ccfv-result-item__teams
+                                "
+                            >
+
+                                <strong>
+                                    ${esc(
+                                        match.home_team
+                                    )}
+                                </strong>
+
+
+                                <span>
+
+                                    ${num(
+                                        match.home_score
+                                    )}
+
+                                    ×
+
+                                    ${num(
+                                        match.away_score
+                                    )}
+
+                                </span>
+
+
+                                <strong>
+
+                                    ${esc(
+                                        match.away_team
+                                    )}
+
+                                </strong>
+
+                            </div>
+
+
+                            <div
+                                class="
+                                    ccfv-result-item__players
+                                "
+                            >
+
+                                <span>
+
+                                    ${esc(
+                                        match.home_player_name ||
+                                        "JOGADOR MOBILE"
+                                    )}
+
+                                </span>
+
+
+                                <span>
+
+                                    ${esc(
+                                        match.away_player_name ||
+                                        "JOGADOR MOBILE"
+                                    )}
+
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="
+                                    ccfv-result-item__date
+                                "
+                            >
+
+                                ${new Date(
+                                    match.played_at ||
+                                    match.created_at ||
+                                    Date.now()
+                                ).toLocaleString(
+                                    "pt-BR"
+                                )}
+
+                            </div>
+
+                        </article>
+
+                    `
+
+                )
+
+                .join("");
+
+    }
+        /* =========================================================
        RANKING
        ========================================================= */
 
-    function rankName(
-        elo
-    ) {
-
-        const e =
-            num(
-                elo
-            );
-
+    function rankName(elo) {
+        const e = num(elo);
 
         return (
-
             ELOS.find(
                 item =>
                     e >= item.min &&
                     e <= item.max
-            )?.name
-
-            ||
-
+            )?.name ||
             "INICIANTE"
-
         );
-
     }
 
-
-    function rankKey(
-        elo
-    ) {
-
-        const e =
-            num(
-                elo
-            );
-
+    function rankKey(elo) {
+        const e = num(elo);
 
         return (
-
             ELOS.find(
                 item =>
                     e >= item.min &&
                     e <= item.max
-            )?.key
-
-            ||
-
+            )?.key ||
             "beginner"
-
         );
-
     }
 
-
-    function initials(
-        name
-    ) {
-
-        return String(
-            name || "CC"
-        )
-
+    function initials(name) {
+        return String(name || "CC")
             .trim()
-
-            .split(
-                /\s+/
-            )
-
-            .slice(
-                0,
-                2
-            )
-
-            .map(
-                part =>
-                    part[0]
-            )
-
+            .split(/\s+/)
+            .slice(0, 2)
+            .map(part => part[0])
             .join("")
-
             .toUpperCase()
-
-            .slice(
-                0,
-                2
-            );
-
+            .slice(0, 2);
     }
 
-
-    function playerPhoto(
-        player
-    ) {
-
+    function playerPhoto(player) {
         return (
-
-            player?.photo_url
-            ||
-
-            player?.photo
-            ||
-
-            player?.avatar_url
-            ||
-
-            player?.image_url
-            ||
-
+            player?.photo_url ||
+            player?.photo ||
+            player?.avatar_url ||
+            player?.image_url ||
             ""
-
         );
-
     }
-
 
     /* =========================================================
        BADGES
        ========================================================= */
 
-    function renderBadge(
-        rank,
-        size = "medium"
-    ) {
+    function renderBadge(rank, size = "medium") {
 
-        if (
-            rank.key ===
-            "legend"
-        ) {
-
+        if (rank.key === "legend") {
             return `
-
                 <svg
                     class="
                         ccfv-badge
@@ -2165,7 +2255,6 @@
                     aria-label="LENDA"
                     role="img"
                 >
-
                     <defs>
 
                         <linearGradient
@@ -2175,82 +2264,56 @@
                             x2="1"
                             y2="1"
                         >
-
                             <stop
                                 offset="0%"
                                 stop-color="#fff7c5"
                             />
-
                             <stop
                                 offset="24%"
                                 stop-color="#ffd86b"
                             />
-
                             <stop
                                 offset="50%"
                                 stop-color="#ffc252"
                             />
-
                             <stop
                                 offset="76%"
                                 stop-color="#9d6710"
                             />
-
                             <stop
                                 offset="100%"
                                 stop-color="#fff1a0"
                             />
-
                         </linearGradient>
 
-
-                        <radialGradient
-                            id="legend-core"
-                        >
-
+                        <radialGradient id="legend-core">
                             <stop
                                 offset="0%"
                                 stop-color="#fff4b4"
                             />
-
                             <stop
                                 offset="35%"
                                 stop-color="#ffc252"
                             />
-
                             <stop
                                 offset="100%"
                                 stop-color="#7e5108"
                             />
-
                         </radialGradient>
 
-
-                        <filter
-                            id="legend-glow"
-                        >
-
+                        <filter id="legend-glow">
                             <feGaussianBlur
                                 stdDeviation="7"
                                 result="blur"
                             />
 
                             <feMerge>
-
-                                <feMergeNode
-                                    in="blur"
-                                />
-
-                                <feMergeNode
-                                    in="SourceGraphic"
-                                />
-
+                                <feMergeNode in="blur"/>
+                                <feMergeNode in="SourceGraphic"/>
                             </feMerge>
-
                         </filter>
 
                     </defs>
-
 
                     <polygon
                         points="
@@ -2271,7 +2334,6 @@
                         filter="url(#legend-glow)"
                     />
 
-
                     <polygon
                         points="
                             110,18
@@ -2290,7 +2352,6 @@
                         stroke-width="3"
                     />
 
-
                     <circle
                         cx="110"
                         cy="104"
@@ -2300,7 +2361,6 @@
                         stroke-width="2"
                     />
 
-
                     <circle
                         cx="110"
                         cy="104"
@@ -2309,7 +2369,6 @@
                         stroke="rgba(255,240,160,.30)"
                         stroke-width="1"
                     />
-
 
                     <path
                         d="
@@ -2326,7 +2385,6 @@
                         fill="url(#legend-core)"
                     />
 
-
                     <path
                         d="
                             M60 134
@@ -2342,7 +2400,6 @@
                         stroke-width="5"
                     />
 
-
                     <circle
                         cx="52"
                         cy="89"
@@ -2350,14 +2407,12 @@
                         fill="#ffe99a"
                     />
 
-
                     <circle
                         cx="168"
                         cy="89"
                         r="4"
                         fill="#ffe99a"
                     />
-
 
                     <text
                         x="110"
@@ -2373,21 +2428,12 @@
                     >
                         LENDA
                     </text>
-
                 </svg>
-
             `;
-
         }
 
-
-        if (
-            rank.key ===
-            "professional"
-        ) {
-
+        if (rank.key === "professional") {
             return `
-
                 <svg
                     class="
                         ccfv-badge
@@ -2415,7 +2461,6 @@
                         stroke-width="5"
                     />
 
-
                     <polygon
                         points="
                             110,26
@@ -2432,7 +2477,6 @@
                         stroke-width="3"
                     />
 
-
                     <circle
                         cx="110"
                         cy="105"
@@ -2441,7 +2485,6 @@
                         stroke="#43df91"
                         stroke-width="2"
                     />
-
 
                     <path
                         d="
@@ -2460,7 +2503,6 @@
                         fill="#43df91"
                     />
 
-
                     <circle
                         cx="57"
                         cy="91"
@@ -2468,14 +2510,12 @@
                         fill="#43df91"
                     />
 
-
                     <circle
                         cx="163"
                         cy="91"
                         r="5"
                         fill="#43df91"
                     />
-
 
                     <text
                         x="110"
@@ -2493,19 +2533,11 @@
                     </text>
 
                 </svg>
-
             `;
-
         }
 
-
-        if (
-            rank.key ===
-            "amateur"
-        ) {
-
+        if (rank.key === "amateur") {
             return `
-
                 <svg
                     class="
                         ccfv-badge
@@ -2533,7 +2565,6 @@
                         stroke-width="5"
                     />
 
-
                     <polygon
                         points="
                             110,27
@@ -2550,7 +2581,6 @@
                         stroke-width="3"
                     />
 
-
                     <circle
                         cx="110"
                         cy="105"
@@ -2559,7 +2589,6 @@
                         stroke="#69a8ff"
                         stroke-width="2"
                     />
-
 
                     <path
                         d="
@@ -2578,7 +2607,6 @@
                         fill="#69a8ff"
                     />
 
-
                     <circle
                         cx="63"
                         cy="94"
@@ -2586,14 +2614,12 @@
                         fill="#69a8ff"
                     />
 
-
                     <circle
                         cx="157"
                         cy="94"
                         r="4"
                         fill="#69a8ff"
                     />
-
 
                     <text
                         x="110"
@@ -2611,14 +2637,10 @@
                     </text>
 
                 </svg>
-
             `;
-
         }
 
-
         return `
-
             <svg
                 class="
                     ccfv-badge
@@ -2646,7 +2668,6 @@
                     stroke-width="5"
                 />
 
-
                 <polygon
                     points="
                         110,29
@@ -2663,7 +2684,6 @@
                     stroke-width="2"
                 />
 
-
                 <circle
                     cx="110"
                     cy="105"
@@ -2673,7 +2693,6 @@
                     stroke-width="2"
                 />
 
-
                 <circle
                     cx="110"
                     cy="105"
@@ -2682,7 +2701,6 @@
                     stroke="#8d9a95"
                     stroke-width="4"
                 />
-
 
                 <text
                     x="110"
@@ -2700,144 +2718,166 @@
                 </text>
 
             </svg>
-
         `;
-
     }
 
+    /* =========================================================
+       TOP POR ELO
+       ========================================================= */
+
+    function topByElo(key, list) {
+        return (
+            list.find(
+                player =>
+                    rankKey(player.elo) === key
+            ) || null
+        );
+    }
 
     /* =========================================================
+       NORMALIZAÇÃO DO RANKING
+       ========================================================= */
+
+    function normalizeRankingPlayer(player) {
+        const matches =
+            num(
+                player.matches_played ??
+                player.matches ??
+                (
+                    num(player.wins) +
+                    num(player.draws) +
+                    num(player.losses)
+                )
+            );
+
+        return {
+            ...player,
+
+            name:
+                player.name ||
+                player.player_name ||
+                "JOGADOR MOBILE",
+
+            elo:
+                num(player.elo),
+
+            matches_played:
+                matches,
+
+            wins:
+                num(player.wins),
+
+            draws:
+                num(player.draws),
+
+            losses:
+                num(player.losses),
+
+            goals_for:
+                num(
+                    player.goals_for ??
+                    player.gp ??
+                    player.goalsFor
+                ),
+
+            goals_against:
+                num(
+                    player.goals_against ??
+                    player.gc ??
+                    player.goalsAgainst
+                ),
+
+            titles:
+                num(player.titles),
+
+            ranking_position:
+                num(player.ranking_position)
+        };
+    }
+
+    /* =========================================================
+       FIM DO BLOCO 3
+       ========================================================= */
+
+           /* =========================================================
        PLAYER CARD
        ========================================================= */
 
-    function cardHTML(
-        player,
-        pos
-    ) {
+    function cardHTML(player, pos) {
 
         const key =
-            rankKey(
-                player.elo
-            );
-
+            rankKey(player.elo);
 
         const rank =
             ELOS.find(
                 item =>
                     item.key === key
-            );
-
+            ) || ELOS[0];
 
         const photo =
-            playerPhoto(
-                player
-            );
-
+            playerPhoto(player);
 
         const games =
-
             num(
                 player.matches_played ??
                 (
-                    num(
-                        player.wins
-                    ) +
-
-                    num(
-                        player.draws
-                    ) +
-
-                    num(
-                        player.losses
-                    )
+                    num(player.wins) +
+                    num(player.draws) +
+                    num(player.losses)
                 )
             );
 
-
         const win =
-
             games
-
                 ? Math.round(
                     (
-                        num(
-                            player.wins
-                        ) /
+                        num(player.wins) /
                         games
                     ) * 100
                 )
-
                 : 0;
 
-
         const photoHTML =
-
             photo
-
                 ? `
-
                     <img
-                        src="${esc(
-                            photo
-                        )}"
-                        alt="${esc(
-                            player.name
-                        )}"
+                        src="${esc(photo)}"
+                        alt="${esc(player.name || "JOGADOR")}"
                         loading="lazy"
                         crossorigin="anonymous"
                     >
-
                 `
-
                 : `
-
                     <span
                         class="
                             ccfv-player-card-real__initials
                         "
                     >
-
                         ${esc(
-                            initials(
-                                player.name
-                            )
+                            initials(player.name)
                         )}
-
                     </span>
-
                 `;
-
 
         const playerId =
             player.player_id ||
             player.id ||
             pos;
 
-
         return `
-
             <div
-                class="
-                    ccfv-player-card-item
-                "
-                data-player-id="${esc(
-                    playerId
-                )}"
+                class="ccfv-player-card-item"
+                data-player-id="${esc(playerId)}"
             >
 
                 <article
-
                     class="
                         ccfv-player-card-preview
                         ccfv-player-card-preview--${key}
                         ccfv-player-card-preview--animated
                         ccfv-player-card-real
                     "
-
-                    data-mobile-card-id="${esc(
-                        playerId
-                    )}"
-
+                    data-mobile-card-id="${esc(playerId)}"
                 >
 
                     <div
@@ -2846,13 +2886,11 @@
                         "
                     ></div>
 
-
                     <div
                         class="
                             ccfv-player-card-preview__noise
                         "
                     ></div>
-
 
                     <div
                         class="
@@ -2860,13 +2898,11 @@
                         "
                     ></div>
 
-
                     <div
                         class="
                             ccfv-player-card-preview__grid
                         "
                     ></div>
-
 
                     <div
                         class="
@@ -2875,14 +2911,12 @@
                         "
                     ></div>
 
-
                     <div
                         class="
                             ccfv-player-card-preview__corner
                             ccfv-player-card-preview__corner--tr
                         "
                     ></div>
-
 
                     <div
                         class="
@@ -2891,14 +2925,12 @@
                         "
                     ></div>
 
-
                     <div
                         class="
                             ccfv-player-card-preview__corner
                             ccfv-player-card-preview__corner--br
                         "
                     ></div>
-
 
                     <div
                         class="
@@ -2913,39 +2945,26 @@
                             </span>
 
                             <strong>
-                                #${String(
-                                    pos
-                                ).padStart(
-                                    3,
-                                    "0"
-                                )}
+                                #${String(pos).padStart(3, "0")}
                             </strong>
 
                         </div>
-
 
                         <div
                             class="
                                 ccfv-player-card-preview__mini-badge
                             "
                         >
-
-                            ${renderBadge(
-                                rank,
-                                "small"
-                            )}
-
+                            ${renderBadge(rank, "small")}
                         </div>
 
                     </div>
-
 
                     <div
                         class="
                             ccfv-player-card-preview__scanline
                         "
                     ></div>
-
 
                     <div
                         class="
@@ -2959,27 +2978,18 @@
                                 ccfv-player-card-real__photo-frame
                             "
                         >
-
                             ${photoHTML}
-
                         </div>
 
                     </div>
-
 
                     <div
                         class="
                             ccfv-player-card-preview__badge-floating
                         "
                     >
-
-                        ${renderBadge(
-                            rank,
-                            "medium"
-                        )}
-
+                        ${renderBadge(rank, "medium")}
                     </div>
-
 
                     <div
                         class="
@@ -2988,9 +2998,7 @@
                     >
 
                         <span>
-                            ${esc(
-                                rank.name
-                            )}
+                            ${esc(rank.name)}
                         </span>
 
                         <strong>
@@ -3001,24 +3009,16 @@
                         </strong>
 
                         <small>
-
                             ${
                                 player.instagram
-
                                     ? `@${String(
                                         player.instagram
-                                    ).replace(
-                                        /^@/,
-                                        ""
-                                    )}`
-
+                                    ).replace(/^@/, "")}`
                                     : "@ccfv.oficial"
                             }
-
                         </small>
 
                     </div>
-
 
                     <div
                         class="
@@ -3027,57 +3027,30 @@
                     >
 
                         <div>
-
-                            <span>
-                                ELO
-                            </span>
+                            <span>ELO</span>
 
                             <strong>
-                                ${num(
-                                    player.elo
-                                )}
+                                ${num(player.elo)}
                             </strong>
-
                         </div>
 
-
                         <div>
-
-                            <span>
-                                POS
-                            </span>
+                            <span>POS</span>
 
                             <strong>
-                                #${String(
-                                    pos
-                                ).padStart(
-                                    2,
-                                    "0"
-                                )}
+                                #${String(pos).padStart(2, "0")}
                             </strong>
-
                         </div>
 
-
                         <div>
-
-                            <span>
-                                WIN
-                            </span>
+                            <span>WIN</span>
 
                             <strong>
-                                ${String(
-                                    win
-                                ).padStart(
-                                    2,
-                                    "0"
-                                )} %
+                                ${String(win).padStart(2, "0")} %
                             </strong>
-
                         </div>
 
                     </div>
-
 
                     <div
                         class="
@@ -3090,20 +3063,16 @@
                         </span>
 
                         <strong>
-                            ${esc(
-                                rank.name
-                            )}
+                            ${esc(rank.name)}
                         </strong>
 
                     </div>
-
 
                     <div
                         class="
                             ccfv-player-card-preview__particles
                         "
                     >
-
                         <i></i>
                         <i></i>
                         <i></i>
@@ -3112,20 +3081,15 @@
                         <i></i>
                         <i></i>
                         <i></i>
-
                     </div>
 
                 </article>
 
-
                 <button
                     type="button"
                     class="ccfv-player-card-download"
-                    data-mobile-download-card="${esc(
-                        playerId
-                    )}"
+                    data-mobile-download-card="${esc(playerId)}"
                 >
-
                     <span>
                         BAIXAR CARD
                     </span>
@@ -3133,13 +3097,10 @@
                     <span>
                         ↓
                     </span>
-
                 </button>
 
             </div>
-
         `;
-
     }
 
 
@@ -3147,116 +3108,94 @@
        MOVIMENTO DOS CARDS
        ========================================================= */
 
-    function bindCardMotion(
-        root = document
-    ) {
+    function bindCardMotion(root = document) {
 
         root
             .querySelectorAll(
                 ".ccfv-player-card-preview--animated"
             )
+            .forEach(card => {
 
-            .forEach(
-                card => {
-
-                    if (
-                        card.dataset.motionBound ===
-                        "true"
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    card.dataset.motionBound =
-                        "true";
-
-
-                    card.addEventListener(
-                        "pointermove",
-                        event => {
-
-                            const rect =
-                                card.getBoundingClientRect();
-
-
-                            const x =
-                                (
-                                    event.clientX -
-                                    rect.left
-                                ) /
-                                rect.width;
-
-
-                            const y =
-                                (
-                                    event.clientY -
-                                    rect.top
-                                ) /
-                                rect.height;
-
-
-                            card.style.setProperty(
-                                "--mouse-x",
-                                `${x * 100}%`
-                            );
-
-
-                            card.style.setProperty(
-                                "--mouse-y",
-                                `${y * 100}%`
-                            );
-
-
-                            card.style.setProperty(
-                                "--rotate-x",
-                                `${(0.5 - y) * 12}deg`
-                            );
-
-
-                            card.style.setProperty(
-                                "--rotate-y",
-                                `${(x - 0.5) * 14}deg`
-                            );
-
-                        }
-                    );
-
-
-                    card.addEventListener(
-                        "pointerleave",
-                        () => {
-
-                            card.style.setProperty(
-                                "--rotate-x",
-                                "0deg"
-                            );
-
-
-                            card.style.setProperty(
-                                "--rotate-y",
-                                "0deg"
-                            );
-
-
-                            card.style.setProperty(
-                                "--mouse-x",
-                                "50%"
-                            );
-
-
-                            card.style.setProperty(
-                                "--mouse-y",
-                                "50%"
-                            );
-
-                        }
-                    );
-
+                if (
+                    card.dataset.motionBound ===
+                    "true"
+                ) {
+                    return;
                 }
-            );
 
+                card.dataset.motionBound =
+                    "true";
+
+                card.addEventListener(
+                    "pointermove",
+                    event => {
+
+                        const rect =
+                            card.getBoundingClientRect();
+
+                        const x =
+                            (
+                                event.clientX -
+                                rect.left
+                            ) /
+                            rect.width;
+
+                        const y =
+                            (
+                                event.clientY -
+                                rect.top
+                            ) /
+                            rect.height;
+
+                        card.style.setProperty(
+                            "--mouse-x",
+                            `${x * 100}%`
+                        );
+
+                        card.style.setProperty(
+                            "--mouse-y",
+                            `${y * 100}%`
+                        );
+
+                        card.style.setProperty(
+                            "--rotate-x",
+                            `${(0.5 - y) * 12}deg`
+                        );
+
+                        card.style.setProperty(
+                            "--rotate-y",
+                            `${(x - 0.5) * 14}deg`
+                        );
+                    }
+                );
+
+                card.addEventListener(
+                    "pointerleave",
+                    () => {
+
+                        card.style.setProperty(
+                            "--rotate-x",
+                            "0deg"
+                        );
+
+                        card.style.setProperty(
+                            "--rotate-y",
+                            "0deg"
+                        );
+
+                        card.style.setProperty(
+                            "--mouse-x",
+                            "50%"
+                        );
+
+                        card.style.setProperty(
+                            "--mouse-y",
+                            "50%"
+                        );
+                    }
+                );
+
+            });
     }
 
 
@@ -3264,66 +3203,40 @@
        DOWNLOAD CARD
        ========================================================= */
 
-    async function downloadMobileCard(
-        button
-    ) {
+    async function downloadMobileCard(button) {
 
         const id =
             button?.dataset?.mobileDownloadCard;
 
-
         const card =
             document.querySelector(
-
                 `[data-mobile-card-id="${CSS.escape(
-                    String(
-                        id
-                    )
+                    String(id)
                 )}"]`
-
             );
 
-
-        if (
-            !card
-        ) {
-
+        if (!card) {
             return;
-
         }
-
 
         const original =
             button.innerHTML;
 
-
         button.disabled =
             true;
-
 
         button.innerHTML =
             "GERANDO...";
 
-
         try {
 
             const options = {
-
-                pixelRatio:
-                    2,
-
-                cacheBust:
-                    true,
-
-                backgroundColor:
-                    "#020403"
-
+                pixelRatio: 2,
+                cacheBust: true,
+                backgroundColor: "#020403"
             };
 
-
-            let dataUrl =
-                "";
-
+            let dataUrl = "";
 
             if (
                 window.htmlToImage?.toPng
@@ -3336,43 +3249,25 @@
                     );
 
             }
-
             else if (
                 window.html2canvas
             ) {
 
                 dataUrl =
-
                     (
-
                         await window.html2canvas(
-
                             card,
-
                             {
-
-                                scale:
-                                    2,
-
-                                useCORS:
-                                    true,
-
-                                allowTaint:
-                                    false,
-
-                                backgroundColor:
-                                    "#020403"
-
+                                scale: 2,
+                                useCORS: true,
+                                allowTaint: false,
+                                backgroundColor: "#020403"
                             }
-
                         )
-
                     ).toDataURL(
                         "image/png"
                     );
-
             }
-
 
             if (
                 !dataUrl ||
@@ -3380,59 +3275,41 @@
                     "data:image/png"
                 )
             ) {
-
                 throw new Error(
                     "PNG inválido"
                 );
-
             }
-
 
             const player =
                 ranking.find(
-
                     item =>
-
                         String(
                             item.player_id ||
                             item.id
                         ) ===
-                        String(
-                            id
-                        )
-
+                        String(id)
                 );
 
-
             const safe =
-
                 String(
                     player?.name ||
                     "jogador"
                 )
-
-                    .normalize(
-                        "NFD"
-                    )
-
+                    .normalize("NFD")
                     .replace(
                         /[\u0300-\u036f]/g,
                         ""
                     )
-
                     .replace(
                         /[^a-zA-Z0-9]+/g,
                         "-"
                     )
-
                     .toLowerCase();
-
 
             const anchor =
                 document.createElement(
                     "a"
                 );
-
 
             anchor.download =
                 `ccfv-mobile-card-${
@@ -3440,134 +3317,65 @@
                     "jogador"
                 }.png`;
 
-
             anchor.href =
                 dataUrl;
-
 
             document.body.appendChild(
                 anchor
             );
 
-
             anchor.click();
-
 
             anchor.remove();
 
         }
+        catch (error) {
 
-        catch (
-            error
-        ) {
-
-            console.error(
-                error
-            );
-
+            console.error(error);
 
             alert(
                 "Não foi possível gerar o card. Verifique se a foto do jogador possui uma URL pública com CORS."
             );
 
         }
-
         finally {
 
             button.disabled =
                 false;
 
-
             button.innerHTML =
                 original;
-
         }
-
     }
 
 
-    function bindDownloads(
-        root = document
-    ) {
+    function bindDownloads(root = document) {
 
         root
             .querySelectorAll(
                 "[data-mobile-download-card]"
             )
+            .forEach(button => {
 
-            .forEach(
-                button => {
-
-                    if (
-                        button.dataset.bound ===
-                        "true"
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    button.dataset.bound =
-                        "true";
-
-
-                    button.addEventListener(
-                        "click",
-                        () =>
-                            downloadMobileCard(
-                                button
-                            )
-                    );
-
+                if (
+                    button.dataset.bound ===
+                    "true"
+                ) {
+                    return;
                 }
-            );
 
-    }
+                button.dataset.bound =
+                    "true";
 
-
-    /* =========================================================
-       TOP POR ELO
-       ========================================================= */
-
-    function topByElo(
-        key,
-        list
-    ) {
-
-        return (
-
-            list
-
-                .filter(
-                    player =>
-                        rankKey(
-                            player.elo
-                        ) ===
-                        key
-                )
-
-                .sort(
-
-                    (
-                        a,
-                        b
-                    ) =>
-                        num(
-                            b.elo
-                        ) -
-                        num(
-                            a.elo
+                button.addEventListener(
+                    "click",
+                    () =>
+                        downloadMobileCard(
+                            button
                         )
+                );
 
-                )[0]
-
-            ||
-
-            null
-
-        );
-
+            });
     }
 
 
@@ -3582,39 +3390,64 @@
                 "#mobile-ranking-hero-leader"
             );
 
-
         const contentEl =
             document.querySelector(
                 "#mobile-ranking-content"
             );
 
-
         if (
             !heroEl ||
             !contentEl
         ) {
-
             return;
-
         }
 
 
         const list =
+            [...ranking]
+                .map(
+                    normalizeRankingPlayer
+                )
+                .sort(
+                    (a, b) => {
 
-            [...ranking].sort(
+                        const elo =
+                            num(b.elo) -
+                            num(a.elo);
 
-                (
-                    a,
-                    b
-                ) =>
-                    num(
-                        b.elo
-                    ) -
-                    num(
-                        a.elo
-                    )
+                        if (
+                            elo !== 0
+                        ) {
+                            return elo;
+                        }
 
-            );
+                        const wins =
+                            num(b.wins) -
+                            num(a.wins);
+
+                        if (
+                            wins !== 0
+                        ) {
+                            return wins;
+                        }
+
+                        return String(
+                            a.name || ""
+                        ).localeCompare(
+                            String(
+                                b.name || ""
+                            ),
+                            "pt-BR"
+                        );
+                    }
+                )
+                .map(
+                    (player, index) => ({
+                        ...player,
+                        ranking_position:
+                            index + 1
+                    })
+                );
 
 
         const top =
@@ -3626,10 +3459,7 @@
                 "#mobile-ranking-count"
             );
 
-
-        if (
-            count
-        ) {
+        if (count) {
 
             count.textContent =
                 String(
@@ -3638,13 +3468,10 @@
                     2,
                     "0"
                 );
-
         }
 
 
-        if (
-            top
-        ) {
+        if (top) {
 
             const rank =
                 ELOS.find(
@@ -3653,14 +3480,10 @@
                         rankKey(
                             top.elo
                         )
-                );
-
+                ) || ELOS[0];
 
             const photo =
-                playerPhoto(
-                    top
-                );
-
+                playerPhoto(top);
 
             const games =
                 num(
@@ -3669,7 +3492,6 @@
 
 
             heroEl.innerHTML = `
-
                 <article
                     class="
                         ccfv-ranking-hero__leader-card
@@ -3682,26 +3504,16 @@
                             ccfv-ranking-hero__leader-photo
                         "
                     >
-
                         ${
                             photo
-
                                 ? `
-
                                     <img
-                                        src="${esc(
-                                            photo
-                                        )}"
-                                        alt="${esc(
-                                            top.name
-                                        )}"
+                                        src="${esc(photo)}"
+                                        alt="${esc(top.name)}"
                                         crossorigin="anonymous"
                                     >
-
                                 `
-
                                 : `
-
                                     <span>
                                         ${esc(
                                             initials(
@@ -3709,26 +3521,20 @@
                                             )
                                         )}
                                     </span>
-
                                 `
                         }
-
                     </div>
-
 
                     <div
                         class="
                             ccfv-ranking-hero__leader-badge
                         "
                     >
-
                         ${renderBadge(
                             rank,
                             "small"
                         )}
-
                     </div>
-
 
                     <div
                         class="
@@ -3740,48 +3546,34 @@
                             CCFV // MOBILE // OFFICIAL LEADER
                         </span>
 
-
                         <div
                             class="
                                 ccfv-ranking-hero__leader-position
                             "
                         >
-
                             #01 ABSOLUTO
-
                         </div>
 
-
                         <h2>
-                            ${esc(
-                                top.name
-                            )}
+                            ${esc(top.name)}
                         </h2>
 
-
                         <small>
-
                             ${
                                 top.instagram
-
                                     ? `@${String(
                                         top.instagram
                                     ).replace(
                                         /^@/,
                                         ""
                                     )}`
-
                                     : "@ccfv.oficial"
                             }
 
                             ·
 
-                            ${esc(
-                                rank.name
-                            )}
-
+                            ${esc(rank.name)}
                         </small>
-
 
                         <div
                             class="
@@ -3790,60 +3582,31 @@
                         >
 
                             <div>
-
-                                <span>
-                                    ELO
-                                </span>
-
+                                <span>ELO</span>
                                 <strong>
-                                    ${num(
-                                        top.elo
-                                    )}
+                                    ${num(top.elo)}
                                 </strong>
-
                             </div>
 
-
                             <div>
-
-                                <span>
-                                    JOGOS
-                                </span>
-
+                                <span>JOGOS</span>
                                 <strong>
                                     ${games}
                                 </strong>
-
                             </div>
 
-
                             <div>
-
-                                <span>
-                                    VITÓRIAS
-                                </span>
-
+                                <span>VITÓRIAS</span>
                                 <strong>
-                                    ${num(
-                                        top.wins
-                                    )}
+                                    ${num(top.wins)}
                                 </strong>
-
                             </div>
 
-
                             <div>
-
-                                <span>
-                                    TÍTULOS
-                                </span>
-
+                                <span>TÍTULOS</span>
                                 <strong>
-                                    ${num(
-                                        top.titles
-                                    )}
+                                    ${num(top.titles)}
                                 </strong>
-
                             </div>
 
                         </div>
@@ -3851,15 +3614,12 @@
                     </div>
 
                 </article>
-
             `;
 
         }
-
         else {
 
             heroEl.innerHTML = `
-
                 <div
                     class="
                         ccfv-ranking-hero__leader-card
@@ -3888,9 +3648,7 @@
                     </div>
 
                 </div>
-
             `;
-
         }
 
 
@@ -3906,11 +3664,8 @@
 
 
         const rows =
-
             top10
-
                 .map(
-
                     (
                         player,
                         index
@@ -3923,21 +3678,17 @@
                                     rankKey(
                                         player.elo
                                     )
-                            );
-
+                            ) || ELOS[0];
 
                         const photo =
                             playerPhoto(
                                 player
                             );
 
-
                         const pos =
                             index + 1;
 
-
                         return `
-
                             <article
                                 class="
                                     ccfv-ranking-row
@@ -3955,16 +3706,13 @@
                                         ccfv-ranking-row__position
                                     "
                                 >
-
                                     ${String(
                                         pos
                                     ).padStart(
                                         2,
                                         "0"
                                     )}
-
                                 </span>
-
 
                                 <div
                                     class="
@@ -3977,31 +3725,22 @@
                                             ccfv-ranking-row__photo
                                         "
                                     >
-
                                         ${
                                             photo
-
                                                 ? `
-
                                                     <img
-                                                        src="${esc(
-                                                            photo
-                                                        )}"
+                                                        src="${esc(photo)}"
                                                         alt=""
                                                         loading="lazy"
                                                     >
-
                                                 `
-
                                                 : esc(
                                                     initials(
                                                         player.name
                                                     )
                                                 )
                                         }
-
                                     </div>
-
 
                                     <div
                                         class="
@@ -4016,26 +3755,21 @@
                                         </strong>
 
                                         <span>
-
                                             ${
                                                 player.instagram
-
                                                     ? `@${String(
                                                         player.instagram
                                                     ).replace(
                                                         /^@/,
                                                         ""
                                                     )}`
-
                                                     : "@ccfv.oficial"
                                             }
-
                                         </span>
 
                                     </div>
 
                                 </div>
-
 
                                 <span
                                     class="
@@ -4045,19 +3779,15 @@
                                     MOBILE
                                 </span>
 
-
                                 <span
                                     class="
                                         ccfv-ranking-row__points
                                     "
                                 >
-
                                     ${num(
                                         player.elo
                                     )}
-
                                 </span>
-
 
                                 <span
                                     class="
@@ -4067,27 +3797,20 @@
                                     ELO
                                 </span>
 
-
                                 <span
                                     class="
                                         ccfv-ranking-row__rank
                                     "
                                 >
-
                                     ${esc(
                                         rank.name
                                     )}
-
                                 </span>
 
                             </article>
-
                         `;
-
                     }
-
                 )
-
                 .join("");
 
 
@@ -4096,9 +3819,7 @@
            ===================================================== */
 
         const levels =
-
             ELOS.map(
-
                 (
                     rank,
                     index
@@ -4110,15 +3831,12 @@
                             list
                         );
 
-
                     const photo =
                         playerPhoto(
                             player
                         );
 
-
                     return `
-
                         <article
                             class="
                                 ccfv-ranking-level
@@ -4142,43 +3860,34 @@
                                         ccfv-ranking-level__number
                                     "
                                 >
-
                                     ${String(
                                         index + 1
                                     ).padStart(
                                         2,
                                         "0"
                                     )}
-
                                 </span>
-
 
                                 <span
                                     class="
                                         ccfv-ranking-level__leader-label
                                     "
                                 >
-
                                     TOP 1 DO ELO
-
                                 </span>
 
                             </div>
-
 
                             <div
                                 class="
                                     ccfv-ranking-level__badge-art
                                 "
                             >
-
                                 ${renderBadge(
                                     rank,
                                     "medium"
                                 )}
-
                             </div>
-
 
                             <div
                                 class="
@@ -4188,25 +3897,15 @@
 
                                 ${
                                     photo
-
                                         ? `
-
                                             <img
-                                                src="${esc(
-                                                    photo
-                                                )}"
-                                                alt="${esc(
-                                                    player.name
-                                                )}"
+                                                src="${esc(photo)}"
+                                                alt="${esc(player.name)}"
                                                 loading="lazy"
                                             >
-
                                         `
-
                                         : `
-
                                             <span>
-
                                                 ${
                                                     player
                                                         ? esc(
@@ -4216,34 +3915,25 @@
                                                         )
                                                         : "—"
                                                 }
-
                                             </span>
-
                                         `
                                 }
 
                             </div>
-
 
                             <div
                                 class="
                                     ccfv-ranking-level__name
                                 "
                             >
-
-                                ${esc(
-                                    rank.name
-                                )}
-
+                                ${esc(rank.name)}
                             </div>
-
 
                             <div
                                 class="
                                     ccfv-ranking-level__range
                                 "
                             >
-
                                 ${
                                     rank.key ===
                                     "legend"
@@ -4252,9 +3942,7 @@
 
                                         : `${rank.min} → ${rank.max} ELO`
                                 }
-
                             </div>
-
 
                             <div
                                 class="
@@ -4266,7 +3954,6 @@
                                     player
 
                                         ? `
-
                                             <strong>
                                                 ${esc(
                                                     player.name
@@ -4278,11 +3965,9 @@
                                                     player.elo
                                                 )} ELO
                                             </span>
-
                                         `
 
                                         : `
-
                                             <strong>
                                                 A DEFINIR
                                             </strong>
@@ -4290,20 +3975,15 @@
                                             <span>
                                                 NENHUM JOGADOR NESTA FAIXA
                                             </span>
-
                                         `
                                 }
 
                             </div>
 
                         </article>
-
                     `;
-
                 }
-
             )
-
             .join("");
 
 
@@ -4334,19 +4014,15 @@
                             </span>
 
                             <h2>
-
                                 TOP 10
-
                                 <strong>
                                     MOBILE.
                                 </strong>
-
                             </h2>
 
                         </div>
 
                     </div>
-
 
                     <div
                         class="
@@ -4356,29 +4032,25 @@
                     >
 
                         ${
-                            rows
+                            rows ||
 
-                                ||
+                            `
+                                <div
+                                    class="
+                                        ccfv-ranking-empty-feature
+                                    "
+                                >
 
-                                `
+                                    <strong>
+                                        NENHUM COMPETIDOR MOBILE.
+                                    </strong>
 
-                                    <div
-                                        class="
-                                            ccfv-ranking-empty-feature
-                                        "
-                                    >
+                                    <span>
+                                        Os jogadores aparecerão aqui assim que forem cadastrados.
+                                    </span>
 
-                                        <strong>
-                                            NENHUM COMPETIDOR MOBILE.
-                                        </strong>
-
-                                        <span>
-                                            Os jogadores aparecerão aqui assim que forem cadastrados.
-                                        </span>
-
-                                    </div>
-
-                                `
+                                </div>
+                            `
                         }
 
                     </div>
@@ -4413,17 +4085,13 @@
                             </span>
 
                             <h2>
-
                                 CONQUISTE SUA
-
                                 <strong>
                                     INSÍGNIA.
                                 </strong>
-
                             </h2>
 
                         </div>
-
 
                         <p>
                             ELO e evolução competitiva independentes do PC e Console.
@@ -4431,15 +4099,12 @@
 
                     </div>
 
-
                     <div
                         class="
                             ccfv-ranking-level-grid
                         "
                     >
-
                         ${levels}
-
                     </div>
 
                 </div>
@@ -4453,6 +4118,13 @@
             contentEl
         );
 
+        bindCardMotion(
+            contentEl
+        );
+
+        bindDownloads(
+            contentEl
+        );
     }
 
 
@@ -4460,130 +4132,110 @@
        MOVIMENTO DOS NÍVEIS
        ========================================================= */
 
-    function bindLevelMotion(
-        root = document
-    ) {
+    function bindLevelMotion(root = document) {
 
         root
             .querySelectorAll(
                 ".ccfv-ranking-level"
             )
+            .forEach(card => {
 
-            .forEach(
-                card => {
-
-                    if (
-                        card.dataset.bound ===
-                        "true"
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    card.dataset.bound =
-                        "true";
-
-
-                    card.addEventListener(
-                        "pointermove",
-                        event => {
-
-                            const rect =
-                                card.getBoundingClientRect();
-
-
-                            const x =
-                                (
-                                    event.clientX -
-                                    rect.left
-                                ) /
-                                rect.width;
-
-
-                            const y =
-                                (
-                                    event.clientY -
-                                    rect.top
-                                ) /
-                                rect.height;
-
-
-                            card.style.setProperty(
-                                "--level-rx",
-                                `${(0.5 - y) * 9}deg`
-                            );
-
-
-                            card.style.setProperty(
-                                "--level-ry",
-                                `${(x - 0.5) * 12}deg`
-                            );
-
-
-                            card.style.setProperty(
-                                "--level-mx",
-                                `${x * 100}%`
-                            );
-
-
-                            card.style.setProperty(
-                                "--level-my",
-                                `${y * 100}%`
-                            );
-
-
-                            card.classList.add(
-                                "is-hovering"
-                            );
-
-                        }
-                    );
-
-
-                    card.addEventListener(
-                        "pointerleave",
-                        () => {
-
-                            card.classList.remove(
-                                "is-hovering"
-                            );
-
-
-                            card.style.setProperty(
-                                "--level-rx",
-                                "0deg"
-                            );
-
-
-                            card.style.setProperty(
-                                "--level-ry",
-                                "0deg"
-                            );
-
-
-                            card.style.setProperty(
-                                "--level-mx",
-                                "50%"
-                            );
-
-
-                            card.style.setProperty(
-                                "--level-my",
-                                "50%"
-                            );
-
-                        }
-                    );
-
+                if (
+                    card.dataset.bound ===
+                    "true"
+                ) {
+                    return;
                 }
-            );
 
+                card.dataset.bound =
+                    "true";
+
+                card.addEventListener(
+                    "pointermove",
+                    event => {
+
+                        const rect =
+                            card.getBoundingClientRect();
+
+                        const x =
+                            (
+                                event.clientX -
+                                rect.left
+                            ) /
+                            rect.width;
+
+                        const y =
+                            (
+                                event.clientY -
+                                rect.top
+                            ) /
+                            rect.height;
+
+                        card.style.setProperty(
+                            "--level-rx",
+                            `${(0.5 - y) * 9}deg`
+                        );
+
+                        card.style.setProperty(
+                            "--level-ry",
+                            `${(x - 0.5) * 12}deg`
+                        );
+
+                        card.style.setProperty(
+                            "--level-mx",
+                            `${x * 100}%`
+                        );
+
+                        card.style.setProperty(
+                            "--level-my",
+                            `${y * 100}%`
+                        );
+
+                        card.classList.add(
+                            "is-hovering"
+                        );
+                    }
+                );
+
+                card.addEventListener(
+                    "pointerleave",
+                    () => {
+
+                        card.classList.remove(
+                            "is-hovering"
+                        );
+
+                        card.style.setProperty(
+                            "--level-rx",
+                            "0deg"
+                        );
+
+                        card.style.setProperty(
+                            "--level-ry",
+                            "0deg"
+                        );
+
+                        card.style.setProperty(
+                            "--level-mx",
+                            "50%"
+                        );
+
+                        card.style.setProperty(
+                            "--level-my",
+                            "50%"
+                        );
+                    }
+                );
+
+            });
     }
 
 
     /* =========================================================
+       FIM DO BLOCO 4
+       ========================================================= */
+
+           /* =========================================================
        DIRETÓRIO DE JOGADORES
        ========================================================= */
 
@@ -4594,115 +4246,72 @@
                 "#mobile-player-directory"
             );
 
-
-        if (
-            !element
-        ) {
-
+        if (!element) {
             return;
-
         }
 
 
         const search =
-
             (
                 document.querySelector(
                     "#mobile-player-search"
                 )?.value ||
-
                 ""
             )
-
                 .trim()
-
                 .toLowerCase();
 
 
         const list =
-
-            ranking
-
-                .filter(
-
-                    player =>
-
-                        !search
-
-                        ||
-
-                        String(
-                            player.name ||
-                            ""
-                        )
-                            .toLowerCase()
-                            .includes(
-                                search
-                            )
-
-                        ||
-
-                        String(
-                            player.instagram ||
-                            ""
-                        )
-                            .toLowerCase()
-                            .includes(
-                                search
-                            )
-
+            [...ranking]
+                .map(
+                    normalizeRankingPlayer
                 )
-
-                .sort(
-
-                    (
-                        a,
-                        b
-                    ) =>
-
-                        num(
-                            b.elo
-                        ) -
-
-                        num(
-                            a.elo
+                .filter(
+                    player =>
+                        !search ||
+                        String(
+                            player.name || ""
                         )
+                            .toLowerCase()
+                            .includes(search) ||
 
+                        String(
+                            player.instagram || ""
+                        )
+                            .toLowerCase()
+                            .includes(search)
+                )
+                .sort(
+                    (a, b) =>
+                        num(b.elo) -
+                        num(a.elo)
                 );
 
 
         element.innerHTML =
-
             list.length
-
                 ? `
-
                     <div
                         class="
                             ccfv-player-cards-grid
                         "
                     >
-
-                        ${list.map(
-
-                            (
-                                player,
-                                index
-                            ) =>
-
-                                cardHTML(
+                        ${list
+                            .map(
+                                (
                                     player,
-                                    index + 1
-                                )
-
-                        ).join("")}
-
+                                    index
+                                ) =>
+                                    cardHTML(
+                                        player,
+                                        index + 1
+                                    )
+                            )
+                            .join("")}
                     </div>
-
                 `
-
                 : `
-
                     <div
                         class="
                             ccfv-player-cards-empty
@@ -4718,14 +4327,12 @@
                         </span>
 
                     </div>
-
                 `;
 
 
         bindCardMotion(
             element
         );
-
 
         bindDownloads(
             element
@@ -4737,21 +4344,15 @@
                 "#mobile-directory-count"
             );
 
-
-        if (
-            count
-        ) {
+        if (count) {
 
             count.textContent =
-
                 `${list.length} JOGADOR${
                     list.length === 1
                         ? ""
                         : "ES"
                 }`;
-
         }
-
     }
 
 
@@ -4773,7 +4374,6 @@
 
 
         return `
-
             <article
                 class="
                     ccfv-night-bracket-match
@@ -4785,11 +4385,7 @@
                         ccfv-night-bracket-match__number
                     "
                 >
-
-                    ${esc(
-                        code
-                    )}
-
+                    ${esc(code)}
                 </span>
 
 
@@ -4807,16 +4403,13 @@
                     </span>
 
                     <strong>
-
                         ${
                             final
                                 ? num(
                                     match.home_score
                                 )
                                 : ""
-
                         }
-
                     </strong>
 
                 </div>
@@ -4836,30 +4429,23 @@
                     </span>
 
                     <strong>
-
                         ${
                             final
                                 ? num(
                                     match.away_score
                                 )
                                 : ""
-
                         }
-
                     </strong>
 
                 </div>
 
             </article>
-
         `;
-
     }
 
 
-    function winner(
-        match
-    ) {
+    function winner(match) {
 
         if (
             !match ||
@@ -4867,9 +4453,7 @@
                 match.status
             )
         ) {
-
             return null;
-
         }
 
 
@@ -4877,7 +4461,6 @@
             num(
                 match.home_score
             );
-
 
         const awayScore =
             num(
@@ -4889,9 +4472,7 @@
             homeScore >
             awayScore
         ) {
-
             return match.home_team;
-
         }
 
 
@@ -4899,14 +4480,11 @@
             awayScore >
             homeScore
         ) {
-
             return match.away_team;
-
         }
 
 
         return null;
-
     }
 
 
@@ -4921,7 +4499,6 @@
 
 
         return (
-
             competition ===
             "ARENA_CUP"
 
@@ -4929,9 +4506,7 @@
 
             competition ===
             "ARENA_CUP_MOBILE"
-
         );
-
     }
 
 
@@ -4942,13 +4517,8 @@
                 "#mobile-arena-root"
             );
 
-
-        if (
-            !root
-        ) {
-
+        if (!root) {
             return;
-
         }
 
 
@@ -4959,75 +4529,51 @@
 
 
         const q =
-
             Array.from(
                 {
                     length: 4
                 },
-                (
-                    _,
-                    index
-                ) =>
-
+                (_, index) =>
                     games.find(
-
                         match =>
-
                             normalizeCompetition(
                                 match.stage
                             ).includes(
                                 "QUART"
                             )
-
                             &&
-
                             num(
                                 match.round_number
                             ) ===
                             index + 1
-
                     )
-
             );
 
 
         const s =
-
             Array.from(
                 {
                     length: 2
                 },
-                (
-                    _,
-                    index
-                ) =>
-
+                (_, index) =>
                     games.find(
-
                         match =>
-
                             normalizeCompetition(
                                 match.stage
                             ).includes(
                                 "SEMI"
                             )
-
                             &&
-
                             num(
                                 match.round_number
                             ) ===
                             index + 1
-
                     )
-
             );
 
 
         const finalMatch =
-
             games.find(
-
                 match => {
 
                     const stage =
@@ -5037,7 +4583,6 @@
 
 
                     return (
-
                         stage ===
                         "FINAL"
 
@@ -5046,11 +4591,8 @@
                         stage.startsWith(
                             "FINAL"
                         )
-
                     );
-
                 }
-
             );
 
 
@@ -5069,7 +4611,6 @@
                     "
                 >
 
-
                     <!-- =============================
                          QUARTAS
                          ============================= -->
@@ -5086,7 +4627,6 @@
                                 ccfv-night-bracket-column__title
                             "
                         >
-
                             <span>
                                 01
                             </span>
@@ -5094,33 +4634,28 @@
                             <strong>
                                 QUARTAS
                             </strong>
-
                         </div>
 
 
-                        ${q.map(
-
-                            (
-                                match,
-                                index
-                            ) =>
-
-                                bracketMatch(
-
-                                    match || {},
-
-                                    `QF ${
-                                        String(
-                                            index + 1
-                                        ).padStart(
-                                            2,
-                                            "0"
-                                        )
-                                    }`
-
-                                )
-
-                        ).join("")}
+                        ${q
+                            .map(
+                                (
+                                    match,
+                                    index
+                                ) =>
+                                    bracketMatch(
+                                        match || {},
+                                        `QF ${
+                                            String(
+                                                index + 1
+                                            ).padStart(
+                                                2,
+                                                "0"
+                                            )
+                                        }`
+                                    )
+                            )
+                            .join("")}
 
                     </div>
 
@@ -5141,7 +4676,6 @@
                                 ccfv-night-bracket-column__title
                             "
                         >
-
                             <span>
                                 02
                             </span>
@@ -5149,33 +4683,28 @@
                             <strong>
                                 SEMIFINAIS
                             </strong>
-
                         </div>
 
 
-                        ${s.map(
-
-                            (
-                                match,
-                                index
-                            ) =>
-
-                                bracketMatch(
-
-                                    match || {},
-
-                                    `SF ${
-                                        String(
-                                            index + 1
-                                        ).padStart(
-                                            2,
-                                            "0"
-                                        )
-                                    }`
-
-                                )
-
-                        ).join("")}
+                        ${s
+                            .map(
+                                (
+                                    match,
+                                    index
+                                ) =>
+                                    bracketMatch(
+                                        match || {},
+                                        `SF ${
+                                            String(
+                                                index + 1
+                                            ).padStart(
+                                                2,
+                                                "0"
+                                            )
+                                        }`
+                                    )
+                            )
+                            .join("")}
 
                     </div>
 
@@ -5210,7 +4739,6 @@
 
                         ${
                             finalMatch
-
                                 ? `
 
                                     <article
@@ -5250,20 +4778,15 @@
                                             </strong>
 
                                             <span>
-
                                                 ${
                                                     isFinal(
                                                         finalMatch.status
                                                     )
-
                                                         ? num(
                                                             finalMatch.home_score
                                                         )
-
                                                         : "A DEFINIR"
-
                                                 }
-
                                             </span>
 
                                         </div>
@@ -5274,9 +4797,7 @@
                                                 ccfv-night-final-match__vs
                                             "
                                         >
-
                                             VS
-
                                         </div>
 
 
@@ -5287,20 +4808,15 @@
                                         >
 
                                             <span>
-
                                                 ${
                                                     isFinal(
                                                         finalMatch.status
                                                     )
-
                                                         ? num(
                                                             finalMatch.away_score
                                                         )
-
                                                         : "A DEFINIR"
-
                                                 }
-
                                             </span>
 
                                             <strong>
@@ -5317,7 +4833,6 @@
                                                 ccfv-night-final-match__champion
                                             "
                                         >
-
                                             🏆
 
                                             ${esc(
@@ -5326,7 +4841,6 @@
                                                 ) ||
                                                 "CAMPEÃO A DEFINIR"
                                             )}
-
                                         </div>
 
                                     </article>
@@ -5364,11 +4878,9 @@
                                                 ccfv-night-final-match__team
                                             "
                                         >
-
                                             <strong>
                                                 A DEFINIR
                                             </strong>
-
                                         </div>
 
 
@@ -5386,11 +4898,9 @@
                                                 ccfv-night-final-match__team
                                             "
                                         >
-
                                             <strong>
                                                 A DEFINIR
                                             </strong>
-
                                         </div>
 
 
@@ -5399,14 +4909,11 @@
                                                 ccfv-night-final-match__champion
                                             "
                                         >
-
                                             🏆
                                             CAMPEÃO A DEFINIR
-
                                         </div>
 
                                     </div>
-
                                 `
                         }
 
@@ -5417,7 +4924,6 @@
             </div>
 
         `;
-
     }
 
 
@@ -5432,13 +4938,8 @@
                 "#mobile-all-matches"
             );
 
-
-        if (
-            !element
-        ) {
-
+        if (!element) {
             return;
-
         }
 
 
@@ -5448,39 +4949,37 @@
 
 
             const list =
-
-                [...matches].sort(
-
-                    (
-                        a,
-                        b
-                    ) =>
-
-                        new Date(
-                            b.played_at ||
-                            b.created_at ||
-                            0
-                        )
-
-                        -
-
-                        new Date(
-                            a.played_at ||
-                            a.created_at ||
-                            0
-                        )
-
-                );
+                [...matches]
+                    .filter(
+                        match =>
+                            Boolean(
+                                match
+                            )
+                    )
+                    .sort(
+                        (
+                            a,
+                            b
+                        ) =>
+                            new Date(
+                                b.played_at ||
+                                b.created_at ||
+                                0
+                            )
+                            -
+                            new Date(
+                                a.played_at ||
+                                a.created_at ||
+                                0
+                            )
+                    );
 
 
             element.innerHTML =
-
                 list.length
 
                     ? list
-
                         .map(
-
                             match => `
 
                                 <article
@@ -5497,21 +4996,17 @@
                                     >
 
                                         <span>
-
                                             ${esc(
-                                                match.competition
+                                                match.competition ||
+                                                "MOBILE"
                                             )}
-
                                         </span>
 
-
                                         <span>
-
                                             ${esc(
                                                 match.status ||
                                                 "FINALIZADA"
                                             )}
-
                                         </span>
 
                                     </div>
@@ -5527,7 +5022,8 @@
 
                                             <strong>
                                                 ${esc(
-                                                    match.home_team
+                                                    match.home_team ||
+                                                    "A DEFINIR"
                                                 )}
                                             </strong>
 
@@ -5566,7 +5062,8 @@
 
                                             <strong>
                                                 ${esc(
-                                                    match.away_team
+                                                    match.away_team ||
+                                                    "A DEFINIR"
                                                 )}
                                             </strong>
 
@@ -5595,17 +5092,18 @@
                                             )}
                                         </span>
 
-
                                         <span>
-
-                                            ${new Date(
+                                            ${
                                                 match.played_at ||
-                                                match.created_at ||
-                                                Date.now()
-                                            ).toLocaleString(
-                                                "pt-BR"
-                                            )}
-
+                                                match.created_at
+                                                    ? new Date(
+                                                        match.played_at ||
+                                                        match.created_at
+                                                    ).toLocaleString(
+                                                        "pt-BR"
+                                                    )
+                                                    : "DATA A DEFINIR"
+                                            }
                                         </span>
 
                                     </div>
@@ -5613,9 +5111,7 @@
                                 </article>
 
                             `
-
                         )
-
                         .join("")
 
                     : `
@@ -5625,18 +5121,14 @@
                                 ccfv-mobile-empty
                             "
                         >
-
                             NENHUMA PARTIDA MOBILE.
-
                         </div>
 
                     `;
 
         }
 
-        catch (
-            error
-        ) {
+        catch (error) {
 
             console.error(
                 "CCFV // MOBILE // PARTIDAS",
@@ -5651,16 +5143,12 @@
                         ccfv-mobile-empty
                     "
                 >
-
                     NÃO FOI POSSÍVEL CARREGAR
                     AS PARTIDAS MOBILE.
-
                 </div>
 
             `;
-
         }
-
     }
 
 
@@ -5675,7 +5163,6 @@
                 "#mobile-player-search"
             );
 
-
         if (
             input &&
             input.dataset.bound !==
@@ -5685,14 +5172,11 @@
             input.dataset.bound =
                 "true";
 
-
             input.addEventListener(
                 "input",
                 renderPlayerDirectory
             );
-
         }
-
     }
 
 
@@ -5706,12 +5190,8 @@
             document.body.dataset.mobilePage;
 
 
-        if (
-            !page
-        ) {
-
+        if (!page) {
             return;
-
         }
 
 
@@ -5741,7 +5221,6 @@
                         await renderMobileBrasileirao(
                             1
                         );
-
                     }
 
 
@@ -5753,7 +5232,6 @@
                         await loadRanking();
 
                         renderMobileRankingPage();
-
                     }
 
 
@@ -5767,7 +5245,6 @@
                         renderPlayerDirectory();
 
                         bindDirectorySearch();
-
                     }
 
 
@@ -5777,7 +5254,6 @@
                     ) {
 
                         renderArena();
-
                     }
 
 
@@ -5787,14 +5263,10 @@
                     ) {
 
                         renderAllMatches();
-
                     }
 
                 }
-
-                catch (
-                    error
-                ) {
+                catch (error) {
 
                     console.error(
                         "CCFV // MOBILE",
@@ -5802,7 +5274,6 @@
                     );
 
                 }
-
             };
 
 
@@ -5820,10 +5291,8 @@
         document.head.appendChild(
             script
         );
-
     }
 
 
     boot();
 
-})();
