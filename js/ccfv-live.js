@@ -167,6 +167,73 @@
 
     }
 
+
+    async function loadMobileRanking(client) {
+
+        try {
+
+            const { data, error } = await client
+                .rpc("get_ccfv_mobile_ranking");
+
+            if (error) {
+                throw error;
+            }
+
+            return (Array.isArray(data) ? data : [])
+                .map(player => ({
+                    ...player,
+                    name:
+                        player?.name ||
+                        player?.player_name ||
+                        "JOGADOR",
+                    platform:
+                        player?.platform ||
+                        "MOBILE",
+                    elo:
+                        number(player?.elo),
+                    matches_played:
+                        number(
+                            player?.matches_played ??
+                            player?.matches ??
+                            (
+                                number(player?.wins) +
+                                number(player?.draws) +
+                                number(player?.losses)
+                            )
+                        ),
+                    wins:
+                        number(player?.wins),
+                    draws:
+                        number(player?.draws),
+                    losses:
+                        number(player?.losses),
+                    titles:
+                        number(player?.titles)
+                }))
+                .filter(
+                    player =>
+                        String(
+                            player.platform ||
+                            ""
+                        )
+                            .trim()
+                            .toUpperCase() ===
+                        "MOBILE"
+                );
+
+        } catch (error) {
+
+            console.warn(
+                "CCFV // MOBILE RANKING: não foi possível carregar o ranking Mobile.",
+                error
+            );
+
+            return [];
+
+        }
+
+    }
+
     async function loadNightMatches(client) {
         const { data, error } = await client
             .from(TABLES.night)
@@ -1891,7 +1958,8 @@
                     loadPlayerCompetitions(client),
                     loadMatches(client),
                     loadNightMatches(client),
-                    loadRanking(client)
+                    loadRanking(client),
+                    loadMobileRanking(client)
                 ]);
 
             const [
@@ -1899,7 +1967,8 @@
                 playerCompetitionsResult,
                 matchesResult,
                 nightMatchesResult,
-                rankingResult
+                rankingResult,
+                mobileRankingResult
             ] = results;
 
             const readResult = (result, label) => {
@@ -1926,10 +1995,30 @@
             const officialRanking =
                 readResult(rankingResult, "RANKING");
 
+            const mobileRanking =
+                readResult(mobileRankingResult, "MOBILE RANKING");
+
+            const mobilePlayers =
+                mobileRanking.map(
+                    player => ({
+                        ...player,
+                        platform: "MOBILE"
+                    })
+                );
+
+            state.players =
+                [
+                    ...state.players,
+                    ...mobilePlayers
+                ];
+
             state.ranking =
-                officialRanking.length
-                    ? officialRanking
-                    : buildLiveRanking(state.players);
+                buildLiveRanking(
+                    [
+                        ...officialRanking,
+                        ...mobilePlayers
+                    ]
+                );
 
 
             state.updatedAt =
