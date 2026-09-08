@@ -949,3 +949,179 @@ body[data-mobile-page="ranking"] .ccfv-ranking-hero__leader-photo img {
     }
 
 }
+/* =========================================================
+   CCFV MOBILE — DIRETÓRIO DE JOGADORES
+   CORREÇÃO DOS CARDS
+   ========================================================= */
+
+body[data-mobile-page="jogadores"] {
+    overflow-x: hidden;
+}
+
+/* Espaço correto abaixo do header */
+body[data-mobile-page="jogadores"] .ccfv-mobile-section {
+    padding-top: 150px !important;
+}
+
+/* Área dos cards */
+body[data-mobile-page="jogadores"] .ccfv-player-cards-grid {
+    width: 100%;
+    max-width: 1180px;
+    margin: 40px auto 0;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 410px));
+
+    justify-content: center;
+    gap: 28px;
+
+    perspective: 1500px;
+}
+
+/* Cada jogador */
+body[data-mobile-page="jogadores"] .ccfv-player-card-item {
+    width: 100%;
+    max-width: 410px;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Card */
+body[data-mobile-page="jogadores"] .ccfv-player-card-preview {
+    width: 410px !important;
+    max-width: 410px !important;
+
+    min-height: 570px !important;
+    height: 570px !important;
+
+    margin: 0 !important;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+}
+
+/* Foto do jogador dentro do card */
+body[data-mobile-page="jogadores"]
+.ccfv-player-card-preview__photo {
+    overflow: hidden !important;
+}
+
+body[data-mobile-page="jogadores"]
+.ccfv-player-card-preview__photo-frame {
+    overflow: hidden !important;
+}
+
+body[data-mobile-page="jogadores"]
+.ccfv-player-card-preview__photo-frame img {
+    width: 100% !important;
+    height: 100% !important;
+
+    max-width: none !important;
+    max-height: none !important;
+
+    object-fit: cover !important;
+    object-position: center !important;
+
+    display: block !important;
+}
+
+/* Botão baixar */
+body[data-mobile-page="jogadores"]
+.ccfv-player-card-download {
+    width: 410px !important;
+    max-width: 410px !important;
+    min-height: 48px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 14px 0 18px;
+
+    border: 1px solid rgba(67,223,145,.22);
+    border-radius: 12px;
+
+    color: #43df91;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(67,223,145,.07),
+            rgba(67,223,145,.015)
+        );
+
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .12em;
+
+    cursor: pointer;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    body[data-mobile-page="jogadores"]
+    .ccfv-player-cards-grid {
+        grid-template-columns:
+            minmax(0, 410px);
+    }
+
+}
+
+
+/* =========================================================
+   CELULAR
+   ========================================================= */
+
+@media (max-width: 520px) {
+
+    body[data-mobile-page="jogadores"]
+    .ccfv-mobile-section {
+        padding-top: 125px !important;
+    }
+
+    body[data-mobile-page="jogadores"]
+    .ccfv-mobile-container {
+        width: calc(100% - 28px);
+    }
+
+    body[data-mobile-page="jogadores"]
+    .ccfv-player-cards-grid {
+        grid-template-columns: minmax(0, 1fr);
+        margin-top: 28px;
+    }
+
+    body[data-mobile-page="jogadores"]
+    .ccfv-player-card-item {
+        width: 100%;
+        max-width: 410px;
+        margin: 0 auto;
+    }
+
+    body[data-mobile-page="jogadores"]
+    .ccfv-player-card-preview {
+        width: min(100%, 410px) !important;
+        max-width: 410px !important;
+        height: 570px !important;
+        min-height: 570px !important;
+    }
+
+    body[data-mobile-page="jogadores"]
+    .ccfv-player-card-download {
+        width: min(100%, 410px) !important;
+        max-width: 410px !important;
+        margin-inline: auto;
+    }
+
+}
