@@ -973,208 +973,136 @@
        TABELA
        ========================================================= */
 
-    function renderMobileBrasileiraoTable(
-        table,
-        round
-    ) {
+   function renderMobileBrasileiraoTable(
+    table,
+    round
+) {
 
-        const body =
-            document.querySelector(
-                "#mobile-standings-body"
-            );
+    const tbody =
+        document.querySelector(
+            "#mobile-standings-body"
+        );
 
+    if (!tbody) {
+        return;
+    }
 
-        if (
-            !body
-        ) {
+    tbody.innerHTML =
+        table
+            .map(
+                row => `
+                    <tr
+                        class="${
+                            row.position === 1
+                                ? "is-first"
+                                : ""
+                        }"
+                    >
 
-            return;
+                        <td>
+                            ${String(
+                                row.position
+                            ).padStart(
+                                2,
+                                "0"
+                            )}
+                        </td>
 
-        }
+                        <td>
 
-
-        body.innerHTML =
-            table.map(
-
-                row => {
-
-                    let zoneClass =
-                        "";
-
-
-                    if (
-                        row.position ===
-                        1
-                    ) {
-
-                        zoneClass =
-                            "is-champion";
-
-                    }
-
-                    else if (
-                        row.position <=
-                        6
-                    ) {
-
-                        zoneClass =
-                            "is-top";
-
-                    }
-
-                    else if (
-                        row.position >=
-                        17
-                    ) {
-
-                        zoneClass =
-                            "is-bottom";
-
-                    }
-
-
-                    return `
-
-                        <tr
-                            class="${zoneClass}"
-                        >
-
-                            <td
-                                data-label="POS"
+                            <div
+                                class="ccfv-mobile-team-cell"
                             >
 
-                                ${
-                                    String(
-                                        row.position
-                                    ).padStart(
-                                        2,
-                                        "0"
-                                    )
-                                }
-
-                            </td>
-
-
-                            <td
-                                data-label="CLUBE"
-                            >
-
-                                <div
-                                    class="
-                                        ccfv-table-club
-                                    "
+                                <span
+                                    class="ccfv-mobile-team-crest"
                                 >
-
-                                    <span
-                                        class="
-                                            ccfv-table-club__number
-                                        "
-                                    >
-
-                                        ${
-                                            row.position
-                                        }
-
-                                    </span>
-
-
                                     <img
                                         src="${teamLogo(
                                             row.team
                                         )}"
-                                        alt=""
-                                        loading="lazy"
-                                    >
-
-
-                                    <strong>
-
-                                        ${esc(
+                                        alt="${esc(
                                             row.team
-                                        )}
+                                        )}"
+                                    >
+                                </span>
 
-                                    </strong>
+                                <strong>
+                                    ${esc(
+                                        row.team
+                                    )}
+                                </strong>
 
-                                </div>
+                            </div>
 
-                            </td>
+                        </td>
 
+                        <td>
+                            ${row.j}
+                        </td>
 
-                            <td
-                                data-label="J"
-                            >
-                                ${row.j}
-                            </td>
+                        <td>
+                            ${row.v}
+                        </td>
 
+                        <td>
+                            ${row.e}
+                        </td>
 
-                            <td
-                                data-label="V"
-                            >
-                                ${row.v}
-                            </td>
+                        <td>
+                            ${row.d}
+                        </td>
 
+                        <td>
+                            ${row.gp}
+                        </td>
 
-                            <td
-                                data-label="E"
-                            >
-                                ${row.e}
-                            </td>
+                        <td>
+                            ${row.gc}
+                        </td>
 
+                        <td>
+                            ${
+                                row.sg > 0
+                                    ? `+${row.sg}`
+                                    : row.sg
+                            }
+                        </td>
 
-                            <td
-                                data-label="D"
-                            >
-                                ${row.d}
-                            </td>
-
-
-                            <td
-                                data-label="GP"
-                            >
-                                ${row.gp}
-                            </td>
-
-
-                            <td
-                                data-label="GC"
-                            >
-                                ${row.gc}
-                            </td>
-
-
-                            <td
-                                data-label="SG"
-                            >
-
-                                ${
-                                    row.sg > 0
-                                        ? `+${row.sg}`
-                                        : row.sg
-                                }
-
-                            </td>
-
-
-                            <td
-                                data-label="PTS"
-                                class="
-                                    ccfv-table-points
-                                "
-                            >
-
+                        <td>
+                            <strong>
                                 ${row.pts}
+                            </strong>
+                        </td>
 
-                            </td>
+                    </tr>
+                `
+            )
+            .join("");
 
-                        </tr>
+    const title =
+        document.querySelector(
+            "#mobile-round-title"
+        );
 
-                    `;
+    if (title) {
 
-                }
-
-            ).join("");
-
+        title.innerHTML = `
+            CLASSIFICAÇÃO
+            <strong>
+                APÓS A RODADA
+                ${
+                    String(
+                        round
+                    ).padStart(
+                        2,
+                        "0"
+                    )
+                }.
+            </strong>
+        `;
     }
+}
 
 
     /* =========================================================
