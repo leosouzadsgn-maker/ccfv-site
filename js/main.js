@@ -19,6 +19,189 @@
 
 
     /* =====================================================
+       MENU MOBILE
+       ===================================================== */
+
+    const initMobileMenu = () => {
+
+        const header =
+            document.querySelector("#site-header");
+
+        const button =
+            document.querySelector(".ccfv-header__menu");
+
+        const nav =
+            document.querySelector(".ccfv-header__nav");
+
+
+        if (!header || !button || !nav) {
+            return;
+        }
+
+
+        /* Evita registrar o evento duas vezes */
+        if (button.dataset.menuBound === "true") {
+            return;
+        }
+
+
+        button.dataset.menuBound = "true";
+
+
+        const closeMenu = () => {
+
+            button.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            button.setAttribute(
+                "aria-label",
+                "Abrir menu"
+            );
+
+            nav.classList.remove(
+                "is-mobile-open"
+            );
+
+            header.classList.remove(
+                "is-menu-open"
+            );
+
+            document.body.classList.remove(
+                "ccfv-mobile-menu-open"
+            );
+        };
+
+
+        const openMenu = () => {
+
+            button.setAttribute(
+                "aria-expanded",
+                "true"
+            );
+
+            button.setAttribute(
+                "aria-label",
+                "Fechar menu"
+            );
+
+            nav.classList.add(
+                "is-mobile-open"
+            );
+
+            header.classList.add(
+                "is-menu-open"
+            );
+
+            document.body.classList.add(
+                "ccfv-mobile-menu-open"
+            );
+        };
+
+
+        button.addEventListener(
+            "click",
+            (event) => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+
+                const isOpen =
+                    button.getAttribute(
+                        "aria-expanded"
+                    ) === "true";
+
+
+                if (isOpen) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+
+            }
+        );
+
+
+        /* Fecha ao clicar em qualquer link */
+        nav.querySelectorAll("a").forEach(
+            (link) => {
+
+                link.addEventListener(
+                    "click",
+                    () => {
+                        closeMenu();
+                    }
+                );
+
+            }
+        );
+
+
+        /* Fecha ao tocar fora do menu */
+        document.addEventListener(
+            "click",
+            (event) => {
+
+                const isOpen =
+                    button.getAttribute(
+                        "aria-expanded"
+                    ) === "true";
+
+
+                if (!isOpen) {
+                    return;
+                }
+
+
+                const clickedInsideHeader =
+                    header.contains(
+                        event.target
+                    );
+
+
+                if (!clickedInsideHeader) {
+                    closeMenu();
+                }
+
+            }
+        );
+
+
+        /* Fecha com ESC */
+        document.addEventListener(
+            "keydown",
+            (event) => {
+
+                if (
+                    event.key === "Escape"
+                ) {
+                    closeMenu();
+                }
+
+            }
+        );
+
+
+        /* Se voltar para desktop, fecha */
+        window.addEventListener(
+            "resize",
+            () => {
+
+                if (
+                    window.innerWidth > 900
+                ) {
+                    closeMenu();
+                }
+
+            }
+        );
+
+    };
+
+
+    /* =====================================================
        DOCUMENT READY
        ===================================================== */
 
@@ -29,32 +212,41 @@
         );
 
 
-        /*
-         * Marca que o JavaScript principal
-         * foi carregado corretamente.
-         */
         document.body.classList.add(
             "ccfv-app-ready"
         );
 
 
-        /*
-         * Atualiza informações básicas da página
-         * caso existam elementos correspondentes.
-         */
+        /* =================================================
+           MENU
+           ================================================= */
+
+        initMobileMenu();
+
+
+        /* =================================================
+           TEMPORADA
+           ================================================= */
+
         const seasonElements =
             document.querySelectorAll(
                 "[data-ccfv-season]"
             );
 
 
-        seasonElements.forEach((element) => {
+        seasonElements.forEach(
+            (element) => {
 
-            element.textContent =
-                CCFV.season;
+                element.textContent =
+                    CCFV.season;
 
-        });
+            }
+        );
 
+
+        /* =================================================
+           PLATAFORMA
+           ================================================= */
 
         const platformElements =
             document.querySelectorAll(
@@ -62,17 +254,20 @@
             );
 
 
-        platformElements.forEach((element) => {
+        platformElements.forEach(
+            (element) => {
 
-            element.textContent =
-                CCFV.platform;
+                element.textContent =
+                    CCFV.platform;
 
-        });
+            }
+        );
 
 
-        /*
-         * Marca a aplicação como inicializada.
-         */
+        /* =================================================
+           READY
+           ================================================= */
+
         document.dispatchEvent(
             new CustomEvent(
                 "ccfv:ready",
@@ -81,6 +276,7 @@
                 }
             )
         );
+
     };
 
 
