@@ -1109,259 +1109,499 @@
        RODADA
        ========================================================= */
 
-    function renderRoundFixtures(
-        round
-    ) {
-
-        const container =
-            document.querySelector(
-                "#mobile-round-matches"
-            );
-
-
-        if (
-            !container
-        ) {
-
-            return;
-
-        }
-
-
-        const games =
-            fixturesForRound(
-                round
-            );
-
-
-        container.innerHTML = `
-
-            <div
-                class="
-                    ccfv-round-matches-list
-                "
-            >
-
-                ${games.map(
-
-                    game => {
-
-                        const match =
-                            game.result;
-
-
-                        const finished =
-                            Boolean(
-                                match &&
-                                isFinal(
-                                    match.status
-                                )
-                            );
-
-
-                        return `
-
-                            <article
-                                class="
-                                    ccfv-round-match
-                                    ${
-                                        finished
-                                            ? "is-finished"
-                                            : ""
-                                    }
-                                "
-                            >
-
-                                <div
-                                    class="
-                                        ccfv-round-match__number
-                                    "
-                                >
-
-                                    ${
-                                        String(
-                                            game.number
-                                        ).padStart(
-                                            2,
-                                            "0"
-                                        )
-                                    }
-
-                                </div>
-
-
-                                <div
-                                    class="
-                                        ccfv-round-match__home
-                                    "
-                                >
-
-                                    <img
-                                        src="${teamLogo(
-                                            game.home
-                                        )}"
-                                        alt=""
-                                        loading="lazy"
-                                    >
-
-
-                                    <strong>
-                                        ${esc(
-                                            game.home
-                                        )}
-                                    </strong>
-
-
-                                    <small>
-
-                                        ${
-                                            finished
-                                                ? esc(
-                                                    match.home_player_name ||
-                                                    "JOGADOR MOBILE"
-                                                )
-                                                : "JOGADOR MOBILE"
-                                        }
-
-                                    </small>
-
-                                </div>
-
-
-                                <div
-                                    class="
-                                        ccfv-round-match__center
-                                    "
-                                >
-
-                                    ${
-                                        finished
-
-                                            ? `
-
-                                                <strong>
-
-                                                    ${num(
-                                                        match.home_score
-                                                    )}
-
-                                                    ×
-
-                                                    ${num(
-                                                        match.away_score
-                                                    )}
-
-                                                </strong>
-
-
-                                                <small>
-                                                    FINALIZADA
-                                                </small>
-
-                                            `
-
-                                            : `
-
-                                                <strong>
-                                                    VS
-                                                </strong>
-
-
-                                                <small>
-                                                    DATA A DEFINIR
-                                                </small>
-
-                                            `
-                                    }
-
-                                </div>
-
-
-                                <div
-                                    class="
-                                        ccfv-round-match__away
-                                    "
-                                >
-
-                                    <img
-                                        src="${teamLogo(
-                                            game.away
-                                        )}"
-                                        alt=""
-                                        loading="lazy"
-                                    >
-
-
-                                    <strong>
-                                        ${esc(
-                                            game.away
-                                        )}
-                                    </strong>
-
-
-                                    <small>
-
-                                        ${
-                                            finished
-                                                ? esc(
-                                                    match.away_player_name ||
-                                                    "JOGADOR MOBILE"
-                                                )
-                                                : "JOGADOR MOBILE"
-                                        }
-
-                                    </small>
-
-                                </div>
-
-
-                                <div
-                                    class="
-                                        ccfv-round-match__date
-                                    "
-                                >
-
-                                    ${
-                                        finished
-
-                                            ? new Date(
-                                                match.played_at ||
-                                                match.created_at ||
-                                                Date.now()
-                                            ).toLocaleDateString(
-                                                "pt-BR"
-                                            )
-
-                                            : "DATA A DEFINIR"
-                                    }
-
-                                </div>
-
-                            </article>
-
-                        `;
-
-                    }
-
-                ).join("")}
-
-            </div>
-
-        `;
-
-
-        renderMobileFeaturedMatch(
-            games,
+   async function renderRoundFixtures(
+    round
+) {
+
+    const element =
+        document.querySelector(
+            "#mobile-round-matches"
+        );
+
+    const feature =
+        document.querySelector(
+            "#mobile-round-feature"
+        );
+
+    if (!element) {
+        return;
+    }
+
+    const games =
+        fixturesForRound(
             round
         );
 
-
-        updateMobileSeasonPanel(
-            round,
+    const featured =
+        getFeaturedMobileMatch(
             games
         );
 
+
+    /* =====================================================
+       LISTA DE JOGOS
+       MESMA ESTRUTURA DO BRASILEIRÃO PC
+       ===================================================== */
+
+    element.innerHTML = `
+
+        <div
+            class="
+                ccfv-round-layout
+                ccfv-mobile-round-layout
+            "
+        >
+
+            <div
+                class="
+                    ccfv-round-matches
+                "
+            >
+
+                <div
+                    class="
+                        ccfv-round-matches-list
+                        ccfv-mobile-round-matches-list
+                    "
+                >
+
+                    ${
+                        games.length
+                            ? games
+                                .map(
+                                    game => {
+
+                                        const result =
+                                            game.result;
+
+                                        const finished =
+                                            Boolean(
+                                                result &&
+                                                isFinal(
+                                                    result.status
+                                                )
+                                            );
+
+                                        return `
+
+                                            <article
+                                                class="
+                                                    ccfv-match-row
+                                                    ccfv-mobile-match-row
+                                                "
+                                            >
+
+                                                <span
+                                                    class="
+                                                        ccfv-match-row__number
+                                                    "
+                                                >
+                                                    ${String(
+                                                        game.number
+                                                    ).padStart(
+                                                        2,
+                                                        "0"
+                                                    )}
+                                                </span>
+
+
+                                                <div
+                                                    class="
+                                                        ccfv-match-row__team
+                                                    "
+                                                >
+
+                                                    <strong>
+
+                                                        <img
+                                                            src="${teamLogo(
+                                                                game.home
+                                                            )}"
+                                                            alt="${esc(
+                                                                game.home
+                                                            )}"
+                                                        >
+
+                                                    </strong>
+
+                                                    <span>
+                                                        ${esc(
+                                                            game.home
+                                                        )}
+                                                    </span>
+
+                                                </div>
+
+
+                                                <div
+                                                    class="
+                                                        ccfv-match-row__time
+                                                    "
+                                                >
+
+                                                    <strong>
+
+                                                        ${
+                                                            finished
+                                                                ? `
+                                                                    ${num(
+                                                                        result.home_score
+                                                                    )}
+                                                                    —
+                                                                    ${num(
+                                                                        result.away_score
+                                                                    )}
+                                                                `
+                                                                : `
+                                                                    VS
+                                                                `
+                                                        }
+
+                                                    </strong>
+
+
+                                                    <span>
+
+                                                        ${
+                                                            finished
+                                                                ? "FINALIZADO"
+                                                                : "DATA A DEFINIR"
+                                                        }
+
+                                                    </span>
+
+                                                </div>
+
+
+                                                <div
+                                                    class="
+                                                        ccfv-match-row__team
+                                                    "
+                                                >
+
+                                                    <strong>
+
+                                                        <img
+                                                            src="${teamLogo(
+                                                                game.away
+                                                            )}"
+                                                            alt="${esc(
+                                                                game.away
+                                                            )}"
+                                                        >
+
+                                                    </strong>
+
+                                                    <span>
+                                                        ${esc(
+                                                            game.away
+                                                        )}
+                                                    </span>
+
+                                                </div>
+
+                                            </article>
+
+                                        `;
+                                    }
+                                )
+                                .join("")
+
+                            : `
+
+                                <div
+                                    class="
+                                        ccfv-mobile-empty
+                                    "
+                                >
+                                    NENHUM JOGO
+                                    NESTA RODADA.
+                                </div>
+
+                            `
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    /* =====================================================
+       DESTAQUE DA RODADA
+       ===================================================== */
+
+    if (
+        feature
+    ) {
+
+        if (
+            !featured
+        ) {
+
+            feature.innerHTML = `
+
+                <div
+                    class="
+                        ccfv-round-feature__top
+                    "
+                >
+
+                    <span>
+                        ★ DESTAQUE DA RODADA
+                    </span>
+
+                    <small>
+                        RODADA ${
+                            String(
+                                round
+                            ).padStart(
+                                2,
+                                "0"
+                            )
+                        }
+                    </small>
+
+                </div>
+
+
+                <div
+                    class="
+                        ccfv-round-feature__empty
+                    "
+                >
+                    JOGO DA RODADA
+                </div>
+
+            `;
+
+        }
+        else {
+
+            const result =
+                featured.result;
+
+            const finished =
+                Boolean(
+                    result &&
+                    isFinal(
+                        result.status
+                    )
+                );
+
+
+            feature.innerHTML = `
+
+                <div
+                    class="
+                        ccfv-round-feature__scan
+                    "
+                ></div>
+
+
+                <div
+                    class="
+                        ccfv-round-feature__top
+                    "
+                >
+
+                    <span>
+                        ★ DESTAQUE DA RODADA
+                    </span>
+
+                    <small>
+                        RODADA ${
+                            String(
+                                round
+                            ).padStart(
+                                2,
+                                "0"
+                            )
+                        }
+                    </small>
+
+                </div>
+
+
+                <div
+                    class="
+                        ccfv-round-feature__label
+                    "
+                >
+                    JOGO DA RODADA
+                </div>
+
+
+                <div
+                    class="
+                        ccfv-round-feature__teams
+                    "
+                >
+
+
+                    <div
+                        class="
+                            ccfv-round-feature__team
+                        "
+                    >
+
+                        <div
+                            class="
+                                ccfv-round-feature__crest
+                            "
+                        >
+
+                            <img
+                                src="${teamLogo(
+                                    featured.home
+                                )}"
+                                alt="${esc(
+                                    featured.home
+                                )}"
+                            >
+
+                        </div>
+
+
+                        <strong>
+                            ${esc(
+                                featured.home
+                            )}
+                        </strong>
+
+
+                        <span>
+                            CASA
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            ccfv-round-feature__score
+                        "
+                    >
+
+                        ${
+                            finished
+                                ? `
+                                    ${num(
+                                        result.home_score
+                                    )}
+
+                                    <span>
+                                        ×
+                                    </span>
+
+                                    ${num(
+                                        result.away_score
+                                    )}
+                                `
+                                : `
+                                    <span>
+                                        VS
+                                    </span>
+                                `
+                        }
+
+                    </div>
+
+
+                    <div
+                        class="
+                            ccfv-round-feature__team
+                            ccfv-round-feature__team--away
+                        "
+                    >
+
+                        <div
+                            class="
+                                ccfv-round-feature__crest
+                            "
+                        >
+
+                            <img
+                                src="${teamLogo(
+                                    featured.away
+                                )}"
+                                alt="${esc(
+                                    featured.away
+                                )}"
+                            >
+
+                        </div>
+
+
+                        <strong>
+                            ${esc(
+                                featured.away
+                            )}
+                        </strong>
+
+
+                        <span>
+                            FORA
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="
+                        ccfv-round-feature__bottom
+                    "
+                >
+
+                    <span>
+                        ${
+                            finished
+                                ? new Date(
+                                    result.played_at ||
+                                    result.created_at ||
+                                    Date.now()
+                                ).toLocaleDateString(
+                                    "pt-BR"
+                                )
+                                : "DATA A DEFINIR"
+                        }
+                    </span>
+
+
+                    <strong>
+                        21:00
+                    </strong>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="
+                        ccfv-round-feature__button
+                    "
+                >
+                    VER CONFRONTO
+                    <span>→</span>
+                </button>
+
+            `;
+
+        }
+
     }
+
+
+    updateMobileSeasonPanel(
+        round,
+        games
+    );
+}
         /* =========================================================
        DESTAQUE DA RODADA
        ========================================================= */
