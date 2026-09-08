@@ -721,3 +721,87 @@ body[data-mobile-page="brasileirao"]
 /* =========================================================
    FIM
    ========================================================= */
+
+   /* =========================================================
+   BRASILEIRÃO MOBILE — TABELA OFICIAL
+   ========================================================= */
+
+body[data-mobile-page="brasileirao"]
+.ccfv-brasileirao-table
+tbody
+tr {
+    height: 64px !important;
+}
+
+body[data-mobile-page="brasileirao"]
+.ccfv-brasileirao-table
+tbody
+td {
+    height: 64px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    vertical-align: middle !important;
+}
+
+body[data-mobile-page="brasileirao"]
+.ccfv-mobile-club-cell {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    min-width: 0 !important;
+}
+
+body[data-mobile-page="brasileirao"]
+.ccfv-mobile-club-crest {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    max-width: 34px !important;
+    min-height: 34px !important;
+    max-height: 34px !important;
+
+    object-fit: contain !important;
+    display: block !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+body[data-mobile-page="brasileirao"]
+.ccfv-brasileirao-table
+tbody
+tr.is-first {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(67,223,145,.08),
+            transparent
+        ) !important;
+}
+
+@media (max-width:680px) {
+
+    body[data-mobile-page="brasileirao"]
+    .ccfv-brasileirao-table
+    tbody
+    tr {
+        height: 58px !important;
+    }
+
+    body[data-mobile-page="brasileirao"]
+    .ccfv-brasileirao-table
+    tbody
+    td {
+        height: 58px !important;
+    }
+
+    body[data-mobile-page="brasileirao"]
+    .ccfv-mobile-club-crest {
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        max-width: 28px !important;
+        min-height: 28px !important;
+        max-height: 28px !important;
+    }
+}
