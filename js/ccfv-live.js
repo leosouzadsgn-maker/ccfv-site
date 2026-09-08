@@ -1998,13 +1998,17 @@
             const mobileRanking =
                 readResult(mobileRankingResult, "MOBILE RANKING");
 
-            const mobilePlayers =
-                mobileRanking.map(
-                    player => ({
-                        ...player,
-                        platform: "MOBILE"
-                    })
-                );
+           const mobilePlayers =
+    mobileRanking.map(
+        player => ({
+            ...player,
+            id:
+                player?.id ||
+                player?.player_id ||
+                null,
+            platform: "MOBILE"
+        })
+    );
 
             state.players =
                 [
