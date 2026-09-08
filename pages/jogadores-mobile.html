@@ -17,11 +17,11 @@
 
     <meta
         name="description"
-        content="Ranking oficial Mobile da CCFV — jogadores, Elo e insígnias."
+        content="Todos os competidores Mobile da CCFV — Ranking e Cards Oficiais."
     >
 
     <title>
-        Ranking Mobile — CCFV
+        Competidores Mobile — CCFV
     </title>
 
 
@@ -77,7 +77,7 @@
 
 
     <!-- =====================================================
-         MOTOR DOS CARDS
+         MOTOR PARA GERAR CARD PNG
          ===================================================== -->
 
     <script
@@ -94,13 +94,12 @@
 
 
 <body
-    data-mobile-page="ranking"
+    data-mobile-page="jogadores"
 >
 
 
     <!-- =====================================================
          HEADER
-         MESMA BASE DO CCFV
          ===================================================== -->
 
     <header
@@ -111,6 +110,9 @@
         <div
             class="ccfv-header__inner"
         >
+
+
+            <!-- BRAND -->
 
             <a
                 href="mobile.html"
@@ -143,6 +145,8 @@
 
             </a>
 
+
+            <!-- NAV -->
 
             <nav
                 class="ccfv-header__nav"
@@ -194,6 +198,8 @@
             </nav>
 
 
+            <!-- ACTION -->
+
             <a
                 href="mobile.html"
                 class="ccfv-header__action"
@@ -201,6 +207,8 @@
                 Mobile
             </a>
 
+
+            <!-- MOBILE MENU -->
 
             <button
                 type="button"
@@ -212,9 +220,11 @@
                 <span
                     class="ccfv-header__menu-lines"
                 >
+
                     <span></span>
                     <span></span>
                     <span></span>
+
                 </span>
 
             </button>
@@ -233,161 +243,105 @@
 
 
         <!-- =================================================
-             HERO
-             MESMA ESTRUTURA DO RANKING PC/CONSOLE
+             DIRECTORY
              ================================================= -->
 
         <section
             class="
-                ccfv-ranking-hero
-                ccfv-ranking-hero--mobile
+                ccfv-mobile-section
+                ccfv-mobile-section--soft
             "
         >
 
             <div
-                class="ccfv-ranking-hero__background"
-                aria-hidden="true"
+                class="ccfv-mobile-container"
             >
 
-                <div
-                    class="ccfv-ranking-hero__glow"
-                ></div>
-
-                <div
-                    class="ccfv-ranking-hero__grid"
-                ></div>
-
-                <div
-                    class="ccfv-ranking-hero__scan"
-                ></div>
-
-            </div>
+                <span
+                    class="ccfv-mobile-kicker"
+                >
+                    CCFV // MOBILE // DIRECTORY
+                </span>
 
 
-            <div
-                class="ccfv-ranking-container"
-            >
-
-                <div
-                    class="ccfv-ranking-hero__content"
+                <h1
+                    class="mobile-directory-title"
                 >
 
-                    <div
-                        class="ccfv-ranking-hero__eyebrow"
-                    >
+                    TODOS OS
 
-                        <span></span>
+                    <br>
 
-                        CCFV // MOBILE // OFFICIAL RANKING
+                    <strong>
+                        COMPETIDORES.
+                    </strong>
 
-                    </div>
-
-
-                    <h1
-                        class="ccfv-ranking-hero__title"
-                    >
-
-                        QUEM É O
-
-                        <strong>
-                            MELHOR?
-                        </strong>
-
-                    </h1>
+                </h1>
 
 
-                    <p
-                        class="ccfv-ranking-hero__description"
-                    >
+                <p
+                    class="
+                        ccfv-mobile-muted
+                        mobile-directory-lead
+                    "
+                >
 
-                        O ranking oficial da CCFV reúne
-                        os competidores Mobile,
-                        seu Elo e sua evolução competitiva.
+                    Todos os jogadores Mobile
+                    cadastrados no CCFV.
 
-                    </p>
+                    Cada competidor possui
+                    seu card oficial para
+                    baixar e compartilhar.
 
-                </div>
+                </p>
+
 
 
                 <!-- =================================================
-                     ESTATÍSTICAS
+                     BUSCA
                      ================================================= -->
 
                 <div
-                    class="ccfv-ranking-hero__stats"
+                    class="mobile-directory-toolbar"
                 >
 
-                    <div>
+                    <label>
 
-                        <span>
-                            JOGADORES
-                        </span>
+                        BUSCAR
 
-                        <strong
-                            id="mobile-ranking-count"
+                        <input
+                            id="mobile-player-search"
+                            type="search"
+                            placeholder="Nome do jogador..."
+                            autocomplete="off"
                         >
-                            00
-                        </strong>
 
-                    </div>
+                    </label>
 
 
-                    <div>
-
-                        <span>
-                            TEMPORADA
-                        </span>
-
-                        <strong>
-                            01
-                        </strong>
-
-                    </div>
-
-
-                    <div>
-
-                        <span>
-                            RANKING
-                        </span>
-
-                        <strong>
-                            MOBILE
-                        </strong>
-
-                    </div>
+                    <strong
+                        id="mobile-directory-count"
+                    >
+                        00 JOGADORES
+                    </strong>
 
                 </div>
 
 
+
                 <!-- =================================================
-                     LÍDER MOBILE
-                     PREENCHIDO PELO mobile.js
+                     CARDS DOS JOGADORES
+                     O mobile.js preenche aqui
                      ================================================= -->
 
                 <div
-                    id="mobile-ranking-hero-leader"
-                    class="ccfv-ranking-hero__leader"
+                    id="mobile-player-directory"
                 ></div>
+
 
             </div>
 
         </section>
-
-
-
-        <!-- =================================================
-             CONTEÚDO DINÂMICO DO RANKING MOBILE
-             O mobile.js monta:
-             - TOP 10
-             - LÍDER
-             - NÍVEIS
-             ================================================= -->
-
-        <div
-            id="mobile-ranking-content"
-        ></div>
-
 
     </main>
 
