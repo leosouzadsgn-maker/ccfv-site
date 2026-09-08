@@ -1,0 +1,951 @@
+/* =========================================================
+   CCFV MOBILE COMPETITIONS — VISUAL LAYER
+   ========================================================= */
+
+.mobile-comp-hero-grid{
+    display:grid;
+    grid-template-columns:1.2fr .8fr;
+    gap:50px;
+    align-items:center
+}
+
+.mobile-comp-hero-grid h1{
+    font-size:clamp(60px,8vw,118px);
+    line-height:.86;
+    margin:20px 0 28px
+}
+
+.mobile-comp-hero-grid h1 strong{
+    color:#43df91
+}
+
+.mobile-comp-hero-grid p{
+    max-width:670px;
+    color:rgba(255,255,255,.58);
+    font-size:18px;
+    line-height:1.7
+}
+
+.mobile-season-card{
+    border:1px solid rgba(67,223,145,.18);
+    border-radius:26px;
+    padding:34px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(12,42,27,.65),
+            rgba(3,8,5,.9)
+        );
+    box-shadow:0 24px 80px rgba(0,0,0,.28)
+}
+
+.mobile-season-card span,
+.mobile-season-card em{
+    display:block;
+    color:rgba(255,255,255,.42);
+    font-size:12px;
+    font-weight:900;
+    letter-spacing:.16em
+}
+
+.mobile-season-card strong{
+    display:block;
+    font-size:38px;
+    margin:8px 0 12px
+}
+
+.mobile-season-card em{
+    font-style:normal;
+    color:#43df91
+}
+
+.mobile-season-card__activity{
+    margin-top:34px;
+    padding-top:20px;
+    border-top:1px solid rgba(255,255,255,.08);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:11px;
+    color:#43df91;
+    font-weight:900
+}
+
+.mobile-season-card__activity i{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#43df91;
+    box-shadow:0 0 16px #43df91;
+    display:block
+}
+
+.mobile-round-toolbar{
+    align-items:end
+}
+
+.mobile-round-toolbar h2,
+.ccfv-mobile-section h2{
+    font-size:clamp(38px,5vw,68px);
+    line-height:.92;
+    margin:12px 0
+}
+
+.mobile-round-select{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 18px;
+    border:1px solid rgba(67,223,145,.18);
+    border-radius:999px
+}
+
+.mobile-round-select span{
+    font-size:11px;
+    font-weight:900;
+    color:rgba(255,255,255,.4)
+}
+
+.mobile-round-select select{
+    background:transparent;
+    color:#fff;
+    border:0;
+    font-weight:900;
+    outline:none
+}
+
+.mobile-round-select option{
+    color:#111
+}
+
+
+/* =========================================================
+   CLASSIFICAÇÃO MOBILE
+   ========================================================= */
+
+.ccfv-mobile-standing{
+    display:grid;
+    grid-template-columns:
+        55px
+        minmax(240px,1fr)
+        repeat(9,60px);
+
+    align-items:center;
+    gap:8px;
+
+    padding:18px 20px;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.05);
+
+    background:
+        rgba(4,9,7,.42);
+
+    min-height:76px;
+    box-sizing:border-box;
+}
+
+.ccfv-mobile-standing--head{
+    font-size:10px;
+    color:rgba(255,255,255,.42);
+    font-weight:900;
+    text-transform:uppercase
+}
+
+.ccfv-mobile-standing.is-first{
+    background:
+        linear-gradient(
+            90deg,
+            rgba(67,223,145,.08),
+            transparent
+        )
+}
+
+.ccfv-mobile-standing__club{
+    display:flex !important;
+    align-items:center !important;
+    gap:12px !important;
+
+    min-width:0 !important;
+
+    height:42px !important;
+    min-height:42px !important;
+    max-height:42px !important;
+
+    overflow:hidden !important;
+}
+
+.ccfv-mobile-standing__club img{
+    width:34px !important;
+    height:34px !important;
+
+    min-width:34px !important;
+    min-height:34px !important;
+
+    max-width:34px !important;
+    max-height:34px !important;
+
+    flex:0 0 34px !important;
+
+    object-fit:contain !important;
+
+    display:block !important;
+
+    margin:0 !important;
+
+    padding:0 !important;
+}
+
+.ccfv-mobile-standings{
+    overflow:auto;
+    border:1px solid rgba(67,223,145,.1);
+    border-radius:24px;
+    background:rgba(1,4,2,.55)
+}
+
+.mobile-section-spacer{
+    height:80px
+}
+
+.mobile-section-title{
+    font-size:clamp(38px,5vw,68px);
+    line-height:.92;
+    margin:14px 0 26px
+}
+
+.mobile-section-title strong{
+    color:#43df91
+}
+
+
+/* =========================================================
+   JOGOS MOBILE
+   ========================================================= */
+
+.ccfv-mobile-fixtures-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+    gap:16px
+}
+
+.ccfv-mobile-fixture-card{
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:22px;
+    padding:22px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(7,15,11,.92),
+            rgba(2,4,3,.95)
+        );
+
+    transition:
+        transform .3s ease,
+        border-color .3s ease,
+        box-shadow .3s ease
+}
+
+.ccfv-mobile-fixture-card:hover{
+    transform:translateY(-4px);
+
+    border-color:
+        rgba(67,223,145,.28);
+
+    box-shadow:
+        0 24px 60px
+        rgba(0,0,0,.24)
+}
+
+.ccfv-mobile-fixture-card__top,
+.ccfv-mobile-fixture-card__bottom{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+
+    color:rgba(255,255,255,.4);
+
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:.08em
+}
+
+.ccfv-mobile-fixture-card__top span:last-child{
+    color:#43df91
+}
+
+.ccfv-mobile-fixture-card__teams{
+    display:grid;
+    grid-template-columns:
+        1fr
+        auto
+        1fr;
+
+    gap:20px;
+    align-items:center;
+
+    margin:26px 0
+}
+
+.ccfv-mobile-fixture-card__teams>div{
+    display:flex;
+    flex-direction:column;
+    gap:7px
+}
+
+.ccfv-mobile-fixture-card__teams>div:last-child{
+    text-align:right;
+    align-items:flex-end
+}
+
+.ccfv-mobile-fixture-card__teams img{
+    width:42px !important;
+    height:42px !important;
+
+    min-width:42px !important;
+    min-height:42px !important;
+
+    max-width:42px !important;
+    max-height:42px !important;
+
+    object-fit:contain !important;
+
+    display:block
+}
+
+.ccfv-mobile-fixture-card__teams strong{
+    font-size:15px
+}
+
+.ccfv-mobile-fixture-card__teams small{
+    color:rgba(255,255,255,.36);
+    font-size:10px
+}
+
+.ccfv-mobile-fixture-card__score{
+    font-size:32px;
+    font-weight:900;
+    white-space:nowrap
+}
+
+.ccfv-mobile-fixture-card__score span{
+    color:#43df91;
+    font-size:14px
+}
+
+
+/* =========================================================
+   ARENA
+   ========================================================= */
+
+.mobile-bracket-status{
+    border:1px solid rgba(67,223,145,.2);
+    border-radius:999px;
+    padding:12px 16px;
+    color:#43df91;
+    font-size:11px;
+    font-weight:900
+}
+
+.ccfv-mobile-arena-bracket{
+    margin-top:20px
+}
+
+.ccfv-mobile-arena-hero
+.ccfv-night-hero__title{
+    font-size:
+        clamp(
+            70px,
+            9vw,
+            130px
+        )
+}
+
+
+/* =========================================================
+   RANKING MOBILE
+   ========================================================= */
+
+.mobile-ranking-app{
+    margin-top:40px;
+    position:relative;
+    z-index:2
+}
+
+.ccfv-ranking-hero--mobile{
+    min-height:960px
+}
+
+.ccfv-ranking-hero--mobile
+.ccfv-ranking-hero__content{
+    position:relative;
+    z-index:1
+}
+
+.ccfv-ranking-hero--mobile
+.ccfv-ranking-hero__leader{
+    display:none
+}
+
+.ccfv-ranking-hero--mobile
+.ccfv-ranking-container{
+    padding-bottom:70px
+}
+
+.ccfv-ranking-hero--mobile
+.ccfv-ranking-hero__stats{
+    position:relative;
+    z-index:1
+}
+
+.ccfv-ranking-level__leader-photo{
+    overflow:hidden
+}
+
+.ccfv-ranking-level__leader-photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover
+}
+
+
+/* =========================================================
+   PLAYER CARDS
+   ========================================================= */
+
+.ccfv-player-card-real__photo-frame{
+    overflow:hidden
+}
+
+.ccfv-player-card-real__photo-frame img{
+    width:100%;
+    height:100%;
+    object-fit:cover
+}
+
+
+/* =========================================================
+   DIRETÓRIO
+   ========================================================= */
+
+.mobile-directory-title{
+    font-size:clamp(58px,8vw,112px);
+    line-height:.88;
+    margin:18px 0 26px
+}
+
+.mobile-directory-title strong{
+    color:#43df91
+}
+
+.mobile-directory-lead{
+    max-width:800px;
+    font-size:17px;
+    line-height:1.7
+}
+
+.mobile-directory-toolbar{
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:30px;
+
+    padding:22px;
+
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:22px;
+
+    margin:34px 0
+}
+
+.mobile-directory-toolbar label{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+
+    font-size:10px;
+    font-weight:900;
+
+    color:rgba(255,255,255,.4);
+
+    min-width:380px
+}
+
+.mobile-directory-toolbar input{
+    background:#060907;
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:14px;
+
+    padding:14px 16px;
+
+    color:#fff;
+
+    outline:none
+}
+
+.mobile-directory-toolbar>strong{
+    color:#43df91;
+    font-size:12px;
+    letter-spacing:.08em
+}
+
+
+/* =========================================================
+   FILTROS DE PARTIDAS
+   ========================================================= */
+
+.mobile-match-filters{
+    display:flex;
+    gap:12px;
+    margin:25px 0 35px
+}
+
+.mobile-match-filters a{
+    border:1px solid rgba(67,223,145,.18);
+    border-radius:999px;
+
+    padding:12px 16px;
+
+    color:rgba(255,255,255,.65);
+
+    font-size:11px;
+    font-weight:900
+}
+
+.mobile-match-filters a:hover{
+    color:#43df91;
+    border-color:
+        rgba(67,223,145,.4)
+}
+
+
+/* =========================================================
+   RESPONSIVE — 980
+   ========================================================= */
+
+@media (max-width:980px){
+
+    .mobile-comp-hero-grid{
+        grid-template-columns:1fr
+    }
+
+    .ccfv-mobile-fixtures-grid{
+        grid-template-columns:1fr
+    }
+
+    .ccfv-mobile-standing{
+        grid-template-columns:
+            45px
+            minmax(210px,1fr)
+            repeat(9,48px);
+
+        font-size:12px;
+    }
+
+    .ccfv-mobile-standing__club{
+        height:40px !important;
+        min-height:40px !important;
+        max-height:40px !important;
+    }
+
+    .ccfv-mobile-standing__club img{
+        width:32px !important;
+        height:32px !important;
+
+        min-width:32px !important;
+        min-height:32px !important;
+
+        max-width:32px !important;
+        max-height:32px !important;
+
+        flex-basis:32px !important;
+    }
+
+    .mobile-directory-toolbar{
+        flex-direction:column;
+        align-items:stretch
+    }
+
+    .mobile-directory-toolbar label{
+        min-width:0
+    }
+
+    .ccfv-ranking-hero--mobile{
+        min-height:auto
+    }
+
+    .ccfv-ranking-hero--mobile
+    .ccfv-ranking-hero__stats{
+        margin-top:25px
+    }
+
+    .ccfv-ranking-level-grid{
+        grid-template-columns:1fr 1fr
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 680
+   ========================================================= */
+
+@media (max-width:680px){
+
+    .ccfv-mobile-standing{
+        grid-template-columns:
+            35px
+            minmax(170px,1fr)
+            repeat(9,42px);
+
+        padding:15px 12px;
+    }
+
+    .ccfv-mobile-standing__club{
+        gap:8px !important;
+
+        height:36px !important;
+        min-height:36px !important;
+        max-height:36px !important;
+    }
+
+    .ccfv-mobile-standing__club img{
+        width:28px !important;
+        height:28px !important;
+
+        min-width:28px !important;
+        min-height:28px !important;
+
+        max-width:28px !important;
+        max-height:28px !important;
+
+        flex-basis:28px !important;
+    }
+
+    .ccfv-mobile-fixture-card__teams{
+        gap:10px
+    }
+
+    .ccfv-mobile-fixture-card__score{
+        font-size:24px
+    }
+
+    .ccfv-ranking-level-grid{
+        grid-template-columns:1fr
+    }
+
+    .mobile-comp-hero-grid h1{
+        font-size:56px
+    }
+}
+
+
+/* =========================================================
+   CORREÇÃO DEFINITIVA — ESCUDOS MOBILE
+   NÃO DEPENDE DA TABELA
+   ========================================================= */
+
+body[data-mobile-page="brasileirao"]
+.ccfv-mobile-standing__club
+img{
+
+    width:30px !important;
+    height:30px !important;
+
+    min-width:30px !important;
+    min-height:30px !important;
+
+    max-width:30px !important;
+    max-height:30px !important;
+
+    flex:0 0 30px !important;
+
+    object-fit:contain !important;
+
+    display:block !important;
+
+    margin:0 !important;
+    padding:0 !important;
+}
+
+
+/* impede qualquer regra genérica
+   de transformar o escudo em largura total */
+
+body[data-mobile-page="brasileirao"]
+.ccfv-mobile-standing__club
+img[src]{
+
+    width:30px !important;
+    height:30px !important;
+
+    min-width:30px !important;
+    min-height:30px !important;
+
+    max-width:30px !important;
+    max-height:30px !important;
+}
+
+
+/* garante que o nome do clube
+   não force o escudo a crescer */
+
+body[data-mobile-page="brasileirao"]
+.ccfv-mobile-standing__club{
+
+    display:flex !important;
+    align-items:center !important;
+
+    width:auto !important;
+    min-width:0 !important;
+
+    max-width:100% !important;
+
+    overflow:hidden !important;
+
+    gap:10px !important;
+}
+
+
+/* evita estourar a altura das linhas */
+
+body[data-mobile-page="brasileirao"]
+.ccfv-mobile-standing{
+
+    box-sizing:border-box !important;
+    min-height:64px !important;
+}
+
+
+/* =========================================================
+   FIM
+   ========================================================= */
+
+   /* =========================================================
+   BRASILEIRÃO MOBILE — TABELA OFICIAL
+   ========================================================= */
+
+body[data-mobile-page="brasileirao"]
+.ccfv-brasileirao-table
+tbody
+tr {
+    height: 64px !important;
+}
+
+body[data-mobile-page="brasileirao"]
+.ccfv-brasileirao-table
+tbody
+td {
+    height: 64px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    vertical-align: middle !important;
+}
+
+body[data-mobile-page="brasileirao"]
+.ccfv-mobile-club-cell {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    min-width: 0 !important;
+}
+
+body[data-mobile-page="brasileirao"]
+.ccfv-mobile-club-crest {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    max-width: 34px !important;
+    min-height: 34px !important;
+    max-height: 34px !important;
+
+    object-fit: contain !important;
+    display: block !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+body[data-mobile-page="brasileirao"]
+.ccfv-brasileirao-table
+tbody
+tr.is-first {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(67,223,145,.08),
+            transparent
+        ) !important;
+}
+
+@media (max-width:680px) {
+
+    body[data-mobile-page="brasileirao"]
+    .ccfv-brasileirao-table
+    tbody
+    tr {
+        height: 58px !important;
+    }
+
+    body[data-mobile-page="brasileirao"]
+    .ccfv-brasileirao-table
+    tbody
+    td {
+        height: 58px !important;
+    }
+
+    body[data-mobile-page="brasileirao"]
+    .ccfv-mobile-club-crest {
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        max-width: 28px !important;
+        min-height: 28px !important;
+        max-height: 28px !important;
+    }
+}
+/* =========================================================
+   CCFV MOBILE — ESCUDO DA CLASSIFICAÇÃO
+   BLOQUEIA REGRAS DO BRASILEIRÃO DESKTOP
+   ========================================================= */
+
+body[data-mobile-page="brasileirao"]
+.ccfv-mobile-team-cell {
+    display:flex !important;
+    align-items:center !important;
+    gap:10px !important;
+    min-width:0 !important;
+}
+
+body[data-mobile-page="brasileirao"]
+.ccfv-mobile-team-crest {
+    width:36px !important;
+    height:36px !important;
+    min-width:36px !important;
+    min-height:36px !important;
+    max-width:36px !important;
+    max-height:36px !important;
+
+    flex:0 0 36px !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    overflow:hidden !important;
+}
+
+body[data-mobile-page="brasileirao"]
+.ccfv-mobile-team-crest img {
+    width:30px !important;
+    height:30px !important;
+
+    min-width:30px !important;
+    min-height:30px !important;
+
+    max-width:30px !important;
+    max-height:30px !important;
+
+    width:30px !important;
+    height:30px !important;
+
+    object-fit:contain !important;
+
+    display:block !important;
+
+    position:static !important;
+
+    margin:0 !important;
+    padding:0 !important;
+}
+/* =========================================================
+   BRASILEIRÃO MOBILE — ESCUDOS DA RODADA
+   ========================================================= */
+
+body[data-mobile-page="brasileirao"]
+.ccfv-mobile-round-match img,
+body[data-mobile-page="brasileirao"]
+.ccfv-round-match img,
+body[data-mobile-page="brasileirao"]
+.ccfv-match-row__team img {
+    width:42px !important;
+    height:42px !important;
+    max-width:42px !important;
+    max-height:42px !important;
+    min-width:42px !important;
+    min-height:42px !important;
+
+    object-fit:contain !important;
+    display:block !important;
+    margin:0 !important;
+    padding:0 !important;
+}
+body[data-mobile-page="brasileirao"]
+.ccfv-round-feature__crest img {
+    width:64px !important;
+    height:64px !important;
+    max-width:64px !important;
+    max-height:64px !important;
+    min-width:64px !important;
+    min-height:64px !important;
+
+    object-fit:contain !important;
+    display:block !important;
+    margin:0 auto !important;
+}
+/* =========================================================
+   CCFV MOBILE — RANKING / FOTO DO LÍDER
+   ========================================================= */
+
+body[data-mobile-page="ranking"] .ccfv-ranking-hero__leader {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+}
+
+body[data-mobile-page="ranking"] .ccfv-ranking-hero__leader-card {
+    width: min(100%, 760px) !important;
+    min-height: 380px !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+body[data-mobile-page="ranking"] .ccfv-ranking-hero__leader-photo {
+    width: 180px !important;
+    height: 230px !important;
+    min-width: 180px !important;
+    min-height: 230px !important;
+    max-width: 180px !important;
+    max-height: 230px !important;
+    overflow: hidden !important;
+    border-radius: 18px !important;
+}
+
+body[data-mobile-page="ranking"] .ccfv-ranking-hero__leader-photo img {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover !important;
+}
+
+@media (max-width: 680px) {
+
+    body[data-mobile-page="ranking"] .ccfv-ranking-hero__leader-card {
+        width: 100% !important;
+    }
+
+    body[data-mobile-page="ranking"] .ccfv-ranking-hero__leader-photo {
+        width: 130px !important;
+        height: 170px !important;
+        min-width: 130px !important;
+        min-height: 170px !important;
+        max-width: 130px !important;
+        max-height: 170px !important;
+    }
+
+}
