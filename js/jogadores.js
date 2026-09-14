@@ -583,8 +583,134 @@ function normalizePlayer(player) {
 }
 
 
+/* =====================================================
+   SINCRONIZAÇÃO DOS JOGADORES
+   ===================================================== */
+
+function getStablePlayerId(player) {
+
+    const possibleIds = [
+        player?.id,
+        player?.player_id,
+        player?.ccfv_id,
+        player?.user_id
+    ];
+
+    for (const value of possibleIds) {
+
+        if (
+            value !== null &&
+            value !== undefined &&
+            String(value).trim() !== ""
+        ) {
+
+            return String(value).trim();
+
+        }
+
+    }
+
+    return "";
+
+}
+
+
 /*
- * SINCRONIZAÇÃO PRINCIPAL
+ * Encontra o jogador correspondente no ranking.
+ *
+ * Primeiro tenta pelo ID.
+ * Depois tenta pelo nome para manter compatibilidade
+ * com registros antigos.
+ */
+function findRankingPlayer(
+    player,
+    ranking
+) {
+
+    const playerId =
+        getStablePlayerId(
+            player
+        );
+
+    if (playerId) {
+
+        const byId =
+            ranking.find(
+                item => {
+
+                    const rankingId =
+                        getStablePlayerId(
+                            item
+                        );
+
+                    return (
+                        rankingId &&
+                        rankingId ===
+                        playerId
+                    );
+
+                }
+            );
+
+        if (byId) {
+
+            return byId;
+
+        }
+
+    }
+
+    const playerName =
+        String(
+            player?.name ||
+            player?.player_name ||
+            ""
+        )
+            .trim()
+            .toLowerCase();
+
+    if (!playerName) {
+
+        return null;
+
+    }
+
+    return (
+        ranking.find(
+            item => {
+
+                const rankingName =
+                    String(
+                        item?.name ||
+                        item?.player_name ||
+                        ""
+                    )
+                        .trim()
+                        .toLowerCase();
+
+                return (
+                    rankingName &&
+                    rankingName ===
+                    playerName
+                );
+
+            }
+        ) ||
+        null
+    );
+
+}
+
+
+/*
+ * Fonte principal:
+ *
+ * state.players = TODOS os jogadores cadastrados.
+ *
+ * state.ranking = dados competitivos disponíveis.
+ *
+ * O ranking NÃO pode decidir quem aparece
+ * no diretório.
  */
 function syncPlayersFromLive() {
 
@@ -610,13 +736,10 @@ function syncPlayersFromLive() {
 
     }
 
-    const liveRanking =
-        Array.isArray(
-            state.ranking
-        )
-            ? state.ranking
-            : [];
 
+    /*
+     * TODOS os jogadores cadastrados.
+     */
     const livePlayers =
         Array.isArray(
             state.players
@@ -624,79 +747,214 @@ function syncPlayersFromLive() {
             ? state.players
             : [];
 
-    /*
-     * O ranking oficial contém os jogadores
-     * apresentados no CCFV.
-     *
-     * Caso não exista ranking, usa players.
-     */
-    const source =
-        liveRanking.length
-            ? liveRanking
-            : livePlayers;
 
     /*
-     * IMPORTANTE:
-     * não deixa a lista vazia substituir
-     * uma lista válida já carregada.
+     * Ranking atual.
+     */
+    const liveRanking =
+        Array.isArray(
+            state.ranking
+        )
+            ? state.ranking
+            : [];
+
+
+    /*
+     * Se não há jogadores,
+     * não apaga uma lista válida que já existe.
      */
     if (
-        !source.length
+        !livePlayers.length
     ) {
 
-        return players.length > 0;
+        return (
+            players.length > 0
+        );
 
     }
 
-    const normalized =
-        source
-            .filter(Boolean)
-            .map(
-                normalizePlayer
-            );
+
+    const mergedPlayers =
+        livePlayers.map(
+            player => {
+
+                const rankingPlayer =
+                    findRankingPlayer(
+                        player,
+                        liveRanking
+                    );
+
+
+                /*
+                 * O PLAYER é a fonte principal.
+                 *
+                 * O RANKING apenas complementa.
+                 */
+                const merged = {
+
+                    ...player,
+
+                    ...(rankingPlayer || {}),
+
+                    /*
+                     * Mantém os dados cadastrais
+                     * vindos de players.
+                     */
+                    id:
+                        player?.id ||
+                        player?.player_id ||
+                        player?.ccfv_id ||
+                        player?.user_id ||
+                        rankingPlayer?.id ||
+                        rankingPlayer?.player_id ||
+                        "",
+
+                    player_id:
+                        player?.player_id ||
+                        player?.id ||
+                        player?.ccfv_id ||
+                        player?.user_id ||
+                        rankingPlayer?.player_id ||
+                        rankingPlayer?.id ||
+                        "",
+
+                    name:
+                        player?.name ||
+                        player?.player_name ||
+                        rankingPlayer?.name ||
+                        rankingPlayer?.player_name ||
+                        "JOGADOR CCFV",
+
+                    platform:
+                        String(
+                            player?.platform ||
+                            rankingPlayer?.platform ||
+                            "CCFV"
+                        )
+                            .trim()
+                            .toUpperCase(),
+
+                    photo:
+                        getPlayerPhoto(
+                            player
+                        ) ||
+                        getPlayerPhoto(
+                            rankingPlayer
+                        ),
+
+                    photo_url:
+                        getPlayerPhoto(
+                            player
+                        ) ||
+                        getPlayerPhoto(
+                            rankingPlayer
+                        ) ||
+                        player?.photo_url ||
+                        rankingPlayer?.photo_url ||
+                        "",
+
+                    /*
+                     * Estatísticas do ranking, quando existirem.
+                     */
+                    elo:
+                        Number(
+                            rankingPlayer?.elo ??
+                            player?.elo ??
+                            0
+                        ),
+
+                    wins:
+                        Number(
+                            rankingPlayer?.wins ??
+                            player?.wins ??
+                            0
+                        ),
+
+                    draws:
+                        Number(
+                            rankingPlayer?.draws ??
+                            player?.draws ??
+                            0
+                        ),
+
+                    losses:
+                        Number(
+                            rankingPlayer?.losses ??
+                            player?.losses ??
+                            0
+                        ),
+
+                    titles:
+                        Number(
+                            rankingPlayer?.titles ??
+                            player?.titles ??
+                            0
+                        )
+
+                };
+
+
+                return merged;
+
+            }
+        );
+
 
     /*
-     * Remove duplicados pelo ID.
-     *
-     * Isso prepara o sistema para quando
-     * novos jogadores forem entrando.
+     * Remove duplicados pelo identificador.
      */
-    const unique =
+    const uniquePlayers =
         [];
 
-    const seen =
+    const usedIds =
         new Set();
 
-    normalized.forEach(
+
+    mergedPlayers.forEach(
         player => {
 
             const id =
-                getPlayerId(
+                getStablePlayerId(
                     player
                 );
 
-            if (
-                seen.has(id)
-            ) {
 
-                return;
+            /*
+             * Jogador com ID válido.
+             */
+            if (id) {
+
+                if (
+                    usedIds.has(id)
+                ) {
+
+                    return;
+
+                }
+
+                usedIds.add(id);
 
             }
 
-            seen.add(id);
 
-            unique.push(
+            uniquePlayers.push(
                 player
             );
 
         }
     );
 
+
+    /*
+     * Atualiza o mesmo array utilizado
+     * pelo restante do sistema.
+     */
     players.splice(
         0,
         players.length,
-        ...unique
+        ...uniquePlayers
     );
+
 
     return (
         players.length > 0
