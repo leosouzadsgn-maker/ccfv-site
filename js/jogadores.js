@@ -295,18 +295,16 @@
     function getPlayerTeam(player) {
 
         const team =
-    player?.team_name ||
-    player?.teamName ||
-    player?.club_name ||
-    player?.clubName ||
-    player?.team ||
-    player?.club ||
-    player?.brasileirao_team ||
-    player?.mobile_team ||
-    player?.competition_team ||
-    player?.team_name_mobile ||
-    player?.mobile_club ||
-    "CCFV OFICIAL";
+            player?.team_name ||
+            player?.teamName ||
+            player?.club_name ||
+            player?.clubName ||
+            player?.team ||
+            player?.club ||
+            player?.brasileirao_team ||
+            player?.mobile_team ||
+            player?.competition_team ||
+            "CCFV OFICIAL";
 
         return String(team).trim() || "CCFV OFICIAL";
 
@@ -314,653 +312,287 @@
 
 
 
-   /* =====================================================
-   DADOS AO VIVO DA CCFV
-   ===================================================== */
+    /* =====================================================
+       DADOS AO VIVO DA CCFV
+       ===================================================== */
+    function syncPlayersFromLive() {
 
-/*
- * Identificador único e estável do jogador.
- *
- * Aceita os formatos atuais e futuros:
- * - id
- * - player_id
- * - ccfv_id
- * - user_id
- *
- * Isso garante que cada jogador tenha seu próprio Card.
- */
-function getPlayerId(player) {
-
-    const candidates = [
-        player?.id,
-        player?.player_id,
-        player?.ccfv_id,
-        player?.user_id
-    ];
-
-    for (const value of candidates) {
+        const live =
+            window.CCFVLiveAPI;
 
         if (
-            value !== null &&
-            value !== undefined &&
-            String(value).trim() !== ""
+            !live ||
+            !live.isReady()
         ) {
 
-            return String(value).trim();
+            return false;
 
         }
 
-    }
+        const state =
+            live.getState();
 
-    /*
-     * Fallback para jogadores antigos que eventualmente
-     * não possuam nenhum dos IDs acima.
-     */
-    const platform =
-        String(
-            player?.platform ||
-            "CCFV"
-        )
-            .trim()
-            .toUpperCase()
-            .replace(/\s+/g, "-");
-
-    const name =
-        String(
-            player?.name ||
-            player?.player_name ||
-            "jogador"
-        )
-            .trim()
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/^-+|-+$/g, "");
-
-    return `legacy-${platform}-${name || "jogador"}`;
-
-}
-
-
-/*
- * Normaliza TODOS os jogadores antes de colocar
- * no diretório público.
- *
- * Isso vale para:
- * - jogadores atuais
- * - jogadores novos
- * - PC
- * - Console
- * - Mobile
- */
-function normalizePlayer(player) {
-
-    const id =
-        getPlayerId(
-            player
-        );
-
-    const photo =
-        getPlayerPhoto(
-            player
-        );
-
-    return {
-
-        ...player,
-
-        id,
-
-        player_id:
-            player?.player_id ||
-            id,
-
-        name:
-            player?.name ||
-            player?.player_name ||
-            "JOGADOR CCFV",
-
-        platform:
-            String(
-                player?.platform ||
-                "CCFV"
+        const livePlayers =
+            Array.isArray(
+                state?.players
             )
-                .trim()
-                .toUpperCase(),
+                ? state.players
+                : [];
 
-        photo,
-
-        photo_url:
-            photo ||
-            player?.photo_url ||
-            ""
-
-    };
-
-}
-
-
-/* =====================================================
-   DADOS AO VIVO DA CCFV
-   ===================================================== */
-
-/*
- * Retorna um identificador estável do jogador.
- *
- * Aceita:
- * id
- * player_id
- * ccfv_id
- * user_id
- */
-function getPlayerId(player) {
-
-    const ids = [
-        player?.id,
-        player?.player_id,
-        player?.ccfv_id,
-        player?.user_id
-    ];
-
-    for (
-        const value of ids
-    ) {
-
-        if (
-            value !== null &&
-            value !== undefined &&
-            String(value).trim() !== ""
-        ) {
-
-            return String(
-                value
-            ).trim();
-
-        }
-
-    }
-
-    /*
-     * Fallback somente para registros antigos
-     * que não tenham identificador.
-     *
-     * O nome + plataforma evita que vários
-     * jogadores caiam no mesmo registro.
-     */
-    const platform =
-        String(
-            player?.platform ||
-            "CCFV"
-        )
-            .trim()
-            .toUpperCase();
-
-    const name =
-        String(
-            player?.name ||
-            player?.player_name ||
-            "JOGADOR"
-        )
-            .trim()
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(
-                /[\u0300-\u036f]/g,
-                ""
+        const liveRanking =
+            Array.isArray(
+                state?.ranking
             )
-            .replace(
-                /[^a-z0-9]+/g,
-                "-"
-            )
-            .replace(
-                /^-+|-+$/g,
-                ""
-            );
-
-    return (
-        `legacy-${platform}-${name || "jogador"}`
-    );
-
-}
-
-
-/*
- * Normaliza o jogador antes de entrar
- * no diretório público.
- */
-function normalizePlayer(player) {
-
-    const id =
-        getPlayerId(
-            player
-        );
-
-    const photo =
-        getPlayerPhoto(
-            player
-        );
-
-    return {
-
-        ...player,
+                ? state.ranking
+                : [];
 
         /*
-         * ID principal usado pelo Card.
+         * O DIRETÓRIO usa TODOS os jogadores
+         * cadastrados na tabela players.
+         *
+         * O ranking apenas complementa ELO
+         * e estatísticas.
          */
-        id,
-
-        /*
-         * Mantém compatibilidade com
-         * fontes que usam player_id.
-         */
-        player_id:
-            player?.player_id ||
-            id,
-
-        name:
-            player?.name ||
-            player?.player_name ||
-            "JOGADOR CCFV",
-
-        platform:
-            String(
-                player?.platform ||
-                "CCFV"
-            )
-                .trim()
-                .toUpperCase(),
-
-        photo,
-
-        photo_url:
-            photo ||
-            player?.photo_url ||
-            ""
-
-    };
-
-}
-
-
-/* =====================================================
-   SINCRONIZAÇÃO DOS JOGADORES
-   ===================================================== */
-
-function getStablePlayerId(player) {
-
-    const possibleIds = [
-        player?.id,
-        player?.player_id,
-        player?.ccfv_id,
-        player?.user_id
-    ];
-
-    for (const value of possibleIds) {
-
         if (
-            value !== null &&
-            value !== undefined &&
-            String(value).trim() !== ""
+            !livePlayers.length
         ) {
 
-            return String(value).trim();
-
-        }
-
-    }
-
-    return "";
-
-}
-
-
-/*
- * Encontra o jogador correspondente no ranking.
- *
- * Primeiro tenta pelo ID.
- * Depois tenta pelo nome para manter compatibilidade
- * com registros antigos.
- */
-function findRankingPlayer(
-    player,
-    ranking
-) {
-
-    const playerId =
-        getStablePlayerId(
-            player
-        );
-
-    if (playerId) {
-
-        const byId =
-            ranking.find(
-                item => {
-
-                    const rankingId =
-                        getStablePlayerId(
-                            item
-                        );
-
-                    return (
-                        rankingId &&
-                        rankingId ===
-                        playerId
-                    );
-
-                }
+            return (
+                players.length > 0
             );
 
-        if (byId) {
-
-            return byId;
-
         }
 
-    }
+        const mergedPlayers =
+            livePlayers
+                .filter(Boolean)
+                .map(
+                    player => {
 
-    const playerName =
-        String(
-            player?.name ||
-            player?.player_name ||
-            ""
-        )
-            .trim()
-            .toLowerCase();
+                        const playerId =
+                            String(
+                                player?.id ??
+                                player?.player_id ??
+                                player?.ccfv_id ??
+                                player?.user_id ??
+                                ""
+                            ).trim();
 
-    if (!playerName) {
+                        const playerName =
+                            String(
+                                player?.name ??
+                                player?.player_name ??
+                                ""
+                            )
+                                .trim()
+                                .toLowerCase();
 
-        return null;
+                        const rankingPlayer =
+                            liveRanking.find(
+                                item => {
 
-    }
+                                    const rankingId =
+                                        String(
+                                            item?.id ??
+                                            item?.player_id ??
+                                            item?.ccfv_id ??
+                                            item?.user_id ??
+                                            ""
+                                        ).trim();
 
-    return (
-        ranking.find(
-            item => {
+                                    if (
+                                        playerId &&
+                                        rankingId
+                                    ) {
 
-                const rankingName =
-                    String(
-                        item?.name ||
-                        item?.player_name ||
-                        ""
-                    )
-                        .trim()
-                        .toLowerCase();
+                                        return (
+                                            playerId ===
+                                            rankingId
+                                        );
 
-                return (
-                    rankingName &&
-                    rankingName ===
-                    playerName
+                                    }
+
+                                    const rankingName =
+                                        String(
+                                            item?.name ??
+                                            item?.player_name ??
+                                            ""
+                                        )
+                                            .trim()
+                                            .toLowerCase();
+
+                                    return (
+                                        playerName &&
+                                        rankingName &&
+                                        playerName ===
+                                        rankingName
+                                    );
+
+                                }
+                            );
+
+                        const photo =
+                            getPlayerPhoto(
+                                player
+                            ) ||
+                            getPlayerPhoto(
+                                rankingPlayer
+                            );
+
+                        return {
+
+                            ...player,
+
+                            id:
+                                player?.id ??
+                                player?.player_id ??
+                                player?.ccfv_id ??
+                                player?.user_id ??
+                                "",
+
+                            player_id:
+                                player?.player_id ??
+                                player?.id ??
+                                player?.ccfv_id ??
+                                player?.user_id ??
+                                "",
+
+                            name:
+                                player?.name ??
+                                player?.player_name ??
+                                rankingPlayer?.name ??
+                                rankingPlayer?.player_name ??
+                                "JOGADOR CCFV",
+
+                            platform:
+                                String(
+                                    player?.platform ??
+                                    rankingPlayer?.platform ??
+                                    "CCFV"
+                                )
+                                    .trim()
+                                    .toUpperCase(),
+
+                            photo,
+
+                            photo_url:
+                                photo ||
+                                player?.photo_url ||
+                                rankingPlayer?.photo_url ||
+                                "",
+
+                            elo:
+                                Number(
+                                    rankingPlayer?.elo ??
+                                    player?.elo ??
+                                    0
+                                ),
+
+                            wins:
+                                Number(
+                                    rankingPlayer?.wins ??
+                                    player?.wins ??
+                                    0
+                                ),
+
+                            draws:
+                                Number(
+                                    rankingPlayer?.draws ??
+                                    player?.draws ??
+                                    0
+                                ),
+
+                            losses:
+                                Number(
+                                    rankingPlayer?.losses ??
+                                    player?.losses ??
+                                    0
+                                ),
+
+                            titles:
+                                Number(
+                                    rankingPlayer?.titles ??
+                                    player?.titles ??
+                                    0
+                                )
+
+                        };
+
+                    }
                 );
 
-            }
-        ) ||
-        null
-    );
+        /*
+         * Elimina duplicações.
+         */
+        const uniquePlayers = [];
 
-}
+        const seen = new Set();
 
-
-/*
- * Fonte principal:
- *
- * state.players = TODOS os jogadores cadastrados.
- *
- * state.ranking = dados competitivos disponíveis.
- *
- * O ranking NÃO pode decidir quem aparece
- * no diretório.
- */
-function syncPlayersFromLive() {
-
-    const live =
-        window.CCFVLiveAPI;
-
-    if (
-        !live ||
-        typeof live.getState !==
-            "function"
-    ) {
-
-        return false;
-
-    }
-
-    const state =
-        live.getState();
-
-    if (!state) {
-
-        return false;
-
-    }
-
-
-    /*
-     * TODOS os jogadores cadastrados.
-     */
-    const livePlayers =
-        Array.isArray(
-            state.players
-        )
-            ? state.players
-            : [];
-
-
-    /*
-     * Ranking atual.
-     */
-    const liveRanking =
-        Array.isArray(
-            state.ranking
-        )
-            ? state.ranking
-            : [];
-
-
-    /*
-     * Se não há jogadores,
-     * não apaga uma lista válida que já existe.
-     */
-    if (
-        !livePlayers.length
-    ) {
-
-        return (
-            players.length > 0
-        );
-
-    }
-
-
-    const mergedPlayers =
-        livePlayers.map(
+        mergedPlayers.forEach(
             player => {
 
-                const rankingPlayer =
-                    findRankingPlayer(
-                        player,
-                        liveRanking
-                    );
-
-
-                /*
-                 * O PLAYER é a fonte principal.
-                 *
-                 * O RANKING apenas complementa.
-                 */
-                const merged = {
-
-                    ...player,
-
-                    ...(rankingPlayer || {}),
-
-                    /*
-                     * Mantém os dados cadastrais
-                     * vindos de players.
-                     */
-                    id:
-                        player?.id ||
-                        player?.player_id ||
-                        player?.ccfv_id ||
-                        player?.user_id ||
-                        rankingPlayer?.id ||
-                        rankingPlayer?.player_id ||
-                        "",
-
-                    player_id:
-                        player?.player_id ||
-                        player?.id ||
-                        player?.ccfv_id ||
-                        player?.user_id ||
-                        rankingPlayer?.player_id ||
-                        rankingPlayer?.id ||
-                        "",
-
-                    name:
-                        player?.name ||
-                        player?.player_name ||
-                        rankingPlayer?.name ||
-                        rankingPlayer?.player_name ||
-                        "JOGADOR CCFV",
-
-                    platform:
-                        String(
-                            player?.platform ||
-                            rankingPlayer?.platform ||
-                            "CCFV"
-                        )
-                            .trim()
-                            .toUpperCase(),
-
-                    photo:
-                        getPlayerPhoto(
-                            player
-                        ) ||
-                        getPlayerPhoto(
-                            rankingPlayer
-                        ),
-
-                    photo_url:
-                        getPlayerPhoto(
-                            player
-                        ) ||
-                        getPlayerPhoto(
-                            rankingPlayer
-                        ) ||
-                        player?.photo_url ||
-                        rankingPlayer?.photo_url ||
-                        "",
-
-                    /*
-                     * Estatísticas do ranking, quando existirem.
-                     */
-                    elo:
-                        Number(
-                            rankingPlayer?.elo ??
-                            player?.elo ??
-                            0
-                        ),
-
-                    wins:
-                        Number(
-                            rankingPlayer?.wins ??
-                            player?.wins ??
-                            0
-                        ),
-
-                    draws:
-                        Number(
-                            rankingPlayer?.draws ??
-                            player?.draws ??
-                            0
-                        ),
-
-                    losses:
-                        Number(
-                            rankingPlayer?.losses ??
-                            player?.losses ??
-                            0
-                        ),
-
-                    titles:
-                        Number(
-                            rankingPlayer?.titles ??
-                            player?.titles ??
-                            0
-                        )
-
-                };
-
-
-                return merged;
-
-            }
-        );
-
-
-    /*
-     * Remove duplicados pelo identificador.
-     */
-    const uniquePlayers =
-        [];
-
-    const usedIds =
-        new Set();
-
-
-    mergedPlayers.forEach(
-        player => {
-
-            const id =
-                getStablePlayerId(
-                    player
-                );
-
-
-            /*
-             * Jogador com ID válido.
-             */
-            if (id) {
+                const id =
+                    String(
+                        player?.id ??
+                        player?.player_id ??
+                        ""
+                    ).trim();
 
                 if (
-                    usedIds.has(id)
+                    id &&
+                    seen.has(id)
                 ) {
 
                     return;
 
                 }
 
-                usedIds.add(id);
+                if (id) {
+
+                    seen.add(id);
+
+                }
+
+                uniquePlayers.push(
+                    player
+                );
 
             }
+        );
+
+        /*
+         * Mantemos a mesma referência do array
+         * para o restante do Player Directory.
+         */
+        players.splice(
+            0,
+            players.length,
+            ...uniquePlayers
+        );
+
+        return true;
+
+    }
 
 
-            uniquePlayers.push(
-                player
-            );
+    async function waitForLivePlayers() {
 
+        try {
+            const live = window.CCFVLiveAPI;
+            if (live) {
+                if (!live.isReady()) {
+                    await live.refresh('players-directory');
+                }
+                if (syncPlayersFromLive()) {
+                    renderPlayers();
+                }
+            }
+        } catch (error) {
+            console.error('CCFV // ERRO AO CARREGAR DIRETORIO:', error);
         }
-    );
 
+    }
 
-    /*
-     * Atualiza o mesmo array utilizado
-     * pelo restante do sistema.
-     */
-    players.splice(
-        0,
-        players.length,
-        ...uniquePlayers
-    );
-
-
-    return (
-        players.length > 0
-    );
-
-}
     /* =====================================================
        AVISO
        ===================================================== */
@@ -1898,9 +1530,15 @@ function syncPlayersFromLive() {
                                             ccfv-player-row__button
                                             ccfv-player-row__button--primary
                                         "
-                                      data-player-card="${escapeHTML(
-    getPlayerId(player)
-)}"
+                                        data-player-card="${escapeHTML(
+                                            player.id ??
+                                            player.player_id ??
+                                            ""
+                                        )}"
+                                        data-player-platform="${escapeHTML(
+                                            player.platform ??
+                                            ""
+                                        )}"
                                     >
 
                                         VER MEU CARD
@@ -1984,7 +1622,7 @@ function syncPlayersFromLive() {
                     </div>
 
                     <div class="ccfv-real-card__season">
-                        <span>SEASON</span>
+                        <span>TEMPORADA</span>
                         <strong>01</strong>
                     </div>
 
@@ -2051,7 +1689,7 @@ function syncPlayersFromLive() {
                 <div class="ccfv-real-card__team">
                     <div class="ccfv-real-card__team-mark">CCFV</div>
                     <div class="ccfv-real-card__team-copy">
-                        <span>COMPETIDOR / EQUIPE</span>
+                        <span>EQUIPE / CLUBE</span>
                         <strong>${escapeHTML(teamName)}</strong>
                     </div>
                     <div class="ccfv-real-card__platform">
@@ -2195,92 +1833,86 @@ function syncPlayersFromLive() {
     }
 
 
-   /* =====================================================
-   BOTÕES DOS CARDS
-   ===================================================== */
+    /* =====================================================
+       BOTÕES DOS CARDS
+       ===================================================== */
 
-function bindCardButtons() {
+    function bindCardButtons() {
 
-    document
-        .querySelectorAll(
-            "[data-player-card]"
-        )
-        .forEach(
-            button => {
+        document
+            .querySelectorAll(
+                "[data-player-card]"
+            )
+            .forEach(
+                button => {
 
-                /*
-                 * Evita duplicar listeners
-                 * quando a lista é renderizada novamente.
-                 */
-                if (
-                    button.dataset.cardBound ===
-                    "true"
-                ) {
+                    button.addEventListener(
+                        "click",
+                        () => {
 
-                    return;
+                            const targetId =
+                                String(
+                                    button.dataset.playerCard ||
+                                    ""
+                                );
+
+                            const targetPlatform =
+                                String(
+                                    button.dataset.playerPlatform ||
+                                    ""
+                                )
+                                .trim()
+                                .toUpperCase();
+
+                            const player =
+                                players.find(
+                                    item => {
+                                        const itemId =
+                                            String(
+                                                item?.id ??
+                                                item?.player_id ??
+                                                item?.user_id ??
+                                                ""
+                                            );
+
+                                        const itemPlatform =
+                                            String(
+                                                item?.platform ??
+                                                ""
+                                            )
+                                            .trim()
+                                            .toUpperCase();
+
+                                        return (
+                                            itemId === targetId &&
+                                            (
+                                                !targetPlatform ||
+                                                !itemPlatform ||
+                                                itemPlatform === targetPlatform
+                                            )
+                                        );
+                                    }
+                                );
+
+
+                            if (
+                                player
+                            ) {
+
+                                openCard(
+                                    player
+                                );
+
+                            }
+
+                        }
+                    );
 
                 }
+            );
 
-                button.dataset.cardBound =
-                    "true";
+    }
 
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        const targetId =
-                            String(
-                                button.dataset.playerCard ||
-                                ""
-                            ).trim();
-
-                        if (
-                            !targetId
-                        ) {
-
-                            console.warn(
-                                "CCFV // CARD: ID ausente."
-                            );
-
-                            return;
-
-                        }
-
-                       const player =
-    players.find(
-        item =>
-            getPlayerId(
-                item
-            ) ===
-            String(
-                id
-            ).trim()
-    );
-
-                        if (
-                            !player
-                        ) {
-
-                            console.warn(
-                                "CCFV // CARD: jogador não encontrado.",
-                                targetId
-                            );
-
-                            return;
-
-                        }
-
-                        openCard(
-                            player
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-}
 
     /* =====================================================
        COPIAR TEXTO
@@ -2377,13 +2009,21 @@ function bindCardButtons() {
             await document.fonts.ready;
 
 
+            const rect =
+                card.getBoundingClientRect();
+
+            const exportScale =
+                rect.width > 0
+                    ? 1080 / rect.width
+                    : 3;
+
             const dataUrl =
                 await window.htmlToImage.toPng(
                     card,
                     {
 
                         pixelRatio:
-                            3,
+                            exportScale,
 
                         cacheBust:
                             true,
@@ -2638,13 +2278,21 @@ function bindCardButtons() {
             await document.fonts.ready;
 
 
+            const rect =
+                card.getBoundingClientRect();
+
+            const exportScale =
+                rect.width > 0
+                    ? 1080 / rect.width
+                    : 3;
+
             const dataUrl =
                 await window.htmlToImage.toPng(
                     card,
                     {
 
                         pixelRatio:
-                            3,
+                            exportScale,
 
                         cacheBust:
                             true,
@@ -2957,7 +2605,10 @@ function bindCardButtons() {
             players.find(
                 item =>
                     String(
-                        item.id
+                        item?.id ??
+                        item?.player_id ??
+                        item?.user_id ??
+                        ""
                     ) ===
                     String(
                         id
