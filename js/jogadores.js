@@ -314,55 +314,199 @@
 
 
 
-    /* =====================================================
-       DADOS AO VIVO DA CCFV
-       ===================================================== */
+   /* =====================================================
+   DADOS AO VIVO DA CCFV
+   ===================================================== */
 
-    function syncPlayersFromLive() {
+/*
+ * Identificador único e estável do jogador.
+ *
+ * Aceita os formatos atuais e futuros:
+ * - id
+ * - player_id
+ * - ccfv_id
+ * - user_id
+ *
+ * Isso garante que cada jogador tenha seu próprio Card.
+ */
+function getPlayerId(player) {
 
-        const live = window.CCFVLiveAPI;
+    const candidates = [
+        player?.id,
+        player?.player_id,
+        player?.ccfv_id,
+        player?.user_id
+    ];
 
-        if (!live || !live.isReady()) {
-            return false;
+    for (const value of candidates) {
+
+        if (
+            value !== null &&
+            value !== undefined &&
+            String(value).trim() !== ""
+        ) {
+
+            return String(value).trim();
+
         }
 
-        const state = live.getState();
-        const liveRanking = Array.isArray(state?.ranking) ? state.ranking : [];
-        const livePlayers = Array.isArray(state?.players) ? state.players : [];
-        const source = liveRanking.length ? liveRanking : livePlayers;
+    }
 
-        players.splice(
-            0,
-            players.length,
-            ...source.map(player => ({
-                ...player,
-                photo: getPlayerPhoto(player),
-                photo_url: getPlayerPhoto(player) || player?.photo_url || "",
-            }))
+    /*
+     * Fallback para jogadores antigos que eventualmente
+     * não possuam nenhum dos IDs acima.
+     */
+    const platform =
+        String(
+            player?.platform ||
+            "CCFV"
+        )
+            .trim()
+            .toUpperCase()
+            .replace(/\s+/g, "-");
+
+    const name =
+        String(
+            player?.name ||
+            player?.player_name ||
+            "jogador"
+        )
+            .trim()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+
+    return `legacy-${platform}-${name || "jogador"}`;
+
+}
+
+
+/*
+ * Normaliza TODOS os jogadores antes de colocar
+ * no diretório público.
+ *
+ * Isso vale para:
+ * - jogadores atuais
+ * - jogadores novos
+ * - PC
+ * - Console
+ * - Mobile
+ */
+function normalizePlayer(player) {
+
+    const id =
+        getPlayerId(
+            player
         );
 
-        return true;
+    const photo =
+        getPlayerPhoto(
+            player
+        );
+
+    return {
+
+        ...player,
+
+        id,
+
+        player_id:
+            player?.player_id ||
+            id,
+
+        name:
+            player?.name ||
+            player?.player_name ||
+            "JOGADOR CCFV",
+
+        platform:
+            String(
+                player?.platform ||
+                "CCFV"
+            )
+                .trim()
+                .toUpperCase(),
+
+        photo,
+
+        photo_url:
+            photo ||
+            player?.photo_url ||
+            ""
+
+    };
+
+}
+
+
+/*
+ * Sincronização oficial dos jogadores.
+ */
+function syncPlayersFromLive() {
+
+    const live =
+        window.CCFVLiveAPI;
+
+    if (
+        !live ||
+        !live.isReady()
+    ) {
+
+        return false;
+
     }
 
+    const state =
+        live.getState();
 
-    async function waitForLivePlayers() {
+    const liveRanking =
+        Array.isArray(
+            state?.ranking
+        )
+            ? state.ranking
+            : [];
 
-        try {
-            const live = window.CCFVLiveAPI;
-            if (live) {
-                if (!live.isReady()) {
-                    await live.refresh('players-directory');
-                }
-                if (syncPlayersFromLive()) {
-                    renderPlayers();
-                }
-            }
-        } catch (error) {
-            console.error('CCFV // ERRO AO CARREGAR DIRETORIO:', error);
-        }
+    const livePlayers =
+        Array.isArray(
+            state?.players
+        )
+            ? state.players
+            : [];
 
-    }
+    /*
+     * Se existir ranking oficial,
+     * usamos o ranking.
+     *
+     * Caso contrário,
+     * usamos os jogadores.
+     */
+    const source =
+        liveRanking.length
+            ? liveRanking
+            : livePlayers;
 
+    const normalizedPlayers =
+        source
+            .filter(Boolean)
+            .map(
+                normalizePlayer
+            );
+
+    /*
+     * Mantém a mesma referência do array.
+     * Isso é importante para o restante do sistema.
+     */
+    players.splice(
+        0,
+        players.length,
+        ...normalizedPlayers
+    );
+
+    return true;
+
+}
     /* =====================================================
        AVISO
        ===================================================== */
@@ -1300,9 +1444,9 @@
                                             ccfv-player-row__button
                                             ccfv-player-row__button--primary
                                         "
-                                        data-player-card="${escapeHTML(
-                                            player.id
-                                        )}"
+                                       data-player-card="${escapeHTML(
+    getPlayerId(player)
+)}"
                                     >
 
                                         VER MEU CARD
@@ -1601,51 +1745,87 @@
        BOTÕES DOS CARDS
        ===================================================== */
 
-    function bindCardButtons() {
+   function bindCardButtons() {
 
-        document
-            .querySelectorAll(
-                "[data-player-card]"
-            )
-            .forEach(
-                button => {
+    document
+        .querySelectorAll(
+            "[data-player-card]"
+        )
+        .forEach(
+            button => {
 
-                    button.addEventListener(
-                        "click",
-                        () => {
+                /*
+                 * Evita registrar o mesmo evento
+                 * mais de uma vez quando a lista
+                 * é renderizada novamente.
+                 */
+                if (
+                    button.dataset.cardBound === "true"
+                ) {
+                    return;
+                }
 
-                            const player =
-                                players.find(
-                                    item =>
+                button.dataset.cardBound = "true";
 
-                                        String(
-                                            item.id
-                                        ) ===
+                button.addEventListener(
+                    "click",
+                    () => {
 
-                                        String(
-                                            button.dataset.playerCard
-                                        )
-                                );
+                        const targetId =
+                            String(
+                                button.dataset.playerCard ||
+                                ""
+                            ).trim();
 
+                        if (
+                            !targetId
+                        ) {
+                            console.warn(
+                                "CCFV // CARD: jogador sem ID.",
+                                button
+                            );
 
-                            if (
-                                player
-                            ) {
+                            return;
+                        }
 
-                                openCard(
-                                    player
-                                );
+                        const player =
+    players.find(
+        item =>
+            getPlayerId(
+                item
+            ) ===
+            String(
+                id
+            ).trim()
+    );
 
-                            }
+                        if (
+                            !player
+                        ) {
+
+                            console.warn(
+                                "CCFV // CARD: jogador não encontrado.",
+                                {
+                                    targetId,
+                                    players
+                                }
+                            );
+
+                            return;
 
                         }
-                    );
 
-                }
-            );
+                        openCard(
+                            player
+                        );
 
-    }
+                    }
+                );
 
+            }
+        );
+
+}
 
     /* =====================================================
        COPIAR TEXTO
