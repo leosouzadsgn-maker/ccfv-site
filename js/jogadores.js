@@ -441,8 +441,150 @@ function normalizePlayer(player) {
 }
 
 
+/* =====================================================
+   DADOS AO VIVO DA CCFV
+   ===================================================== */
+
 /*
- * Sincronização oficial dos jogadores.
+ * Retorna um identificador estável do jogador.
+ *
+ * Aceita:
+ * id
+ * player_id
+ * ccfv_id
+ * user_id
+ */
+function getPlayerId(player) {
+
+    const ids = [
+        player?.id,
+        player?.player_id,
+        player?.ccfv_id,
+        player?.user_id
+    ];
+
+    for (
+        const value of ids
+    ) {
+
+        if (
+            value !== null &&
+            value !== undefined &&
+            String(value).trim() !== ""
+        ) {
+
+            return String(
+                value
+            ).trim();
+
+        }
+
+    }
+
+    /*
+     * Fallback somente para registros antigos
+     * que não tenham identificador.
+     *
+     * O nome + plataforma evita que vários
+     * jogadores caiam no mesmo registro.
+     */
+    const platform =
+        String(
+            player?.platform ||
+            "CCFV"
+        )
+            .trim()
+            .toUpperCase();
+
+    const name =
+        String(
+            player?.name ||
+            player?.player_name ||
+            "JOGADOR"
+        )
+            .trim()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(
+                /[\u0300-\u036f]/g,
+                ""
+            )
+            .replace(
+                /[^a-z0-9]+/g,
+                "-"
+            )
+            .replace(
+                /^-+|-+$/g,
+                ""
+            );
+
+    return (
+        `legacy-${platform}-${name || "jogador"}`
+    );
+
+}
+
+
+/*
+ * Normaliza o jogador antes de entrar
+ * no diretório público.
+ */
+function normalizePlayer(player) {
+
+    const id =
+        getPlayerId(
+            player
+        );
+
+    const photo =
+        getPlayerPhoto(
+            player
+        );
+
+    return {
+
+        ...player,
+
+        /*
+         * ID principal usado pelo Card.
+         */
+        id,
+
+        /*
+         * Mantém compatibilidade com
+         * fontes que usam player_id.
+         */
+        player_id:
+            player?.player_id ||
+            id,
+
+        name:
+            player?.name ||
+            player?.player_name ||
+            "JOGADOR CCFV",
+
+        platform:
+            String(
+                player?.platform ||
+                "CCFV"
+            )
+                .trim()
+                .toUpperCase(),
+
+        photo,
+
+        photo_url:
+            photo ||
+            player?.photo_url ||
+            ""
+
+    };
+
+}
+
+
+/*
+ * SINCRONIZAÇÃO PRINCIPAL
  */
 function syncPlayersFromLive() {
 
@@ -451,7 +593,8 @@ function syncPlayersFromLive() {
 
     if (
         !live ||
-        !live.isReady()
+        typeof live.getState !==
+            "function"
     ) {
 
         return false;
@@ -461,33 +604,51 @@ function syncPlayersFromLive() {
     const state =
         live.getState();
 
+    if (!state) {
+
+        return false;
+
+    }
+
     const liveRanking =
         Array.isArray(
-            state?.ranking
+            state.ranking
         )
             ? state.ranking
             : [];
 
     const livePlayers =
         Array.isArray(
-            state?.players
+            state.players
         )
             ? state.players
             : [];
 
     /*
-     * Se existir ranking oficial,
-     * usamos o ranking.
+     * O ranking oficial contém os jogadores
+     * apresentados no CCFV.
      *
-     * Caso contrário,
-     * usamos os jogadores.
+     * Caso não exista ranking, usa players.
      */
     const source =
         liveRanking.length
             ? liveRanking
             : livePlayers;
 
-    const normalizedPlayers =
+    /*
+     * IMPORTANTE:
+     * não deixa a lista vazia substituir
+     * uma lista válida já carregada.
+     */
+    if (
+        !source.length
+    ) {
+
+        return players.length > 0;
+
+    }
+
+    const normalized =
         source
             .filter(Boolean)
             .map(
@@ -495,16 +656,51 @@ function syncPlayersFromLive() {
             );
 
     /*
-     * Mantém a mesma referência do array.
-     * Isso é importante para o restante do sistema.
+     * Remove duplicados pelo ID.
+     *
+     * Isso prepara o sistema para quando
+     * novos jogadores forem entrando.
      */
+    const unique =
+        [];
+
+    const seen =
+        new Set();
+
+    normalized.forEach(
+        player => {
+
+            const id =
+                getPlayerId(
+                    player
+                );
+
+            if (
+                seen.has(id)
+            ) {
+
+                return;
+
+            }
+
+            seen.add(id);
+
+            unique.push(
+                player
+            );
+
+        }
+    );
+
     players.splice(
         0,
         players.length,
-        ...normalizedPlayers
+        ...unique
     );
 
-    return true;
+    return (
+        players.length > 0
+    );
 
 }
     /* =====================================================
@@ -1444,7 +1640,7 @@ function syncPlayersFromLive() {
                                             ccfv-player-row__button
                                             ccfv-player-row__button--primary
                                         "
-                                       data-player-card="${escapeHTML(
+                                      data-player-card="${escapeHTML(
     getPlayerId(player)
 )}"
                                     >
@@ -1741,11 +1937,11 @@ function syncPlayersFromLive() {
     }
 
 
-    /* =====================================================
-       BOTÕES DOS CARDS
-       ===================================================== */
+   /* =====================================================
+   BOTÕES DOS CARDS
+   ===================================================== */
 
-   function bindCardButtons() {
+function bindCardButtons() {
 
     document
         .querySelectorAll(
@@ -1755,17 +1951,20 @@ function syncPlayersFromLive() {
             button => {
 
                 /*
-                 * Evita registrar o mesmo evento
-                 * mais de uma vez quando a lista
-                 * é renderizada novamente.
+                 * Evita duplicar listeners
+                 * quando a lista é renderizada novamente.
                  */
                 if (
-                    button.dataset.cardBound === "true"
+                    button.dataset.cardBound ===
+                    "true"
                 ) {
+
                     return;
+
                 }
 
-                button.dataset.cardBound = "true";
+                button.dataset.cardBound =
+                    "true";
 
                 button.addEventListener(
                     "click",
@@ -1780,15 +1979,16 @@ function syncPlayersFromLive() {
                         if (
                             !targetId
                         ) {
+
                             console.warn(
-                                "CCFV // CARD: jogador sem ID.",
-                                button
+                                "CCFV // CARD: ID ausente."
                             );
 
                             return;
+
                         }
 
-                        const player =
+                       const player =
     players.find(
         item =>
             getPlayerId(
@@ -1805,10 +2005,7 @@ function syncPlayersFromLive() {
 
                             console.warn(
                                 "CCFV // CARD: jogador não encontrado.",
-                                {
-                                    targetId,
-                                    players
-                                }
+                                targetId
                             );
 
                             return;

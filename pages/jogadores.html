@@ -586,6 +586,114 @@
         defer
     ></script>
 
+    <!-- =====================================================
+     CCFV // FORÇA SINCRONIZAÇÃO DO PLAYER DIRECTORY
+     ===================================================== -->
+
+<script>
+(function () {
+
+    "use strict";
+
+    let attempts = 0;
+
+    const MAX_ATTEMPTS = 60;
+
+    function syncDirectory() {
+
+        attempts++;
+
+        const live =
+            window.CCFVLiveAPI;
+
+        /*
+         * Ainda não carregou.
+         * Tenta novamente.
+         */
+        if (
+            !live ||
+            typeof live.getState !== "function"
+        ) {
+
+            if (attempts < MAX_ATTEMPTS) {
+
+                setTimeout(
+                    syncDirectory,
+                    250
+                );
+
+            }
+
+            return;
+
+        }
+
+        /*
+         * Se a API já estiver pronta,
+         * força o diretório a sincronizar.
+         */
+        if (
+            live.isReady &&
+            live.isReady()
+        ) {
+
+            window.dispatchEvent(
+                new CustomEvent(
+                    "ccfv:live-update",
+                    {
+                        detail: {
+                            state:
+                                live.getState()
+                        }
+                    }
+                )
+            );
+
+            return;
+
+        }
+
+        /*
+         * Continua aguardando a
+         * primeira atualização.
+         */
+        if (
+            attempts < MAX_ATTEMPTS
+        ) {
+
+            setTimeout(
+                syncDirectory,
+                250
+            );
+
+        }
+
+    }
+
+    /*
+     * Primeira tentativa.
+     */
+    syncDirectory();
+
+    /*
+     * Reforço depois de 1 segundo.
+     */
+    setTimeout(
+        syncDirectory,
+        1000
+    );
+
+    /*
+     * Reforço depois de 2 segundos.
+     */
+    setTimeout(
+        syncDirectory,
+        2000
+    );
+
+})();
+</script>
+
 </body>
 
 </html>
