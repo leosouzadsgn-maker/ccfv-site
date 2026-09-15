@@ -1,665 +1,588 @@
 /* =========================================================
-   CCFV CHAMPIONS LEAGUE — PUBLIC
+   CCFV CHAMPIONS — PÁGINA PÚBLICA
+   A estrutura existe mesmo antes de qualquer inscrito.
    ========================================================= */
 
-:root {
-    --champions-bg: #020403;
-    --champions-panel: #07100b;
-    --champions-panel-2: #0a1510;
-    --champions-line: rgba(67, 190, 132, .16);
-    --champions-green: #28b77a;
-    --champions-green-soft: #8fe0bd;
-    --champions-gold: #d7ad47;
-    --champions-text: #f4f8f5;
-    --champions-muted: #8b9a92;
+:root{
+    --ch-bg:#020403;
+    --ch-panel:#07100b;
+    --ch-panel-2:#0a1510;
+    --ch-line:rgba(255,255,255,.075);
+    --ch-line-green:rgba(40,183,122,.20);
+    --ch-green:#28b77a;
+    --ch-green-soft:#96dfbf;
+    --ch-gold:#d8b04e;
+    --ch-white:#f3f7f4;
+    --ch-muted:#87968e;
 }
 
-body[data-page="champions"] {
+body[data-page="champions"]{
     background:
-        radial-gradient(circle at 70% 8%, rgba(40,183,122,.09), transparent 28%),
-        radial-gradient(circle at 10% 30%, rgba(215,173,71,.04), transparent 24%),
-        var(--champions-bg);
-    color: var(--champions-text);
+        radial-gradient(circle at 82% 5%,rgba(40,183,122,.11),transparent 28%),
+        radial-gradient(circle at 8% 28%,rgba(40,183,122,.035),transparent 25%),
+        var(--ch-bg);
+    color:var(--ch-white);
 }
 
-.ccfv-champions-container {
-    width: min(1180px, calc(100% - 40px));
-    margin: 0 auto;
+.champions-container{
+    width:min(1180px,calc(100% - 36px));
+    margin:0 auto;
 }
 
-.ccfv-champions-section {
-    padding: 96px 0;
-    border-top: 1px solid rgba(255,255,255,.04);
+.champions-section{
+    padding:100px 0;
+    border-top:1px solid rgba(255,255,255,.04);
 }
 
-.ccfv-champions-hero {
-    position: relative;
-    min-height: 730px;
-    padding: 150px 0 80px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
+.champions-section-dark{
+    background:rgba(255,255,255,.008);
 }
 
-.ccfv-champions-hero__glow {
-    position: absolute;
-    width: 720px;
-    height: 720px;
-    right: -180px;
-    top: -250px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(40,183,122,.13), transparent 65%);
-    pointer-events: none;
+.champions-hero{
+    min-height:760px;
+    padding:150px 0 90px;
+    position:relative;
+    overflow:hidden;
 }
 
-.ccfv-champions-hero__grid {
-    position: absolute;
-    inset: 0;
-    opacity: .2;
+.champions-hero-grid{
+    position:absolute;
+    inset:0;
+    opacity:.16;
     background-image:
-        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
-    background-size: 52px 52px;
-    mask-image: linear-gradient(to bottom, black, transparent 88%);
-    pointer-events: none;
+        linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+    background-size:54px 54px;
+    mask-image:linear-gradient(to bottom,#000,transparent 92%);
 }
 
-.ccfv-champions-hero__inner {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: minmax(0, 1.4fr) minmax(320px, .6fr);
-    gap: 56px;
-    align-items: center;
+.champions-hero-inner{
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:minmax(0,1.4fr) 320px;
+    gap:70px;
+    align-items:center;
 }
 
-.ccfv-champions-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--champions-green-soft);
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: .12em;
-    text-transform: uppercase;
+.champions-kicker,
+.section-heading>div>span{
+    color:var(--ch-green-soft);
+    font-weight:900;
+    font-size:10px;
+    letter-spacing:.14em;
 }
 
-.ccfv-champions-eyebrow i {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--champions-green);
-    box-shadow: 0 0 18px rgba(40,183,122,.8);
+.champions-kicker{
+    display:inline-flex;
+    gap:10px;
+    align-items:center;
 }
 
-.ccfv-champions-mark {
-    margin: 30px 0 10px;
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    font-size: 13px;
-    letter-spacing: .16em;
-    font-weight: 900;
+.champions-kicker i{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--ch-green);
+    box-shadow:0 0 16px rgba(40,183,122,.8);
 }
 
-.ccfv-champions-mark span {
-    padding: 7px 9px;
-    border: 1px solid rgba(255,255,255,.16);
-    border-radius: 8px;
-    color: var(--champions-green-soft);
+.champions-title-mark{
+    margin:28px 0 12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:11px;
+    letter-spacing:.14em;
+    font-weight:900;
 }
 
-.ccfv-champions-mark strong {
-    color: rgba(255,255,255,.55);
+.champions-title-mark b{
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:8px;
+    padding:7px 9px;
+    color:var(--ch-green-soft);
 }
 
-.ccfv-champions-hero h1 {
-    margin: 0;
-    max-width: 760px;
-    font-size: clamp(50px, 7vw, 102px);
-    line-height: .92;
-    letter-spacing: -.065em;
-    text-transform: uppercase;
+.champions-title-mark span{
+    color:rgba(255,255,255,.48);
 }
 
-.ccfv-champions-hero h1 span {
-    display: block;
-    color: var(--champions-green);
+.champions-hero h1{
+    margin:0;
+    font-size:clamp(54px,7.8vw,106px);
+    line-height:.9;
+    letter-spacing:-.065em;
 }
 
-.ccfv-champions-hero__content > p {
-    max-width: 690px;
-    margin: 28px 0 0;
-    color: var(--champions-muted);
-    font-size: 17px;
-    line-height: 1.75;
+.champions-hero h1 em{
+    display:block;
+    color:var(--ch-green);
+    font-style:normal;
 }
 
-.ccfv-champions-hero__data {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(100px,1fr));
-    gap: 20px;
-    max-width: 690px;
-    margin-top: 48px;
+.champions-hero p{
+    max-width:700px;
+    margin:28px 0 0;
+    color:var(--ch-muted);
+    line-height:1.75;
+    font-size:16px;
 }
 
-.ccfv-champions-hero__data div {
-    padding: 18px 0;
-    border-top: 1px solid var(--champions-line);
+.champions-hero-stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    margin-top:48px;
+    max-width:720px;
 }
 
-.ccfv-champions-hero__data strong,
-.ccfv-champions-hero__data span {
-    display: block;
+.champions-hero-stats div{
+    border-top:1px solid var(--ch-line-green);
+    padding-top:16px;
 }
 
-.ccfv-champions-hero__data strong {
-    font-size: 28px;
+.champions-hero-stats strong,
+.champions-hero-stats span{
+    display:block;
 }
 
-.ccfv-champions-hero__data span {
-    margin-top: 6px;
-    color: var(--champions-muted);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: .12em;
+.champions-hero-stats strong{
+    font-size:28px;
 }
 
-.ccfv-champions-season-card {
-    padding: 28px;
-    border: 1px solid var(--champions-line);
-    border-radius: 24px;
-    background:
-        linear-gradient(145deg, rgba(255,255,255,.035), transparent),
-        rgba(5,13,9,.72);
-    box-shadow: 0 30px 70px rgba(0,0,0,.28);
-    backdrop-filter: blur(16px);
+.champions-hero-stats span{
+    color:var(--ch-muted);
+    font-weight:800;
+    font-size:9px;
+    letter-spacing:.12em;
+    margin-top:6px;
 }
 
-.ccfv-champions-season-card > span {
-    color: var(--champions-muted);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: .14em;
+.season-panel{
+    padding:26px;
+    border:1px solid var(--ch-line-green);
+    border-radius:22px;
+    background:linear-gradient(150deg,rgba(255,255,255,.035),rgba(255,255,255,.007));
 }
 
-.ccfv-champions-season-card > strong {
-    display: block;
-    margin-top: 7px;
-    font-size: 38px;
-    letter-spacing: -.04em;
+.season-panel>span,
+.season-status,
+.season-lines span{
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:.12em;
 }
 
-.ccfv-champions-season-card__status {
-    display: inline-flex;
-    margin-top: 18px;
-    padding: 7px 10px;
-    border-radius: 999px;
-    background: rgba(40,183,122,.1);
-    color: var(--champions-green-soft);
-    font-size: 10px;
-    font-weight: 900;
-    letter-spacing: .11em;
+.season-panel>span,
+.season-lines span{
+    color:var(--ch-muted);
 }
 
-.ccfv-champions-season-card__progress {
-    display: grid;
-    gap: 14px;
-    margin-top: 28px;
+.season-panel>strong{
+    display:block;
+    margin-top:8px;
+    font-size:34px;
+    letter-spacing:-.04em;
 }
 
-.ccfv-champions-season-card__progress div {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    padding-top: 14px;
-    border-top: 1px solid rgba(255,255,255,.06);
+.season-status{
+    display:inline-flex;
+    margin-top:18px;
+    padding:7px 10px;
+    border-radius:999px;
+    background:rgba(40,183,122,.09);
+    color:var(--ch-green-soft);
 }
 
-.ccfv-champions-season-card__progress span {
-    color: var(--champions-muted);
-    font-size: 10px;
-    font-weight: 800;
+.season-lines{
+    display:grid;
+    gap:14px;
+    margin-top:25px;
 }
 
-.ccfv-champions-season-card__progress strong {
-    font-size: 12px;
+.season-lines div{
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+    padding-top:13px;
+    border-top:1px solid var(--ch-line);
 }
 
-.ccfv-champions-heading {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-    gap: 30px;
-    margin-bottom: 42px;
+.season-lines strong{
+    font-size:11px;
 }
 
-.ccfv-champions-heading > div > span {
-    color: var(--champions-green-soft);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: .12em;
+.section-heading{
+    display:flex;
+    justify-content:space-between;
+    gap:30px;
+    align-items:end;
+    margin-bottom:42px;
 }
 
-.ccfv-champions-heading h2 {
-    margin: 12px 0 0;
-    font-size: clamp(34px, 4vw, 58px);
-    letter-spacing: -.05em;
+.section-heading h2{
+    margin:10px 0 0;
+    font-size:clamp(34px,4vw,58px);
+    letter-spacing:-.05em;
 }
 
-.ccfv-champions-heading h2 strong {
-    color: var(--champions-green);
+.section-heading h2 b{
+    color:var(--ch-green);
 }
 
-.ccfv-champions-heading p {
-    max-width: 440px;
-    margin: 0;
-    color: var(--champions-muted);
-    line-height: 1.7;
+.section-heading p{
+    max-width:450px;
+    margin:0;
+    color:var(--ch-muted);
+    line-height:1.7;
 }
 
-.ccfv-champions-status-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
+.clubs-catalog{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:11px;
 }
 
-.ccfv-champions-status-grid article {
-    min-height: 170px;
-    padding: 24px;
-    border: 1px solid rgba(255,255,255,.07);
-    border-radius: 18px;
-    background: linear-gradient(145deg, rgba(255,255,255,.03), rgba(255,255,255,.008));
+.club-catalog-card{
+    display:grid;
+    grid-template-columns:28px 42px minmax(0,1fr);
+    gap:12px;
+    align-items:center;
+    min-width:0;
+    padding:13px;
+    border:1px solid var(--ch-line);
+    border-radius:14px;
+    background:rgba(255,255,255,.015);
 }
 
-.ccfv-champions-status-grid span,
-.ccfv-champions-status-grid small {
-    display: block;
+.club-catalog-number{
+    color:rgba(255,255,255,.20);
+    font-size:9px;
+    font-weight:900;
 }
 
-.ccfv-champions-status-grid span {
-    color: var(--champions-muted);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: .12em;
+.club-catalog-card img{
+    width:36px;
+    height:36px;
+    object-fit:contain;
 }
 
-.ccfv-champions-status-grid strong {
-    display: block;
-    margin: 22px 0 10px;
-    font-size: 22px;
+.club-logo-missing{
+    opacity:.1;
 }
 
-.ccfv-champions-status-grid small {
-    color: #718079;
-    line-height: 1.5;
+.club-catalog-info{
+    min-width:0;
 }
 
-.ccfv-champions-clubs-grid {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 12px;
+.club-catalog-info strong,
+.club-catalog-info span{
+    display:block;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
 
-.ccfv-champions-club {
-    display: grid;
-    grid-template-columns: 44px minmax(0,1fr) auto;
-    gap: 14px;
-    align-items: center;
-    padding: 15px;
-    border: 1px solid rgba(255,255,255,.07);
-    border-radius: 14px;
-    background: rgba(255,255,255,.018);
-    min-width: 0;
+.club-catalog-info strong{
+    font-size:11px;
 }
 
-.ccfv-champions-club img {
-    width: 38px;
-    height: 38px;
-    object-fit: contain;
+.club-catalog-info span{
+    margin-top:3px;
+    color:var(--ch-muted);
+    font-size:8px;
+    font-weight:800;
+    text-transform:uppercase;
 }
 
-.ccfv-champions-club__name {
-    min-width: 0;
+.club-catalog-status{
+    display:none;
 }
 
-.ccfv-champions-club__name strong,
-.ccfv-champions-club__name span {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.groups-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
 }
 
-.ccfv-champions-club__name strong {
-    font-size: 13px;
+.champions-group-card{
+    border:1px solid var(--ch-line);
+    border-radius:17px;
+    background:rgba(255,255,255,.012);
+    overflow:hidden;
 }
 
-.ccfv-champions-club__name span {
-    margin-top: 3px;
-    color: var(--champions-muted);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: .08em;
+.champions-group-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 18px 14px;
+    border-bottom:1px solid var(--ch-line);
 }
 
-.ccfv-champions-club__status {
-    font-size: 9px;
-    font-weight: 900;
-    letter-spacing: .08em;
-    color: var(--champions-green-soft);
+.champions-group-head span{
+    color:var(--ch-muted);
+    font-size:8px;
+    font-weight:900;
+    letter-spacing:.11em;
 }
 
-.ccfv-champions-groups {
-    background:
-        radial-gradient(circle at 50% 0, rgba(40,183,122,.035), transparent 30%),
-        rgba(255,255,255,.006);
+.champions-group-head h3{
+    margin:2px 0 0;
+    font-size:25px;
 }
 
-.ccfv-champions-groups-grid {
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    gap: 18px;
+.champions-group-head>strong{
+    color:var(--ch-green-soft);
+    font-size:8px;
+    letter-spacing:.09em;
 }
 
-.ccfv-champions-group {
-    padding: 20px;
-    border: 1px solid rgba(255,255,255,.07);
-    border-radius: 18px;
-    background: rgba(255,255,255,.016);
+.champions-table{
+    padding:4px 16px 11px;
 }
 
-.ccfv-champions-group__head {
-    display: flex;
-    justify-content: space-between;
-    gap: 18px;
-    margin-bottom: 14px;
+.champions-table-head,
+.champions-table-row{
+    display:grid;
+    grid-template-columns:28px minmax(0,1fr) 34px 34px 34px 34px 42px;
+    gap:6px;
+    align-items:center;
 }
 
-.ccfv-champions-group__head strong {
-    font-size: 16px;
+.champions-table-head{
+    padding:8px 0;
+    color:rgba(255,255,255,.18);
+    font-size:8px;
+    font-weight:900;
 }
 
-.ccfv-champions-group__head span {
-    color: var(--champions-muted);
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: .1em;
+.champions-table-row{
+    min-height:47px;
+    border-top:1px solid rgba(255,255,255,.045);
+    color:rgba(255,255,255,.45);
+    font-size:9px;
 }
 
-.ccfv-champions-group__table {
-    display: grid;
-    gap: 7px;
+.champions-table-row strong{
+    color:rgba(255,255,255,.50);
+    text-align:right;
 }
 
-.ccfv-champions-group__row {
-    display: grid;
-    grid-template-columns: 24px minmax(0,1fr) 44px 44px;
-    gap: 10px;
-    align-items: center;
-    padding: 10px 0;
-    border-top: 1px solid rgba(255,255,255,.05);
-    font-size: 11px;
+.champions-club-cell{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    min-width:0;
 }
 
-.ccfv-champions-group__row.is-qualified {
-    color: var(--champions-green-soft);
+.champions-slot-logo{
+    width:27px;
+    height:27px;
+    flex:0 0 27px;
+    display:grid;
+    place-items:center;
+    border:1px dashed rgba(255,255,255,.11);
+    border-radius:7px;
+    color:rgba(255,255,255,.18);
 }
 
-.ccfv-champions-group__row img {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
+.champions-slot-name{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
 
-.ccfv-champions-group__row span:nth-child(2) {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+.champions-table-row.is-filled{
+    color:var(--ch-white);
 }
 
-.ccfv-champions-group__row small {
-    color: var(--champions-muted);
-    text-align: right;
-    font-size: 9px;
+.champions-table-row.is-qualified{
+    color:var(--ch-green-soft);
 }
 
-.ccfv-champions-matches {
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    gap: 10px;
+.champions-table-row.is-filled .champions-slot-logo{
+    border-style:solid;
+    border-color:rgba(40,183,122,.18);
 }
 
-.ccfv-champions-match {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 16px;
-    align-items: center;
-    padding: 18px;
-    border: 1px solid rgba(255,255,255,.07);
-    border-radius: 16px;
-    background: rgba(255,255,255,.016);
+.empty-slate{
+    min-height:170px;
+    display:grid;
+    place-items:center;
+    align-content:center;
+    gap:8px;
+    border:1px dashed rgba(255,255,255,.10);
+    border-radius:18px;
+    text-align:center;
+    color:rgba(255,255,255,.25);
 }
 
-.ccfv-champions-match__side {
-    display: flex;
-    gap: 10px;
-    align-items: center;
+.empty-slate span{
+    color:var(--ch-green-soft);
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:.14em;
 }
 
-.ccfv-champions-match__side--away {
-    justify-content: flex-end;
-    text-align: right;
+.empty-slate strong{
+    color:rgba(255,255,255,.58);
+    font-size:16px;
 }
 
-.ccfv-champions-match__side img {
-    width: 34px;
-    height: 34px;
-    object-fit: contain;
+.empty-slate small{
+    color:var(--ch-muted);
 }
 
-.ccfv-champions-match__side strong {
-    font-size: 11px;
+.knockout-board{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    overflow-x:auto;
+    padding-bottom:10px;
 }
 
-.ccfv-champions-match__score {
-    min-width: 70px;
-    text-align: center;
+.knockout-column{
+    min-width:240px;
+    border:1px solid var(--ch-line);
+    border-radius:17px;
+    background:rgba(255,255,255,.012);
 }
 
-.ccfv-champions-match__score strong {
-    display: block;
-    font-size: 20px;
+.knockout-column-head{
+    padding:17px;
+    border-bottom:1px solid var(--ch-line);
 }
 
-.ccfv-champions-match__score span {
-    display: block;
-    margin-top: 4px;
-    color: var(--champions-muted);
-    font-size: 8px;
-    font-weight: 800;
-    letter-spacing: .08em;
+.knockout-column-head span,
+.knockout-column-head strong{
+    display:block;
 }
 
-.ccfv-champions-knockout {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 12px;
-    overflow-x: auto;
-    padding-bottom: 8px;
+.knockout-column-head span{
+    color:var(--ch-muted);
+    font-size:8px;
+    font-weight:900;
+    letter-spacing:.11em;
 }
 
-.ccfv-champions-round {
-    min-width: 240px;
-    padding: 16px;
-    border: 1px solid rgba(255,255,255,.07);
-    border-radius: 16px;
-    background: rgba(255,255,255,.016);
+.knockout-column-head strong{
+    margin-top:5px;
+    font-size:18px;
 }
 
-.ccfv-champions-round header span,
-.ccfv-champions-round header strong {
-    display: block;
+.knockout-matches{
+    padding:12px 14px 14px;
 }
 
-.ccfv-champions-round header span {
-    color: var(--champions-muted);
-    font-size: 9px;
-    font-weight: 800;
+.bracket-match{
+    padding:12px 0;
+    border-top:1px solid rgba(255,255,255,.05);
 }
 
-.ccfv-champions-round header strong {
-    margin-top: 4px;
-    font-size: 18px;
+.bracket-match:first-child{
+    border-top:0;
 }
 
-.ccfv-bracket-match {
-    padding: 12px 0;
-    border-top: 1px solid rgba(255,255,255,.05);
-    margin-top: 10px;
+.bracket-team{
+    display:grid;
+    grid-template-columns:27px minmax(0,1fr) 22px;
+    gap:8px;
+    align-items:center;
+    min-height:30px;
+    font-size:9px;
 }
 
-.ccfv-bracket-line {
-    display: grid;
-    grid-template-columns: 28px 1fr 26px;
-    gap: 8px;
-    align-items: center;
-    font-size: 10px;
+.bracket-logo{
+    width:22px;
+    height:22px;
+    display:grid;
+    place-items:center;
+    border:1px dashed rgba(255,255,255,.10);
+    border-radius:6px;
+    color:rgba(255,255,255,.16);
 }
 
-.ccfv-bracket-line img {
-    width: 22px;
-    height: 22px;
-    object-fit: contain;
+.bracket-team span:nth-child(2){
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:rgba(255,255,255,.42);
 }
 
-.ccfv-bracket-line strong {
-    text-align: right;
+.bracket-team strong{
+    text-align:right;
+    color:rgba(255,255,255,.20);
 }
 
-.ccfv-champions-champion {
-    padding-top: 34px;
-    padding-bottom: 110px;
+.champion-final-section{
+    padding-top:45px;
+    padding-bottom:120px;
 }
 
-.ccfv-champions-champion-card {
-    position: relative;
-    overflow: hidden;
-    padding: 70px 40px;
-    text-align: center;
-    border: 1px solid rgba(215,173,71,.2);
-    border-radius: 28px;
-    background:
-        radial-gradient(circle at 50% -30%, rgba(215,173,71,.11), transparent 42%),
-        linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.008));
+.champion-final-card{
+    text-align:center;
+    padding:80px 30px;
+    border:1px solid rgba(216,176,78,.19);
+    border-radius:28px;
+    background:radial-gradient(circle at 50% -20%,rgba(216,176,78,.10),transparent 42%);
 }
 
-.ccfv-champions-champion-card > span {
-    color: var(--champions-gold);
-    font-size: 9px;
-    font-weight: 900;
-    letter-spacing: .16em;
+.champion-final-card>span{
+    color:var(--ch-gold);
+    font-size:9px;
+    font-weight:900;
+    letter-spacing:.15em;
 }
 
-.ccfv-champions-champion-card > strong {
-    display: block;
-    margin-top: 12px;
-    font-size: 12px;
+.champion-final-card small{
+    display:block;
+    margin-top:12px;
+    font-weight:900;
 }
 
-.ccfv-champions-champion-card h2 {
-    margin: 18px 0 8px;
-    font-size: clamp(42px, 7vw, 86px);
-    letter-spacing: -.06em;
+.champion-final-card h2{
+    margin:20px 0 8px;
+    font-size:clamp(46px,7vw,86px);
+    letter-spacing:-.065em;
 }
 
-.ccfv-champions-champion-card p {
-    margin: 0;
-    color: var(--champions-muted);
+.champion-final-card p{
+    margin:0;
+    color:var(--ch-muted);
 }
 
-.ccfv-champions-empty {
-    grid-column: 1 / -1;
-    padding: 32px;
-    text-align: center;
-    color: var(--champions-muted);
-    border: 1px dashed rgba(255,255,255,.1);
-    border-radius: 16px;
+@media(max-width:1000px){
+    .champions-hero-inner{grid-template-columns:1fr}
+    .season-panel{max-width:420px}
+    .clubs-catalog{grid-template-columns:repeat(2,1fr)}
+    .groups-grid{grid-template-columns:1fr}
+    .knockout-board{grid-template-columns:repeat(4,minmax(240px,1fr))}
 }
 
-@media (max-width: 980px) {
-    .ccfv-champions-hero__inner,
-    .ccfv-champions-status-grid,
-    .ccfv-champions-clubs-grid,
-    .ccfv-champions-knockout {
-        grid-template-columns: repeat(2,1fr);
+@media(max-width:650px){
+    .champions-container{width:calc(100% - 24px)}
+    .champions-section{padding:72px 0}
+    .champions-hero{padding:125px 0 70px;min-height:auto}
+    .champions-hero h1{font-size:56px}
+    .champions-hero-stats{grid-template-columns:repeat(2,1fr)}
+    .section-heading{flex-direction:column;align-items:flex-start}
+    .clubs-catalog{grid-template-columns:1fr}
+}
+
+@media(max-width:460px){
+    .champions-table-head,
+    .champions-table-row{
+        grid-template-columns:24px minmax(0,1fr) 25px 25px 25px 25px 34px;
+        gap:4px;
     }
 
-    .ccfv-champions-hero__inner {
-        grid-template-columns: 1fr;
+    .champions-table-head{
+        font-size:7px;
     }
 
-    .ccfv-champions-season-card {
-        max-width: 560px;
-    }
-}
-
-@media (max-width: 680px) {
-    .ccfv-champions-container {
-        width: min(100% - 24px, 1180px);
-    }
-
-    .ccfv-champions-section {
-        padding: 70px 0;
-    }
-
-    .ccfv-champions-hero {
-        min-height: auto;
-        padding: 125px 0 60px;
-    }
-
-    .ccfv-champions-hero__data,
-    .ccfv-champions-status-grid,
-    .ccfv-champions-clubs-grid,
-    .ccfv-champions-groups-grid,
-    .ccfv-champions-matches {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .ccfv-champions-heading {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .ccfv-champions-group__row {
-        grid-template-columns: 22px minmax(0,1fr) 34px 34px;
-    }
-
-    .ccfv-champions-match {
-        grid-template-columns: 1fr;
-    }
-
-    .ccfv-champions-match__side,
-    .ccfv-champions-match__side--away {
-        justify-content: flex-start;
-        text-align: left;
-    }
-}
-
-@media (max-width: 480px) {
-    .ccfv-champions-hero__data,
-    .ccfv-champions-status-grid,
-    .ccfv-champions-clubs-grid,
-    .ccfv-champions-groups-grid,
-    .ccfv-champions-matches {
-        grid-template-columns: 1fr;
-    }
-
-    .ccfv-champions-hero h1 {
-        font-size: 54px;
-    }
-
-    .ccfv-champions-hero__content > p {
-        font-size: 14px;
+    .champions-table-row{
+        font-size:8px;
     }
 }

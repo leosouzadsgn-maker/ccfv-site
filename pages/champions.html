@@ -1,207 +1,1343 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#020403">
-    <meta name="description" content="CCFV Champions League — Season 01. 32 clubes, 8 grupos e mata-mata em jogo único.">
-    <meta property="og:title" content="Champions League — CCFV">
-    <meta property="og:description" content="A competição de elite da CCFV. 32 clubes, 8 grupos, oitavas, quartas, semifinais e final.">
-    <title>Champions League — CCFV</title>
-
-    <link rel="icon" type="image/png" href="../assets/images/logo/ccfv-logo.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/responsive.css">
-    <link rel="stylesheet" href="../css/champions.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#020403">
+<meta name="description" content="CCFV Champions League — Season 01. 32 clubes, 8 grupos e mata-mata em jogo único.">
+<title>Champions League — CCFV</title>
+<link rel="icon" type="image/png" href="../assets/images/logo/ccfv-logo.png">
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/header.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<link rel="stylesheet" href="../css/champions.css">
 </head>
-
 <body data-page="champions">
 
-<header class="ccfv-header" id="site-header">
-    <div class="ccfv-header__inner">
-        <a href="../index.html" class="ccfv-header__brand">
-            <img src="../assets/images/logo/ccfv-logo.png" alt="CCFV" class="ccfv-header__logo">
-            <span class="ccfv-header__brand-text">
-                <span class="ccfv-header__brand-name">CCFV</span>
-                <span class="ccfv-header__brand-subtitle">Confederação Coliseu de Futebol Virtual</span>
-            </span>
-        </a>
-
-        <nav class="ccfv-header__nav" aria-label="Navegação principal">
-            <a href="../index.html" class="ccfv-header__link">Início</a>
-            <a href="brasileirao.html" class="ccfv-header__link">Brasileirão</a>
-            <a href="champions.html" class="ccfv-header__link is-active">Champions League</a>
-            <a href="night.html" class="ccfv-header__link">Night Cup</a>
-            <a href="mobile.html" class="ccfv-header__link">Mobile</a>
-            <a href="ranking.html" class="ccfv-header__link">Ranking</a>
-        </nav>
-
-        <a href="#competicao" class="ccfv-header__action">Champions</a>
-
-        <button type="button" class="ccfv-header__menu" aria-label="Abrir menu" aria-expanded="false">
-            <span class="ccfv-header__menu-lines"><span></span><span></span><span></span></span>
-        </button>
-    </div>
+<header class="ccfv-header">
+<div class="ccfv-header__inner">
+<a href="../index.html" class="ccfv-header__brand">
+<img src="../assets/images/logo/ccfv-logo.png" alt="CCFV" class="ccfv-header__logo">
+<span class="ccfv-header__brand-text">
+<span class="ccfv-header__brand-name">CCFV</span>
+<span class="ccfv-header__brand-subtitle">CONFEDERAÇÃO COLISEU DE FUTEBOL VIRTUAL</span>
+</span>
+</a>
+<nav class="ccfv-header__nav" aria-label="Navegação principal">
+<a href="../index.html" class="ccfv-header__link">Início</a>
+<a href="brasileirao.html" class="ccfv-header__link">Brasileirão</a>
+<a href="champions.html" class="ccfv-header__link is-active">Champions League</a>
+<a href="night.html" class="ccfv-header__link">Night Cup</a>
+<a href="mobile.html" class="ccfv-header__link">Mobile</a>
+<a href="ranking.html" class="ccfv-header__link">Ranking</a>
+</nav>
+<a href="#champions-groups" class="ccfv-header__action">CHAMPIONS</a>
+</div>
 </header>
 
-<main class="ccfv-champions">
+<main class="champions-page">
+<section class="champions-hero">
+<div class="champions-hero-grid"></div>
+<div class="champions-container champions-hero-inner">
+<div>
+<span class="champions-kicker"><i></i> CCFV // COMPETIÇÃO DE ELITE</span>
+<div class="champions-title-mark"><b>CCFV</b><span>CHAMPIONS</span></div>
+<h1>CHAMPIONS <em>LEAGUE.</em></h1>
+<p>32 participantes. 32 clubes. 8 grupos. Os dois melhores de cada grupo avançam para uma disputa de jogo único até a grande final.</p>
+<div class="champions-hero-stats">
+<div><strong>32</strong><span>CLUBES</span></div>
+<div><strong>8</strong><span>GRUPOS</span></div>
+<div><strong>48</strong><span>JOGOS DE GRUPOS</span></div>
+<div><strong>1</strong><span>CAMPEÃO</span></div>
+</div>
+</div>
+<div class="season-panel">
+<span>CCFV // SEASON</span>
+<strong id="season-label">SEASON 01</strong>
+<div class="season-status" id="season-status">INSCRIÇÕES</div>
+<div class="season-lines">
+<div><span>PARTICIPANTES</span><strong id="season-participants">0 / 32</strong></div>
+<div><span>CLUBES OCUPADOS</span><strong id="season-occupied">0 / 32</strong></div>
+<div><span>FASE</span><strong id="season-phase">A DEFINIR</strong></div>
+</div>
+</div>
+</div>
+</section>
 
-    <section class="ccfv-champions-hero" id="competicao">
-        <div class="ccfv-champions-hero__glow"></div>
-        <div class="ccfv-champions-hero__grid"></div>
+<section class="champions-section" id="clubes">
+<div class="champions-container">
+<div class="section-heading">
+<div><span>CCFV // CLUBES</span><h2>OS <b>32 CLUBES.</b></h2></div>
+<p>Os clubes da Season 01 já estão definidos. O treinador entra quando o cadastro da Champions for confirmado no Admin.</p>
+</div>
+<div class="clubs-catalog">
+        <article class="club-catalog-card" data-club-slug="ajax">
+            <div class="club-catalog-number">01</div>
+            <img
+                src="../assets/images/champions/clubs/ajax.png"
+                alt="Ajax"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Ajax</strong>
+                <span>HOLANDA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="anderlecht">
+            <div class="club-catalog-number">02</div>
+            <img
+                src="../assets/images/champions/clubs/anderlecht.png"
+                alt="Anderlecht"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Anderlecht</strong>
+                <span>BELGICA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="arsenal">
+            <div class="club-catalog-number">03</div>
+            <img
+                src="../assets/images/champions/clubs/arsenal.png"
+                alt="Arsenal"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Arsenal</strong>
+                <span>INGLATERRA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="atletico_madrid">
+            <div class="club-catalog-number">04</div>
+            <img
+                src="../assets/images/champions/clubs/atletico_madrid.png"
+                alt="Atlético de Madrid"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Atlético de Madrid</strong>
+                <span>ESPANHA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="barcelona">
+            <div class="club-catalog-number">05</div>
+            <img
+                src="../assets/images/champions/clubs/barcelona.png"
+                alt="Barcelona"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Barcelona</strong>
+                <span>ESPANHA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="benfica">
+            <div class="club-catalog-number">06</div>
+            <img
+                src="../assets/images/champions/clubs/benfica.png"
+                alt="Benfica"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Benfica</strong>
+                <span>PORTUGAL</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="besiktas">
+            <div class="club-catalog-number">07</div>
+            <img
+                src="../assets/images/champions/clubs/besiktas.png"
+                alt="Beşiktaş"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Beşiktaş</strong>
+                <span>TURQUIA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="braga">
+            <div class="club-catalog-number">08</div>
+            <img
+                src="../assets/images/champions/clubs/braga.png"
+                alt="Braga"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Braga</strong>
+                <span>PORTUGAL</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="celtic">
+            <div class="club-catalog-number">09</div>
+            <img
+                src="../assets/images/champions/clubs/celtic.png"
+                alt="Celtic"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Celtic</strong>
+                <span>ESCOCIA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="chelsea">
+            <div class="club-catalog-number">10</div>
+            <img
+                src="../assets/images/champions/clubs/chelsea.png"
+                alt="Chelsea"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Chelsea</strong>
+                <span>INGLATERRA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="club_brugge">
+            <div class="club-catalog-number">11</div>
+            <img
+                src="../assets/images/champions/clubs/club_brugge.png"
+                alt="Club Brugge"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Club Brugge</strong>
+                <span>BELGICA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="fenerbahce">
+            <div class="club-catalog-number">12</div>
+            <img
+                src="../assets/images/champions/clubs/fenerbahce.png"
+                alt="Fenerbahçe"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Fenerbahçe</strong>
+                <span>TURQUIA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="feyenoord">
+            <div class="club-catalog-number">13</div>
+            <img
+                src="../assets/images/champions/clubs/feyenoord.png"
+                alt="Feyenoord"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Feyenoord</strong>
+                <span>HOLANDA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="galatasaray">
+            <div class="club-catalog-number">14</div>
+            <img
+                src="../assets/images/champions/clubs/galatasaray.png"
+                alt="Galatasaray"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Galatasaray</strong>
+                <span>TURQUIA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="inter_milao">
+            <div class="club-catalog-number">15</div>
+            <img
+                src="../assets/images/champions/clubs/inter_milao.png"
+                alt="Inter de Milão"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Inter de Milão</strong>
+                <span>ITALIA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="juventus">
+            <div class="club-catalog-number">16</div>
+            <img
+                src="../assets/images/champions/clubs/juventus.png"
+                alt="Juventus"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Juventus</strong>
+                <span>ITALIA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="lazio">
+            <div class="club-catalog-number">17</div>
+            <img
+                src="../assets/images/champions/clubs/lazio.png"
+                alt="Lazio"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Lazio</strong>
+                <span>ITALIA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="liverpool">
+            <div class="club-catalog-number">18</div>
+            <img
+                src="../assets/images/champions/clubs/liverpool.png"
+                alt="Liverpool"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Liverpool</strong>
+                <span>INGLATERRA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="lyon">
+            <div class="club-catalog-number">19</div>
+            <img
+                src="../assets/images/champions/clubs/lyon.png"
+                alt="Lyon"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Lyon</strong>
+                <span>FRANCA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="manchester_city">
+            <div class="club-catalog-number">20</div>
+            <img
+                src="../assets/images/champions/clubs/manchester_city.png"
+                alt="Manchester City"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Manchester City</strong>
+                <span>INGLATERRA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="manchester_united">
+            <div class="club-catalog-number">21</div>
+            <img
+                src="../assets/images/champions/clubs/manchester_united.png"
+                alt="Manchester United"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Manchester United</strong>
+                <span>INGLATERRA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="marseille">
+            <div class="club-catalog-number">22</div>
+            <img
+                src="../assets/images/champions/clubs/marseille.png"
+                alt="Marseille"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Marseille</strong>
+                <span>FRANCA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="milan">
+            <div class="club-catalog-number">23</div>
+            <img
+                src="../assets/images/champions/clubs/milan.png"
+                alt="Milan"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Milan</strong>
+                <span>ITALIA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="monaco">
+            <div class="club-catalog-number">24</div>
+            <img
+                src="../assets/images/champions/clubs/monaco.png"
+                alt="Monaco"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Monaco</strong>
+                <span>FRANCA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="napoli">
+            <div class="club-catalog-number">25</div>
+            <img
+                src="../assets/images/champions/clubs/napoli.png"
+                alt="Napoli"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Napoli</strong>
+                <span>ITALIA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="porto">
+            <div class="club-catalog-number">26</div>
+            <img
+                src="../assets/images/champions/clubs/porto.png"
+                alt="Porto"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Porto</strong>
+                <span>PORTUGAL</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="psg">
+            <div class="club-catalog-number">27</div>
+            <img
+                src="../assets/images/champions/clubs/psg.png"
+                alt="PSG"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>PSG</strong>
+                <span>FRANCA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="psv">
+            <div class="club-catalog-number">28</div>
+            <img
+                src="../assets/images/champions/clubs/psv.png"
+                alt="PSV"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>PSV</strong>
+                <span>HOLANDA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="rangers">
+            <div class="club-catalog-number">29</div>
+            <img
+                src="../assets/images/champions/clubs/rangers.png"
+                alt="Rangers"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Rangers</strong>
+                <span>ESCOCIA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="real_madrid">
+            <div class="club-catalog-number">30</div>
+            <img
+                src="../assets/images/champions/clubs/real_madrid.png"
+                alt="Real Madrid"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Real Madrid</strong>
+                <span>ESPANHA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="roma">
+            <div class="club-catalog-number">31</div>
+            <img
+                src="../assets/images/champions/clubs/roma.png"
+                alt="Roma"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Roma</strong>
+                <span>ITALIA</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        <article class="club-catalog-card" data-club-slug="sporting">
+            <div class="club-catalog-number">32</div>
+            <img
+                src="../assets/images/champions/clubs/sporting.png"
+                alt="Sporting CP"
+                loading="lazy"
+                onerror="this.classList.add('club-logo-missing')"
+            >
+            <div class="club-catalog-info">
+                <strong>Sporting CP</strong>
+                <span>PORTUGAL</span>
+            </div>
+            <small class="club-catalog-status">DISPONÍVEL</small>
+        </article>
+        </div>
+    </div>
+</section>
 
-        <div class="ccfv-champions-container ccfv-champions-hero__inner">
-            <div class="ccfv-champions-hero__content">
-                <span class="ccfv-champions-eyebrow">
-                    <i></i>
-                    CCFV // COMPETIÇÃO DE ELITE
+<section class="champions-section champions-section-dark" id="champions-groups">
+<div class="champions-container">
+<div class="section-heading">
+<div><span>CCFV // DRAW + GROUPS</span><h2>GRUPOS <b>A — H.</b></h2></div>
+<p>Os oito grupos já ficam visíveis desde o início. O sorteio apenas substitui os espaços pelos clubes e treinadores reais.</p>
+</div>
+<div class="groups-grid">
+        <article class="champions-group-card" data-group="A">
+            <header class="champions-group-head">
+                <div>
+                    <span>GRUPO</span>
+                    <h3>A</h3>
+                </div>
+                <strong>TOP 2 AVANÇA</strong>
+            </header>
+            <div class="champions-table">
+                <div class="champions-table-head">
+                    <span>#</span><span>CLUBE</span><span>PJ</span><span>V</span><span>E</span><span>D</span><span>PTS</span>
+                </div>
+                
+            <div class="champions-table-row" data-slot="A-1">
+                <span class="champions-pos">01</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
                 </span>
-
-                <div class="ccfv-champions-mark">
-                    <span>CCFV</span>
-                    <strong>CHAMPIONS</strong>
-                </div>
-
-                <h1>CHAMPIONS <span>LEAGUE.</span></h1>
-                <p>
-                    32 participantes. 32 clubes. 8 grupos.
-                    Dois classificados por grupo e uma corrida em jogo único
-                    até a grande final.
-                </p>
-
-                <div class="ccfv-champions-hero__data">
-                    <div><strong>32</strong><span>CLUBES</span></div>
-                    <div><strong>8</strong><span>GRUPOS</span></div>
-                    <div><strong>48</strong><span>JOGOS DE GRUPOS</span></div>
-                    <div><strong>1</strong><span>CAMPEÃO</span></div>
-                </div>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
             </div>
-
-            <aside class="ccfv-champions-season-card">
-                <span>CCFV // SEASON</span>
-                <strong id="champions-season-label">SEASON 01</strong>
-                <div class="ccfv-champions-season-card__status" id="champions-season-status">CARREGANDO...</div>
-
-                <div class="ccfv-champions-season-card__progress">
-                    <div><span>PARTICIPANTES</span><strong id="hero-participants">0 / 32</strong></div>
-                    <div><span>CLUBES OCUPADOS</span><strong id="hero-clubs">0 / 32</strong></div>
-                    <div><span>FASE</span><strong id="hero-phase">DRAFT</strong></div>
-                </div>
-            </aside>
-        </div>
-    </section>
-
-    <section class="ccfv-champions-section ccfv-champions-status">
-        <div class="ccfv-champions-container">
-            <div class="ccfv-champions-heading">
+        
+            <div class="champions-table-row" data-slot="A-2">
+                <span class="champions-pos">02</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            <div class="champions-table-row" data-slot="A-3">
+                <span class="champions-pos">03</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            <div class="champions-table-row" data-slot="A-4">
+                <span class="champions-pos">04</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            </div>
+        </article>
+    
+        <article class="champions-group-card" data-group="B">
+            <header class="champions-group-head">
                 <div>
-                    <span>CCFV // SEASON STATUS</span>
-                    <h2>A TEMPORADA <strong>COMEÇA AQUI.</strong></h2>
+                    <span>GRUPO</span>
+                    <h3>B</h3>
                 </div>
-                <p>O palco principal da CCFV para PC + Console, com Times Autênticos e disputa em jogo único.</p>
+                <strong>TOP 2 AVANÇA</strong>
+            </header>
+            <div class="champions-table">
+                <div class="champions-table-head">
+                    <span>#</span><span>CLUBE</span><span>PJ</span><span>V</span><span>E</span><span>D</span><span>PTS</span>
+                </div>
+                
+            <div class="champions-table-row" data-slot="B-1">
+                <span class="champions-pos">01</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
             </div>
-
-            <div class="ccfv-champions-status-grid">
-                <article><span>FORMATO</span><strong>32 CLUBES</strong><small>32 participantes em uma edição.</small></article>
-                <article><span>GRUPOS</span><strong>8 × 4</strong><small>Seis confrontos por grupo.</small></article>
-                <article><span>MATA-MATA</span><strong>JOGO ÚNICO</strong><small>Oitavas, quartas, semi e final.</small></article>
-                <article><span>CAMPEÃO</span><strong id="season-champion">A DEFINIR</strong><small>O primeiro nome da história da Champions.</small></article>
+        
+            <div class="champions-table-row" data-slot="B-2">
+                <span class="champions-pos">02</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
             </div>
-        </div>
-    </section>
-
-    <section class="ccfv-champions-section" id="clubes">
-        <div class="ccfv-champions-container">
-            <div class="ccfv-champions-heading">
+        
+            <div class="champions-table-row" data-slot="B-3">
+                <span class="champions-pos">03</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            <div class="champions-table-row" data-slot="B-4">
+                <span class="champions-pos">04</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            </div>
+        </article>
+    
+        <article class="champions-group-card" data-group="C">
+            <header class="champions-group-head">
                 <div>
-                    <span>CCFV // CLUBES</span>
-                    <h2>OS <strong>32 CLUBES.</strong></h2>
+                    <span>GRUPO</span>
+                    <h3>C</h3>
                 </div>
-                <p>O catálogo oficial da Season 01. O escudo e a disponibilidade são definidos no Admin.</p>
+                <strong>TOP 2 AVANÇA</strong>
+            </header>
+            <div class="champions-table">
+                <div class="champions-table-head">
+                    <span>#</span><span>CLUBE</span><span>PJ</span><span>V</span><span>E</span><span>D</span><span>PTS</span>
+                </div>
+                
+            <div class="champions-table-row" data-slot="C-1">
+                <span class="champions-pos">01</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
             </div>
-            <div class="ccfv-champions-clubs-grid" id="champions-clubs-grid">
-                <div class="ccfv-champions-empty">Carregando clubes...</div>
+        
+            <div class="champions-table-row" data-slot="C-2">
+                <span class="champions-pos">02</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
             </div>
-        </div>
-    </section>
-
-    <section class="ccfv-champions-section ccfv-champions-groups" id="grupos">
-        <div class="ccfv-champions-container">
-            <div class="ccfv-champions-heading">
+        
+            <div class="champions-table-row" data-slot="C-3">
+                <span class="champions-pos">03</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            <div class="champions-table-row" data-slot="C-4">
+                <span class="champions-pos">04</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            </div>
+        </article>
+    
+        <article class="champions-group-card" data-group="D">
+            <header class="champions-group-head">
                 <div>
-                    <span>CCFV // DRAW + GROUPS</span>
-                    <h2>GRUPOS <strong>A — H.</strong></h2>
+                    <span>GRUPO</span>
+                    <h3>D</h3>
                 </div>
-                <p>Um participante de cada pote por grupo. Os dois melhores avançam para as oitavas.</p>
+                <strong>TOP 2 AVANÇA</strong>
+            </header>
+            <div class="champions-table">
+                <div class="champions-table-head">
+                    <span>#</span><span>CLUBE</span><span>PJ</span><span>V</span><span>E</span><span>D</span><span>PTS</span>
+                </div>
+                
+            <div class="champions-table-row" data-slot="D-1">
+                <span class="champions-pos">01</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
             </div>
-            <div class="ccfv-champions-groups-grid" id="champions-groups-grid">
-                <div class="ccfv-champions-empty">Os grupos ainda não foram sorteados.</div>
+        
+            <div class="champions-table-row" data-slot="D-2">
+                <span class="champions-pos">02</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
             </div>
-        </div>
-    </section>
-
-    <section class="ccfv-champions-section" id="partidas">
-        <div class="ccfv-champions-container">
-            <div class="ccfv-champions-heading">
+        
+            <div class="champions-table-row" data-slot="D-3">
+                <span class="champions-pos">03</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            <div class="champions-table-row" data-slot="D-4">
+                <span class="champions-pos">04</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            </div>
+        </article>
+    
+        <article class="champions-group-card" data-group="E">
+            <header class="champions-group-head">
                 <div>
-                    <span>CCFV // MATCHDAY</span>
-                    <h2>PARTIDAS <strong>OFICIAIS.</strong></h2>
+                    <span>GRUPO</span>
+                    <h3>E</h3>
                 </div>
-                <p>Resultados validados pelo sistema da CCFV.</p>
+                <strong>TOP 2 AVANÇA</strong>
+            </header>
+            <div class="champions-table">
+                <div class="champions-table-head">
+                    <span>#</span><span>CLUBE</span><span>PJ</span><span>V</span><span>E</span><span>D</span><span>PTS</span>
+                </div>
+                
+            <div class="champions-table-row" data-slot="E-1">
+                <span class="champions-pos">01</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
             </div>
-            <div class="ccfv-champions-matches" id="champions-matches">
-                <div class="ccfv-champions-empty">Nenhuma partida cadastrada ainda.</div>
+        
+            <div class="champions-table-row" data-slot="E-2">
+                <span class="champions-pos">02</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
             </div>
-        </div>
-    </section>
-
-    <section class="ccfv-champions-section" id="mata-mata">
-        <div class="ccfv-champions-container">
-            <div class="ccfv-champions-heading">
+        
+            <div class="champions-table-row" data-slot="E-3">
+                <span class="champions-pos">03</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            <div class="champions-table-row" data-slot="E-4">
+                <span class="champions-pos">04</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            </div>
+        </article>
+    
+        <article class="champions-group-card" data-group="F">
+            <header class="champions-group-head">
                 <div>
-                    <span>CCFV // KNOCKOUT</span>
-                    <h2>A <strong>CAMINHO DA GLÓRIA.</strong></h2>
+                    <span>GRUPO</span>
+                    <h3>F</h3>
                 </div>
-                <p>Os vencedores avançam automaticamente de fase conforme os resultados são validados.</p>
+                <strong>TOP 2 AVANÇA</strong>
+            </header>
+            <div class="champions-table">
+                <div class="champions-table-head">
+                    <span>#</span><span>CLUBE</span><span>PJ</span><span>V</span><span>E</span><span>D</span><span>PTS</span>
+                </div>
+                
+            <div class="champions-table-row" data-slot="F-1">
+                <span class="champions-pos">01</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
             </div>
+        
+            <div class="champions-table-row" data-slot="F-2">
+                <span class="champions-pos">02</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            <div class="champions-table-row" data-slot="F-3">
+                <span class="champions-pos">03</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            <div class="champions-table-row" data-slot="F-4">
+                <span class="champions-pos">04</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            </div>
+        </article>
+    
+        <article class="champions-group-card" data-group="G">
+            <header class="champions-group-head">
+                <div>
+                    <span>GRUPO</span>
+                    <h3>G</h3>
+                </div>
+                <strong>TOP 2 AVANÇA</strong>
+            </header>
+            <div class="champions-table">
+                <div class="champions-table-head">
+                    <span>#</span><span>CLUBE</span><span>PJ</span><span>V</span><span>E</span><span>D</span><span>PTS</span>
+                </div>
+                
+            <div class="champions-table-row" data-slot="G-1">
+                <span class="champions-pos">01</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            <div class="champions-table-row" data-slot="G-2">
+                <span class="champions-pos">02</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            <div class="champions-table-row" data-slot="G-3">
+                <span class="champions-pos">03</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            <div class="champions-table-row" data-slot="G-4">
+                <span class="champions-pos">04</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            </div>
+        </article>
+    
+        <article class="champions-group-card" data-group="H">
+            <header class="champions-group-head">
+                <div>
+                    <span>GRUPO</span>
+                    <h3>H</h3>
+                </div>
+                <strong>TOP 2 AVANÇA</strong>
+            </header>
+            <div class="champions-table">
+                <div class="champions-table-head">
+                    <span>#</span><span>CLUBE</span><span>PJ</span><span>V</span><span>E</span><span>D</span><span>PTS</span>
+                </div>
+                
+            <div class="champions-table-row" data-slot="H-1">
+                <span class="champions-pos">01</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            <div class="champions-table-row" data-slot="H-2">
+                <span class="champions-pos">02</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            <div class="champions-table-row" data-slot="H-3">
+                <span class="champions-pos">03</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            <div class="champions-table-row" data-slot="H-4">
+                <span class="champions-pos">04</span>
+                <span class="champions-club-cell">
+                    <span class="champions-slot-logo">—</span>
+                    <span class="champions-slot-name">A DEFINIR</span>
+                </span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <span>0</span>
+                <strong>0</strong>
+            </div>
+        
+            </div>
+        </article>
+    </div>
+</div>
+</section>
 
-            <div class="ccfv-champions-knockout">
-                <div class="ccfv-champions-round">
-                    <header><span>16 AVOS</span><strong>OITAVAS</strong></header>
-                    <div id="knockout-r16"></div>
+<section class="champions-section" id="matchday">
+<div class="champions-container">
+<div class="section-heading">
+<div><span>CCFV // MATCHDAY</span><h2>CALENDÁRIO <b>DA FASE DE GRUPOS.</b></h2></div>
+<p>As 48 partidas serão preenchidas automaticamente depois do sorteio oficial.</p>
+</div>
+<div class="empty-slate" id="group-matches-placeholder">
+<span>48 CONFRONTOS</span>
+<strong>AGUARDANDO SORTEIO</strong>
+<small>Os jogos aparecem aqui assim que a tabela da Season 01 for gerada.</small>
+</div>
+</div>
+</section>
+
+<section class="champions-section champions-section-dark" id="mata-mata">
+<div class="champions-container">
+<div class="section-heading">
+<div><span>CCFV // KNOCKOUT</span><h2>CAMINHO <b>DA GLÓRIA.</b></h2></div>
+<p>O chaveamento já está montado. Os dois classificados de cada grupo entram automaticamente nas oitavas e avançam até a final.</p>
+</div>
+<div class="knockout-board">
+        <article class="knockout-column">
+            <div class="knockout-column-head">
+                <span>CCFV // OITAVAS</span>
+                <strong>OITAVAS</strong>
+            </div>
+            <div class="knockout-matches">
+            <div class="bracket-match" data-phase="ROUND_OF_16" data-match="1">
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>1º GRUPO A</span>
+                    <strong>—</strong>
                 </div>
-                <div class="ccfv-champions-round">
-                    <header><span>8 AVANÇAM</span><strong>QUARTAS</strong></header>
-                    <div id="knockout-qf"></div>
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>2º GRUPO B</span>
+                    <strong>—</strong>
                 </div>
-                <div class="ccfv-champions-round">
-                    <header><span>4 AVANÇAM</span><strong>SEMIFINAIS</strong></header>
-                    <div id="knockout-sf"></div>
+            </div>
+        
+            <div class="bracket-match" data-phase="ROUND_OF_16" data-match="2">
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>1º GRUPO C</span>
+                    <strong>—</strong>
                 </div>
-                <div class="ccfv-champions-round ccfv-champions-round--final">
-                    <header><span>GRANDE DECISÃO</span><strong>FINAL</strong></header>
-                    <div id="knockout-final"></div>
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>2º GRUPO D</span>
+                    <strong>—</strong>
+                </div>
+            </div>
+        
+            <div class="bracket-match" data-phase="ROUND_OF_16" data-match="3">
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>1º GRUPO E</span>
+                    <strong>—</strong>
+                </div>
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>2º GRUPO F</span>
+                    <strong>—</strong>
+                </div>
+            </div>
+        
+            <div class="bracket-match" data-phase="ROUND_OF_16" data-match="4">
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>1º GRUPO G</span>
+                    <strong>—</strong>
+                </div>
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>2º GRUPO H</span>
+                    <strong>—</strong>
+                </div>
+            </div>
+        
+            <div class="bracket-match" data-phase="ROUND_OF_16" data-match="5">
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>1º GRUPO A</span>
+                    <strong>—</strong>
+                </div>
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>2º GRUPO B</span>
+                    <strong>—</strong>
+                </div>
+            </div>
+        
+            <div class="bracket-match" data-phase="ROUND_OF_16" data-match="6">
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>1º GRUPO C</span>
+                    <strong>—</strong>
+                </div>
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>2º GRUPO D</span>
+                    <strong>—</strong>
+                </div>
+            </div>
+        
+            <div class="bracket-match" data-phase="ROUND_OF_16" data-match="7">
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>1º GRUPO E</span>
+                    <strong>—</strong>
+                </div>
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>2º GRUPO F</span>
+                    <strong>—</strong>
+                </div>
+            </div>
+        
+            <div class="bracket-match" data-phase="ROUND_OF_16" data-match="8">
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>1º GRUPO G</span>
+                    <strong>—</strong>
+                </div>
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>2º GRUPO H</span>
+                    <strong>—</strong>
                 </div>
             </div>
         </div>
-    </section>
-
-    <section class="ccfv-champions-section ccfv-champions-champion">
-        <div class="ccfv-champions-container">
-            <div class="ccfv-champions-champion-card" id="champions-champion-card">
-                <span>CCFV // HALL DA FAMA</span>
-                <strong>CAMPEÃO DA SEASON 01</strong>
-                <h2 id="champion-name">A DEFINIR</h2>
-                <p id="champion-club">A grande taça ainda está em disputa.</p>
+        </article>
+    
+        <article class="knockout-column">
+            <div class="knockout-column-head">
+                <span>CCFV // QUARTAS</span>
+                <strong>QUARTAS</strong>
+            </div>
+            <div class="knockout-matches">
+            <div class="bracket-match" data-phase="QUARTERFINALS" data-match="1">
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>A DEFINIR</span>
+                    <strong>—</strong>
+                </div>
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>A DEFINIR</span>
+                    <strong>—</strong>
+                </div>
+            </div>
+        
+            <div class="bracket-match" data-phase="QUARTERFINALS" data-match="2">
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>A DEFINIR</span>
+                    <strong>—</strong>
+                </div>
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>A DEFINIR</span>
+                    <strong>—</strong>
+                </div>
+            </div>
+        
+            <div class="bracket-match" data-phase="QUARTERFINALS" data-match="3">
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>A DEFINIR</span>
+                    <strong>—</strong>
+                </div>
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>A DEFINIR</span>
+                    <strong>—</strong>
+                </div>
+            </div>
+        
+            <div class="bracket-match" data-phase="QUARTERFINALS" data-match="4">
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>A DEFINIR</span>
+                    <strong>—</strong>
+                </div>
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>A DEFINIR</span>
+                    <strong>—</strong>
+                </div>
             </div>
         </div>
-    </section>
+        </article>
+    
+        <article class="knockout-column">
+            <div class="knockout-column-head">
+                <span>CCFV // SEMIFINAIS</span>
+                <strong>SEMIFINAIS</strong>
+            </div>
+            <div class="knockout-matches">
+            <div class="bracket-match" data-phase="SEMIFINALS" data-match="1">
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>A DEFINIR</span>
+                    <strong>—</strong>
+                </div>
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>A DEFINIR</span>
+                    <strong>—</strong>
+                </div>
+            </div>
+        
+            <div class="bracket-match" data-phase="SEMIFINALS" data-match="2">
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>A DEFINIR</span>
+                    <strong>—</strong>
+                </div>
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>A DEFINIR</span>
+                    <strong>—</strong>
+                </div>
+            </div>
+        </div>
+        </article>
+    
+        <article class="knockout-column">
+            <div class="knockout-column-head">
+                <span>CCFV // FINAL</span>
+                <strong>FINAL</strong>
+            </div>
+            <div class="knockout-matches">
+            <div class="bracket-match" data-phase="FINAL" data-match="1">
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>A DEFINIR</span>
+                    <strong>—</strong>
+                </div>
+                <div class="bracket-team">
+                    <span class="bracket-logo">—</span>
+                    <span>A DEFINIR</span>
+                    <strong>—</strong>
+                </div>
+            </div>
+        </div>
+        </article>
+    </div>
+</div>
+</section>
 
+<section class="champions-section champion-final-section">
+<div class="champions-container">
+<div class="champion-final-card">
+<span>CCFV // HALL DA FAMA</span>
+<small>CAMPEÃO DA SEASON 01</small>
+<h2 id="champion-name">A DEFINIR</h2>
+<p id="champion-club">A grande taça ainda está em disputa.</p>
+</div>
+</div>
+</section>
 </main>
 
 <script src="/admin/js/auth.js" defer></script>
