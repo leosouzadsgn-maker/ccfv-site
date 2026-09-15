@@ -1948,7 +1948,32 @@
 
         }
 
-    </style>
+    
+        .ccfv-admin-nav__link {
+            display:flex;
+            align-items:center;
+            gap:8px;
+            color:inherit;
+            text-decoration:none;
+        }
+
+        .ccfv-admin-nav__link:hover {
+            text-decoration:none;
+        }
+
+        #champions-config {
+            display:none;
+        }
+
+        #champions-config.is-visible {
+            display:block;
+        }
+
+        #champions-team option {
+            color:#fff;
+            background:#07100b;
+        }
+</style>
 
 </head>
 
@@ -2050,6 +2075,12 @@
                 Brasileirão
 
             </button>
+
+
+            <a href="/admin/champions.html" class="ccfv-admin-nav__item ccfv-admin-nav__link">
+                <span>🏆</span>
+                Champions League
+            </a>
 
 
             <button
@@ -4138,6 +4169,45 @@
                         class="
                             ccfv-competition-check
                         "
+                        id="competition-champions-label"
+                    >
+
+                        <input
+                            type="checkbox"
+                            id="competition-champions"
+                        >
+
+                        <span
+                            class="
+                                ccfv-competition-check__box
+                            "
+                        >
+                            ✓
+                        </span>
+
+                        <span
+                            class="
+                                ccfv-competition-check__content
+                            "
+                        >
+
+                            <strong>
+                                CHAMPIONS LEAGUE
+                            </strong>
+
+                            <small>
+                                Representa um clube
+                            </small>
+
+                        </span>
+
+                    </label>
+
+
+                    <label
+                        class="
+                            ccfv-competition-check
+                        "
                         id="
                             competition-night-label
                         "
@@ -4354,6 +4424,77 @@
                         </option>
 
                     </select>
+
+                </div>
+
+
+                <div
+                    class="
+                        ccfv-competition-config
+                    "
+                    id="champions-config"
+                >
+
+                    <span
+                        class="
+                            ccfv-competition-config__label
+                        "
+                    >
+                        CLUBE DA CHAMPIONS LEAGUE
+                    </span>
+
+                    <select
+                        id="champions-team"
+                        disabled
+                    >
+
+                        <option value="">
+                            SELECIONE O CLUBE
+                        </option>
+
+                        <option value="97762f56-2f71-4391-9740-82bf271eecaf">Real Madrid</option>
+                        <option value="32829574-ddcd-4767-b2d3-550941cda564">Barcelona</option>
+                        <option value="b9a26deb-a555-4068-a13a-a6caf70309fe">Atlético de Madrid</option>
+                        <option value="ea34bb12-79b4-462a-b6f0-acd8daaf3f59">Manchester City</option>
+                        <option value="d0e5285b-5a8c-4143-919e-a892835f9e9e">Manchester United</option>
+                        <option value="d967a615-db1c-4ba6-9337-ad964bb087b9">Liverpool</option>
+                        <option value="3e84811c-f238-4b91-a244-f9bd64eccccf">Arsenal</option>
+                        <option value="f27adc91-8a5f-4374-9e2a-e0ff09535ffd">Chelsea</option>
+                        <option value="cc7509a3-87b1-4a0d-9023-b8c115dac7fe">Inter de Milão</option>
+                        <option value="390242ea-a560-4eca-804c-672c6b73a608">Milan</option>
+                        <option value="09f4d9ee-9a55-45fb-95be-f01f3aee0e41">Juventus</option>
+                        <option value="a5dde0fd-0d45-438a-b68e-c8aa342ca676">Napoli</option>
+                        <option value="91a21c0d-1f21-4be4-8278-3043743cdae9">Roma</option>
+                        <option value="6b7fdf57-6045-4513-a70e-59c557674657">Lazio</option>
+                        <option value="5264fa12-513c-4ef9-9bd8-6d3be5e2c4fb">Paris Saint-Germain</option>
+                        <option value="a2632411-2914-4dfd-a3c9-5e0a1b55faf9">Olympique de Marseille</option>
+                        <option value="b048e2ae-2875-4949-8bd5-e254fbe0ebfb">Monaco</option>
+                        <option value="ce8e010a-984c-4254-936e-b40fa9d4661d">Lyon</option>
+                        <option value="7642971a-9300-44b0-87af-caf348d45cdc">Benfica</option>
+                        <option value="451a3868-0f0c-4ba7-8e42-d64ead2d2dee">Porto</option>
+                        <option value="9d465afc-7846-4cbc-b551-11867896ea5d">Sporting</option>
+                        <option value="2c12361c-5964-4014-99b6-a729ff690000">Braga</option>
+                        <option value="081f52ef-ad56-47a5-aa4d-939f891370e5">Ajax</option>
+                        <option value="80cd91d5-a45c-4bba-8015-86adae7cc4b8">PSV</option>
+                        <option value="d6c8e32b-6e66-46aa-9efb-564bea78de8b">Feyenoord</option>
+                        <option value="3453f1f4-2bcb-4241-8b3e-e184f6802963">Galatasaray</option>
+                        <option value="b6a1230a-60fa-484f-bf37-21e14405c5d7">Fenerbahçe</option>
+                        <option value="9e3d9652-d476-43a9-bfb7-e99bba891294">Beşiktaş</option>
+                        <option value="fe555b7c-6fb5-474f-b58f-73a297be0c25">Celtic</option>
+                        <option value="d3c0cfff-704f-461f-a7da-f65e0898eb0b">Rangers</option>
+                        <option value="d1d61831-69ba-415c-a0e1-43379c1b8ac9">Club Brugge</option>
+                        <option value="a0ff081f-15f7-4aac-96c5-e5b16388f451">Anderlecht</option>
+
+                    </select>
+
+                    <small
+                        class="
+                            ccfv-competition-config__help
+                        "
+                        id="champions-team-status"
+                    >
+                        Os 32 clubes da Season 01 estão disponíveis.
+                    </small>
 
                 </div>
 
