@@ -1,18 +1,36 @@
-RECUPERAÇÃO SEGURA
+CCFV CHAMPIONS — VÍNCULO FINAL
 
-Este pacote parte do painel administrativo original do CCFV.
-Ele não substitui o painel por uma versão simplificada.
+IMPORTANTE:
+Este pacote NÃO substitui admin/index.html.
+A página HTML que você já está usando já possui a opção Champions e o seletor.
+Somente admin/js/admin.js é substituído.
 
-Foi acrescentado somente:
-- Champions League no menu
-- Champions League no Novo Jogador
-- select com os 32 clubes reais da Season 01
-- vínculo via champions_register_player()
-- badge CHAMPIONS LEAGUE
+O que foi corrigido:
+- seletor usa os 32 IDs reais da Season 01;
+- ocupação dos clubes é lida da view pública;
+- Champions aparece no resumo "Competições selecionadas";
+- Champions é incluída em player_competitions;
+- champions_register_player() é chamado depois de o player existir;
+- editar jogador restaura Champions e clube;
+- badge "CHAMPIONS LEAGUE" aparece na lista;
+- duplicação de uma mesma competição/time é eliminada;
+- desmarcar Champions remove a inscrição por RPC;
+- erro na leitura do catálogo não derruba o cadastro geral.
 
-Substitua:
-admin/index.html
-admin/js/admin.js
+NENHUM SQL NOVO DE ESTRUTURA É NECESSÁRIO.
 
-Não execute instaladores anteriores.
-Não precisa executar novo SQL: o catálogo já foi confirmado com 32 clubes.
+Teste:
+Jogadores > Editar Léo Souza
+> marcar Champions League
+> Barcelona
+> Salvar
+
+Depois:
+Admin > Champions League > Clubes
+
+Barcelona deve mostrar Léo Souza.
+
+Depois:
+Página pública da Champions
+
+Barcelona deve mostrar Léo Souza.
