@@ -1,7 +1,70 @@
-CCFV CHAMPIONS — CORREÇÃO TOTAL V4
+CCFV CHAMPIONS — CORREÇÃO DEFINITIVA
 
-SUBSTITUIR:
-admin/index.html
+PROBLEMA IDENTIFICADO
+---------------------
+O erro vermelho do Admin era:
+"column championship_public_clubs.club_name does not exist"
+
+A view real da Champions possui:
+- championship_club_id
+- championship_id
+- club_id
+- slug
+- name
+- short_name
+- country
+- logo_path
+- sort_order
+- status
+- participant_id
+- participant_name
+- participant_platform
+
+O código antigo tentava usar "club_name" nessa view.
+Além disso, o cadastro do jogador estava consultando
+diretamente tabelas protegidas.
+
+SOLUÇÃO
+-------
+1. Um SQL de correção cria:
+   - championship_public_info
+   - championship_public_clubs_options
+   - champions_register_player(...)
+   - champions_unregister_player(...)
+
+2. admin.js:
+   - lê clubes somente pela view pública;
+   - grava vínculo jogador/clube pela RPC;
+   - não precisa mais de SELECT direto em championships;
+   - não precisa mais de SELECT/UPDATE direto em championship_clubs;
+   - não precisa mais de SELECT/DELETE direto em championship_registrations.
+
+3. admin/champions.html:
+   - Dashboard
+   - Temporada
+   - Clubes
+   - Sorteio
+   - Grupos
+   - Partidas
+   - Mata-mata
+   - Histórico
+   - SEM a aba Inscrições.
+
+4. pages/champions.html:
+   - 32 clubes fixos;
+   - 8 grupos A-H;
+   - 4 posições A DEFINIR em cada grupo;
+   - Oitavas, Quartas, Semifinais e Final já visíveis;
+   - A DEFINIR é substituído quando os dados reais existirem.
+
+ORDEM DE INSTALAÇÃO
+-------------------
+PASSO 1:
+Execute no Supabase:
+supabase/CCFV_CHAMPIONS_CORRECAO_DEFINITIVA.sql
+
+PASSO 2:
+Substitua no projeto:
 admin/js/admin.js
 admin/champions.html
 admin/js/champions.js
@@ -10,18 +73,24 @@ pages/champions.html
 css/champions.css
 js/champions.js
 
-O fluxo final é:
-JOGADORES > NOVO JOGADOR > CHAMPIONS LEAGUE > ESCOLHER CLUBE > SALVAR
+PASSO 3:
+Faça Ctrl + F5.
 
-A página Admin da Champions fica em:
- /admin/champions.html
+TESTE
+-----
+Admin > Jogadores > Novo Jogador
+> marcar Champions League
+> abrir o seletor
 
-Ela NÃO possui aba Inscrições.
+Os 32 clubes da Season 01 devem aparecer.
 
-A página pública fica em:
- /pages/champions.html
+Depois:
+> selecionar clube
+> preencher nome
+> salvar
 
-Os 32 clubes públicos estão fixos e usam:
-assets/images/champions/clubs/*.png
+O jogador deve aparecer em:
+Admin > Champions League > Clubes
 
-Não há instalador automático.
+Nunca cadastrar o treinador manualmente na página da Champions.
+O cadastro oficial é o cadastro geral de Jogadores.

@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="CCFV Champions League — Season 01">
 <title>Champions League — CCFV</title>
 <link rel="icon" type="image/png" href="../assets/images/logo/ccfv-logo.png">
@@ -27,71 +27,72 @@
 <a href="mobile.html" class="ccfv-header__link">Mobile</a>
 <a href="ranking.html" class="ccfv-header__link">Ranking</a>
 </nav>
-<a href="#groups" class="ccfv-header__action">CHAMPIONS</a>
+<a href="#grupos" class="ccfv-header__action">CHAMPIONS</a>
 </div>
 </header>
 
-<main class="ccfv-champions-page">
-<section class="ccfv-champions-hero">
-<div class="ccfv-champions-hero__grid"></div>
-<div class="ccfv-champions-container ccfv-champions-hero__inner">
+<main class="cl-public">
+<section class="cl-hero">
+<div class="cl-grid"></div>
+<div class="cl-container hero-grid">
 <div>
-<span class="ccfv-champions-kicker"><i></i> CCFV // COMPETIÇÃO DE ELITE</span>
-<div class="ccfv-champions-mark"><b>CCFV</b><span>CHAMPIONS</span></div>
+<span class="kicker"><i></i> CCFV // COMPETIÇÃO DE ELITE</span>
+<div class="mark"><b>CCFV</b><span>CHAMPIONS</span></div>
 <h1>CHAMPIONS <em>LEAGUE.</em></h1>
-<p>32 treinadores. 32 clubes. 8 grupos. Os dois melhores de cada grupo avançam para uma disputa de jogo único até a grande final.</p>
-<div class="ccfv-champions-stats">
+<p>32 treinadores. 32 clubes. 8 grupos. Os dois melhores de cada grupo avançam para uma disputa em jogo único até a grande final.</p>
+<div class="hero-stats">
 <div><strong>32</strong><span>CLUBES</span></div>
 <div><strong>8</strong><span>GRUPOS</span></div>
 <div><strong>48</strong><span>JOGOS DE GRUPOS</span></div>
 <div><strong>1</strong><span>CAMPEÃO</span></div>
 </div>
 </div>
-<aside class="ccfv-champions-season-card">
+<aside class="season-card">
 <span>CCFV // SEASON</span>
 <strong>SEASON 01</strong>
-<div id="champions-live-status">AGUARDANDO INSCRIÇÕES</div>
+<div class="status" id="season-status">AGUARDANDO INSCRIÇÕES</div>
 <div class="season-lines">
-<div><span>TREINADORES</span><strong id="live-participants">0 / 32</strong></div>
-<div><span>CLUBES OCUPADOS</span><strong id="live-occupied">0 / 32</strong></div>
-<div><span>FASE</span><strong id="live-phase">INSCRIÇÕES</strong></div>
+<div><span>TREINADORES</span><strong id="participants">0 / 32</strong></div>
+<div><span>CLUBES OCUPADOS</span><strong id="occupied">0 / 32</strong></div>
+<div><span>FASE</span><strong id="phase">INSCRIÇÕES</strong></div>
 </div>
 </aside>
 </div>
 </section>
 
-<section class="ccfv-champions-section">
-<div class="ccfv-champions-container">
-<div class="ccfv-champions-heading"><div><span>CCFV // CLUBES</span><h2>OS <b>32 CLUBES.</b></h2></div><p>Os clubes já estão definidos. O nome do treinador entra automaticamente quando o cadastro da Champions for confirmado.</p></div>
-<div class="ccfv-champions-clubs-grid" id="champions-clubs-grid"></div>
+<section class="cl-section">
+<div class="cl-container">
+<div class="section-head"><div><span>CCFV // CLUBES</span><h2>OS <b>32 CLUBES.</b></h2></div><p>Os clubes da Season 01 já estão definidos. O treinador aparece automaticamente após o cadastro.</p></div>
+<div id="clubs" class="club-grid"></div>
 </div>
 </section>
 
-<section class="ccfv-champions-section ccfv-champions-dark" id="groups">
-<div class="ccfv-champions-container">
-<div class="ccfv-champions-heading"><div><span>CCFV // DRAW + GROUPS</span><h2>GRUPOS <b>A — H.</b></h2></div><p>Os oito grupos já ficam visíveis. Antes do sorteio, todas as quatro posições mostram A DEFINIR.</p></div>
-<div class="ccfv-champions-groups-grid" id="champions-groups"></div>
+<section class="cl-section dark" id="grupos">
+<div class="cl-container">
+<div class="section-head"><div><span>CCFV // DRAW + GROUPS</span><h2>GRUPOS <b>A — H.</b></h2></div><p>A estrutura dos oito grupos já está pronta. O sorteio apenas preenche os quatro clubes de cada grupo.</p></div>
+<div id="groups" class="groups-public"></div>
 </div>
 </section>
 
-<section class="ccfv-champions-section">
-<div class="ccfv-champions-container">
-<div class="ccfv-champions-heading"><div><span>CCFV // MATCHDAY</span><h2>PARTIDAS <b>OFICIAIS.</b></h2></div><p>As 48 partidas da fase de grupos serão preenchidas depois do sorteio.</p></div>
-<div class="ccfv-champions-match-placeholder" id="matches-placeholder"><strong>48 JOGOS</strong><span>AGUARDANDO SORTEIO DOS GRUPOS</span></div>
+<section class="cl-section">
+<div class="cl-container">
+<div class="section-head"><div><span>CCFV // MATCHDAY</span><h2>PARTIDAS <b>OFICIAIS.</b></h2></div><p>As 48 partidas aparecem assim que os grupos forem sorteados.</p></div>
+<div id="group-matches" class="matches-placeholder"><strong>48 JOGOS</strong><span>AGUARDANDO SORTEIO DOS GRUPOS</span></div>
 </div>
 </section>
 
-<section class="ccfv-champions-section ccfv-champions-dark">
-<div class="ccfv-champions-container">
-<div class="ccfv-champions-heading"><div><span>CCFV // KNOCKOUT</span><h2>CAMINHO <b>DA GLÓRIA.</b></h2></div><p>O chaveamento já está preparado. Os classificados entram nas oitavas e avançam automaticamente.</p></div>
-<div class="ccfv-champions-knockout" id="knockout"></div>
+<section class="cl-section dark">
+<div class="cl-container">
+<div class="section-head"><div><span>CCFV // KNOCKOUT</span><h2>CAMINHO <b>DA GLÓRIA.</b></h2></div><p>Os classificados avançam automaticamente de fase após os resultados serem validados.</p></div>
+<div id="knockout" class="knockout-public"></div>
 </div>
 </section>
 
-<section class="ccfv-champions-section ccfv-champions-final">
-<div class="ccfv-champions-container"><div class="ccfv-champions-final-card"><span>CCFV // HALL DA FAMA</span><small>CAMPEÃO DA SEASON 01</small><h2 id="champion-name">A DEFINIR</h2><p id="champion-club">A grande taça ainda está em disputa.</p></div></div>
+<section class="cl-section final">
+<div class="cl-container"><div class="champion-card"><span>CCFV // HALL DA FAMA</span><small>CAMPEÃO DA SEASON 01</small><h2 id="champion">A DEFINIR</h2><p>A grande taça ainda está em disputa.</p></div></div>
 </section>
 </main>
+
 <script src="/admin/js/auth.js" defer></script>
 <script src="../js/champions.js" defer></script>
 </body>
