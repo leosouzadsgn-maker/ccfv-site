@@ -1,53 +1,20 @@
-CCFV CHAMPIONS — PAGINA PUBLICA
+CCFV CHAMPIONS — CORREÇÃO DO SELETOR
 
-Substitua estes 3 arquivos no projeto:
+Problema:
+O cadastro estava buscando diretamente championships/championship_clubs/
+championship_registrations. A tabela championships está protegida por RLS,
+e a leitura falhava com "permission denied for table championships".
 
-pages/champions.html
-css/champions.css
-js/champions.js
+Correção:
+admin/js/admin.js agora usa public.championship_public_clubs para preencher
+o seletor. Essa view já fornece championship_club_id, nome, escudo, status e
+participant_id.
 
-A pagina:
-- mostra os 32 clubes antes do sorteio;
-- mostra os grupos A-H com 4 vagas em cada grupo;
-- mostra o chaveamento Oitavas -> Quartas -> Semifinais -> Final;
-- usa A DEFINIR como estado inicial;
-- tenta carregar dados reais do Supabase quando estiverem disponíveis;
-- se o Supabase/RLS estiver indisponível, NAO esconde a estrutura;
-- os placeholders continuam visiveis.
+Também foi atualizado js/champions.js para usar a view pública e manter a
+estrutura da página visível mesmo sem sorteio.
 
-Caminho dos escudos:
-assets/images/champions/clubs/<slug>.png
-
-Slugs usados:
-arsenal
-chelsea
-liverpool
-manchester-city
-manchester-united
-newcastle-united
-tottenham-hotspur
-aston-villa
-real-madrid
-barcelona
-atletico-de-madrid
-athletic-club
-inter
-milan
-juventus
-napoli
-roma
-lazio
-atalanta
-psg
-marseille
-monaco
-lyon
-bayern-munchen
-borussia-dortmund
-bayer-leverkusen
-benfica
-porto
-sporting-cp
-ajax
-psv
-feyenoord
+Substitua:
+- admin/js/admin.js
+- js/champions.js
+- pages/champions.html
+- css/champions.css
