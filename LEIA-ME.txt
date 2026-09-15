@@ -1,48 +1,47 @@
-CCFV CHAMPIONS — CORREÇÃO DEFINITIVA DO CADASTRO
+CORREÇÃO DEFINITIVA CHAMPIONS — ADMIN
 
-CAUSA:
-O admin.js atual não tinha integração completa da Champions.
-O campo aparecia no HTML, mas o JavaScript não populava de forma confiável
-os clubes nem persistia o vínculo do treinador.
+CAUSA PRINCIPAL:
+O JS dependia de uma consulta à tabela/view da Champions para montar o select.
+Quando a leitura falhava, o código zerava o catálogo.
+Também existiam referências a campos aninhados/names antigos.
 
-A correção desta versão:
-- usa diretamente championship_clubs + champions_clubs;
-- NÃO usa a view quebrada que reclamava de sort_order;
-- popula os 32 clubes no select;
-- bloqueia clube já ocupado;
-- permite editar o próprio clube;
-- restaura Champions e clube ao editar;
-- grava championship_registrations;
-- grava participant_id/status em championship_clubs;
+ESTA VERSÃO:
+- usa os 32 championship_club_id reais da Season 01;
+- popula o select mesmo antes de consultar o banco;
+- consulta championship_clubs diretamente, sem relacionamento PostgREST;
+- não depende da tabela championships para o select existir;
+- permite editar jogadores;
+- restaura a Champions/clube na edição;
+- impede dois treinadores no mesmo clube;
+- salva championship_registrations;
+- salva o participant_id/status em championship_clubs;
 - grava CHAMPIONS_LEAGUE em player_competitions;
-- libera o clube ao desmarcar Champions;
-- libera o clube antes de excluir um jogador;
-- mantém Brasileirão, Night Cup e Mobile funcionando.
+- libera o clube quando a Champions é desmarcada;
+- mantém Brasileirão, Night Cup e Mobile.
 
-SQL:
-Execute uma única vez:
-supabase/00_PERMISSOES_CHAMPIONS_ADMIN.sql
-
-ARQUIVO:
+ARQUIVOS:
 Substituir somente:
 admin/js/admin.js
 
+No Supabase:
+executar uma vez:
+supabase/CHAMPIONS_PERMISSOES_ADMIN.sql
+
 TESTE:
 1. Ctrl+Shift+R
-2. Jogadores
+2. Admin > Jogadores
 3. Editar Léo Souza ou Novo Jogador
 4. Marcar Champions League
 5. Selecionar Barcelona
 6. Salvar
 
-Resultado esperado:
-Jogador = Léo Souza
-Champions League = selecionada
-Clube = Barcelona
+Depois:
+Admin > Champions League > Clubes
 
-Depois abra Admin > Champions League > Clubes.
-Barcelona deverá mostrar Léo Souza.
+Esperado:
+Barcelona | Léo Souza | CONFIRMED
 
-IMPORTANTE:
-Não rode os SQLs antigos que tentavam alterar a view championship_public_clubs.
-Esta versão não depende daquela view para o cadastro do treinador.
+Página pública:
+Barcelona deve aparecer com Léo Souza.
+
+NÃO execute instaladores antigos da Champions.
