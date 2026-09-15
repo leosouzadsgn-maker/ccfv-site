@@ -1055,22 +1055,16 @@
                 await getSupabase();
 
             /*
-             * A tabela championships possui RLS no projeto.
-             * Para o cadastro de jogador precisamos somente dos
-             * clubes da edição, então usamos a VIEW pública que
-             * já foi criada para esse fim.
-             *
-             * Isso evita o erro:
-             * "permission denied for table championships"
+             * As tabelas internas da Champions possuem RLS.
+             * Para o cadastro do jogador, precisamos apenas do
+             * catálogo público da edição e dos IDs de vínculo.
              */
             const {
                 data: publicClubs,
                 error: publicClubsError
             } =
                 await client
-                    .from(
-                        "championship_public_clubs"
-                    )
+                    .from("championship_public_clubs")
                     .select(`
                         championship_club_id,
                         championship_id,
@@ -1078,31 +1072,26 @@
                         slug,
                         name,
                         short_name,
-                        country,
                         logo_path,
+                        country,
                         status,
                         participant_id,
                         participant_name,
                         participant_platform
-                    `)
-                    .order(
-                        "name"
-                    );
+                    `);
 
-            if (
-                publicClubsError
-            ) {
+            if (publicClubsError) {
                 throw publicClubsError;
             }
 
             const rows =
-                publicClubs ||
-                [];
+                (publicClubs || [])
+                    .filter(
+                        row =>
+                            row.championship_id
+                    );
 
-            if (
-                !rows.length
-            ) {
-
+            if (!rows.length) {
                 championsSeason = null;
                 championsClubs = [];
                 championsRegistrations = [];
@@ -1113,13 +1102,15 @@
             }
 
             /*
-             * A view já traz tudo que precisamos para o seletor:
-             * championship_club_id = id real de championship_clubs
-             * name/logo/status/participant.
+             * Atualmente a Season 01 é a edição ativa.
+             * O ID real vem da própria view pública.
              */
+            const championshipId =
+                rows[0].championship_id;
+
             championsSeason = {
                 id:
-                    rows[0].championship_id,
+                    championshipId,
 
                 code:
                     CHAMPIONS_CODE,
@@ -1131,9 +1122,6 @@
                     "DRAFT",
 
                 max_participants:
-                    32,
-
-                total_clubs:
                     32
             };
 
@@ -1150,8 +1138,7 @@
                             row.club_id,
 
                         status:
-                            row.status ||
-                            "AVAILABLE",
+                            row.status,
 
                         participant_id:
                             row.participant_id,
@@ -1182,48 +1169,53 @@
                 );
 
             /*
-             * Monta um cache de inscrições a partir da mesma view.
-             * Assim o modo EDITAR também consegue encontrar o clube
-             * do jogador sem SELECT direto em championship_registrations.
+             * A associação atual do treinador já está disponível
+             * na view pública pelo participant_id.
+             *
+             * Não dependemos de SELECT na tabela interna de
+             * championship_registrations para preencher o clube.
              */
             championsRegistrations =
-                rows
+                championsClubs
                     .filter(
-                        row =>
-                            Boolean(
-                                row.participant_id
-                            )
+                        club =>
+                            club.participant_id
                     )
                     .map(
-                        row => ({
+                        club => ({
                             id:
-                                `view-${row.championship_club_id}`,
+                                null,
 
                             championship_id:
-                                row.championship_id,
+                                championshipId,
 
                             participant_id:
-                                row.participant_id,
+                                club.participant_id,
 
                             selected_club_id:
-                                row.championship_club_id,
+                                club.id,
 
                             status:
-                                row.status === "CONFIRMED"
-                                    ? "CONFIRMED"
-                                    : "PENDING"
+                                "CONFIRMED"
                         })
                     );
 
             refreshChampionsTeamOptions();
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
                 "CCFV // CHAMPIONS LOAD ERROR:",
                 error
             );
 
+            /*
+             * Não derruba o cadastro geral.
+             * A única coisa que fica indisponível é o seletor
+             * da Champions, caso a view pública realmente falhe.
+             */
             championsSeason = null;
             championsClubs = [];
             championsRegistrations = [];
@@ -1232,9 +1224,7 @@
         }
     }
 
-
-
-function refreshChampionsTeamOptions() {
+    function refreshChampionsTeamOptions() {
 
         if (!dom.championsTeam) {
             return;
@@ -3913,14 +3903,58 @@ function refreshChampionsTeamOptions() {
 
     function bindPlayerModal() {
 
+        /*
+         * Delegação de evento: mesmo que algum script do painel
+         * seja carregado em outra ordem, o botão + NOVO JOGADOR
+         * continua abrindo o modal.
+         */
+        document.addEventListener(
+            "click",
+            event => {
+
+                const target =
+                    event.target.closest(
+                        "#new-player-button, [data-open-new-player]"
+                    );
+
+                if (!target) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                try {
+                    openNewPlayer();
+                }
+                catch (error) {
+                    console.error(
+                        "CCFV // OPEN PLAYER MODAL ERROR:",
+                        error
+                    );
+                    showToast(
+                        error?.message ||
+                        "NÃO FOI POSSÍVEL ABRIR O CADASTRO."
+                    );
+                }
+            }
+        );
+
+
         dom.newPlayerButton?.addEventListener(
             "click",
-            openNewPlayer
+            event => {
+                event.preventDefault();
+                openNewPlayer();
+            }
         );
+
 
         dom.mobileNewPlayerButton?.addEventListener(
             "click",
-            openNewMobilePlayer
+            event => {
+                event.preventDefault();
+                openNewMobilePlayer();
+            }
         );
 
 
@@ -3929,7 +3963,10 @@ function refreshChampionsTeamOptions() {
 
                 button.addEventListener(
                     "click",
-                    openNewPlayer
+                    event => {
+                        event.preventDefault();
+                        openNewPlayer();
+                    }
                 );
 
             }
@@ -3941,7 +3978,10 @@ function refreshChampionsTeamOptions() {
 
                 button.addEventListener(
                     "click",
-                    closePlayerModal
+                    event => {
+                        event.preventDefault();
+                        closePlayerModal();
+                    }
                 );
 
             }
@@ -3961,15 +4001,8 @@ function refreshChampionsTeamOptions() {
                 const file =
                     event.target.files?.[0];
 
-
-                if (
-                    file
-                ) {
-
-                    setPhotoPreview(
-                        file
-                    );
-
+                if (file) {
+                    setPhotoPreview(file);
                 }
 
             }
@@ -4018,89 +4051,82 @@ function refreshChampionsTeamOptions() {
             ?.addEventListener(
                 "change",
                 () => {
-                    // Ao trocar de plataforma, remove seleções incompatíveis.
-                    if (dom.playerPlatform.value === "MOBILE") {
-                        dom.competitionBrasileirao.checked = false;
-                        dom.competitionNight.checked = false;
-                    } else {
-                        dom.competitionBrasileiraoMobile.checked = false;
-                        dom.competitionArenaMobile.checked = false;
+
+                    if (
+                        dom.playerPlatform.value ===
+                        "MOBILE"
+                    ) {
+
+                        dom.competitionBrasileirao.checked =
+                            false;
+
+                        dom.competitionNight.checked =
+                            false;
+
+                        if (dom.champions) {
+                            dom.champions.checked =
+                                false;
+                        }
+
                     }
+                    else {
+
+                        dom.competitionBrasileiraoMobile.checked =
+                            false;
+
+                        dom.competitionArenaMobile.checked =
+                            false;
+
+                    }
+
                     updateCompetitionUI();
+
                     refreshChampionsTeamOptions();
+
                     refreshBrasileiraoMobileTeamOptions();
+
                 }
             );
 
+
         dom.competitionBrasileiraoMobile
-            ?.addEventListener("change", updateCompetitionUI);
+            ?.addEventListener(
+                "change",
+                updateCompetitionUI
+            );
+
 
         dom.competitionArenaMobile
-            ?.addEventListener("change", updateCompetitionUI);
+            ?.addEventListener(
+                "change",
+                updateCompetitionUI
+            );
+
 
         dom.brasileiraoMobileTeam
-            ?.addEventListener("change", () => {
-                refreshBrasileiraoMobileTeamOptions();
-                updateCompetitionSummary();
-            });
-
-        dom.arenaMobileTeam
-            ?.addEventListener("input", updateCompetitionSummary);
-
-        dom.brasileiraoTeam
-            ?.addEventListener("change", updateCompetitionSummary);
-
-        dom.nightTeam
-            ?.addEventListener("input", updateCompetitionSummary);
-
-
-        /*
-         * Clique no card inteiro.
-         */
-
-       
-
-        /*
-         * Troca de clube.
-         */
-
-        dom.brasileiraoTeam
             ?.addEventListener(
                 "change",
                 () => {
 
-                    rebuildOccupiedBrasileiraoTeams(
-                        editingPlayerId
-                    );
+                    refreshBrasileiraoMobileTeamOptions();
 
-
-                    const selectedTeam =
-                        normalizeTeamName(
-                            dom.brasileiraoTeam.value
-                        );
-
-
-                    if (
-                        selectedTeam &&
-                        occupiedBrasileiraoTeams.has(
-                            selectedTeam
-                        )
-                    ) {
-
-                        dom.brasileiraoTeam.value =
-                            "";
-
-
-                        showToast(
-                            "ESSE CLUBE JÁ FOI ESCOLHIDO POR OUTRO JOGADOR."
-                        );
-
-                    }
-
-
-                    refreshBrasileiraoTeamOptions();
+                    updateCompetitionSummary();
 
                 }
+            );
+
+
+        dom.arenaMobileTeam
+            ?.addEventListener(
+                "input",
+                updateCompetitionSummary
+            );
+
+
+        dom.brasileiraoTeam
+            ?.addEventListener(
+                "change",
+                updateCompetitionSummary
             );
 
 
@@ -4112,16 +4138,13 @@ function refreshChampionsTeamOptions() {
                     event.key ===
                     "Escape"
                 ) {
-
                     closePlayerModal();
-
                 }
 
             }
         );
 
     }
-
 
     /* =====================================================
        BUSCA / FILTROS

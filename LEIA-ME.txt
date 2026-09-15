@@ -1,43 +1,19 @@
-CCFV CHAMPIONS — TIMES CORRIGIDOS
+CCFV CHAMPIONS — CORREÇÃO UI FINAL
 
-Os 32 clubes agora correspondem EXATAMENTE aos escudos existentes na pasta:
-assets/images/champions/clubs
-
-Ordem:
-01 Ajax — ajax.png
-02 Anderlecht — anderlecht.png
-03 Arsenal — arsenal.png
-04 Atlético de Madrid — atletico_madrid.png
-05 Barcelona — barcelona.png
-06 Benfica — benfica.png
-07 Beşiktaş — besiktas.png
-08 Braga — braga.png
-09 Celtic — celtic.png
-10 Chelsea — chelsea.png
-11 Club Brugge — club_brugge.png
-12 Fenerbahçe — fenerbahce.png
-13 Feyenoord — feyenoord.png
-14 Galatasaray — galatasaray.png
-15 Inter de Milão — inter_milao.png
-16 Juventus — juventus.png
-17 Lazio — lazio.png
-18 Liverpool — liverpool.png
-19 Lyon — lyon.png
-20 Manchester City — manchester_city.png
-21 Manchester United — manchester_united.png
-22 Marseille — marseille.png
-23 Milan — milan.png
-24 Monaco — monaco.png
-25 Napoli — napoli.png
-26 Porto — porto.png
-27 PSG — psg.png
-28 PSV — psv.png
-29 Rangers — rangers.png
-30 Real Madrid — real_madrid.png
-31 Roma — roma.png
-32 Sporting CP — sporting.png
-
-Substitua:
+Arquivos:
+admin/js/admin.js
+admin/champions.html
+admin/js/champions.js
+admin/css/champions.css
 pages/champions.html
 css/champions.css
 js/champions.js
+
+CORREÇÕES:
+1. O + NOVO JOGADOR usa delegação de evento no admin.js e continua abrindo o modal.
+2. O seletor da Champions lê os clubes pela view pública championship_public_clubs, evitando o permission denied da tabela championships.
+3. A página /admin/champions.html não possui mais a aba Inscrições.
+4. Os botões Dashboard, Temporada, Clubes, Sorteio, Grupos, Partidas, Mata-mata e Histórico trocam de tela.
+5. O Admin da Champions lê clubes/classificação/partidas pelas views públicas.
+6. O catálogo mostra treinador/participante ao lado do clube.
+7. A página pública mantém grupos A-H e mata-mata visíveis com A DEFINIR antes do sorteio.

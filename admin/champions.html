@@ -24,8 +24,7 @@
             <a href="#dashboard" data-tab="dashboard" class="is-active">Dashboard</a>
             <a href="#season" data-tab="season">Temporada</a>
             <a href="#clubs" data-tab="clubs">Clubes</a>
-            <a href="#registrations" data-tab="registrations">Inscrições</a>
-            <a href="#draw" data-tab="draw">Sorteio</a>
+<a href="#draw" data-tab="draw">Sorteio</a>
             <a href="#groups" data-tab="groups">Grupos</a>
             <a href="#matches" data-tab="matches">Partidas</a>
             <a href="#knockout" data-tab="knockout">Mata-mata</a>
@@ -96,8 +95,6 @@
                     <label><span>Status</span>
                         <select id="season-status">
                             <option value="DRAFT">DRAFT</option>
-                            <option value="REGISTRATIONS">INSCRIÇÕES</option>
-                            <option value="CLUB_SELECTION">ESCOLHA DE CLUBE</option>
                             <option value="DRAW">SORTEIO</option>
                             <option value="GROUP_STAGE">FASE DE GRUPOS</option>
                             <option value="ROUND_OF_16">OITAVAS</option>
@@ -125,29 +122,7 @@
                 </div>
             </article>
         </section>
-
-        <section class="admin-tab" id="tab-registrations" data-panel="registrations">
-            <div class="section-title"><span>CCFV // PARTICIPANTS</span><h2>INSCRIÇÕES</h2></div>
-            <div class="admin-grid admin-grid--2">
-                <article class="admin-card">
-                    <header><div><span>NOVA INSCRIÇÃO</span><h2>VINCULAR JOGADOR</h2></div></header>
-                    <div class="form-grid">
-                        <label class="span-2"><span>Jogador</span><select id="player-select"></select></label>
-                        <label class="span-2"><span>Clube</span><select id="player-club-select"></select></label>
-                    </div>
-                    <div class="form-actions"><button class="btn btn-primary" id="btn-register-player">Confirmar inscrição</button></div>
-                    <p class="admin-help">Apenas jogadores PC/CONSOLE ativos são aceitos pela regra da Champions.</p>
-                </article>
-
-                <article class="admin-card">
-                    <header><div><span>VAGAS</span><h2>PARTICIPANTES</h2></div></header>
-                    <div class="registration-counter" id="registration-counter">0 / 32</div>
-                    <div class="table-wrap"><table><thead><tr><th>Jogador</th><th>Plataforma</th><th>Clube</th><th>Status</th></tr></thead><tbody id="registrations-table"></tbody></table></div>
-                </article>
-            </div>
-        </section>
-
-        <section class="admin-tab" id="tab-draw" data-panel="draw">
+<section class="admin-tab" id="tab-draw" data-panel="draw">
             <div class="section-title"><span>CCFV // DRAW</span><h2>POTES + SORTEIO</h2></div>
             <div class="admin-grid admin-grid--2">
                 <article class="admin-card">
