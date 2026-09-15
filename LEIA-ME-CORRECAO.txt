@@ -1,0 +1,24 @@
+CCFV CHAMPIONS LEAGUE — CORREÇÃO DEFINITIVA
+
+1. No Supabase, execute:
+   CHAMPIONS_CORRECAO_BANCO.sql
+
+2. No projeto, substitua:
+   admin/js/admin.js
+   pelo admin.js deste pacote.
+
+3. Atualize o navegador com Ctrl + Shift + R.
+
+4. Teste:
+   Admin > Jogadores > Novo Jogador > Champions League.
+   O campo Clube da Champions deve mostrar os 32 clubes.
+
+5. Salve um jogador com um clube.
+   Depois abra Editar e confirme que o mesmo clube volta selecionado.
+
+6. Admin > Champions League > Clubes deve mostrar o treinador vinculado.
+
+A correção remove a dependência do relacionamento aninhado no carregamento
+javascript e corrige a view pública championship_public_clubs.
+
+Não executar os SQLs antigos da view championship_public_clubs.

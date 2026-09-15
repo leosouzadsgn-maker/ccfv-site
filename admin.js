@@ -1048,193 +1048,87 @@
        ===================================================== */
 
     async function loadChampionsData() {
-
         try {
+            const client = await getSupabase();
 
-            const client =
-                await getSupabase();
+            const { data: season, error: seasonError } = await client
+                .from(CHAMPIONSHIPS_TABLE)
+                .select("id, code, name, season, status, max_participants")
+                .eq("code", CHAMPIONS_CODE)
+                .maybeSingle();
 
-            /*
-             * A tabela championships possui RLS no projeto.
-             * Para o cadastro de jogador precisamos somente dos
-             * clubes da edição, então usamos a VIEW pública que
-             * já foi criada para esse fim.
-             *
-             * Isso evita o erro:
-             * "permission denied for table championships"
-             */
-            const {
-                data: publicClubs,
-                error: publicClubsError
-            } =
-                await client
-                    .from(
-                        "championship_public_clubs"
-                    )
-                    .select(`
-                        championship_club_id,
-                        championship_id,
-                        club_id,
-                        slug,
-                        name,
-                        short_name,
-                        country,
-                        logo_path,
-                        status,
-                        participant_id,
-                        participant_name,
-                        participant_platform
-                    `)
-                    .order(
-                        "name"
-                    );
+            if (seasonError) throw seasonError;
 
-            if (
-                publicClubsError
-            ) {
-                throw publicClubsError;
-            }
+            championsSeason = season || null;
+            championsClubs = [];
+            championsRegistrations = [];
 
-            const rows =
-                publicClubs ||
-                [];
-
-            if (
-                !rows.length
-            ) {
-
-                championsSeason = null;
-                championsClubs = [];
-                championsRegistrations = [];
-
+            if (!championsSeason) {
                 refreshChampionsTeamOptions();
-
                 return;
             }
 
             /*
-             * A view já traz tudo que precisamos para o seletor:
-             * championship_club_id = id real de championship_clubs
-             * name/logo/status/participant.
+             * IMPORTANT:
+             * Não usamos relacionamento aninhado entre championship_clubs
+             * e champions_clubs. O PostgREST pode falhar dependendo das
+             * FKs/RLS do projeto. Carregamos as duas tabelas separadamente
+             * e montamos o catálogo no navegador.
              */
-            championsSeason = {
-                id:
-                    rows[0].championship_id,
+            const [catalogResult, assignmentsResult, registrationsResult] = await Promise.all([
+                client
+                    .from("champions_clubs")
+                    .select("id, name, short_name, slug, logo_path, country, sort_order")
+                    .order("sort_order", { ascending: true }),
+                client
+                    .from(CHAMPIONS_CLUBS_TABLE)
+                    .select("id, championship_id, club_id, status, participant_id, pot_number")
+                    .eq("championship_id", championsSeason.id),
+                client
+                    .from(CHAMPIONS_REGISTRATIONS_TABLE)
+                    .select("*")
+                    .eq("championship_id", championsSeason.id)
+            ]);
 
-                code:
-                    CHAMPIONS_CODE,
+            if (catalogResult.error) throw catalogResult.error;
+            if (assignmentsResult.error) throw assignmentsResult.error;
+            if (registrationsResult.error) throw registrationsResult.error;
 
-                season_label:
-                    "SEASON 01",
+            const catalogById = new Map(
+                (catalogResult.data || []).map(club => [String(club.id), club])
+            );
 
-                status:
-                    "DRAFT",
+            championsClubs = (assignmentsResult.data || [])
+                .map(assignment => ({
+                    ...assignment,
+                    champions_clubs: catalogById.get(String(assignment.club_id)) || null
+                }))
+                .filter(item => item.champions_clubs);
 
-                max_participants:
-                    32,
-
-                total_clubs:
-                    32
-            };
-
-            championsClubs =
-                rows.map(
-                    row => ({
-                        id:
-                            row.championship_club_id,
-
-                        championship_id:
-                            row.championship_id,
-
-                        club_id:
-                            row.club_id,
-
-                        status:
-                            row.status ||
-                            "AVAILABLE",
-
-                        participant_id:
-                            row.participant_id,
-
-                        pot_number:
-                            null,
-
-                        champions_clubs: {
-                            id:
-                                row.club_id,
-
-                            name:
-                                row.name,
-
-                            short_name:
-                                row.short_name,
-
-                            logo_path:
-                                row.logo_path,
-
-                            country:
-                                row.country,
-
-                            sort_order:
-                                999
-                        }
-                    })
-                );
-
-            /*
-             * Monta um cache de inscrições a partir da mesma view.
-             * Assim o modo EDITAR também consegue encontrar o clube
-             * do jogador sem SELECT direto em championship_registrations.
-             */
-            championsRegistrations =
-                rows
-                    .filter(
-                        row =>
-                            Boolean(
-                                row.participant_id
-                            )
-                    )
-                    .map(
-                        row => ({
-                            id:
-                                `view-${row.championship_club_id}`,
-
-                            championship_id:
-                                row.championship_id,
-
-                            participant_id:
-                                row.participant_id,
-
-                            selected_club_id:
-                                row.championship_club_id,
-
-                            status:
-                                row.status === "CONFIRMED"
-                                    ? "CONFIRMED"
-                                    : "PENDING"
-                        })
-                    );
+            championsRegistrations = registrationsResult.data || [];
 
             refreshChampionsTeamOptions();
 
         } catch (error) {
-
-            console.error(
-                "CCFV // CHAMPIONS LOAD ERROR:",
-                error
-            );
+            console.error("CCFV // CHAMPIONS LOAD ERROR:", error);
 
             championsSeason = null;
             championsClubs = [];
             championsRegistrations = [];
-
             refreshChampionsTeamOptions();
+
+            /*
+             * Não transformamos qualquer falha de uma view pública em
+             * "0 clubes". O cadastro usa diretamente as tabelas oficiais.
+             */
+            if (dom.championsTeamStatus) {
+                dom.championsTeamStatus.textContent =
+                    error?.message || "Erro ao carregar clubes da Champions.";
+            }
         }
     }
 
-
-
-function refreshChampionsTeamOptions() {
+    function refreshChampionsTeamOptions() {
 
         if (!dom.championsTeam) {
             return;
