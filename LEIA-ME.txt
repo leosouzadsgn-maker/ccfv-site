@@ -1,6 +1,7 @@
-CCFV CHAMPIONS — CORREÇÃO UI FINAL
+CCFV CHAMPIONS — CORREÇÃO TOTAL V4
 
-Arquivos:
+SUBSTITUIR:
+admin/index.html
 admin/js/admin.js
 admin/champions.html
 admin/js/champions.js
@@ -9,11 +10,18 @@ pages/champions.html
 css/champions.css
 js/champions.js
 
-CORREÇÕES:
-1. O + NOVO JOGADOR usa delegação de evento no admin.js e continua abrindo o modal.
-2. O seletor da Champions lê os clubes pela view pública championship_public_clubs, evitando o permission denied da tabela championships.
-3. A página /admin/champions.html não possui mais a aba Inscrições.
-4. Os botões Dashboard, Temporada, Clubes, Sorteio, Grupos, Partidas, Mata-mata e Histórico trocam de tela.
-5. O Admin da Champions lê clubes/classificação/partidas pelas views públicas.
-6. O catálogo mostra treinador/participante ao lado do clube.
-7. A página pública mantém grupos A-H e mata-mata visíveis com A DEFINIR antes do sorteio.
+O fluxo final é:
+JOGADORES > NOVO JOGADOR > CHAMPIONS LEAGUE > ESCOLHER CLUBE > SALVAR
+
+A página Admin da Champions fica em:
+ /admin/champions.html
+
+Ela NÃO possui aba Inscrições.
+
+A página pública fica em:
+ /pages/champions.html
+
+Os 32 clubes públicos estão fixos e usam:
+assets/images/champions/clubs/*.png
+
+Não há instalador automático.

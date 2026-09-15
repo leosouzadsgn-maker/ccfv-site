@@ -1948,7 +1948,24 @@
 
         }
 
-    </style>
+    
+/* =====================================================
+   CCFV CHAMPIONS — LINK EXTERNO DO ADMIN
+   ===================================================== */
+
+.ccfv-admin-nav__link {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    color:inherit;
+}
+
+.ccfv-admin-nav__link:hover {
+    text-decoration:none;
+}
+
+</style>
 
 </head>
 
@@ -2050,6 +2067,18 @@
                 Brasileirão
 
             </button>
+
+
+            <a
+                href="/admin/champions.html"
+                class="ccfv-admin-nav__item ccfv-admin-nav__link"
+            >
+
+                <span>🏆</span>
+
+                Champions League
+
+            </a>
 
 
             <button
@@ -4133,13 +4162,12 @@
 
                     </label>
 
+
                     <label
                         class="
                             ccfv-competition-check
                         "
-                        id="
-                            competition-champions-label
-                        "
+                        id="competition-champions-label"
                     >
 
                         <input
@@ -4160,13 +4188,18 @@
                                 ccfv-competition-check__content
                             "
                         >
-                            <strong>CHAMPIONS LEAGUE</strong>
-                            <small>Representa um clube</small>
+
+                            <strong>
+                                CHAMPIONS LEAGUE
+                            </strong>
+
+                            <small>
+                                Representa um clube
+                            </small>
+
                         </span>
 
                     </label>
-
-
 
 
                     <label
@@ -4392,28 +4425,44 @@
 
                 </div>
 
+
                 <div
-                    class="
-                        ccfv-competition-config
-                    "
+                    class="ccfv-competition-config"
                     id="champions-config"
                     style="display:none"
                 >
+
                     <span
-                        class="
-                            ccfv-competition-config__label
-                        "
-                    >CLUBE DA CHAMPIONS LEAGUE</span>
-                    <select id="champions-team" disabled>
-                        <option value="">Carregando clubes...</option>
+                        class="ccfv-competition-config__label"
+                    >
+                        CLUBE DA CHAMPIONS LEAGUE
+                    </span>
+
+                    <select
+                        id="champions-team"
+                        disabled
+                    >
+
+                        <option value="">
+                            Selecione o clube
+                        </option>
+
                     </select>
+
                     <small
                         id="champions-team-status"
-                        style="display:block;margin-top:7px;color:rgba(255,255,255,.25);font-size:7px;"
-                    >Marque Champions League para selecionar o clube.</small>
+                        style="
+                            display:block;
+                            margin-top:7px;
+                            color:rgba(255,255,255,.20);
+                            font-size:7px;
+                            line-height:1.5;
+                        "
+                    >
+                        Selecione a Champions League para escolher o clube.
+                    </small>
+
                 </div>
-
-
 
 
                 <div

@@ -3,853 +3,400 @@
 
     const state = {
         client: null,
-        user: null,
         championshipId: null,
-        championship: {
-            season_label: "SEASON 01",
-            status: "DRAFT",
-            max_participants: 32,
-            total_clubs: 32
-        },
         clubs: [],
-        pots: [],
-        groups: [],
         standings: [],
         matches: [],
         history: [],
-        hall: []
-    };
-
-    const phaseLabel = {
-        DRAFT: "DRAFT",
-        REGISTRATIONS: "INSCRIÇÕES",
-        CLUB_SELECTION: "ESCOLHA DE CLUBE",
-        DRAW: "SORTEIO",
-        GROUP_STAGE: "GRUPOS",
-        ROUND_OF_16: "OITAVAS",
-        QUARTERFINALS: "QUARTAS",
-        SEMIFINALS: "SEMIFINAIS",
-        FINAL: "FINAL",
-        CLOSED: "ENCERRADA",
-        ARCHIVED: "ARQUIVADA"
+        pots: []
     };
 
     const esc = value => String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
 
-    function showMessage(text, error = false) {
-        const el = document.querySelector("#global-message");
-        if (!el) return;
+    const phaseLabel = {
+        DRAFT:"DRAFT",
+        REGISTRATIONS:"INSCRIÇÕES",
+        CLUB_SELECTION:"ESCOLHA DE CLUBE",
+        DRAW:"SORTEIO",
+        GROUP_STAGE:"GRUPOS",
+        ROUND_OF_16:"OITAVAS",
+        QUARTERFINALS:"QUARTAS",
+        SEMIFINALS:"SEMIFINAIS",
+        FINAL:"FINAL",
+        CLOSED:"ENCERRADA",
+        ARCHIVED:"ARQUIVADA"
+    };
+
+    async function client() {
+        if (state.client) return state.client;
+        if (!window.CCFVAuth?.getClient) throw new Error("Autenticação CCFV indisponível.");
+        state.client = await window.CCFVAuth.getClient();
+        return state.client;
+    }
+
+    function message(text, error = false) {
+        const el = document.querySelector("#admin-message");
         el.hidden = false;
         el.textContent = text;
-        el.classList.toggle("is-error", error);
+        el.classList.toggle("error", error);
     }
 
-    async function getClient() {
-        if (window.CCFVAuth?.getClient) {
-            return window.CCFVAuth.getClient();
-        }
+    async function load() {
+        const db = await client();
 
-        const start = Date.now();
-
-        while (!window.CCFVAuth?.getClient) {
-            if (Date.now() - start > 10000) {
-                throw new Error("Supabase não está disponível.");
-            }
-            await new Promise(resolve => setTimeout(resolve, 100));
-        }
-
-        return window.CCFVAuth.getClient();
-    }
-
-    async function loadPublicData() {
         /*
-         * Todas as leituras públicas passam pelas views que já estão
-         * liberadas. Assim o Admin não quebra por RLS de leitura.
+         * A view pública é a fonte de leitura principal.
          */
-        const clubsResult = await state.client
+        const clubs = await db
             .from("championship_public_clubs")
             .select("*")
-            .limit(100);
+            .order("club_name");
 
-        if (clubsResult.error) {
-            throw clubsResult.error;
+        if (clubs.error) throw clubs.error;
+
+        state.clubs = clubs.data || [];
+
+        if (state.clubs.length) {
+            state.championshipId = state.clubs[0].championship_id;
         }
 
-        state.clubs = clubsResult.data || [];
-
-        if (!state.clubs.length) {
-            state.championshipId = null;
-            render();
+        if (!state.championshipId) {
+            renderAll();
             return;
         }
 
-        state.championshipId =
-            state.clubs[0].championship_id;
+        const [standings,matches,history] = await Promise.all([
+            db.from("championship_public_standings")
+                .select("*")
+                .eq("championship_id",state.championshipId)
+                .order("group_code")
+                .order("position"),
 
-        const [standingsResult, matchesResult] =
-            await Promise.all([
-                state.client
-                    .from("championship_public_standings")
-                    .select("*")
-                    .eq("championship_id", state.championshipId)
-                    .order("group_code")
-                    .order("position"),
+            db.from("championship_public_matches")
+                .select("*")
+                .eq("championship_id",state.championshipId)
+                .order("match_number"),
 
-                state.client
-                    .from("championship_public_matches")
-                    .select("*")
-                    .eq("championship_id", state.championshipId)
-                    .order("phase")
-                    .order("match_number")
-            ]);
+            db.from("championship_history")
+                .select("*")
+                .eq("championship_id",state.championshipId)
+        ]);
 
-        if (standingsResult.error) {
-            console.warn("Standings:", standingsResult.error);
-        }
+        /*
+         * Algumas instalações podem bloquear tabelas de histórico.
+         * O restante da tela não pode quebrar por isso.
+         */
+        state.standings = standings.error ? [] : (standings.data || []);
+        state.matches = matches.error ? [] : (matches.data || []);
+        state.history = history.error ? [] : (history.data || []);
 
-        if (matchesResult.error) {
-            console.warn("Matches:", matchesResult.error);
-        }
-
-        state.standings = standingsResult.data || [];
-        state.matches = matchesResult.data || [];
-
-        render();
+        renderAll();
     }
 
-    function render() {
+    function renderAll() {
+        const participants = new Set(
+            state.clubs.map(c => c.participant_id).filter(Boolean)
+        ).size;
+
         const occupied = state.clubs.filter(
-            item => item.participant_id
+            c => c.participant_id
         ).length;
-
-        const qualified = state.standings.filter(
-            item => item.qualified
-        ).length;
-
-        const champion =
-            state.matches.find(
-                item =>
-                    item.phase === "FINAL" &&
-                    item.winner_registration_id
-            );
-
-        document.querySelector("#kpi-status").textContent =
-            phaseLabel[state.championship.status] ||
-            state.championship.status;
 
         document.querySelector("#kpi-participants").textContent =
-            `${occupied} / 32`;
+            `${participants} / 32`;
 
         document.querySelector("#kpi-clubs").textContent =
             `${occupied} / 32`;
 
         document.querySelector("#kpi-matches").textContent =
-            String(state.matches.length);
+            `${state.matches.length} / 96`;
 
-        document.querySelector("#kpi-qualified").textContent =
-            String(qualified);
-
-        document.querySelector("#kpi-champion").textContent =
-            champion?.winner_club_name ||
-            "A DEFINIR";
+        document.querySelector("#kpi-phase").textContent =
+            state.matches.length ? "EM ANDAMENTO" : "INSCRIÇÕES";
 
         renderClubs();
         renderGroups();
         renderMatches();
         renderKnockout();
+        renderHistory();
     }
 
     function renderClubs() {
-        const tbody = document.querySelector("#clubs-table");
-        if (!tbody) return;
+        const body = document.querySelector("#clubs-body");
 
-        tbody.innerHTML =
-            state.clubs
-                .sort((a, b) =>
-                    String(a.name || "").localeCompare(
-                        String(b.name || ""),
-                        "pt-BR"
-                    )
-                )
-                .map(club => `
-                    <tr>
-                        <td>
-                            <strong>${esc(club.name)}</strong>
-                        </td>
-                        <td>${esc(club.country || "—")}</td>
-                        <td>
-                            <strong>
-                                ${esc(club.participant_name || "A DEFINIR")}
-                            </strong>
-                        </td>
-                        <td>
-                            <span class="status-pill">
-                                ${esc(club.status || "AVAILABLE")}
-                            </span>
-                        </td>
-                        <td>${esc(club.pot_number ?? "—")}</td>
-                    </tr>
-                `)
-                .join("");
+        body.innerHTML = state.clubs.map(club => `
+            <tr>
+                <td><img src="${esc(club.logo_path || "")}" alt=""></td>
+                <td><strong>${esc(club.club_name || club.name || "CLUBE")}</strong></td>
+                <td>${esc(club.country || "—")}</td>
+                <td>${esc(club.participant_name || "A DEFINIR")}</td>
+                <td><span class="club-status">${esc(club.status || "AVAILABLE")}</span></td>
+                <td>${esc(club.pot_number ?? "—")}</td>
+            </tr>
+        `).join("");
+
+        const pots = [1,2,3,4];
+        document.querySelector("#pots-body").innerHTML = pots.map(n => `
+            <div class="pot"><strong>8</strong><span>POTE ${n}</span></div>
+        `).join("");
     }
 
     function renderGroups() {
-        const el =
-            document.querySelector("#admin-groups-grid");
+        const target = document.querySelector("#groups-body");
+        const letters = ["A","B","C","D","E","F","G","H"];
 
-        if (!el) return;
+        target.innerHTML = letters.map(letter => {
+            const rows = state.standings
+                .filter(row => row.group_code === letter)
+                .sort((a,b) => Number(a.position||99)-Number(b.position||99));
 
-        const letters =
-            ["A","B","C","D","E","F","G","H"];
+            const fallback = [1,2,3,4].map(pos => ({
+                position:pos,
+                club_name:"A DEFINIR",
+                points:0,
+                goal_difference:0,
+                logo_path:""
+            }));
 
-        el.innerHTML =
-            letters.map(code => {
+            const data = rows.length ? rows : fallback;
 
-                let rows =
-                    state.standings
-                        .filter(item =>
-                            item.group_code === code
-                        )
-                        .sort(
-                            (a,b) =>
-                                Number(a.position || 99) -
-                                Number(b.position || 99)
-                        );
+            return `
+                <article class="group-admin-card">
+                    <h3>GRUPO ${letter}</h3>
+                    ${data.map(row => `
+                        <div class="group-row">
+                            <span>${esc(row.position)}</span>
+                            <img src="${esc(row.logo_path || "")}" alt="">
+                            <strong>${esc(row.club_name || "A DEFINIR")}</strong>
+                            <small>${esc(row.points ?? 0)} pts</small>
+                            <small>${esc(row.goal_difference ?? 0)}</small>
+                        </div>
+                    `).join("")}
+                </article>
+            `;
+        }).join("");
+    }
 
-                if (!rows.length) {
-                    rows = [1,2,3,4].map(position => ({
-                        position,
-                        club_name: "A DEFINIR",
-                        logo_path: "",
-                        points: 0
-                    }));
-                }
+    function renderMatches() {
+        const phase = document.querySelector("#phase-filter").value;
+        const target = document.querySelector("#matches-body");
+
+        const matches = state.matches.filter(m => m.phase === phase);
+
+        if (!matches.length) {
+            target.innerHTML = `
+                <div class="champions-admin-card">
+                    <p>Nenhuma partida gerada nesta fase ainda.</p>
+                </div>
+            `;
+            return;
+        }
+
+        target.innerHTML = matches.map(match => `
+            <article class="match-card">
+                <div class="team">
+                    <img src="${esc(match.home_logo_path || "")}" alt="">
+                    <span>${esc(match.home_club_name || "A DEFINIR")}</span>
+                </div>
+
+                <div class="score">
+                    <strong>${
+                        ["VALIDATED","WO","ADMIN_DECISION"].includes(match.status)
+                            ? `${esc(match.home_score)} × ${esc(match.away_score)}`
+                            : "VS"
+                    }</strong>
+                    <small>${esc(phaseLabel[match.phase] || match.phase)}</small>
+                </div>
+
+                <div class="team right">
+                    <span>${esc(match.away_club_name || "A DEFINIR")}</span>
+                    <img src="${esc(match.away_logo_path || "")}" alt="">
+                </div>
+
+                <div class="result-controls">
+                    ${
+                        ["VALIDATED","WO","ADMIN_DECISION"].includes(match.status)
+                        ? `<span class="club-status">${esc(match.status)}</span>`
+                        : `
+                            <input type="number" min="0" id="home-${esc(match.id)}" placeholder="0">
+                            <input type="number" min="0" id="away-${esc(match.id)}" placeholder="0">
+                            <button data-result="${esc(match.id)}">SALVAR</button>
+                        `
+                    }
+                </div>
+            </article>
+        `).join("");
+    }
+
+    function renderKnockout() {
+        const phases = [
+            ["ROUND_OF_16","OITAVAS"],
+            ["QUARTERFINALS","QUARTAS"],
+            ["SEMIFINALS","SEMIFINAIS"],
+            ["FINAL","FINAL"]
+        ];
+
+        document.querySelector("#knockout-body").innerHTML =
+            phases.map(([phase,label]) => {
+                const matches = state.matches.filter(m => m.phase === phase);
 
                 return `
-                    <article class="admin-group">
-
-                        <header>
-                            <div>
-                                <span>GRUPO</span>
-                                <h2>${code}</h2>
-                            </div>
-                        </header>
-
-                        ${rows.map(row => `
-                            <div class="admin-group-row">
-
-                                <small>${esc(row.position)}</small>
-
-                                ${
-                                    row.logo_path
-                                        ? `<img src="${esc(row.logo_path)}" alt="">`
-                                        : `<span>—</span>`
-                                }
-
-                                <span>
-                                    ${esc(row.club_name || "A DEFINIR")}
-                                </span>
-
-                                <small>
-                                    ${esc(row.points ?? 0)} pts
-                                </small>
-
-                            </div>
-                        `).join("")}
-
+                    <article class="ko-col">
+                        <h3>${label}</h3>
+                        ${
+                            matches.length
+                            ? matches.map(match => `
+                                <div class="ko-match">
+                                    <div class="ko-team">
+                                        <img src="${esc(match.home_logo_path || "")}" alt="">
+                                        <span>${esc(match.home_club_name || "A DEFINIR")}</span>
+                                        <strong>${
+                                            ["VALIDATED","WO","ADMIN_DECISION"].includes(match.status)
+                                                ? esc(match.home_score)
+                                                : "—"
+                                        }</strong>
+                                    </div>
+                                    <div class="ko-team">
+                                        <img src="${esc(match.away_logo_path || "")}" alt="">
+                                        <span>${esc(match.away_club_name || "A DEFINIR")}</span>
+                                        <strong>${
+                                            ["VALIDATED","WO","ADMIN_DECISION"].includes(match.status)
+                                                ? esc(match.away_score)
+                                                : "—"
+                                        }</strong>
+                                    </div>
+                                </div>
+                              `).join("")
+                            : `<p>Aguardando classificados.</p>`
+                        }
                     </article>
                 `;
             }).join("");
     }
 
-    function renderMatches() {
-        const group =
-            document.querySelector("#matches-admin-list");
+    function renderHistory() {
+        const body = document.querySelector("#history-body");
 
-        if (!group) return;
-
-        const matches =
-            state.matches.filter(
-                item => item.phase === "GROUP_STAGE"
-            );
-
-        renderMatchList(group, matches);
-    }
-
-    function renderMatchList(container, matches) {
-
-        if (!matches.length) {
-            container.innerHTML = `
-                <article class="admin-card">
-                    <p class="admin-help">
-                        Aguardando sorteio e geração dos jogos.
-                    </p>
-                </article>
-            `;
+        if (!state.history.length) {
+            body.innerHTML = `<tr><td colspan="6">Histórico ainda vazio.</td></tr>`;
             return;
         }
 
-        container.innerHTML =
-            matches.map(match => `
-                <article class="admin-match">
-
-                    <div class="admin-match__side">
-                        ${
-                            match.home_logo_path
-                                ? `<img src="${esc(match.home_logo_path)}" alt="">`
-                                : ""
-                        }
-
-                        <strong>
-                            ${esc(match.home_club_name || "A DEFINIR")}
-                        </strong>
-                    </div>
-
-                    <div class="admin-match__score">
-                        <strong>
-                            ${
-                                ["VALIDATED","WO","ADMIN_DECISION"].includes(
-                                    match.status
-                                )
-                                    ? `${esc(match.home_score)} × ${esc(match.away_score)}`
-                                    : "VS"
-                            }
-                        </strong>
-
-                        <span>
-                            ${esc(phaseLabel[match.phase] || match.phase)}
-                            #${esc(match.match_number)}
-                        </span>
-                    </div>
-
-                    <div class="admin-match__side admin-match__side--away">
-
-                        <strong>
-                            ${esc(match.away_club_name || "A DEFINIR")}
-                        </strong>
-
-                        ${
-                            match.away_logo_path
-                                ? `<img src="${esc(match.away_logo_path)}" alt="">`
-                                : ""
-                        }
-
-                    </div>
-
-                    <div class="admin-match__controls">
-
-                        ${
-                            ["VALIDATED","WO","ADMIN_DECISION"].includes(
-                                match.status
-                            )
-                                ? `<span class="status-pill">${esc(match.status)}</span>`
-                                : `
-                                    <input
-                                        data-home="${esc(match.id)}"
-                                        type="number"
-                                        min="0"
-                                        placeholder="0"
-                                    >
-
-                                    <input
-                                        data-away="${esc(match.id)}"
-                                        type="number"
-                                        min="0"
-                                        placeholder="0"
-                                    >
-
-                                    <button
-                                        data-submit-result="${esc(match.id)}"
-                                    >
-                                        SALVAR
-                                    </button>
-                                `
-                        }
-
-                    </div>
-
-                </article>
-            `)
-            .join("");
+        body.innerHTML = state.history.map(item => `
+            <tr>
+                <td>${esc(item.participant_name || item.participant_id)}</td>
+                <td>${esc(item.club_name || item.club_id)}</td>
+                <td>${esc(item.phase_reached || "—")}</td>
+                <td>${esc(item.matches_played ?? 0)}</td>
+                <td>${esc(item.wins ?? 0)}</td>
+                <td>${esc(item.final_position ?? "—")}</td>
+            </tr>
+        `).join("");
     }
 
-    function renderKnockout() {
-        const target =
-            document.querySelector("#knockout-list");
+    async function rpc(name,args) {
+        const db = await client();
+        message(`Executando ${name}...`);
 
-        if (!target) return;
+        const {data,error} = await db.rpc(name,args);
+        if (error) throw error;
 
-        const phases =
-            [
-                ["ROUND_OF_16", "OITAVAS", 8],
-                ["QUARTERFINALS", "QUARTAS", 4],
-                ["SEMIFINALS", "SEMIFINAIS", 2],
-                ["FINAL", "FINAL", 1]
-            ];
-
-        target.innerHTML =
-            phases.map(
-                ([phase, label, size]) => {
-
-                    let matches =
-                        state.matches.filter(
-                            item => item.phase === phase
-                        );
-
-                    if (!matches.length) {
-                        matches =
-                            Array.from(
-                                { length: size },
-                                (_, index) => ({
-                                    id:
-                                        null,
-
-                                    match_number:
-                                        index + 1,
-
-                                    phase,
-
-                                    status:
-                                        "SCHEDULED",
-
-                                    home_club_name:
-                                        "A DEFINIR",
-
-                                    away_club_name:
-                                        "A DEFINIR",
-
-                                    home_score:
-                                        null,
-
-                                    away_score:
-                                        null
-                                })
-                            );
-                    }
-
-                    return `
-                        <article class="admin-card">
-                            <header>
-                                <div>
-                                    <span>CCFV // ${label}</span>
-                                    <h2>${label}</h2>
-                                </div>
-                            </header>
-
-                            ${matches.map(match => `
-                                <div class="admin-match">
-
-                                    <div class="admin-match__side">
-                                        <strong>
-                                            ${esc(match.home_club_name || "A DEFINIR")}
-                                        </strong>
-                                    </div>
-
-                                    <div class="admin-match__score">
-                                        <strong>
-                                            ${
-                                                match.status !== "SCHEDULED"
-                                                    ? `${esc(match.home_score)} × ${esc(match.away_score)}`
-                                                    : "VS"
-                                            }
-                                        </strong>
-                                    </div>
-
-                                    <div class="admin-match__side">
-                                        <strong>
-                                            ${esc(match.away_club_name || "A DEFINIR")}
-                                        </strong>
-                                    </div>
-
-                                    <div class="admin-match__controls">
-                                        ${
-                                            match.id &&
-                                            match.status === "SCHEDULED"
-                                                ? `
-                                                    <input
-                                                        data-home="${esc(match.id)}"
-                                                        type="number"
-                                                        min="0"
-                                                        placeholder="0"
-                                                    >
-
-                                                    <input
-                                                        data-away="${esc(match.id)}"
-                                                        type="number"
-                                                        min="0"
-                                                        placeholder="0"
-                                                    >
-
-                                                    <button
-                                                        data-submit-result="${esc(match.id)}"
-                                                    >
-                                                        SALVAR
-                                                    </button>
-                                                  `
-                                                : ""
-                                        }
-                                    </div>
-
-                                </div>
-                            `).join("")}
-                        </article>
-                    `;
-                }
-            ).join("");
-    }
-
-    async function callRpc(name, args) {
-        if (!state.client) {
-            throw new Error("Supabase não conectado.");
-        }
-
-        if (!state.championshipId) {
-            throw new Error("Season 01 ainda não possui clubes carregados.");
-        }
-
-        showMessage(`Executando ${name}...`);
-
-        const {
-            data,
-            error
-        } = await state.client.rpc(name, args);
-
-        if (error) {
-            throw error;
-        }
-
-        showMessage(
-            `${name} executado com sucesso.`
-        );
-
-        await refresh();
-
-        return data;
-    }
-
-    async function saveSeason() {
-        showMessage(
-            "A configuração de temporada é controlada pelo banco/RPC nesta etapa."
-        );
-    }
-
-    async function submitResult(button) {
-
-        const id =
-            button.dataset.submitResult;
-
-        const home =
-            Number(
-                document.querySelector(
-                    `input[data-home="${CSS.escape(id)}"]`
-                )?.value
-            );
-
-        const away =
-            Number(
-                document.querySelector(
-                    `input[data-away="${CSS.escape(id)}"]`
-                )?.value
-            );
-
-        if (
-            !Number.isInteger(home) ||
-            !Number.isInteger(away) ||
-            home < 0 ||
-            away < 0
-        ) {
-            throw new Error("Informe um placar válido.");
-        }
-
-        await callRpc(
-            "champions_submit_result",
-            {
-                p_match_id:
-                    id,
-
-                p_home_score:
-                    home,
-
-                p_away_score:
-                    away,
-
-                p_result_type:
-                    "NORMAL"
-            }
-        );
-    }
-
-    async function refresh() {
-        try {
-            await loadPublicData();
-        } catch (error) {
-            console.error(
-                "CCFV // Champions Admin refresh:",
-                error
-            );
-
-            showMessage(
-                error?.message ||
-                "Não foi possível carregar os dados públicos da Champions.",
-                true
-            );
-
-            /*
-             * Mesmo com erro de leitura, mantemos as telas clicáveis
-             * e os placeholders visíveis.
-             */
-            render();
-        }
+        message(`${name}: ${JSON.stringify(data)}`);
+        await load();
     }
 
     function bindTabs() {
+        document.querySelectorAll("[data-tab]").forEach(link => {
+            link.addEventListener("click", event => {
+                event.preventDefault();
 
-        const links =
-            document.querySelectorAll(
-                "[data-tab]"
-            );
+                document.querySelectorAll("[data-tab]")
+                    .forEach(item => item.classList.toggle("is-active",item === link));
 
-        const panels =
-            document.querySelectorAll(
-                ".admin-tab"
-            );
+                document.querySelectorAll(".champions-admin-tab")
+                    .forEach(panel => panel.classList.toggle("is-active",panel.dataset.panel === link.dataset.tab));
 
-        function activate(tab) {
+                history.replaceState(null,"",`#${link.dataset.tab}`);
+            });
+        });
 
-            links.forEach(
-                link =>
-                    link.classList.toggle(
-                        "is-active",
-                        link.dataset.tab === tab
-                    )
-            );
-
-            panels.forEach(
-                panel =>
-                    panel.classList.toggle(
-                        "is-visible",
-                        panel.dataset.panel === tab
-                    )
-            );
-
-            if (history.replaceState) {
-                history.replaceState(
-                    null,
-                    "",
-                    `#${tab}`
-                );
-            }
-        }
-
-        links.forEach(
-            link => {
-
-                link.addEventListener(
-                    "click",
-                    event => {
-
-                        event.preventDefault();
-
-                        activate(
-                            link.dataset.tab
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-        const initial =
-            location.hash.replace("#", "");
-
-        activate(
-            links[0]?.dataset.tab === initial
-                ? initial
-                : (
-                    links.length
-                        ? (
-                            document.querySelector(
-                                `[data-tab="${CSS.escape(initial)}"]`
-                            )
-                                ? initial
-                                : links[0].dataset.tab
-                          )
-                        : "dashboard"
-                  )
-        );
+        const hash = location.hash.slice(1);
+        const link = document.querySelector(`[data-tab="${CSS.escape(hash)}"]`);
+        if (link) link.click();
     }
 
     function bindActions() {
+        document.querySelector("#refresh-admin")
+            .addEventListener("click",() => load().catch(e => message(e.message || e,true)));
 
-        document.querySelector("#btn-refresh")
-            ?.addEventListener(
-                "click",
-                () =>
-                    refresh().catch(
-                        error =>
-                            showMessage(
-                                error?.message ||
-                                String(error),
-                                true
-                            )
-                    )
-            );
+        document.querySelector("#phase-filter")
+            .addEventListener("change",renderMatches);
 
-        document.querySelector("#btn-save-season")
-            ?.addEventListener(
-                "click",
-                () =>
-                    saveSeason().catch(
-                        error =>
-                            showMessage(
-                                error?.message ||
-                                String(error),
-                                true
-                            )
-                    )
-            );
+        document.body.addEventListener("click",async event => {
+            const action = event.target.closest("[data-action]");
+            const result = event.target.closest("[data-result]");
 
-        document.body.addEventListener(
-            "click",
-            async event => {
+            try {
+                if (result) {
+                    const id = result.dataset.result;
+                    const home = Number(document.querySelector(`#home-${CSS.escape(id)}`).value);
+                    const away = Number(document.querySelector(`#away-${CSS.escape(id)}`).value);
 
-                const action =
-                    event.target.closest(
-                        "[data-action]"
-                    );
-
-                const resultButton =
-                    event.target.closest(
-                        "[data-submit-result]"
-                    );
-
-                try {
-
-                    if (resultButton) {
-                        await submitResult(
-                            resultButton
-                        );
-                        return;
-                    }
-
-                    if (!action) {
-                        return;
-                    }
-
-                    const name =
-                        action.dataset.action;
-
-                    if (name === "prepare-pots") {
-                        await callRpc(
-                            "champions_prepare_pots",
-                            {
-                                p_championship_id:
-                                    state.championshipId,
-
-                                p_force:
-                                    true
-                            }
-                        );
-                    }
-
-                    if (name === "draw-groups") {
-                        await callRpc(
-                            "champions_draw_groups",
-                            {
-                                p_championship_id:
-                                    state.championshipId,
-
-                                p_force:
-                                    true
-                            }
-                        );
-                    }
-
-                    if (name === "generate-group-matches") {
-                        await callRpc(
-                            "champions_generate_group_matches",
-                            {
-                                p_championship_id:
-                                    state.championshipId,
-
-                                p_force:
-                                    true
-                            }
-                        );
-                    }
-
-                } catch (error) {
-
-                    console.error(
-                        "CCFV // Champions Action:",
-                        error
-                    );
-
-                    showMessage(
-                        error?.message ||
-                        String(error),
-                        true
-                    );
-
+                    await rpc("champions_submit_result",{
+                        p_match_id:id,
+                        p_home_score:home,
+                        p_away_score:away,
+                        p_result_type:"NORMAL"
+                    });
+                    return;
                 }
+
+                if (!action) return;
+
+                switch(action.dataset.action) {
+                    case "prepare":
+                        await rpc("champions_prepare_pots",{
+                            p_championship_id:state.championshipId,
+                            p_force:false
+                        });
+                        break;
+
+                    case "draw":
+                        await rpc("champions_draw_groups",{
+                            p_championship_id:state.championshipId,
+                            p_force:false
+                        });
+                        break;
+
+                    case "matches":
+                        await rpc("champions_generate_group_matches",{
+                            p_championship_id:state.championshipId,
+                            p_force:false
+                        });
+                        break;
+
+                    case "refresh":
+                        await load();
+                        break;
+                }
+            } catch(error) {
+                console.error(error);
+                message(error.message || String(error),true);
             }
-        );
+        });
     }
 
-    async function boot() {
-
+    window.addEventListener("DOMContentLoaded",() => {
         bindTabs();
         bindActions();
-
-        try {
-            state.client = await getClient();
-
-            const {
-                data,
-                error
-            } = await state.client.auth.getUser();
-
-            if (!error && data?.user) {
-                state.user = data.user;
-                document.querySelector(
-                    "#admin-user-email"
-                ).textContent =
-                    data.user.email ||
-                    "ADMIN";
-            }
-        } catch (error) {
-            console.warn(
-                "CCFV // Admin auth:",
-                error
-            );
-        }
-
-        /*
-         * Mesmo que a leitura protegida da sessão falhe,
-         * a interface continua funcionando.
-         */
-        await refresh();
-    }
-
-    window.addEventListener(
-        "DOMContentLoaded",
-        () => {
-            boot().catch(
-                error => {
-                    console.error(error);
-                    showMessage(
-                        error?.message ||
-                        "Falha ao carregar painel.",
-                        true
-                    );
-                }
-            );
-        }
-    );
+        load().catch(error => {
+            console.error(error);
+            message(error.message || "Falha ao carregar Champions.",true);
+        });
+    });
 })();
