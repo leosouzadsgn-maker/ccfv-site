@@ -1,20 +1,53 @@
-CCFV CHAMPIONS — CORREÇÃO COMPLETA V2
+CCFV CHAMPIONS — PAGINA PUBLICA
 
-Substitua os arquivos:
-admin/index.html
-admin/js/admin.js
-admin/champions.html
-admin/js/champions.js
-admin/css/champions.css
+Substitua estes 3 arquivos no projeto:
+
 pages/champions.html
-js/champions.js
 css/champions.css
+js/champions.js
 
-Correções:
-- Champions League aparece no modal NOVO JOGADOR.
-- Selecionar Champions mostra o seletor de clube.
-- Salvar sincroniza player_competitions + championship_registrations + championship_clubs.
-- Editar recupera o clube da Champions.
-- A página pública mantém grupos A-H e todo o mata-mata visíveis com A DEFINIR.
-- A página pública usa views públicas para não cair em erro por SELECT protegido.
-- A aba Inscrições não é necessária na Champions.
+A pagina:
+- mostra os 32 clubes antes do sorteio;
+- mostra os grupos A-H com 4 vagas em cada grupo;
+- mostra o chaveamento Oitavas -> Quartas -> Semifinais -> Final;
+- usa A DEFINIR como estado inicial;
+- tenta carregar dados reais do Supabase quando estiverem disponíveis;
+- se o Supabase/RLS estiver indisponível, NAO esconde a estrutura;
+- os placeholders continuam visiveis.
+
+Caminho dos escudos:
+assets/images/champions/clubs/<slug>.png
+
+Slugs usados:
+arsenal
+chelsea
+liverpool
+manchester-city
+manchester-united
+newcastle-united
+tottenham-hotspur
+aston-villa
+real-madrid
+barcelona
+atletico-de-madrid
+athletic-club
+inter
+milan
+juventus
+napoli
+roma
+lazio
+atalanta
+psg
+marseille
+monaco
+lyon
+bayern-munchen
+borussia-dortmund
+bayer-leverkusen
+benfica
+porto
+sporting-cp
+ajax
+psv
+feyenoord

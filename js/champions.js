@@ -1,13 +1,8 @@
 (() => {
     "use strict";
 
-    const state = {
-        client: null,
-        championship: null,
-        clubs: [],
-        standings: [],
-        matches: []
-    };
+    const SUPABASE_TIMEOUT = 6500;
+    let client = null;
 
     const esc = value => String(value ?? "")
         .replaceAll("&", "&amp;")
@@ -16,250 +11,198 @@
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
 
-    const phaseLabel = {
-        DRAFT: "DRAFT",
-        REGISTRATIONS: "INSCRIÇÕES",
-        CLUB_SELECTION: "ESCOLHA DE CLUBE",
-        DRAW: "SORTEIO",
-        GROUP_STAGE: "FASE DE GRUPOS",
-        ROUND_OF_16: "OITAVAS",
-        QUARTERFINALS: "QUARTAS",
-        SEMIFINALS: "SEMIFINAIS",
-        FINAL: "FINAL",
-        CLOSED: "ENCERRADA",
-        ARCHIVED: "ARQUIVADA"
-    };
-
     async function getClient() {
-        if (window.CCFVAuth?.getClient) {
-            return window.CCFVAuth.getClient();
-        }
+        if (window.CCFVAuth?.getClient) return window.CCFVAuth.getClient();
 
-        const started = Date.now();
+        const start = Date.now();
         while (!window.CCFVAuth?.getClient) {
-            if (Date.now() - started > 10000) {
-                throw new Error("Supabase não está disponível.");
+            if (Date.now() - start > SUPABASE_TIMEOUT) return null;
+            await new Promise(r => setTimeout(r, 80));
+        }
+
+        try {
+            return window.CCFVAuth.getClient();
+        } catch {
+            return null;
+        }
+    }
+
+    function slugify(text) {
+        return String(text || "")
+            .normalize("NFD")
+            .replace(/[^\w\s-]/g, "")
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, "-");
+    }
+
+    function renderFilledClubs(data) {
+        const cards = document.querySelectorAll("[data-club-slug]");
+        if (!cards.length || !Array.isArray(data)) return;
+
+        data.forEach(club => {
+            const name = club.name || club.club_name || "";
+            if (!name) return;
+
+            const slug = club.slug || slugify(name);
+            const card = document.querySelector(`[data-club-slug="${CSS.escape(slug)}"]`);
+            if (!card) return;
+
+            const img = card.querySelector("img");
+            const status = card.querySelector(".club-catalog-status");
+
+            if (img && club.logo_path) img.src = club.logo_path;
+            if (status) {
+                status.textContent = club.participant_name
+                    ? club.participant_name
+                    : (club.status || "DISPONÍVEL");
             }
-            await new Promise(resolve => setTimeout(resolve, 100));
-        }
-        return window.CCFVAuth.getClient();
+        });
     }
 
-    async function load() {
-        state.client = await getClient();
+    function setGroupRow(row, item) {
+        if (!row || !item) return;
 
-        const { data: championships, error: cError } = await state.client
-            .from("championships")
-            .select("*")
-            .eq("code", "CCFV-CL-S01")
-            .maybeSingle();
-        if (cError) throw cError;
-        state.championship = championships;
+        const logo = row.querySelector(".champions-slot-logo");
+        const name = row.querySelector(".champions-slot-name");
 
-        if (!state.championship) {
-            renderEmpty("Temporada da Champions ainda não cadastrada.");
-            return;
+        if (name) name.textContent = item.club_name || item.name || "A DEFINIR";
+
+        if (logo) {
+            if (item.logo_path) {
+                logo.innerHTML = `<img src="${esc(item.logo_path)}" alt="" style="width:24px;height:24px;object-fit:contain">`;
+            } else {
+                logo.textContent = "—";
+            }
         }
 
-        const id = state.championship.id;
-
-        const [clubs, standings, matches] = await Promise.all([
-            state.client.from("championship_public_clubs").select("*").eq("championship_id", id).order("slug"),
-            state.client.from("championship_public_standings").select("*").eq("championship_id", id).order("group_code").order("position"),
-            state.client.from("championship_public_matches").select("*").eq("championship_id", id).order("phase").order("match_number")
-        ]);
-
-        if (clubs.error) throw clubs.error;
-        if (standings.error) throw standings.error;
-        if (matches.error) throw matches.error;
-
-        state.clubs = clubs.data || [];
-        state.standings = standings.data || [];
-        state.matches = matches.data || [];
-
-        render();
-    }
-
-    function render() {
-        const c = state.championship;
-
-        document.querySelector("#champions-season-label").textContent = c.season_label || "SEASON 01";
-        document.querySelector("#champions-season-status").textContent = phaseLabel[c.status] || c.status || "DRAFT";
-        document.querySelector("#hero-phase").textContent = phaseLabel[c.status] || c.status || "DRAFT";
-
-        const participants = new Set(
-            state.clubs.map(item => item.participant_id).filter(Boolean)
-        ).size;
-
-        const occupied = state.clubs.filter(item =>
-            ["RESERVED", "CONFIRMED", "ELIMINATED"].includes(String(item.status || "").toUpperCase())
-        ).length;
-
-        document.querySelector("#hero-participants").textContent = `${participants} / ${c.max_participants || 32}`;
-        document.querySelector("#hero-clubs").textContent = `${occupied} / ${c.total_clubs || 32}`;
-
-        renderClubs();
-        renderGroups();
-        renderMatches();
-        renderKnockout();
-        renderChampion();
-    }
-
-    function renderClubs() {
-        const el = document.querySelector("#champions-clubs-grid");
-
-        if (!state.clubs.length) {
-            el.innerHTML = `<div class="ccfv-champions-empty">Nenhum clube disponível.</div>`;
-            return;
+        if (item.club_name || item.name) {
+            row.classList.add("is-filled");
         }
 
-        el.innerHTML = state.clubs.map(club => `
-            <article class="ccfv-champions-club">
-                <img src="${esc(club.logo_path || "")}" alt="${esc(club.name)}" loading="lazy"
-                     onerror="this.style.opacity=.2">
-                <div class="ccfv-champions-club__name">
-                    <strong>${esc(club.name)}</strong>
-                    <span>${esc(club.country || "EUROPA")}</span>
-                </div>
-                <span class="ccfv-champions-club__status">${esc(club.status || "AVAILABLE")}</span>
-            </article>
-        `).join("");
-    }
-
-    function renderGroups() {
-        const el = document.querySelector("#champions-groups-grid");
-        const groups = [...new Set(state.standings.map(item => item.group_code))].sort();
-
-        if (!groups.length) {
-            el.innerHTML = `<div class="ccfv-champions-empty">Os grupos ainda não foram sorteados.</div>`;
-            return;
+        if (item.qualified) {
+            row.classList.add("is-qualified");
         }
 
-        el.innerHTML = groups.map(code => {
-            const rows = state.standings.filter(item => item.group_code === code)
-                .sort((a, b) => Number(a.position || 99) - Number(b.position || 99));
-
-            return `
-                <article class="ccfv-champions-group">
-                    <div class="ccfv-champions-group__head">
-                        <strong>GRUPO ${esc(code)}</strong>
-                        <span>TOP 2 AVANÇA</span>
-                    </div>
-                    <div class="ccfv-champions-group__table">
-                        ${rows.map(row => `
-                            <div class="ccfv-champions-group__row ${row.qualified ? "is-qualified" : ""}">
-                                <span>${esc(row.position)}</span>
-                                <img src="${esc(row.logo_path || "")}" alt="" loading="lazy">
-                                <span>${esc(row.club_name)}</span>
-                                <small>${esc(row.points)} PTS</small>
-                                <small>${esc(row.goal_difference >= 0 ? "+" : "")}${esc(row.goal_difference)}</small>
-                            </div>
-                        `).join("")}
-                    </div>
-                </article>
-            `;
-        }).join("");
+        const cells = row.querySelectorAll(":scope > span, :scope > strong");
+        if (cells[2]) cells[2].textContent = item.played ?? 0;
+        if (cells[3]) cells[3].textContent = item.wins ?? 0;
+        if (cells[4]) cells[4].textContent = item.draws ?? 0;
+        if (cells[5]) cells[5].textContent = item.losses ?? 0;
+        if (cells[6]) cells[6].textContent = item.points ?? 0;
     }
 
-    function renderMatches() {
-        const el = document.querySelector("#champions-matches");
+    function renderStandings(rows) {
+        if (!Array.isArray(rows)) return;
 
-        if (!state.matches.length) {
-            el.innerHTML = `<div class="ccfv-champions-empty">Nenhuma partida cadastrada ainda.</div>`;
-            return;
-        }
+        rows.forEach(item => {
+            const group = String(item.group_code || "").toUpperCase();
+            const position = Number(item.position || 0);
+            if (!group || !position) return;
 
-        const ordered = [...state.matches]
-            .filter(m => ["GROUP_STAGE", "ROUND_OF_16", "QUARTERFINALS", "SEMIFINALS", "FINAL"].includes(m.phase));
+            const row = document.querySelector(
+                `[data-slot="${CSS.escape(group + "-" + position)}"]`
+            );
 
-        el.innerHTML = ordered.slice(0, 48).map(match => {
-            const finished = ["VALIDATED", "WO", "ADMIN_DECISION"].includes(String(match.status || ""));
-            return `
-                <article class="ccfv-champions-match">
-                    <div class="ccfv-champions-match__side">
-                        <img src="${esc(match.home_logo_path || "")}" alt="" loading="lazy">
-                        <strong>${esc(match.home_club_name || match.home_player_name || "A DEFINIR")}</strong>
-                    </div>
-                    <div class="ccfv-champions-match__score">
-                        <strong>${finished ? `${esc(match.home_score)} × ${esc(match.away_score)}` : "VS"}</strong>
-                        <span>${esc(phaseLabel[match.phase] || match.phase)}</span>
-                    </div>
-                    <div class="ccfv-champions-match__side ccfv-champions-match__side--away">
-                        <strong>${esc(match.away_club_name || match.away_player_name || "A DEFINIR")}</strong>
-                        <img src="${esc(match.away_logo_path || "")}" alt="" loading="lazy">
-                    </div>
-                </article>
-            `;
-        }).join("");
+            if (row) setGroupRow(row, item);
+        });
     }
 
-    function bracketCard(match) {
-        if (!match) return "";
-        const finished = ["VALIDATED", "WO", "ADMIN_DECISION"].includes(String(match.status || ""));
-        return `
-            <div class="ccfv-bracket-match">
-                <div class="ccfv-bracket-line">
-                    <img src="${esc(match.home_logo_path || "")}" alt="">
-                    <span>${esc(match.home_club_name || "A DEFINIR")}</span>
-                    <strong>${finished ? esc(match.home_score) : "—"}</strong>
-                </div>
-                <div class="ccfv-bracket-line">
-                    <img src="${esc(match.away_logo_path || "")}" alt="">
-                    <span>${esc(match.away_club_name || "A DEFINIR")}</span>
-                    <strong>${finished ? esc(match.away_score) : "—"}</strong>
-                </div>
-            </div>
+    function renderMatches(matches) {
+        const placeholder = document.querySelector("#group-matches-placeholder");
+        if (!placeholder || !Array.isArray(matches)) return;
+
+        const groupMatches = matches.filter(m => m.phase === "GROUP_STAGE");
+
+        if (!groupMatches.length) return;
+
+        placeholder.innerHTML = `
+            <span>CCFV // MATCHDAY</span>
+            <strong>${groupMatches.length} JOGOS GERADOS</strong>
+            <small>O calendário oficial da Season 01 já foi criado pelo sistema.</small>
         `;
     }
 
-    function renderKnockout() {
-        const phases = {
-            ROUND_OF_16: "#knockout-r16",
-            QUARTERFINALS: "#knockout-qf",
-            SEMIFINALS: "#knockout-sf",
-            FINAL: "#knockout-final"
-        };
+    async function load() {
+        client = await getClient();
 
-        Object.entries(phases).forEach(([phase, selector]) => {
-            const matches = state.matches.filter(m => m.phase === phase);
-            const target = document.querySelector(selector);
-            target.innerHTML = matches.length
-                ? matches.map(bracketCard).join("")
-                : `<div class="ccfv-champions-empty">Aguardando</div>`;
-        });
-    }
-
-    function renderChampion() {
-        let final = state.matches.find(m => m.phase === "FINAL" && ["VALIDATED", "WO", "ADMIN_DECISION"].includes(m.status));
-        const champion = final?.winner_club_id
-            ? state.clubs.find(club => club.championship_club_id === final.winner_club_id)
-            : null;
-
-        if (final?.winner_club_name) {
-            document.querySelector("#season-champion").textContent = final.winner_club_name;
+        if (!client) {
+            // A página já está pronta com placeholders.
+            return;
         }
 
-        if (champion) {
-            document.querySelector("#champion-name").textContent = champion.name;
-        } else {
-            document.querySelector("#champion-name").textContent = "A DEFINIR";
+        try {
+            const { data: championship, error: championshipError } = await client
+                .from("championships")
+                .select("*")
+                .eq("code", "CCFV-CL-S01")
+                .maybeSingle();
+
+            if (championshipError || !championship) {
+                return;
+            }
+
+            document.querySelector("#season-label").textContent =
+                championship.season_label || "SEASON 01";
+
+            document.querySelector("#season-status").textContent =
+                championship.status || "DRAFT";
+
+            document.querySelector("#season-phase").textContent =
+                championship.status || "DRAFT";
+
+            const id = championship.id;
+
+            const [clubs, standings, matches] = await Promise.all([
+                client.from("championship_public_clubs")
+                    .select("*")
+                    .eq("championship_id", id),
+
+                client.from("championship_public_standings")
+                    .select("*")
+                    .eq("championship_id", id)
+                    .order("group_code")
+                    .order("position"),
+
+                client.from("championship_public_matches")
+                    .select("*")
+                    .eq("championship_id", id)
+                    .order("phase")
+                    .order("match_number")
+            ]);
+
+            if (!clubs.error && Array.isArray(clubs.data)) {
+                const occupied = clubs.data.filter(item =>
+                    item.participant_id
+                ).length;
+
+                document.querySelector("#season-occupied").textContent =
+                    `${occupied} / ${championship.total_clubs || 32}`;
+
+                renderFilledClubs(clubs.data);
+            }
+
+            if (!standings.error) {
+                const participants = new Set(
+                    (standings.data || [])
+                        .map(item => item.participant_id)
+                        .filter(Boolean)
+                ).size;
+
+                document.querySelector("#season-participants").textContent =
+                    `${participants} / ${championship.max_participants || 32}`;
+
+                renderStandings(standings.data || []);
+            }
+
+            if (!matches.error) {
+                renderMatches(matches.data || []);
+            }
+        } catch (error) {
+            // Nunca desmonta a página. Os placeholders continuam visíveis.
+            console.warn("CCFV Champions:", error);
         }
-
-        document.querySelector("#champion-club").textContent =
-            champion ? `Representado por ${champion.participant_name || "participante oficial"} — ${state.championship.season_label}` :
-            "A grande taça ainda está em disputa.";
     }
 
-    function renderEmpty(message) {
-        document.querySelectorAll(".ccfv-champions-empty").forEach(el => {
-            el.textContent = message;
-        });
-    }
-
-    window.addEventListener("DOMContentLoaded", () => {
-        load().catch(error => {
-            console.error("CCFV Champions:", error);
-            renderEmpty("Não foi possível carregar a Champions agora.");
-        });
-    });
+    window.addEventListener("DOMContentLoaded", load);
 })();
