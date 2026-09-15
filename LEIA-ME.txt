@@ -1,36 +1,48 @@
-CCFV CHAMPIONS — VÍNCULO FINAL
+CCFV CHAMPIONS — CORREÇÃO DEFINITIVA DO CADASTRO
+
+CAUSA:
+O admin.js atual não tinha integração completa da Champions.
+O campo aparecia no HTML, mas o JavaScript não populava de forma confiável
+os clubes nem persistia o vínculo do treinador.
+
+A correção desta versão:
+- usa diretamente championship_clubs + champions_clubs;
+- NÃO usa a view quebrada que reclamava de sort_order;
+- popula os 32 clubes no select;
+- bloqueia clube já ocupado;
+- permite editar o próprio clube;
+- restaura Champions e clube ao editar;
+- grava championship_registrations;
+- grava participant_id/status em championship_clubs;
+- grava CHAMPIONS_LEAGUE em player_competitions;
+- libera o clube ao desmarcar Champions;
+- libera o clube antes de excluir um jogador;
+- mantém Brasileirão, Night Cup e Mobile funcionando.
+
+SQL:
+Execute uma única vez:
+supabase/00_PERMISSOES_CHAMPIONS_ADMIN.sql
+
+ARQUIVO:
+Substituir somente:
+admin/js/admin.js
+
+TESTE:
+1. Ctrl+Shift+R
+2. Jogadores
+3. Editar Léo Souza ou Novo Jogador
+4. Marcar Champions League
+5. Selecionar Barcelona
+6. Salvar
+
+Resultado esperado:
+Jogador = Léo Souza
+Champions League = selecionada
+Clube = Barcelona
+
+Depois abra Admin > Champions League > Clubes.
+Barcelona deverá mostrar Léo Souza.
 
 IMPORTANTE:
-Este pacote NÃO substitui admin/index.html.
-A página HTML que você já está usando já possui a opção Champions e o seletor.
-Somente admin/js/admin.js é substituído.
-
-O que foi corrigido:
-- seletor usa os 32 IDs reais da Season 01;
-- ocupação dos clubes é lida da view pública;
-- Champions aparece no resumo "Competições selecionadas";
-- Champions é incluída em player_competitions;
-- champions_register_player() é chamado depois de o player existir;
-- editar jogador restaura Champions e clube;
-- badge "CHAMPIONS LEAGUE" aparece na lista;
-- duplicação de uma mesma competição/time é eliminada;
-- desmarcar Champions remove a inscrição por RPC;
-- erro na leitura do catálogo não derruba o cadastro geral.
-
-NENHUM SQL NOVO DE ESTRUTURA É NECESSÁRIO.
-
-Teste:
-Jogadores > Editar Léo Souza
-> marcar Champions League
-> Barcelona
-> Salvar
-
-Depois:
-Admin > Champions League > Clubes
-
-Barcelona deve mostrar Léo Souza.
-
-Depois:
-Página pública da Champions
-
-Barcelona deve mostrar Léo Souza.
+Não rode os SQLs antigos que tentavam alterar a view championship_public_clubs.
+Esta versão não depende daquela view para o cadastro do treinador.

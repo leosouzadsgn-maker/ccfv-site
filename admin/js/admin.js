@@ -26,8 +26,14 @@
     const CHAMPIONS_SEASON_ID =
         "362284ef-e410-45b8-890b-630f1130f9d2";
 
+    /*
+     * Catálogo oficial da Season 01.
+     * Esses são os championship_club_id que já existem
+     * no Supabase confirmado pelo administrador.
+     */
     const CHAMPIONS_CLUBS =
-        [
+
+[
         {
                 "name": "Real Madrid",
                 "slug": "real_madrid",
@@ -1572,10 +1578,10 @@
 
 
     /* =====================================================
-       CHAMPIONS LEAGUE — VÍNCULO DO PARTICIPANTE
+       CHAMPIONS LEAGUE — INTEGRAÇÃO DEFINITIVA
        ===================================================== */
 
-    async function loadChampionsCatalog() {
+    async function loadChampionsAdminData() {
 
         championsClubs =
             CHAMPIONS_CLUBS.map(
@@ -1583,85 +1589,189 @@
                     ...club,
                     participant_id:
                         null,
-                    participant_name:
-                        null,
                     status:
                         "AVAILABLE"
                 })
             );
+
+        championsRegistrations =
+            [];
 
         try {
 
             const client =
                 await getSupabase();
 
-            const {
-                data,
-                error
-            } =
+            /*
+             * IMPORTANTE:
+             * Não usamos a view que estava quebrada com
+             * sort_order. Consultamos diretamente as duas
+             * tabelas reais.
+             */
+            const clubResult =
                 await client
                     .from(
-                        "championship_public_clubs_options"
+                        "championship_clubs"
                     )
                     .select(
-                        "*"
+                        "id,championship_id,club_id,status,participant_id,pot_number"
                     )
                     .eq(
                         "championship_id",
                         CHAMPIONS_SEASON_ID
-                    )
-                    .order(
-                        "sort_order",
-                        {
-                            ascending:
-                                true
-                        }
                     );
 
             if (
-                error
+                clubResult.error
             ) {
-                throw error;
+                throw clubResult.error;
             }
 
+            const baseResult =
+                await client
+                    .from(
+                        "champions_clubs"
+                    )
+                    .select(
+                        "id,name,slug,country,logo_path,sort_order"
+                    )
+                    .eq(
+                        "active",
+                        true
+                    );
+
             if (
-                Array.isArray(data)
-                &&
-                data.length
+                baseResult.error
             ) {
+                throw baseResult.error;
+            }
 
-                championsClubs =
-                    CHAMPIONS_CLUBS.map(
-                        club => {
+            const byId =
+                new Map(
+                    (
+                        clubResult.data ||
+                        []
+                    )
+                        .map(
+                            item =>
+                                [
+                                    String(
+                                        item.id
+                                    ),
+                                    item
+                                ]
+                        )
+                );
 
-                            const remote =
-                                data.find(
-                                    item =>
-                                        String(
-                                            item.championship_club_id
-                                        ) ===
-                                        String(
-                                            club.id
-                                        )
+            const baseById =
+                new Map(
+                    (
+                        baseResult.data ||
+                        []
+                    )
+                        .map(
+                            item =>
+                                [
+                                    String(
+                                        item.id
+                                    ),
+                                    item
+                                ]
+                        )
+                );
+
+            championsClubs =
+                CHAMPIONS_CLUBS
+                    .map(
+                        fallback => {
+
+                            const row =
+                                byId.get(
+                                    String(
+                                        fallback.id
+                                    )
                                 );
 
+                            const base =
+                                row
+                                    ? baseById.get(
+                                        String(
+                                            row.club_id
+                                        )
+                                    )
+                                    : null;
+
                             return {
-                                ...club,
+                                id:
+                                    fallback.id,
+
+                                name:
+                                    base?.name ||
+                                    fallback.name,
+
+                                slug:
+                                    base?.slug ||
+                                    fallback.slug,
+
+                                country:
+                                    base?.country ||
+                                    "",
+
+                                logo_path:
+                                    base?.logo_path ||
+                                    "",
+
+                                sort_order:
+                                    Number(
+                                        base?.sort_order ??
+                                        clubsIndexFallback(
+                                            fallback.id
+                                        )
+                                    ),
+
                                 participant_id:
-                                    remote?.participant_id ||
+                                    row?.participant_id ||
                                     null,
-                                participant_name:
-                                    remote?.participant_name ||
-                                    null,
+
                                 status:
-                                    remote?.status ||
+                                    row?.status ||
                                     "AVAILABLE"
+
                             };
 
                         }
+                    )
+                    .sort(
+                        (
+                            a,
+                            b
+                        ) =>
+                            a.sort_order -
+                            b.sort_order
                     );
 
+            const registrationResult =
+                await client
+                    .from(
+                        "championship_registrations"
+                    )
+                    .select(
+                        "id,championship_id,participant_id,selected_club_id,status"
+                    )
+                    .eq(
+                        "championship_id",
+                        CHAMPIONS_SEASON_ID
+                    );
+
+            if (
+                registrationResult.error
+            ) {
+                throw registrationResult.error;
             }
+
+            championsRegistrations =
+                registrationResult.data ||
+                [];
 
         }
 
@@ -1670,7 +1780,7 @@
         ) {
 
             console.warn(
-                "CCFV // CHAMPIONS CATALOG:",
+                "CCFV // CHAMPIONS ADMIN DATA:",
                 error
             );
 
@@ -1681,65 +1791,118 @@
     }
 
 
+    function clubsIndexFallback(
+        championshipClubId
+    ) {
+
+        const item =
+            CHAMPIONS_CLUBS.find(
+                club =>
+                    String(
+                        club.id
+                    ) ===
+                    String(
+                        championshipClubId
+                    )
+            );
+
+        return item
+            ? CHAMPIONS_CLUBS.indexOf(
+                item
+            ) + 1
+            : 999;
+
+    }
+
+
     function refreshChampionsTeamOptions() {
 
+        const select =
+            dom.championsTeam;
+
         if (
-            !dom.championsTeam
+            !select
         ) {
             return;
         }
 
         const current =
             String(
-                dom.championsTeam.value ||
+                select.value ||
                 ""
             );
 
-        dom.championsTeam.innerHTML =
-            '<option value="">SELECIONE O CLUBE</option>';
+        select.innerHTML =
+            `
+                <option value="">
+                    SELECIONE O CLUBE
+                </option>
+            `;
 
-        championsClubs.forEach(
-            club => {
+        championsClubs
+            .forEach(
+                club => {
 
-                const occupied =
-                    Boolean(
-                        club.participant_id
-                    );
+                    const occupied =
+                        Boolean(
+                            club.participant_id
+                        );
 
-                const isCurrent =
-                    String(
-                        club.id
-                    ) ===
-                    current;
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
 
-                if (
-                    occupied
-                    &&
-                    !isCurrent
-                ) {
-                    return;
-                }
+                    option.value =
+                        club.id;
 
-                const option =
-                    document.createElement(
-                        "option"
-                    );
+                    option.textContent =
+                        occupied
+                            ? `${club.name} — OCUPADO`
+                            : club.name;
 
-                option.value =
-                    club.id;
+                    /*
+                     * No cadastro/edição, clube ocupado não pode
+                     * ser escolhido por outro treinador.
+                     * Na edição, o clube atual permanece selecionável.
+                     */
+                    const currentRegistration =
+                        championsRegistrations.find(
+                            registration =>
+                                String(
+                                    registration.selected_club_id
+                                ) ===
+                                String(
+                                    club.id
+                                ) &&
+                                String(
+                                    registration.participant_id
+                                ) ===
+                                String(
+                                    editingPlayerId ||
+                                    ""
+                                )
+                        );
 
-                option.textContent =
-                    club.name;
+                    option.disabled =
+                        occupied &&
+                        !currentRegistration;
 
-                dom.championsTeam
-                    .appendChild(
+                    if (
+                        option.disabled
+                    ) {
+                        option.title =
+                            "Clube já vinculado a outro treinador.";
+                    }
+
+                    select.appendChild(
                         option
                     );
 
-            }
-        );
+                }
+            );
 
-        dom.championsTeam.value =
+        select.value =
             current;
 
         if (
@@ -1752,128 +1915,31 @@
                         String(
                             club.id
                         ) ===
-                        String(
-                            current
-                        )
+                        current
                 );
 
             dom.championsTeamStatus.textContent =
                 selected
                     ? `Clube selecionado: ${selected.name}`
-                    : `${championsClubs.length} clubes da Season 01 disponíveis.`;
+                    : `${championsClubs.length} clubes carregados da Season 01.`;
 
         }
 
     }
 
 
-    function updateCompetitionSummary() {
-
-        const summary =
-            document.querySelector(
-                "#player-competition-summary"
-            );
+    function syncChampionsFieldUI() {
 
         if (
-            !summary
+            !dom.champions
         ) {
             return;
         }
 
-        const selected = [];
-
-        if (
-            dom.playerPlatform?.value !== "MOBILE"
-        ) {
-
-            if (
-                dom.competitionBrasileirao?.checked
-            ) {
-
-                selected.push(
-                    `BRASILEIRÃO — ${
-                        dom.brasileiraoTeam?.value ||
-                        "A DEFINIR"
-                    }`
-                );
-
-            }
-
-            if (
-                dom.champions?.checked
-            ) {
-
-                const club =
-                    championsClubs.find(
-                        item =>
-                            String(
-                                item.id
-                            ) ===
-                            String(
-                                dom.championsTeam?.value ||
-                                ""
-                            )
-                    );
-
-                selected.push(
-                    `CHAMPIONS LEAGUE — ${
-                        club?.name ||
-                        "A DEFINIR"
-                    }`
-                );
-
-            }
-
-            if (
-                dom.competitionNight?.checked
-            ) {
-
-                selected.push(
-                    `NIGHT CUP — ${
-                        dom.nightTeam?.value ||
-                        "A DEFINIR"
-                    }`
-                );
-
-            }
-
-        }
-
-        summary.innerHTML =
-            selected.length
-                ? selected
-                    .map(
-                        item =>
-                            `<span class="ccfv-admin-competition-pill">${escapeHTML(item)}</span>`
-                    )
-                    .join("")
-                : `
-                    <span class="ccfv-admin-competition-summary__empty">
-                        NENHUMA COMPETIÇÃO SELECIONADA.
-                    </span>
-                `;
-
-    }
-
-
-    function updateChampionsUI() {
-
         const active =
             Boolean(
-                dom.champions?.checked
+                dom.champions.checked
             );
-
-        if (
-            dom.championsLabel
-        ) {
-
-            dom.championsLabel
-                .classList.toggle(
-                    "is-selected",
-                    active
-                );
-
-        }
 
         if (
             dom.championsConfig
@@ -1896,6 +1962,28 @@
         }
 
         if (
+            dom.championsLabel
+        ) {
+
+            dom.championsLabel
+                .classList.toggle(
+                    "is-selected",
+                    active
+                );
+
+            dom.championsLabel.style.borderColor =
+                active
+                    ? "rgba(67,223,145,.72)"
+                    : "rgba(255,255,255,.07)";
+
+            dom.championsLabel.style.background =
+                active
+                    ? "rgba(67,223,145,.10)"
+                    : "rgba(255,255,255,.015)";
+
+        }
+
+        if (
             active
         ) {
 
@@ -1903,61 +1991,92 @@
 
         }
 
-        updateCompetitionSummary();
-
     }
 
 
-    async function syncChampionsRegistration(
+    async function saveChampionsRegistration(
         client,
         playerId
     ) {
 
+        const existing =
+            championsRegistrations.find(
+                registration =>
+                    String(
+                        registration.participant_id
+                    ) ===
+                    String(
+                        playerId
+                    )
+            ) ||
+            null;
+
+        const selected =
+            Boolean(
+                dom.champions?.checked
+            );
+
+        /*
+         * DESMARCOU CHAMPIONS:
+         * libera o clube e remove somente a inscrição
+         * da Champions deste participante.
+         */
         if (
-            !dom.champions?.checked
+            !selected
         ) {
 
-            /*
-             * Em edição, desmarcar Champions remove
-             * a inscrição e libera o clube.
-             * Para jogador novo não existe nada a remover.
-             */
-            try {
-
-                const {
-                    error
-                } =
-                    await client.rpc(
-                        "champions_unregister_player",
-                        {
-                            p_championship_id:
-                                CHAMPIONS_SEASON_ID,
-
-                            p_participant_id:
-                                playerId
-                        }
-                    );
-
-                if (
-                    error
-                ) {
-                    console.debug(
-                        "CCFV // CHAMPIONS UNREGISTER:",
-                        error.message
-                    );
-                }
-
-            }
-            catch (
-                error
+            if (
+                existing
             ) {
 
-                console.debug(
-                    "CCFV // CHAMPIONS UNREGISTER:",
-                    error
-                );
+                await client
+                    .from(
+                        "championship_clubs"
+                    )
+                    .update({
+                        participant_id:
+                            null,
+                        status:
+                            "AVAILABLE",
+                        pot_number:
+                            null,
+                        updated_at:
+                            new Date()
+                                .toISOString()
+                    })
+                    .eq(
+                        "id",
+                        existing.selected_club_id
+                    )
+                    .eq(
+                        "championship_id",
+                        CHAMPIONS_SEASON_ID
+                    )
+                    .throwOnError();
+
+                await client
+                    .from(
+                        "championship_registrations"
+                    )
+                    .delete()
+                    .eq(
+                        "id",
+                        existing.id
+                    )
+                    .throwOnError();
 
             }
+
+            championsRegistrations =
+                championsRegistrations.filter(
+                    registration =>
+                        String(
+                            registration.participant_id
+                        ) !==
+                        String(
+                            playerId
+                        )
+                );
 
             return;
 
@@ -1977,24 +2096,14 @@
 
         }
 
-        const clubId =
+        const selectedClubId =
             String(
                 dom.championsTeam?.value ||
                 ""
             );
 
-        const club =
-            championsClubs.find(
-                item =>
-                    String(
-                        item.id
-                    ) ===
-                    clubId
-            );
-
         if (
-            !clubId ||
-            !club
+            !selectedClubId
         ) {
 
             throw new Error(
@@ -2003,15 +2112,45 @@
 
         }
 
+        const selectedClub =
+            championsClubs.find(
+                club =>
+                    String(
+                        club.id
+                    ) ===
+                    selectedClubId
+            );
+
         if (
-            club.participant_id
-            &&
-            String(
-                club.participant_id
-            ) !==
-            String(
-                playerId
-            )
+            !selectedClub
+        ) {
+
+            throw new Error(
+                "CLUBE DA CHAMPIONS LEAGUE NÃO ENCONTRADO."
+            );
+
+        }
+
+        /*
+         * Impede o mesmo clube para dois treinadores.
+         */
+        const another =
+            championsRegistrations.find(
+                registration =>
+                    String(
+                        registration.selected_club_id
+                    ) ===
+                    selectedClubId &&
+                    String(
+                        registration.participant_id
+                    ) !==
+                    String(
+                        playerId
+                    )
+            );
+
+        if (
+            another
         ) {
 
             throw new Error(
@@ -2020,28 +2159,188 @@
 
         }
 
+        /*
+         * Troca de clube na edição:
+         * primeiro libera o antigo.
+         */
+        if (
+            existing
+            &&
+            String(
+                existing.selected_club_id
+            ) !==
+            selectedClubId
+        ) {
+
+            await client
+                .from(
+                    "championship_clubs"
+                )
+                .update({
+                    participant_id:
+                        null,
+                    status:
+                        "AVAILABLE",
+                    updated_at:
+                        new Date()
+                            .toISOString()
+                })
+                .eq(
+                    "id",
+                    existing.selected_club_id
+                )
+                .eq(
+                    "championship_id",
+                    CHAMPIONS_SEASON_ID
+                )
+                .throwOnError();
+
+        }
+
+        /*
+         * Uma inscrição por participante na Season 01.
+         */
+        const registrationPayload = {
+
+            championship_id:
+                CHAMPIONS_SEASON_ID,
+
+            participant_id:
+                playerId,
+
+            priorities:
+                [],
+
+            selected_club_id:
+                selectedClubId,
+
+            status:
+                "CONFIRMED",
+
+            accepted_at:
+                new Date()
+                    .toISOString(),
+
+            confirmation_notes:
+                "Cadastro realizado pelo painel administrativo.",
+
+            updated_at:
+                new Date()
+                    .toISOString()
+
+        };
+
         const {
-            error
+            data:
+                savedRegistration,
+            error:
+                registrationError
         } =
-            await client.rpc(
-                "champions_register_player",
-                {
-                    p_championship_id:
-                        CHAMPIONS_SEASON_ID,
-
-                    p_participant_id:
-                        playerId,
-
-                    p_championship_club_id:
-                        clubId
-                }
-            );
+            await client
+                .from(
+                    "championship_registrations"
+                )
+                .upsert(
+                    registrationPayload,
+                    {
+                        onConflict:
+                            "championship_id,participant_id"
+                    }
+                )
+                .select(
+                    "id,championship_id,participant_id,selected_club_id,status"
+                )
+                .single();
 
         if (
-            error
+            registrationError
         ) {
-            throw error;
+
+            throw registrationError;
+
         }
+
+        /*
+         * Marca o clube como CONFIRMED e vincula o jogador.
+         */
+        await client
+            .from(
+                "championship_clubs"
+            )
+            .update({
+                participant_id:
+                    playerId,
+
+                status:
+                    "CONFIRMED",
+
+                updated_at:
+                    new Date()
+                        .toISOString()
+            })
+            .eq(
+                "id",
+                selectedClubId
+            )
+            .eq(
+                "championship_id",
+                CHAMPIONS_SEASON_ID
+            )
+            .throwOnError();
+
+        championsRegistrations =
+            [
+                ...championsRegistrations.filter(
+                    registration =>
+                        String(
+                            registration.participant_id
+                        ) !==
+                        String(
+                            playerId
+                        )
+                ),
+                savedRegistration
+            ];
+
+        championsClubs =
+            championsClubs.map(
+                club =>
+                    String(
+                        club.id
+                    ) ===
+                    selectedClubId
+
+                        ? {
+                            ...club,
+                            participant_id:
+                                playerId,
+                            status:
+                                "CONFIRMED"
+                        }
+
+                        : (
+                            existing
+                            &&
+                            String(
+                                club.id
+                            ) ===
+                            String(
+                                existing.selected_club_id
+                            )
+
+                            ? {
+                                ...club,
+                                participant_id:
+                                    null,
+                                status:
+                                    "AVAILABLE"
+                            }
+
+                            : club
+                        )
+            );
+
+        refreshChampionsTeamOptions();
 
     }
 
@@ -2291,10 +2590,6 @@
 
         }
 
-        updateChampionsUI();
-
-        updateCompetitionSummary();
-
     }
 
 
@@ -2490,44 +2785,6 @@
 
                     if (
                         item.competition ===
-                        "CHAMPIONS_LEAGUE"
-                    ) {
-
-                        if (
-                            dom.champions
-                        ) {
-                            dom.champions.checked =
-                                true;
-                        }
-
-                        const club =
-                            championsClubs.find(
-                                itemClub =>
-                                    String(
-                                        itemClub.name ||
-                                        ""
-                                    ).toLowerCase() ===
-                                    String(
-                                        item.team_name ||
-                                        ""
-                                    ).toLowerCase()
-                            );
-
-                        if (
-                            club &&
-                            dom.championsTeam
-                        ) {
-
-                            dom.championsTeam.value =
-                                club.id;
-
-                        }
-
-                    }
-
-
-                    if (
-                        item.competition ===
                         "NIGHT_CUP"
                     ) {
 
@@ -2542,6 +2799,44 @@
 
                 }
             );
+
+
+        const championsRegistration =
+            championsRegistrations.find(
+                registration =>
+                    String(
+                        registration.participant_id
+                    ) ===
+                    String(
+                        player.id
+                    )
+            );
+
+        if (
+            championsRegistration
+        ) {
+
+            if (
+                dom.champions
+            ) {
+                dom.champions.checked =
+                    true;
+            }
+
+            if (
+                dom.championsTeam
+            ) {
+
+                dom.championsTeam.value =
+                    String(
+                        championsRegistration
+                            .selected_club_id ||
+                        ""
+                    );
+
+            }
+
+        }
 
 
         if (
@@ -2760,6 +3055,7 @@
             selected.push({
                 competition:
                     "CHAMPIONS_LEAGUE",
+
                 team_name:
                     club.name
             });
@@ -3039,8 +3335,10 @@
 
             /*
              * CHAMPIONS LEAGUE
+             *
+             * Salva o vínculo real do treinador com o clube.
              */
-            await syncChampionsRegistration(
+            await saveChampionsRegistration(
                 client,
                 playerId
             );
@@ -3077,26 +3375,8 @@
             }
 
 
-            const uniqueCompetitions =
-                competitions.filter(
-                    (item,index,array) =>
-                        array.findIndex(
-                            candidate =>
-                                candidate.competition ===
-                                    item.competition &&
-                                String(
-                                    candidate.team_name ||
-                                    ""
-                                ).trim().toLowerCase() ===
-                                String(
-                                    item.team_name ||
-                                    ""
-                                ).trim().toLowerCase()
-                        ) === index
-                );
-
             const competitionRows =
-                uniqueCompetitions.map(
+                competitions.map(
                     item => {
 
                         return {
@@ -3238,8 +3518,63 @@
 
 
             /*
-             * As competições serão excluídas
-             * automaticamente pelo ON DELETE CASCADE.
+             * Libera o clube da Champions antes de apagar o jogador,
+             * porque championship_registrations referencia players
+             * com ON DELETE RESTRICT.
+             */
+            const championsRegistration =
+                championsRegistrations.find(
+                    registration =>
+                        String(
+                            registration.participant_id
+                        ) ===
+                        String(
+                            id
+                        )
+                );
+
+            if (
+                championsRegistration
+            ) {
+
+                await client
+                    .from(
+                        "championship_clubs"
+                    )
+                    .update({
+                        participant_id:
+                            null,
+
+                        status:
+                            "AVAILABLE",
+
+                        updated_at:
+                            new Date()
+                                .toISOString()
+                    })
+                    .eq(
+                        "id",
+                        championsRegistration
+                            .selected_club_id
+                    )
+                    .throwOnError();
+
+                await client
+                    .from(
+                        "championship_registrations"
+                    )
+                    .delete()
+                    .eq(
+                        "id",
+                        championsRegistration.id
+                    )
+                    .throwOnError();
+
+            }
+
+
+            /*
+             * Competições normais do jogador.
              */
 
             const {
@@ -3539,7 +3874,7 @@
                 "change",
                 () => {
 
-                    updateChampionsUI();
+                    syncChampionsFieldUI();
                     updateCompetitionSummary();
 
                 }
@@ -3554,7 +3889,7 @@
                     window.setTimeout(
                         () => {
 
-                            updateChampionsUI();
+                            syncChampionsFieldUI();
                             updateCompetitionSummary();
 
                         },
@@ -3570,12 +3905,11 @@
                 "change",
                 () => {
 
-                    updateChampionsUI();
+                    syncChampionsFieldUI();
                     updateCompetitionSummary();
 
                 }
             );
-
 
 
         dom.competitionBrasileiraoLabel
@@ -3747,26 +4081,10 @@
 
         updateCompetitionUI();
 
-        try {
-
-            await loadChampionsCatalog();
-
-        }
-        catch (
-            championsError
-        ) {
-
-            console.warn(
-                "CCFV // CHAMPIONS INIT:",
-                championsError
-            );
-
-        }
-
-        updateChampionsUI();
-        updateCompetitionSummary();
+        syncChampionsFieldUI();
 
         updateRankPreview();
+
 
 
         try {
@@ -3775,6 +4093,9 @@
 
             await loadPlayers();
 
+            await loadChampionsAdminData();
+
+            updateCompetitionSummary();
 
             console.log(
                 "CCFV // PLAYER DATABASE ONLINE"
