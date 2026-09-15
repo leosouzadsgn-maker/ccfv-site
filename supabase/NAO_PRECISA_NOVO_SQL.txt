@@ -1,0 +1,9 @@
+O catálogo da Champions já foi confirmado no Supabase com 32 clubes.
+Este pacote não exige SQL estrutural novo.
+
+IMPORTANTE:
+O erro "JWT issued at future" é de relógio/data/hora do computador em relação ao Supabase.
+Confira no Windows:
+Configurações > Hora e idioma > Data e hora
+Ative "Definir hora automaticamente" e "Definir fuso horário automaticamente".
+Depois reinicie o navegador.

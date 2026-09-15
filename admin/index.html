@@ -1956,23 +1956,10 @@
             color:inherit;
             text-decoration:none;
         }
-
-        .ccfv-admin-nav__link:hover {
-            text-decoration:none;
-        }
-
-        #champions-config {
-            display:none;
-        }
-
-        #champions-config.is-visible {
-            display:block;
-        }
-
-        #champions-team option {
-            color:#fff;
-            background:#07100b;
-        }
+        .ccfv-admin-nav__link:hover { text-decoration:none; }
+        #champions-config { display:none; }
+        #champions-config.is-visible { display:block; }
+        #champions-team option { color:#fff; background:#07100b; }
 </style>
 
 </head>
@@ -2076,11 +2063,11 @@
 
             </button>
 
-
             <a href="/admin/champions.html" class="ccfv-admin-nav__item ccfv-admin-nav__link">
                 <span>🏆</span>
                 Champions League
             </a>
+
 
 
             <button
@@ -4164,11 +4151,8 @@
 
                     </label>
 
-
                     <label
-                        class="
-                            ccfv-competition-check
-                        "
+                        class="ccfv-competition-check"
                         id="competition-champions-label"
                     >
 
@@ -4177,28 +4161,11 @@
                             id="competition-champions"
                         >
 
-                        <span
-                            class="
-                                ccfv-competition-check__box
-                            "
-                        >
-                            ✓
-                        </span>
+                        <span class="ccfv-competition-check__box">✓</span>
 
-                        <span
-                            class="
-                                ccfv-competition-check__content
-                            "
-                        >
-
-                            <strong>
-                                CHAMPIONS LEAGUE
-                            </strong>
-
-                            <small>
-                                Representa um clube
-                            </small>
-
+                        <span class="ccfv-competition-check__content">
+                            <strong>CHAMPIONS LEAGUE</strong>
+                            <small>Representa um clube</small>
                         </span>
 
                     </label>
@@ -4428,30 +4395,17 @@
                 </div>
 
 
-                <div
-                    class="
-                        ccfv-competition-config
-                    "
+                                <div
+                    class="ccfv-competition-config"
                     id="champions-config"
                 >
 
-                    <span
-                        class="
-                            ccfv-competition-config__label
-                        "
-                    >
+                    <span class="ccfv-competition-config__label">
                         CLUBE DA CHAMPIONS LEAGUE
                     </span>
 
-                    <select
-                        id="champions-team"
-                        disabled
-                    >
-
-                        <option value="">
-                            SELECIONE O CLUBE
-                        </option>
-
+                    <select id="champions-team" disabled>
+                        <option value="">SELECIONE O CLUBE</option>
                         <option value="97762f56-2f71-4391-9740-82bf271eecaf">Real Madrid</option>
                         <option value="32829574-ddcd-4767-b2d3-550941cda564">Barcelona</option>
                         <option value="b9a26deb-a555-4068-a13a-a6caf70309fe">Atlético de Madrid</option>
@@ -4484,22 +4438,19 @@
                         <option value="d3c0cfff-704f-461f-a7da-f65e0898eb0b">Rangers</option>
                         <option value="d1d61831-69ba-415c-a0e1-43379c1b8ac9">Club Brugge</option>
                         <option value="a0ff081f-15f7-4aac-96c5-e5b16388f451">Anderlecht</option>
-
                     </select>
 
                     <small
-                        class="
-                            ccfv-competition-config__help
-                        "
+                        class="ccfv-competition-config__help"
                         id="champions-team-status"
                     >
-                        Os 32 clubes da Season 01 estão disponíveis.
+                        32 clubes da Season 01.
                     </small>
 
                 </div>
 
 
-                <div
+<div
                     class="
                         ccfv-competition-config
                     "
