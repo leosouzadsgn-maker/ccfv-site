@@ -48,11 +48,6 @@
         href="/admin/css/admin.css"
     >
 
-    <link
-        rel="stylesheet"
-        href="/css/mobile.css"
-    >
-
 
     <!-- =====================================================
          CSS ESPECÍFICO
@@ -2052,15 +2047,14 @@
             </button>
 
             <a
-    href="/admin/champions.html"
-    class="ccfv-admin-nav__item ccfv-admin-nav__link"
->
+                href="/admin/champions.html"
+                class="ccfv-admin-nav__item ccfv-admin-nav__link"
+            >
+                <span>🏆</span>
+                Champions League
+            </a>
 
-    <span>🏆</span>
 
-    Champions League
-
-</a>
 
 
             <button
@@ -2079,16 +2073,7 @@
             <button
                 type="button"
                 class="ccfv-admin-nav__item"
-                data-section="mobile"
-                >
-                    <span class="ccfv-admin-nav__icon">M</span>
-                    <span>Mobile</span>
-                </button>
-
-                <button
-                    type="button"
-                    class="ccfv-admin-nav__item"
-                    data-section="ranking"
+                data-section="ranking"
             >
 
                 <span>№</span>
@@ -3669,30 +3654,6 @@
              RANKING
              ================================================= -->
 
-        <section class="ccfv-admin-section" id="section-mobile">
-            <div class="ccfv-admin-heading">
-                <div><span>CCFV // MOBILE</span><h1>CONTROLAR <strong>MOBILE.</strong></h1><p>Brasileirão Mobile, Arena Cup e partidas exclusivas.</p></div>
-                <div class="ccfv-admin-heading__actions"><button class="ccfv-admin-button ccfv-admin-button--secondary" id="mobile-new-player" type="button">+ NOVO JOGADOR MOBILE</button><button class="ccfv-admin-button ccfv-admin-button--primary" id="mobile-refresh">ATUALIZAR</button></div>
-            </div>
-            <div class="ccfv-admin-dashboard-grid">
-                <article class="ccfv-admin-panel"><div class="ccfv-admin-panel__heading"><div><span>BRASILEIRÃO MOBILE</span><h2>REGISTRAR RESULTADO.</h2></div></div>
-                    <div class="ccfv-mobile-admin-note">Para o <strong>BRASILEIRÃO MOBILE</strong> selecione os clubes normalmente. Na <strong>ARENA CUP</strong>, os jogadores são os competidores e os campos de clube ficam ocultos.</div><form id="mobile-match-form" class="ccfv-mobile-form">
-                        <label>COMPETIÇÃO<select id="mobile-competition"><option value="BRASILEIRAO_MOBILE">BRASILEIRÃO MOBILE</option><option value="ARENA_CUP">ARENA CUP</option></select></label>
-                        <label>FASE / RODADA<select id="mobile-stage"></select></label>
-                        <label>JOGADOR CASA<select id="mobile-home-player"><option value="">Selecione</option></select></label>
-                        <label>JOGADOR FORA<select id="mobile-away-player"><option value="">Selecione</option></select></label>
-                        <label>CLUBE CASA<select id="mobile-home-team"><option>ATHLETICO-PR</option><option>ATLÉTICO-MG</option><option>BAHIA</option><option>BOTAFOGO</option><option>BRAGANTINO</option><option>CHAPECOENSE</option><option>CORINTHIANS</option><option>CORITIBA</option><option>CRUZEIRO</option><option>FLAMENGO</option><option>FLUMINENSE</option><option>GRÊMIO</option><option>INTERNACIONAL</option><option>MIRASSOL</option><option>PALMEIRAS</option><option>REMO</option><option>SANTOS</option><option>SÃO PAULO</option><option>VASCO</option><option>VITÓRIA</option></select></label>
-                        <label>CLUBE FORA<select id="mobile-away-team"><option>ATHLETICO-PR</option><option>ATLÉTICO-MG</option><option>BAHIA</option><option>BOTAFOGO</option><option>BRAGANTINO</option><option>CHAPECOENSE</option><option>CORINTHIANS</option><option>CORITIBA</option><option>CRUZEIRO</option><option>FLAMENGO</option><option>FLUMINENSE</option><option>GRÊMIO</option><option>INTERNACIONAL</option><option>MIRASSOL</option><option>PALMEIRAS</option><option>REMO</option><option>SANTOS</option><option>SÃO PAULO</option><option>VASCO</option><option>VITÓRIA</option></select></label>
-                        <label>PLACAR CASA<input id="mobile-home-score" type="number" min="0" max="99" value="0"></label>
-                        <label>PLACAR FORA<input id="mobile-away-score" type="number" min="0" max="99" value="0"></label>
-                        <label class="full">DATA E HORA<input id="mobile-played-at" type="datetime-local"></label>
-                        <button type="submit" class="ccfv-admin-button ccfv-admin-button--primary full" id="mobile-match-submit">REGISTRAR RESULTADO MOBILE</button>
-                    </form>
-                </article>
-                <article class="ccfv-admin-panel"><div class="ccfv-admin-panel__heading"><div><span>STATUS</span><h2>ECOSSISTEMA MOBILE.</h2></div></div><div class="ccfv-admin-stats"><article class="ccfv-admin-stat"><span>JOGADORES MOBILE</span><strong id="mobile-stat-players">00</strong></article><article class="ccfv-admin-stat"><span>PARTIDAS MOBILE</span><strong id="mobile-stat-matches">00</strong></article><article class="ccfv-admin-stat"><span>RANKING MOBILE</span><strong id="mobile-stat-ranking">00</strong></article></div><div id="mobile-admin-list" class="ccfv-mobile-empty">CARREGANDO DADOS MOBILE.</div></article>
-            </div>
-        </section>
-
         <section
             class="ccfv-admin-section"
             id="section-ranking"
@@ -3968,10 +3929,6 @@
                             CONSOLE
                         </option>
 
-                        <option value="MOBILE">
-                            MOBILE
-                        </option>
-
                     </select>
 
                 </label>
@@ -4103,7 +4060,6 @@
                         ccfv-competition-options
                     "
                 >
-
                     <label
                         class="
                             ccfv-competition-check
@@ -4131,15 +4087,42 @@
                                 ccfv-competition-check__content
                             "
                         >
+                            <strong>BRASILEIRÃO</strong>
+                            <small>Representa um clube</small>
+                        </span>
 
-                            <strong>
-                                BRASILEIRÃO
-                            </strong>
+                    </label>
 
-                            <small>
-                                Representa um clube
-                            </small>
 
+                    <label
+                        class="
+                            ccfv-competition-check
+                        "
+                        id="
+                            competition-champions-label
+                        "
+                    >
+
+                        <input
+                            type="checkbox"
+                            id="competition-champions"
+                        >
+
+                        <span
+                            class="
+                                ccfv-competition-check__box
+                            "
+                        >
+                            ✓
+                        </span>
+
+                        <span
+                            class="
+                                ccfv-competition-check__content
+                            "
+                        >
+                            <strong>CHAMPIONS LEAGUE</strong>
+                            <small>Representa um clube</small>
                         </span>
 
                     </label>
@@ -4172,98 +4155,20 @@
                                 ccfv-competition-check__content
                             "
                         >
-
-                            <strong>
-                                NIGHT CUP
-                            </strong>
-
-                            <small>
-                                Time próprio
-                            </small>
-
+                            <strong>NIGHT CUP</strong>
+                            <small>Time próprio</small>
                         </span>
 
                     </label>
 
 
-                    <label
-                        class="ccfv-competition-check ccfv-platform-mobile-only"
-                        id="competition-brasileirao-mobile-label"
-                        style="display:none"
-                    >
-
-                        <input
-                            type="checkbox"
-                            id="competition-brasileirao-mobile"
-                        >
-
-                        <span class="ccfv-competition-check__box">✓</span>
-
-                        <span class="ccfv-competition-check__content">
-                            <strong>BRASILEIRÃO MOBILE</strong>
-                            <small>Representa um clube no Mobile</small>
-                        </span>
-
-                    </label>
-
-
-                    <label
-                        class="ccfv-competition-check ccfv-platform-mobile-only"
-                        id="competition-arena-mobile-label"
-                        style="display:none"
-                    >
-
-                        <input
-                            type="checkbox"
-                            id="competition-arena-mobile"
-                        >
-
-                        <span class="ccfv-competition-check__box">✓</span>
-
-                        <span class="ccfv-competition-check__content">
-                            <strong>ARENA CUP MOBILE</strong>
-                            <small>Equipe própria</small>
-                        </span>
-
-                    </label>
-
-                </div>
-
-                <div
-                    class="ccfv-admin-competition-summary"
-                >
-                    <span class="ccfv-competition-config__label">COMPETIÇÕES SELECIONADAS</span>
-                    <div id="player-competition-summary">
-                        <span class="ccfv-admin-competition-summary__empty">NENHUMA COMPETIÇÃO SELECIONADA.</span>
-                    </div>
-                </div>
+</div>
 
 
                 <div
-                    class="ccfv-competition-config"
-                    id="brasileirao-mobile-config"
-                    style="display:none"
-                >
-                    <span class="ccfv-competition-config__label">TIME QUE VAI REPRESENTAR NO MOBILE</span>
-                    <select id="brasileirao-mobile-team">
-                        <option value="">Selecione o clube</option>
-                        <option>ATHLETICO-PR</option><option>ATLÉTICO-MG</option><option>BAHIA</option><option>BOTAFOGO</option><option>BRAGANTINO</option><option>CHAPECOENSE</option><option>CORINTHIANS</option><option>CORITIBA</option><option>CRUZEIRO</option><option>FLAMENGO</option><option>FLUMINENSE</option><option>GRÊMIO</option><option>INTERNACIONAL</option><option>MIRASSOL</option><option>PALMEIRAS</option><option>REMO</option><option>SANTOS</option><option>SÃO PAULO</option><option>VASCO</option><option>VITÓRIA</option>
-                    </select>
-                </div>
-
-
-                <div
-                    class="ccfv-competition-config"
-                    id="arena-mobile-config"
-                    style="display:none"
-                >
-                    <span class="ccfv-competition-config__label">NOME DA EQUIPE — ARENA CUP MOBILE</span>
-                    <input type="text" id="arena-mobile-team" placeholder="Ex: CCFV Wolves">
-                </div>
-
-
-                <div
-                    class="ccfv-competition-config"
+                    class="
+                        ccfv-competition-config
+                    "
                     id="brasileirao-config"
                 >
 
@@ -4367,6 +4272,48 @@
                     </select>
 
                 </div>
+                <div
+                    class="
+                        ccfv-competition-config
+                    "
+                    id="champions-config"
+                >
+
+                    <span
+                        class="
+                            ccfv-competition-config__label
+                        "
+                    >
+                        CLUBE DA CHAMPIONS LEAGUE
+                    </span>
+
+                    <select
+                        id="champions-team"
+                    >
+
+                        <option value="">
+                            Carregando clubes...
+                        </option>
+
+                    </select>
+
+                    <small
+                        id="champions-team-status"
+                        style="
+                            display:block;
+                            margin-top:7px;
+                            color:rgba(255,255,255,.28);
+                            font-size:9px;
+                            line-height:1.5;
+                        "
+                    >
+                        Marque Champions League para selecionar o clube.
+                    </small>
+
+                </div>
+
+
+
 
 
                 <div
@@ -4508,11 +4455,6 @@
 
 <script
     src="/admin/js/night.js"
-    defer
-></script>
-
-<script
-    src="/admin/js/mobile.js"
     defer
 ></script>
 
