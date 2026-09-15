@@ -1,0 +1,18 @@
+CCFV CHAMPIONS — PACOTE COMPLETO CORRIGIDO
+
+Substitua os arquivos pelas respectivas pastas do projeto.
+
+Inclui:
+- admin/js/admin.js completo com Champions no cadastro de jogador
+- pages/champions.html
+- css/champions.css
+- js/champions.js com grupos/mata-mata visíveis antes do sorteio
+- admin/champions.html sem aba Inscrições
+- admin/css/champions.css
+
+IMPORTANTE:
+No admin.js, a Champions aparece no cadastro de Novo Jogador.
+O jogador pode marcar CHAMPIONS LEAGUE e selecionar o clube.
+Ao salvar, o vínculo da Champions é sincronizado com championship_registrations e championship_clubs.
+
+Teste primeiro o modal + Novo Jogador antes de fazer novas alterações.
