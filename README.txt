@@ -1,44 +1,29 @@
-CCFV CHAMPIONS — FRONTEND
+CCFV CHAMPIONS — CORREÇÃO DEFINITIVA DO SELECTOR
 
-Arquivos:
-pages/champions.html
-css/champions.css
-js/champions.js
-admin/champions.html
-admin/css/champions.css
-admin/js/champions.js
-NAV_CHAMPIONS_PATCH.txt
+O banco já foi validado: championship_public_clubs_options retorna 32 clubes.
 
-Copiar para o projeto:
-- pages/champions.html -> SITE/pages/champions.html
-- css/champions.css -> SITE/css/champions.css
-- js/champions.js -> SITE/js/champions.js
-- admin/champions.html -> SITE/admin/champions.html
-- admin/css/champions.css -> SITE/admin/css/champions.css
-- admin/js/champions.js -> SITE/admin/js/champions.js
+O problema restante era exclusivamente no admin.js: o arquivo em uso não carregava os 32 IDs dos clubes e não preenchia o select.
 
-O frontend utiliza:
-- public.championships
-- public.championship_clubs / public.champions_clubs
-- public.championship_registrations
-- public.championship_public_standings
-- public.championship_public_matches
-- RPCs da engine da Champions
+Esta versão resolve sem novo SQL:
 
-A página pública segue o padrão visual/estrutural CCFV do Brasileirão, sem reutilizar a lógica de outra competição.
+1. O select Champions é preenchido localmente com os 32 championship_club_id reais da Season 01.
+2. Depois o sistema consulta a view pública apenas para marcar clubes já ocupados.
+3. O salvamento usa a RPC champions_register_player existente.
+4. Não consulta sort_order na view antiga.
 
-O Admin já possui:
-- dashboard
-- edição de Season 01
-- lista de 32 clubes
-- inclusão de participante + clube
-- preparação dos potes
-- sorteio
-- geração de 48 jogos
-- grupos
-- lançamento de placares
-- mata-mata
-- histórico/Hall
+ARQUIVOS:
+admin/index.html
+admin/admin.js
 
-Observação:
-O vínculo "Competição Champions" dentro do cadastro geral de Jogadores ainda é uma integração separada. O painel Champions já consegue registrar um jogador existente em players diretamente.
+No seu projeto, substitua:
+admin/index.html
+admin/js/admin.js
+
+IMPORTANTE:
+- Não execute instaladores antigos.
+- Não execute outro SQL agora.
+- Não altere as tabelas da Champions.
+
+TESTE:
+Admin > Jogadores > + NOVO JOGADOR > Champions League
+O select deve abrir já com os 32 clubes.
