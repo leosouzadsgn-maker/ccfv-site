@@ -1,19 +1,27 @@
-CCFV CHAMPIONS — CORREÇÃO UI FINAL
+CCFV — CORREÇÃO FINAL DO CADASTRO CHAMPIONS
 
-Arquivos:
+Substituir apenas:
 admin/js/admin.js
-admin/champions.html
-admin/js/champions.js
-admin/css/champions.css
-pages/champions.html
-css/champions.css
-js/champions.js
 
-CORREÇÕES:
-1. O + NOVO JOGADOR usa delegação de evento no admin.js e continua abrindo o modal.
-2. O seletor da Champions lê os clubes pela view pública championship_public_clubs, evitando o permission denied da tabela championships.
-3. A página /admin/champions.html não possui mais a aba Inscrições.
-4. Os botões Dashboard, Temporada, Clubes, Sorteio, Grupos, Partidas, Mata-mata e Histórico trocam de tela.
-5. O Admin da Champions lê clubes/classificação/partidas pelas views públicas.
-6. O catálogo mostra treinador/participante ao lado do clube.
-7. A página pública mantém grupos A-H e mata-mata visíveis com A DEFINIR antes do sorteio.
+O problema corrigido era o carregamento do cadastro de jogador depender diretamente da tabela `championships`, enquanto o painel da Champions já funciona através das views públicas.
+
+Agora o cadastro:
+- usa `championship_public_info` para localizar a Season 01;
+- possui fallback oficial com o UUID real da Season 01;
+- usa `championship_public_clubs` para listar os 32 clubes;
+- mantém o clube já selecionado na edição;
+- bloqueia clubes ocupados;
+- grava o vínculo através das RPCs `champions_admin_assign_club` / `champions_admin_remove_registration`;
+- sincroniza `player_competitions`;
+- não faz INSERT/UPDATE direto em `championship_registrations` pelo browser.
+
+Teste:
+1. Ctrl+Shift+R
+2. Admin > Jogadores > Novo Jogador
+3. marque Champions League
+4. abra o campo Clube da Champions
+5. deve aparecerem os 32 clubes
+6. escolha um clube livre e salve
+7. edite o jogador e confirme que o clube continua selecionado
+
+Não execute SQL adicional apenas para esse erro. O banco já possui os 32 clubes e o RPC de atribuição usado por esta versão.
