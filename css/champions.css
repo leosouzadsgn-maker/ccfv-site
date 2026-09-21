@@ -1510,3 +1510,253 @@ body[data-page="champions"] {
     }
 
 }
+
+
+/* ============================================================
+   CCFV CHAMPIONS — MATCHDAY POR GRUPO + RODADA
+   ============================================================ */
+
+.ccfv-matchday-filter {
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-bottom:18px;
+}
+
+.ccfv-matchday-filter button {
+    appearance:none;
+    border:1px solid rgba(255,255,255,.09);
+    border-radius:999px;
+    background:rgba(255,255,255,.015);
+    color:#789086;
+    padding:8px 12px;
+    font-size:8px;
+    font-weight:900;
+    letter-spacing:.08em;
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.ccfv-matchday-filter button:hover,
+.ccfv-matchday-filter button.is-active {
+    border-color:rgba(56,216,139,.3);
+    background:rgba(56,216,139,.07);
+    color:#71dda2;
+}
+
+.ccfv-matchday-groups {
+    display:grid;
+    gap:18px;
+}
+
+.ccfv-matchday-group {
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.075);
+    border-radius:20px;
+    background:linear-gradient(145deg,rgba(255,255,255,.024),rgba(255,255,255,.008));
+    box-shadow:0 12px 40px rgba(0,0,0,.13);
+}
+
+.ccfv-matchday-group[hidden] {
+    display:none;
+}
+
+.ccfv-matchday-group__header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding:16px 20px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+    background:linear-gradient(180deg,rgba(40,183,122,.035),transparent);
+}
+
+.ccfv-matchday-group__header > div span,
+.ccfv-matchday-group__header > div strong {
+    display:block;
+}
+
+.ccfv-matchday-group__header > div span {
+    color:#5f796e;
+    font-size:7px;
+    font-weight:900;
+    letter-spacing:.14em;
+}
+
+.ccfv-matchday-group__header > div strong {
+    margin-top:4px;
+    color:#eef7f3;
+    font-size:18px;
+    line-height:1;
+}
+
+.ccfv-matchday-group__header > div:last-child {
+    text-align:right;
+}
+
+.ccfv-matchday-group__header > div:last-child strong {
+    color:#6cdda0;
+    font-size:10px;
+}
+
+.ccfv-matchday-rounds {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:12px;
+    padding:14px;
+}
+
+.ccfv-matchday-round {
+    min-width:0;
+    border:1px solid rgba(255,255,255,.055);
+    border-radius:15px;
+    background:rgba(255,255,255,.009);
+    overflow:hidden;
+}
+
+.ccfv-matchday-round > header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:10px 11px;
+    border-bottom:1px solid rgba(255,255,255,.05);
+    background:rgba(255,255,255,.012);
+}
+
+.ccfv-matchday-round > header span,
+.ccfv-matchday-round > header strong {
+    font-size:7px;
+    font-weight:900;
+    letter-spacing:.08em;
+}
+
+.ccfv-matchday-round > header span {
+    color:#74dda0;
+}
+
+.ccfv-matchday-round > header strong {
+    color:#587166;
+}
+
+.ccfv-matchday-round__list {
+    display:grid;
+    gap:8px;
+    padding:8px;
+}
+
+.ccfv-champions-match--compact {
+    border-radius:13px;
+    box-shadow:none;
+    background:rgba(255,255,255,.012);
+}
+
+.ccfv-champions-match--compact .ccfv-champions-match__header {
+    min-height:34px;
+    padding:7px 9px;
+}
+
+.ccfv-champions-match--compact .ccfv-champions-match__header > div span,
+.ccfv-champions-match--compact .ccfv-champions-match__header > div strong {
+    display:block;
+}
+
+.ccfv-champions-match--compact .ccfv-champions-match__header > div span {
+    color:#668076;
+    font-size:6px;
+}
+
+.ccfv-champions-match--compact .ccfv-champions-match__header > div strong {
+    margin-top:2px;
+    color:#6fe0a0;
+    font-size:6px;
+}
+
+.ccfv-champions-match__round-label {
+    color:#52685f;
+    font-size:6px;
+    font-weight:900;
+    letter-spacing:.08em;
+}
+
+.ccfv-champions-match--compact .ccfv-champions-match__body {
+    grid-template-columns:minmax(0,1fr) 66px minmax(0,1fr);
+    min-height:82px;
+    padding:9px 8px;
+    gap:4px;
+}
+
+.ccfv-champions-match--compact .ccfv-champions-match__team {
+    gap:6px;
+}
+
+.ccfv-champions-match--compact .ccfv-champions-match__team img {
+    width:26px;
+    height:26px;
+    flex-basis:26px;
+}
+
+.ccfv-champions-match--compact .match-team-copy strong {
+    font-size:7px;
+}
+
+.ccfv-champions-match--compact .match-team-copy small {
+    margin-top:2px;
+    font-size:6px;
+}
+
+.ccfv-champions-match--compact .ccfv-match-score {
+    font-size:15px;
+}
+
+.ccfv-champions-match--compact .match-vs {
+    font-size:8px;
+}
+
+.ccfv-champions-match--compact .ccfv-match-date {
+    margin-top:4px;
+    font-size:6px;
+}
+
+.ccfv-champions-match--compact .ccfv-champions-match__footer {
+    min-height:25px;
+    padding:6px 8px;
+    font-size:6px;
+}
+
+.ccfv-matchday-round__empty {
+    min-height:80px;
+    display:grid;
+    place-items:center;
+    align-content:center;
+    gap:3px;
+    border:1px dashed rgba(255,255,255,.05);
+    border-radius:11px;
+    color:#4f655b;
+    text-align:center;
+}
+
+.ccfv-matchday-round__empty strong {
+    color:#6b8177;
+    font-size:7px;
+}
+
+.ccfv-matchday-round__empty span {
+    font-size:6px;
+}
+
+@media (max-width: 1050px) {
+    .ccfv-matchday-rounds {
+        grid-template-columns:1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .ccfv-matchday-group__header {
+        padding:14px;
+    }
+
+    .ccfv-matchday-rounds {
+        padding:9px;
+    }
+}
