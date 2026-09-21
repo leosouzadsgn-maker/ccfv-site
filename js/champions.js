@@ -4,6 +4,7 @@
     const state = {
         client: null,
         championship: null,
+        champion: null,
         clubs: [],
         standings: [],
         matches: []
@@ -101,7 +102,8 @@
         const info = await state.client
             .from("championship_public_info")
             .select("*")
-            .eq("code", "CCFV-CL-S01")
+            .order("season_number", { ascending: false })
+            .limit(1)
             .maybeSingle();
 
         if (info.error) throw info.error;
@@ -115,7 +117,7 @@
 
         const id = state.championship.id;
 
-        const [clubs, standings, matches] = await Promise.all([
+        const [clubs, standings, matches, champion] = await Promise.all([
 
             state.client
                 .from("championship_public_clubs")
@@ -135,7 +137,13 @@
                 .select("*")
                 .eq("championship_id", id)
                 .order("round_number")
-                .order("match_number")
+                .order("match_number"),
+
+            state.client
+                .from("ccfv_champions_public_champion_v3")
+                .select("*")
+                .eq("championship_id", id)
+                .maybeSingle()
         ]);
 
         if (clubs.error) {
@@ -150,9 +158,87 @@
             console.warn("CCFV Champions partidas:", matches.error);
         }
 
+        if (champion.error) {
+            console.warn("CCFV Champions campeão:", champion.error);
+        }
+
+        state.champion = champion.data || null;
+
+        /*
+         * Fallback 1:
+         * o campeão também existe no Hall/Histórico quando a temporada foi
+         * encerrada corretamente.
+         */
+        if (!state.champion) {
+            const fallback = await state.client
+                .from("ccfv_champions_public_history_v2")
+                .select("*")
+                .eq("championship_id", id)
+                .eq("final_position", 1)
+                .maybeSingle();
+
+            if (!fallback.error && fallback.data) {
+                state.champion = fallback.data;
+            }
+        }
+
+        /*
+         * Fallback 2:
+         * em caso de atraso do cache da view, tenta localizar o vencedor
+         * pelo resultado da final já carregado.
+         */
         state.clubs = clubs.data || [];
         state.standings = standings.data || [];
         state.matches = matches.data || [];
+
+        if (!state.champion) {
+            const finalMatch = state.matches.find(match =>
+                match.phase === "FINAL" &&
+                resultStatuses.includes(String(match.status || ""))
+            );
+
+            if (finalMatch) {
+                const winnerRegistrationId = finalMatch.winner_registration_id;
+
+                const winnerClub = state.clubs.find(club =>
+                    String(club.championship_club_id) ===
+                    String(
+                        finalMatch.winner_club_id ||
+                        finalMatch.home_club_id ||
+                        ""
+                    )
+                );
+
+                if (winnerRegistrationId || winnerClub) {
+                    state.champion = {
+                        participant_name:
+                            finalMatch.winner_player_name ||
+                            winnerClub?.participant_name ||
+                            "",
+                        photo_url:
+                            finalMatch.winner_photo_url ||
+                            winnerClub?.participant_photo_url ||
+                            "",
+                        club_id:
+                            finalMatch.winner_club_id ||
+                            winnerClub?.championship_club_id ||
+                            null,
+                        club_slug:
+                            finalMatch.winner_club_slug ||
+                            winnerClub?.slug ||
+                            "",
+                        club_name:
+                            finalMatch.winner_club_name ||
+                            winnerClub?.name ||
+                            "",
+                        logo_path:
+                            finalMatch.winner_logo_path ||
+                            winnerClub?.logo_path ||
+                            ""
+                    };
+                }
+            }
+        }
 
         render();
     }
@@ -715,37 +801,108 @@
 
     function renderChampion() {
 
-        const final = state.matches.find(
-            match =>
-                match.phase === "FINAL" &&
-                resultStatuses.includes(
-                    String(match.status || "")
-                )
-        );
+        const champion = state.champion;
+        const seasonLabel =
+            state.championship?.season_label || "SEASON";
 
-        const championClub = final?.winner_club_id
-            ? state.clubs.find(
-                club =>
-                    String(club.championship_club_id) ===
-                    String(final.winner_club_id)
-            )
-            : null;
+        const seasonTitle =
+            document.querySelector("#season-champion-label");
 
         const championName =
-            championClub?.name ||
-            final?.winner_club_name ||
-            "A DEFINIR";
+            document.querySelector("#champion-name");
 
-        document.querySelector("#season-champion").textContent =
-            championName;
+        const championClub =
+            document.querySelector("#champion-club");
 
-        document.querySelector("#champion-name").textContent =
-            championName;
+        const photo =
+            document.querySelector("#champion-photo");
 
-        document.querySelector("#champion-club").textContent =
-            championClub
-                ? `Representado por ${championClub.participant_name || "participante oficial"} — ${state.championship.season_label}`
-                : "A grande taça ainda está em disputa.";
+        const crest =
+            document.querySelector("#champion-crest");
+
+        const badge =
+            document.querySelector("#champion-badge");
+
+        const card =
+            document.querySelector("#champions-champion-card");
+
+        const isChampion = Boolean(
+            champion?.club_name &&
+            (
+                champion?.participant_name ||
+                champion?.final_position === 1
+            )
+        );
+
+        if (seasonTitle) {
+            seasonTitle.textContent =
+                `CAMPEÃO DA ${seasonLabel}`;
+        }
+
+        if (badge) {
+            badge.textContent =
+                isChampion ? "🏆 CAMPEÃO" : "🏆 AGUARDANDO";
+            badge.classList.toggle(
+                "is-confirmed",
+                isChampion
+            );
+        }
+
+        if (championName) {
+            championName.textContent =
+                champion?.club_name || "A DEFINIR";
+        }
+
+        if (championClub) {
+            championClub.textContent =
+                isChampion
+                    ? `${champion?.participant_name || "Treinador"} • ${seasonLabel}`
+                    : "A grande taça ainda está em disputa.";
+        }
+
+        if (photo) {
+            if (champion?.photo_url) {
+                photo.src = champion.photo_url;
+                photo.alt =
+                    champion.participant_name || "Campeão";
+                photo.style.display = "";
+            } else {
+                photo.removeAttribute("src");
+                photo.alt = "";
+                photo.style.display = isChampion ? "" : "none";
+            }
+        }
+
+        if (crest) {
+            const src = clubLogoSrc(
+                champion?.club_slug,
+                champion?.logo_path
+            );
+
+            if (src) {
+                crest.src = src;
+                crest.alt =
+                    champion?.club_name || "Clube campeão";
+                crest.style.display = "";
+            } else {
+                crest.removeAttribute("src");
+                crest.alt = "";
+                crest.style.display = "none";
+            }
+        }
+
+        if (card) {
+            card.classList.toggle("is-confirmed", isChampion);
+        }
+    }
+
+
+    function clubLogoSrc(slug, logoPath = "") {
+        const clean = String(slug || "").trim().toLowerCase();
+        const stored = String(logoPath || "").trim();
+        if (stored.startsWith("/assets/images/champions/clubs/")) return stored;
+        if (stored.startsWith("assets/images/champions/clubs/")) return `/${stored}`;
+        return clean ? `/assets/images/champions/clubs/${clean}.png` : "";
     }
 
     function formatDateTime(value) {

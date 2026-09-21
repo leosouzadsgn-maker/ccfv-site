@@ -15,6 +15,7 @@
         history: [],
         hall: [],
         audit: [],
+        seasons: [],
         activeTab: "dashboard"
     };
 
@@ -175,19 +176,20 @@
             state.client = await getClient();
         }
 
-        const infoResult = await state.client
+        const seasonsResult = await state.client
             .from("championship_public_info")
             .select("*")
-            .eq("code", "CCFV-CL-S01")
-            .maybeSingle();
+            .order("season_number", { ascending: false });
 
-        if (infoResult.error) throw infoResult.error;
+        if (seasonsResult.error) throw seasonsResult.error;
 
-        state.championship = infoResult.data;
-        state.championshipId = infoResult.data?.id || null;
+        state.seasons = seasonsResult.data || [];
+
+        state.championship = state.seasons[0] || null;
+        state.championshipId = state.championship?.id || null;
 
         if (!state.championshipId) {
-            throw new Error("Season 01 da Champions não encontrada.");
+            throw new Error("Nenhuma temporada da Champions encontrada.");
         }
 
         const [
@@ -250,14 +252,15 @@
                 .order("pot_number"),
 
             state.client
-                .from("championship_history")
+                .from("ccfv_champions_public_history_v2")
                 .select("*")
-                .eq("championship_id", state.championshipId)
+                .order("season_number", { ascending: false })
                 .order("final_position", { ascending: true, nullsFirst: false }),
 
             state.client
-                .from("ccfv_hall_of_fame")
+                .from("ccfv_champions_public_hall_v2")
                 .select("*")
+                .order("season_number", { ascending: false })
                 .order("created_at", { ascending: false }),
 
             state.client
@@ -390,6 +393,17 @@
             <div><span>PÊNALTIS</span><strong>${settings.penalties_knockout ? "MATA-MATA" : "NÃO"}</strong></div>
             <div><span>TIME REGISTRADO</span><strong>${settings.registered_club_required ? "OBRIGATÓRIO" : "NÃO"}</strong></div>
         `;
+
+        const seasonList = document.querySelector("#season-list");
+
+        if (seasonList) {
+            seasonList.innerHTML = state.seasons.map(season => `
+                <div class="season-item ${String(season.id) === String(state.championshipId) ? "is-current" : ""}">
+                    <span>${esc(season.season_label)}</span>
+                    <strong>${esc(phaseText(season.status))}</strong>
+                </div>
+            `).join("");
+        }
     }
 
     function renderClubs() {
@@ -802,39 +816,14 @@
                 ? state.history.map(item => `
                     <tr>
                         <td>${esc(item.final_position ?? "—")}</td>
-                        <td>${esc(
-                            state.clubs.find(
-                                club =>
-                                    String(club.participant_id) ===
-                                    String(item.participant_id)
-                            )?.participant_name || "—"
-                        )}</td>
+                        <td>
+                            <strong>${esc(item.participant_name || "—")}</strong>
+                            <small class="table-sub">${esc(item.platform || "")}</small>
+                        </td>
                         <td>
                             <div class="history-club">
-                                ${logoMarkup(
-                                    state.clubs.find(
-                                        club =>
-                                            String(club.club_id) ===
-                                            String(item.club_id)
-                                    )?.slug,
-                                    state.clubs.find(
-                                        club =>
-                                            String(club.club_id) ===
-                                            String(item.club_id)
-                                    )?.logo_path,
-                                    state.clubs.find(
-                                        club =>
-                                            String(club.club_id) ===
-                                            String(item.club_id)
-                                    )?.name
-                                )}
-                                ${esc(
-                                    state.clubs.find(
-                                        club =>
-                                            String(club.club_id) ===
-                                            String(item.club_id)
-                                    )?.name || "—"
-                                )}
+                                ${logoMarkup(item.club_slug, item.logo_path, item.club_name)}
+                                ${esc(item.club_name || "—")}
                             </div>
                         </td>
                         <td>${esc(phaseText(item.phase_reached))}</td>
@@ -844,40 +833,18 @@
                         <td>${esc(item.losses)}</td>
                     </tr>
                 `).join("")
-                : `<tr><td colspan="8"><div class="empty-state">Histórico será criado ao encerrar a temporada.</div></td></tr>`;
+                : `<tr><td colspan="8"><div class="empty-state">Nenhum histórico registrado.</div></td></tr>`;
         }
 
         if (hall) {
             hall.innerHTML = state.hall.length
                 ? state.hall.map(item => `
                     <article class="hall-item">
-                        ${logoMarkup(
-                            state.clubs.find(
-                                club => String(club.club_id) === String(item.club_id)
-                            )?.slug,
-                            state.clubs.find(
-                                club => String(club.club_id) === String(item.club_id)
-                            )?.logo_path,
-                            state.clubs.find(
-                                club => String(club.club_id) === String(item.club_id)
-                            )?.name
-                        )}
+                        ${logoMarkup(item.club_slug, item.logo_path, item.club_name)}
                         <div>
                             <span>${esc(item.season)}</span>
-                            <strong>${esc(
-                                state.clubs.find(
-                                    club =>
-                                        String(club.participant_id) ===
-                                        String(item.participant_id)
-                                )?.participant_name || "—"
-                            )}</strong>
-                            <small>${esc(
-                                state.clubs.find(
-                                    club =>
-                                        String(club.club_id) ===
-                                        String(item.club_id)
-                                )?.name || "—"
-                            )} • ${esc(item.title)}</small>
+                            <strong>${esc(item.participant_name || "—")}</strong>
+                            <small>${esc(item.club_name || "—")} • ${esc(item.title)}</small>
                         </div>
                     </article>
                 `).join("")
@@ -1075,6 +1042,45 @@
         await rpc(rpcName, args);
     }
 
+    async function createSeason() {
+
+        const numberInput = document.querySelector("#new-season-number");
+        const labelInput = document.querySelector("#new-season-label");
+
+        const rawNumber = String(numberInput?.value || "").trim();
+        const rawLabel = String(labelInput?.value || "").trim();
+
+        let seasonNumber = null;
+
+        if (rawNumber) {
+            seasonNumber = Number(rawNumber);
+
+            if (!Number.isInteger(seasonNumber) || seasonNumber <= 0) {
+                throw new Error("Número de temporada inválido.");
+            }
+        }
+
+        const { data, error } = await state.client.rpc(
+            "champions_create_season",
+            {
+                p_season_number: seasonNumber,
+                p_season_label: rawLabel || null
+            }
+        );
+
+        if (error) throw error;
+
+        if (numberInput) numberInput.value = "";
+        if (labelInput) labelInput.value = "";
+
+        showMessage(
+            `Nova temporada criada: ${data?.season_label || "OK"}.`
+        );
+
+        await loadData();
+    }
+
+
     function activateTab(tab) {
         state.activeTab = tab;
 
@@ -1199,6 +1205,14 @@
         document.querySelector("#btn-submit-result")?.addEventListener("click", async () => {
             try {
                 await submitResult();
+            } catch (error) {
+                showMessage(error?.message || String(error), true);
+            }
+        });
+
+        document.querySelector("#btn-create-season")?.addEventListener("click", async () => {
+            try {
+                await createSeason();
             } catch (error) {
                 showMessage(error?.message || String(error), true);
             }

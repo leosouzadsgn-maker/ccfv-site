@@ -931,3 +931,44 @@ body.modal-open {
         text-align:left;
     }
 }
+
+/* GESTÃO DE TEMPORADAS */
+.season-management{margin-bottom:22px}
+.season-create-box{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:18px;
+    align-items:end;
+    padding:18px;
+    border:1px solid rgba(40,183,122,.12);
+    border-radius:16px;
+    background:rgba(40,183,122,.025);
+}
+.season-create-box > div:first-child span,
+.season-create-box > div:first-child strong,
+.season-create-box > div:first-child small{display:block}
+.season-create-box > div:first-child span{
+    color:#62d79a;font-size:8px;font-weight:900;letter-spacing:.15em
+}
+.season-create-box > div:first-child strong{
+    margin-top:5px;color:#f1f7f4;font-size:14px
+}
+.season-create-box > div:first-child small{
+    max-width:600px;margin-top:6px;color:#60786d;font-size:9px;line-height:1.5
+}
+.season-create-fields{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.season-create-fields input{width:125px}
+.season-create-fields input[type=number]{width:72px}
+.season-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.season-item{
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:999px;
+    padding:8px 11px;
+    display:flex;gap:8px;align-items:center;
+    color:#789087;background:rgba(255,255,255,.01)
+}
+.season-item span{font-size:8px;font-weight:800;color:#afc0b9}
+.season-item strong{font-size:7px;color:#5e776b;letter-spacing:.07em}
+.season-item.is-current{border-color:rgba(40,183,122,.28);background:rgba(40,183,122,.05)}
+.season-item.is-current span,.season-item.is-current strong{color:#70dca0}
+@media(max-width:900px){.season-create-box{grid-template-columns:1fr}}

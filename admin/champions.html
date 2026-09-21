@@ -140,6 +140,30 @@
             </div>
 
             <article class="admin-card">
+
+                <div class="season-management">
+                    <div class="season-create-box">
+                        <div>
+                            <span>NOVA TEMPORADA</span>
+                            <strong>ABRIR UMA NOVA EDIÇÃO.</strong>
+                            <small>
+                                Cria automaticamente 32 vagas, 32 clubes,
+                                4 potes e 8 grupos, pronta para inscrições.
+                            </small>
+                        </div>
+
+                        <div class="season-create-fields">
+                            <input id="new-season-number" type="number" min="1" placeholder="Nº">
+                            <input id="new-season-label" type="text" placeholder="Ex.: SEASON 02">
+                            <button type="button" class="btn" id="btn-create-season">
+                                + CRIAR TEMPORADA
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="season-list" id="season-list"></div>
+                </div>
+
                 <div class="season-readonly">
 
                     <div>
@@ -506,7 +530,7 @@
 </div>
 
 <script src="/admin/js/auth.js" defer></script>
-<script src="/admin/js/champions.js?v=20260920-pro" defer></script>
+<script src="/admin/js/champions.js?v=20260921-fechamento-final" defer></script>
 
 </body>
 </html>
