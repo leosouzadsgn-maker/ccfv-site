@@ -1,0 +1,61 @@
+CCFV CHAMPIONS LEAGUE — ADMIN PRO
+
+O Admin agora é o centro operacional da competição.
+
+FLUXO:
+1. Jogadores continuam sendo cadastrados pelo Admin principal > Jogadores > Novo Jogador > Champions League.
+2. Admin Champions:
+   - prepara potes;
+   - executa sorteio;
+   - gera os 48 jogos;
+   - agenda data/hora;
+   - lança resultados;
+   - registra W.O. ou decisão administrativa;
+   - salva evidência/observação;
+   - recalcula classificação;
+   - gera oitavas, quartas, semis e final;
+   - finaliza temporada;
+   - gera Ranking/Histórico/Hall da Fama.
+3. A página pública /pages/champions.html lê as views oficiais do Supabase.
+4. A página pública atualiza automaticamente a cada 15 segundos.
+
+BANCO:
+Execute no Supabase SQL Editor:
+supabase/CCFV_CHAMPIONS_INSTALACAO_COMPLETA.sql
+
+Depois execute:
+supabase/CCFV_CHAMPIONS_TESTE_OPERACIONAL.sql
+
+IMPORTANTE:
+Execute o SQL do engine/schema da Champions que já existe antes deste patch.
+Este arquivo é um complemento e não substitui o engine existente.
+
+ARQUIVOS FRONT:
+admin/champions.html
+admin/js/champions.js
+admin/css/champions.css
+pages/champions.html
+js/champions.js
+
+ESCUDOS:
+assets/images/champions/clubs/<slug>.png
+
+A lógica do resultado continua no RPC champions_submit_result.
+Isso mantém o avanço automático:
+GRUPOS -> OITAVAS -> QUARTAS -> SEMIS -> FINAL -> CAMPEÃO -> RANKING/HISTÓRICO.
+
+TESTE MÍNIMO:
+- 32 jogadores PC/CONSOLE confirmados.
+- 32 clubes diferentes.
+- Preparar potes.
+- Sortear grupos.
+- Gerar 48 jogos.
+- Agendar um jogo.
+- Lançar resultado.
+- Confirmar classificação pública.
+- Finalizar todos os jogos e testar avanço automático.
+
+Git:
+git add .
+git commit -m "feat: transforma Champions em centro operacional"
+git push origin main

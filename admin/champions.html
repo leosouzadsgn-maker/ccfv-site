@@ -1,168 +1,512 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CCFV Admin — Champions League</title>
-<link rel="icon" type="image/png" href="../assets/images/logo/ccfv-logo.png">
-<link rel="stylesheet" href="/admin/css/champions.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#070b09">
+    <title>Champions League — Admin CCFV</title>
+    <link rel="icon" type="image/png" href="../assets/images/logo/ccfv-logo.png">
+    <link rel="stylesheet" href="/admin/css/champions.css">
 </head>
-<body>
-<div class="cl-admin">
 
-<aside class="cl-sidebar">
-    <div class="cl-brand">
-        <img src="../assets/images/logo/ccfv-logo.png" alt="CCFV">
-        <div><strong>CCFV ADMIN</strong><span>CHAMPIONS LEAGUE</span></div>
-    </div>
+<body data-admin-page="champions">
 
-    <nav class="cl-nav">
-        <a href="#dashboard" data-tab="dashboard" class="active">Dashboard</a>
-        <a href="#temporada" data-tab="temporada">Temporada</a>
-        <a href="#clubes" data-tab="clubes">Clubes</a>
-        <a href="#sorteio" data-tab="sorteio">Sorteio</a>
-        <a href="#grupos" data-tab="grupos">Grupos</a>
-        <a href="#partidas" data-tab="partidas">Partidas</a>
-        <a href="#mata-mata" data-tab="mata-mata">Mata-mata</a>
-        <a href="#historico" data-tab="historico">Histórico</a>
-    </nav>
+<div class="admin-shell">
 
-    <div class="cl-foot">
-        <a href="/admin/index.html">← Painel principal</a>
-        <a href="/pages/champions.html" target="_blank">Abrir Champions ↗</a>
-    </div>
-</aside>
+    <aside class="admin-sidebar">
 
-<main class="cl-main">
-<header class="cl-top">
-    <div>
-        <span>CCFV // ADMIN</span>
-        <h1>CHAMPIONS LEAGUE</h1>
-    </div>
-    <div class="cl-user">
-        <span id="admin-status">ONLINE</span>
-        <button id="refresh">Atualizar</button>
-    </div>
-</header>
-
-<div id="message" class="cl-message" hidden></div>
-
-<section class="cl-tab active" data-panel="dashboard">
-    <div class="kpis">
-        <article><small>FASE</small><strong id="k-phase">INSCRIÇÕES</strong></article>
-        <article><small>TREINADORES</small><strong id="k-participants">0 / 32</strong></article>
-        <article><small>CLUBES OCUPADOS</small><strong id="k-occupied">0 / 32</strong></article>
-        <article><small>GRUPOS</small><strong>8 × 4</strong></article>
-        <article><small>JOGOS</small><strong id="k-matches">0</strong></article>
-        <article><small>CAMPEÃO</small><strong id="k-champion">A DEFINIR</strong></article>
-    </div>
-
-    <div class="grid2">
-        <article class="card">
-            <span class="eyebrow">FLUXO</span>
-            <h2>OPERAÇÃO DA SEASON 01</h2>
-            <ol class="flow">
-                <li>Cadastro do jogador + escolha do clube</li>
-                <li>Preparar 4 potes de 8</li>
-                <li>Sortear 8 grupos de 4</li>
-                <li>Gerar 48 jogos da fase de grupos</li>
-                <li>Validar resultados e classificar top 2</li>
-                <li>Oitavas → Quartas → Semifinais → Final</li>
-            </ol>
-        </article>
-
-        <article class="card">
-            <span class="eyebrow">AUTOMAÇÃO</span>
-            <h2>COMANDOS DA COMPETIÇÃO</h2>
-            <div class="actions">
-                <button data-action="prepare">PREPARAR POTES</button>
-                <button data-action="draw">SORTEAR GRUPOS</button>
-                <button data-action="group-matches">GERAR 48 JOGOS</button>
-                <button data-action="refresh">ATUALIZAR</button>
+        <div class="admin-brand">
+            <img src="../assets/images/logo/ccfv-logo.png" alt="CCFV">
+            <div>
+                <strong>CCFV ADMIN</strong>
+                <span>CHAMPIONS LEAGUE</span>
             </div>
-            <p>O cadastro dos treinadores acontece no painel principal: <strong>Jogadores → Novo Jogador → Champions League</strong>.</p>
-        </article>
+        </div>
+
+        <nav class="admin-nav">
+            <a href="#dashboard" data-tab="dashboard" class="is-active">Dashboard</a>
+            <a href="#season" data-tab="season">Temporada</a>
+            <a href="#clubs" data-tab="clubs">Clubes</a>
+            <a href="#draw" data-tab="draw">Sorteio</a>
+            <a href="#groups" data-tab="groups">Grupos</a>
+            <a href="#matches" data-tab="matches">Partidas</a>
+            <a href="#knockout" data-tab="knockout">Mata-mata</a>
+            <a href="#history" data-tab="history">Histórico</a>
+            <a href="#audit" data-tab="audit">Auditoria</a>
+        </nav>
+
+        <div class="admin-sidebar__footer">
+            <a href="/admin/dashboard.html">← Painel principal</a>
+            <a href="/pages/champions.html" target="_blank">Abrir Champions ↗</a>
+        </div>
+
+    </aside>
+
+    <main class="admin-main">
+
+        <header class="admin-topbar">
+            <div>
+                <span>CCFV // OPERAÇÃO OFICIAL</span>
+                <h1>CHAMPIONS LEAGUE</h1>
+            </div>
+
+            <div class="admin-user">
+                <span id="admin-user-email">Verificando sessão...</span>
+                <button type="button" id="btn-refresh">Atualizar</button>
+            </div>
+        </header>
+
+        <div id="global-message" class="admin-message" hidden></div>
+
+        <!-- DASHBOARD -->
+        <section class="admin-tab is-visible" data-panel="dashboard">
+
+            <div class="admin-kpis">
+                <article><span>FASE</span><strong id="kpi-status">—</strong></article>
+                <article><span>TREINADORES</span><strong id="kpi-participants">0 / 32</strong></article>
+                <article><span>CLUBES OCUPADOS</span><strong id="kpi-clubs">0 / 32</strong></article>
+                <article><span>JOGOS</span><strong id="kpi-matches">0 / 48</strong></article>
+                <article><span>PENDENTES</span><strong id="kpi-pending">0</strong></article>
+                <article><span>CAMPEÃO</span><strong id="kpi-champion">A DEFINIR</strong></article>
+            </div>
+
+            <div class="admin-grid admin-grid--2">
+
+                <article class="admin-card">
+                    <header>
+                        <div>
+                            <span>CCFV // OPERAÇÃO</span>
+                            <h2>CONTROLE DA COMPETIÇÃO</h2>
+                        </div>
+                    </header>
+
+                    <div class="quick-actions">
+                        <button data-action="prepare-pots">PREPARAR POTES</button>
+                        <button data-action="draw-groups">SORTEAR GRUPOS</button>
+                        <button data-action="generate-group-matches">GERAR 48 JOGOS</button>
+                        <button data-action="recalculate">RECALCULAR TABELAS</button>
+                        <button data-action="generate-r16">GERAR OITAVAS</button>
+                        <button data-action="generate-next">GERAR PRÓXIMA FASE</button>
+                        <button data-action="finish-season" class="danger">FINALIZAR TEMPORADA</button>
+                    </div>
+
+                    <p class="admin-help">
+                        O sistema oficial continua controlado pelas RPCs da Champions.
+                        O Admin é o centro operacional: sorteio, calendário, resultados,
+                        classificação, mata-mata, histórico e auditoria.
+                    </p>
+                </article>
+
+                <article class="admin-card">
+                    <header>
+                        <div>
+                            <span>SEASON 01</span>
+                            <h2>FORMATO OFICIAL</h2>
+                        </div>
+                    </header>
+
+                    <div class="format-list">
+                        <div><span>Participantes</span><strong>32</strong></div>
+                        <div><span>Clubes</span><strong>32</strong></div>
+                        <div><span>Grupos</span><strong>8 × 4</strong></div>
+                        <div><span>Jogos de grupos</span><strong>48</strong></div>
+                        <div><span>Classificados</span><strong>2 / grupo</strong></div>
+                        <div><span>Mata-mata</span><strong>Jogo único</strong></div>
+                    </div>
+                </article>
+
+            </div>
+
+            <div class="admin-card">
+                <header>
+                    <div>
+                        <span>PRÓXIMOS JOGOS</span>
+                        <h2>AGENDA OPERACIONAL</h2>
+                    </div>
+                    <button class="btn" data-go-tab="matches">ABRIR PARTIDAS</button>
+                </header>
+
+                <div id="dashboard-next-matches" class="compact-matches"></div>
+            </div>
+
+        </section>
+
+        <!-- SEASON -->
+        <section class="admin-tab" data-panel="season">
+
+            <div class="section-title">
+                <span>CCFV // CONFIGURAÇÃO</span>
+                <h2>TEMPORADA</h2>
+            </div>
+
+            <article class="admin-card">
+                <div class="season-readonly">
+
+                    <div>
+                        <span>NOME</span>
+                        <strong id="season-name">—</strong>
+                    </div>
+
+                    <div>
+                        <span>SEASON</span>
+                        <strong id="season-label">—</strong>
+                    </div>
+
+                    <div>
+                        <span>STATUS</span>
+                        <strong id="season-status">—</strong>
+                    </div>
+
+                    <div>
+                        <span>INÍCIO</span>
+                        <strong id="season-start">—</strong>
+                    </div>
+
+                    <div>
+                        <span>FIM</span>
+                        <strong id="season-end">—</strong>
+                    </div>
+
+                    <div>
+                        <span>PLATAFORMA</span>
+                        <strong>PC + CONSOLE</strong>
+                    </div>
+
+                </div>
+
+                <div class="settings-box">
+                    <span>CONFIGURAÇÃO DE JOGO</span>
+                    <div id="season-settings"></div>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- CLUBS -->
+        <section class="admin-tab" data-panel="clubs">
+
+            <div class="section-title">
+                <span>CCFV // CLUBES</span>
+                <h2>32 CLUBES</h2>
+            </div>
+
+            <article class="admin-card">
+
+                <div class="table-toolbar">
+                    <input id="club-search" placeholder="Buscar clube ou treinador...">
+                    <select id="club-status-filter">
+                        <option value="">TODOS OS STATUS</option>
+                        <option value="AVAILABLE">AVAILABLE</option>
+                        <option value="RESERVED">RESERVED</option>
+                        <option value="CONFIRMED">CONFIRMED</option>
+                        <option value="ELIMINATED">ELIMINATED</option>
+                    </select>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ESCUDO</th>
+                                <th>CLUBE</th>
+                                <th>PAÍS</th>
+                                <th>TREINADOR</th>
+                                <th>PLATAFORMA</th>
+                                <th>STATUS</th>
+                                <th>POTE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clubs-table"></tbody>
+                    </table>
+                </div>
+
+            </article>
+
+        </section>
+
+        <!-- DRAW -->
+        <section class="admin-tab" data-panel="draw">
+
+            <div class="section-title">
+                <span>CCFV // SORTEIO OFICIAL</span>
+                <h2>POTES + GRUPOS</h2>
+            </div>
+
+            <div id="pots-grid" class="pots-grid"></div>
+
+            <div class="admin-card draw-action-card">
+                <div>
+                    <span>OPERAÇÃO</span>
+                    <h2>EXECUTAR SORTEIO</h2>
+                    <p>O sorteio distribui um participante de cada pote em cada grupo.</p>
+                </div>
+
+                <div class="quick-actions">
+                    <button data-action="prepare-pots">PREPARAR 4 POTES DE 8</button>
+                    <button data-action="draw-groups">REALIZAR SORTEIO OFICIAL</button>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- GROUPS -->
+        <section class="admin-tab" data-panel="groups">
+
+            <div class="section-title">
+                <span>CCFV // GROUP STAGE</span>
+                <h2>GRUPOS A — H</h2>
+            </div>
+
+            <div id="admin-groups-grid" class="admin-groups-grid"></div>
+
+        </section>
+
+        <!-- MATCHES -->
+        <section class="admin-tab" data-panel="matches">
+
+            <div class="section-title">
+                <span>CCFV // MATCH CONTROL</span>
+                <h2>PARTIDAS</h2>
+            </div>
+
+            <article class="admin-card match-toolbar-card">
+
+                <div class="match-filters">
+                    <select id="match-phase-filter">
+                        <option value="">TODAS AS FASES</option>
+                        <option value="GROUP_STAGE">FASE DE GRUPOS</option>
+                        <option value="ROUND_OF_16">OITAVAS</option>
+                        <option value="QUARTERFINALS">QUARTAS</option>
+                        <option value="SEMIFINALS">SEMIFINAIS</option>
+                        <option value="FINAL">FINAL</option>
+                    </select>
+
+                    <select id="match-status-filter">
+                        <option value="">TODOS OS STATUS</option>
+                        <option value="SCHEDULED">AGENDADAS</option>
+                        <option value="VALIDATED">FINALIZADAS</option>
+                        <option value="WO">W.O.</option>
+                        <option value="ADMIN_DECISION">DECISÃO ADMIN</option>
+                    </select>
+
+                    <select id="match-group-filter">
+                        <option value="">TODOS OS GRUPOS</option>
+                        <option value="A">GRUPO A</option>
+                        <option value="B">GRUPO B</option>
+                        <option value="C">GRUPO C</option>
+                        <option value="D">GRUPO D</option>
+                        <option value="E">GRUPO E</option>
+                        <option value="F">GRUPO F</option>
+                        <option value="G">GRUPO G</option>
+                        <option value="H">GRUPO H</option>
+                    </select>
+
+                    <button class="btn" data-action="refresh-matches">ATUALIZAR</button>
+                </div>
+
+            </article>
+
+            <div id="matches-admin-list" class="matches-admin-list"></div>
+
+        </section>
+
+        <!-- KNOCKOUT -->
+        <section class="admin-tab" data-panel="knockout">
+
+            <div class="section-title">
+                <span>CCFV // KNOCKOUT</span>
+                <h2>MATA-MATA</h2>
+            </div>
+
+            <div class="knockout-admin-grid">
+                <div><span>OITAVAS</span><strong id="ko-r16">0 / 8</strong></div>
+                <div><span>QUARTAS</span><strong id="ko-qf">0 / 4</strong></div>
+                <div><span>SEMIFINAIS</span><strong id="ko-sf">0 / 2</strong></div>
+                <div><span>FINAL</span><strong id="ko-final">0 / 1</strong></div>
+            </div>
+
+            <div id="knockout-list" class="knockout-list"></div>
+
+        </section>
+
+        <!-- HISTORY -->
+        <section class="admin-tab" data-panel="history">
+
+            <div class="section-title">
+                <span>CCFV // HISTORY</span>
+                <h2>HISTÓRICO + HALL DA FAMA</h2>
+            </div>
+
+            <div class="admin-grid admin-grid--2">
+
+                <article class="admin-card">
+                    <header>
+                        <div>
+                            <span>SEASON 01</span>
+                            <h2>HISTÓRICO</h2>
+                        </div>
+                    </header>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>POS.</th>
+                                    <th>TREINADOR</th>
+                                    <th>CLUBE</th>
+                                    <th>FASE</th>
+                                    <th>J</th>
+                                    <th>V</th>
+                                    <th>E</th>
+                                    <th>D</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-table"></tbody>
+                        </table>
+                    </div>
+                </article>
+
+                <article class="admin-card">
+                    <header>
+                        <div>
+                            <span>LEGADO CCFV</span>
+                            <h2>HALL DA FAMA</h2>
+                        </div>
+                    </header>
+
+                    <div id="hall-list" class="hall-list"></div>
+                </article>
+
+            </div>
+
+        </section>
+
+        <!-- AUDIT -->
+        <section class="admin-tab" data-panel="audit">
+
+            <div class="section-title">
+                <span>CCFV // AUDIT</span>
+                <h2>LOG OPERACIONAL</h2>
+            </div>
+
+            <article class="admin-card">
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>DATA</th>
+                                <th>AÇÃO</th>
+                                <th>ENTIDADE</th>
+                                <th>ID</th>
+                                <th>JUSTIFICATIVA</th>
+                            </tr>
+                        </thead>
+                        <tbody id="audit-table"></tbody>
+                    </table>
+                </div>
+
+            </article>
+
+        </section>
+
+    </main>
+</div>
+
+<!-- RESULT MODAL -->
+<div class="champions-modal" id="result-modal" hidden>
+
+    <div class="champions-modal__backdrop" data-close-modal></div>
+
+    <div class="champions-modal__panel">
+
+        <button class="champions-modal__close" type="button" data-close-modal>×</button>
+
+        <span>CCFV // RESULTADO OFICIAL</span>
+        <h2 id="result-modal-title">LANÇAR RESULTADO</h2>
+
+        <div class="result-match-preview">
+            <div>
+                <img id="result-home-logo" alt="">
+                <strong id="result-home-name">A DEFINIR</strong>
+            </div>
+
+            <span>VS</span>
+
+            <div>
+                <img id="result-away-logo" alt="">
+                <strong id="result-away-name">A DEFINIR</strong>
+            </div>
+        </div>
+
+        <input type="hidden" id="result-match-id">
+
+        <div class="result-form-grid">
+
+            <label>
+                <span>GOLS CASA</span>
+                <input id="result-home-score" type="number" min="0" value="0">
+            </label>
+
+            <label>
+                <span>GOLS FORA</span>
+                <input id="result-away-score" type="number" min="0" value="0">
+            </label>
+
+            <label>
+                <span>TIPO</span>
+                <select id="result-type">
+                    <option value="NORMAL">RESULTADO NORMAL</option>
+                    <option value="WO">W.O.</option>
+                    <option value="ADMIN_DECISION">DECISÃO ADMINISTRATIVA</option>
+                </select>
+            </label>
+
+            <label>
+                <span>VENCEDOR EM EMPATE</span>
+                <select id="result-winner-side">
+                    <option value="">NÃO SE APLICA</option>
+                    <option value="HOME">CASA</option>
+                    <option value="AWAY">FORA</option>
+                </select>
+            </label>
+
+            <label>
+                <span>PÊNALTIS CASA</span>
+                <input id="result-home-penalties" type="number" min="0" placeholder="—">
+            </label>
+
+            <label>
+                <span>PÊNALTIS FORA</span>
+                <input id="result-away-penalties" type="number" min="0" placeholder="—">
+            </label>
+
+        </div>
+
+        <div class="result-extra-grid">
+
+            <label>
+                <span>LINK DA EVIDÊNCIA</span>
+                <input id="result-evidence-url" type="url" placeholder="https://...">
+            </label>
+
+            <label>
+                <span>OBSERVAÇÃO DA PARTIDA</span>
+                <textarea id="result-notes" rows="3" placeholder="Observação oficial do administrador"></textarea>
+            </label>
+
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn" type="button" data-close-modal>CANCELAR</button>
+            <button class="btn btn-primary" type="button" id="btn-submit-result">VALIDAR RESULTADO</button>
+        </div>
+
     </div>
-</section>
-
-<section class="cl-tab" data-panel="temporada">
-    <div class="head"><span>CCFV // TEMPORADA</span><h2>SEASON 01.</h2></div>
-    <div class="card season-grid">
-        <div><small>PARTICIPANTES</small><strong>32</strong></div>
-        <div><small>CLUBES</small><strong>32</strong></div>
-        <div><small>GRUPOS</small><strong>8 × 4</strong></div>
-        <div><small>CLASSIFICAM</small><strong>2 / GRUPO</strong></div>
-        <div><small>GRUPOS</small><strong>48 JOGOS</strong></div>
-        <div><small>MATA-MATA</small><strong>JOGO ÚNICO</strong></div>
-    </div>
-</section>
-
-<section class="cl-tab" data-panel="clubes">
-    <div class="head"><span>CCFV // CLUBES</span><h2>32 CLUBES.</h2></div>
-    <article class="card table-card">
-        <table>
-            <thead><tr><th>ESCUDO</th><th>CLUBE</th><th>PAÍS</th><th>TREINADOR</th><th>STATUS</th><th>POTE</th></tr></thead>
-            <tbody id="clubs-table"></tbody>
-        </table>
-    </article>
-</section>
-
-<section class="cl-tab" data-panel="sorteio">
-    <div class="head"><span>CCFV // DRAW</span><h2>SORTEIO OFICIAL.</h2></div>
-    <div class="grid2">
-        <article class="card">
-            <span class="eyebrow">ETAPA 01</span>
-            <h2>4 POTES × 8 CLUBES</h2>
-            <div id="pots" class="pots"></div>
-            <button class="primary" data-action="prepare">PREPARAR POTES</button>
-        </article>
-        <article class="card">
-            <span class="eyebrow">ETAPA 02</span>
-            <h2>8 GRUPOS × 4</h2>
-            <p>O sorteio usa os 32 participantes confirmados e distribui um participante de cada pote em cada grupo.</p>
-            <button class="primary" data-action="draw">REALIZAR SORTEIO</button>
-        </article>
-    </div>
-</section>
-
-<section class="cl-tab" data-panel="grupos">
-    <div class="head"><span>CCFV // GROUPS</span><h2>GRUPOS A — H.</h2></div>
-    <div id="groups" class="groups"></div>
-</section>
-
-<section class="cl-tab" data-panel="partidas">
-    <div class="head"><span>CCFV // MATCH CONTROL</span><h2>PARTIDAS.</h2></div>
-    <div class="filters">
-        <select id="phase">
-            <option value="GROUP_STAGE">FASE DE GRUPOS</option>
-            <option value="ROUND_OF_16">OITAVAS</option>
-            <option value="QUARTERFINALS">QUARTAS</option>
-            <option value="SEMIFINALS">SEMIFINAIS</option>
-            <option value="FINAL">FINAL</option>
-        </select>
-    </div>
-    <div id="matches" class="matches"></div>
-</section>
-
-<section class="cl-tab" data-panel="mata-mata">
-    <div class="head"><span>CCFV // KNOCKOUT</span><h2>MATA-MATA.</h2></div>
-    <div id="knockout" class="knockout"></div>
-</section>
-
-<section class="cl-tab" data-panel="historico">
-    <div class="head"><span>CCFV // HISTORY</span><h2>HISTÓRICO.</h2></div>
-    <article class="card table-card">
-        <table>
-            <thead><tr><th>TREINADOR</th><th>CLUBE</th><th>FASE</th><th>JOGOS</th><th>VITÓRIAS</th><th>POS.</th></tr></thead>
-            <tbody id="history"></tbody>
-        </table>
-    </article>
-</section>
-
-</main>
 </div>
 
 <script src="/admin/js/auth.js" defer></script>
-<script src="/admin/js/champions.js" defer></script>
+<script src="/admin/js/champions.js?v=20260920-pro" defer></script>
+
 </body>
 </html>

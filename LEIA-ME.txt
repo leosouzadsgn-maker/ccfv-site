@@ -1,47 +1,19 @@
-CORREÇÃO DEFINITIVA CHAMPIONS — ADMIN
+CCFV CHAMPIONS — CORREÇÃO UI FINAL
 
-CAUSA PRINCIPAL:
-O JS dependia de uma consulta à tabela/view da Champions para montar o select.
-Quando a leitura falhava, o código zerava o catálogo.
-Também existiam referências a campos aninhados/names antigos.
-
-ESTA VERSÃO:
-- usa os 32 championship_club_id reais da Season 01;
-- popula o select mesmo antes de consultar o banco;
-- consulta championship_clubs diretamente, sem relacionamento PostgREST;
-- não depende da tabela championships para o select existir;
-- permite editar jogadores;
-- restaura a Champions/clube na edição;
-- impede dois treinadores no mesmo clube;
-- salva championship_registrations;
-- salva o participant_id/status em championship_clubs;
-- grava CHAMPIONS_LEAGUE em player_competitions;
-- libera o clube quando a Champions é desmarcada;
-- mantém Brasileirão, Night Cup e Mobile.
-
-ARQUIVOS:
-Substituir somente:
+Arquivos:
 admin/js/admin.js
+admin/champions.html
+admin/js/champions.js
+admin/css/champions.css
+pages/champions.html
+css/champions.css
+js/champions.js
 
-No Supabase:
-executar uma vez:
-supabase/CHAMPIONS_PERMISSOES_ADMIN.sql
-
-TESTE:
-1. Ctrl+Shift+R
-2. Admin > Jogadores
-3. Editar Léo Souza ou Novo Jogador
-4. Marcar Champions League
-5. Selecionar Barcelona
-6. Salvar
-
-Depois:
-Admin > Champions League > Clubes
-
-Esperado:
-Barcelona | Léo Souza | CONFIRMED
-
-Página pública:
-Barcelona deve aparecer com Léo Souza.
-
-NÃO execute instaladores antigos da Champions.
+CORREÇÕES:
+1. O + NOVO JOGADOR usa delegação de evento no admin.js e continua abrindo o modal.
+2. O seletor da Champions lê os clubes pela view pública championship_public_clubs, evitando o permission denied da tabela championships.
+3. A página /admin/champions.html não possui mais a aba Inscrições.
+4. Os botões Dashboard, Temporada, Clubes, Sorteio, Grupos, Partidas, Mata-mata e Histórico trocam de tela.
+5. O Admin da Champions lê clubes/classificação/partidas pelas views públicas.
+6. O catálogo mostra treinador/participante ao lado do clube.
+7. A página pública mantém grupos A-H e mata-mata visíveis com A DEFINIR antes do sorteio.
