@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="theme-color" content="#020403">
+  <title>Libertadores — Admin CCFV</title>
+  <link rel="icon" type="image/png" href="../assets/images/logo/ccfv-logo.png">
+  <link rel="stylesheet" href="/admin/css/libertadores.css">
+</head>
+<body>
+  <div class="lib-admin-shell">
+    <aside class="lib-sidebar">
+      <div class="lib-brand">
+        <img src="../assets/images/logo/ccfv-logo.png" alt="CCFV">
+        <div><strong>CCFV ADMIN</strong><span>LIBERTADORES</span></div>
+      </div>
+
+      <nav class="lib-nav">
+        <a href="#dashboard" data-tab="dashboard" class="is-active">Dashboard</a>
+        <a href="#season" data-tab="season">Temporada</a>
+        <a href="#participants" data-tab="participants">Inscrições</a>
+        <a href="#draw" data-tab="draw">Sorteio</a>
+        <a href="#groups" data-tab="groups">Grupos</a>
+        <a href="#matches" data-tab="matches">Partidas</a>
+        <a href="#knockout" data-tab="knockout">Mata-mata</a>
+        <a href="#history" data-tab="history">História</a>
+        <a href="#audit" data-tab="audit">Auditoria</a>
+      </nav>
+
+      <div class="lib-sidebar-footer">
+        <a href="/admin/index.html">← Painel principal</a>
+        <a href="/pages/libertadores.html" target="_blank">Abrir Libertadores ↗</a>
+      </div>
+    </aside>
+
+    <main class="lib-main">
+      <header class="lib-topbar">
+        <div><span>CCFV // OPERAÇÃO OFICIAL</span><h1>LIBERTADORES</h1></div>
+        <div class="lib-user"><span id="admin-user-email">Verificando sessão...</span><button id="btn-refresh" type="button">Atualizar</button></div>
+      </header>
+
+      <div id="global-message" class="lib-message" hidden></div>
+
+      <section class="lib-panel is-visible" data-panel="dashboard">
+        <div class="lib-kpis">
+          <article><span>FASE</span><strong id="kpi-phase">—</strong></article>
+          <article><span>PARTICIPANTES</span><strong id="kpi-participants">0 / 32</strong></article>
+          <article><span>GRUPOS</span><strong id="kpi-groups">0 / 8</strong></article>
+          <article><span>JOGOS</span><strong id="kpi-matches">0 / 125</strong></article>
+          <article><span>PENDENTES</span><strong id="kpi-pending">0</strong></article>
+          <article><span>CAMPEÃO</span><strong id="kpi-champion">A DEFINIR</strong></article>
+        </div>
+        <div class="lib-grid two">
+          <article class="lib-card">
+            <header><div><span>CCFV // CONTROLE</span><h2>AÇÕES PRINCIPAIS</h2></div></header>
+            <div class="lib-actions">
+              <button data-action="draw-groups">SORTEAR GRUPOS</button>
+              <button data-action="generate-groups">GERAR 96 JOGOS</button>
+              <button data-action="recalc">RECALCULAR</button>
+              <button data-action="generate-r16">GERAR OITAVAS</button>
+              <button data-action="generate-next">GERAR PRÓXIMA FASE</button>
+              <button data-action="finish" class="danger">FINALIZAR TEMPORADA</button>
+            </div>
+            <p class="lib-help">Todas as ações críticas passam por RPCs do banco. A operação da Libertadores fica isolada do motor das demais competições.</p>
+          </article>
+          <article class="lib-card">
+            <header><div><span>FORMATO</span><h2>REGRAS BASE</h2></div></header>
+            <div class="lib-format">
+              <div><span>FASE DE GRUPOS</span><strong>32 / 8×4</strong></div>
+              <div><span>JOGOS POR CLUBE</span><strong>6</strong></div>
+              <div><span>OITAVAS</span><strong>IDA + VOLTA</strong></div>
+              <div><span>QUARTAS</span><strong>IDA + VOLTA</strong></div>
+              <div><span>SEMIFINAIS</span><strong>IDA + VOLTA</strong></div>
+              <div><span>FINAL</span><strong>JOGO ÚNICO</strong></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="lib-panel" data-panel="season">
+        <div class="lib-title"><span>CCFV // CONFIGURAÇÃO</span><h2>TEMPORADA</h2></div>
+        <article class="lib-card">
+          <div class="lib-form-row">
+            <input id="new-season-number" type="number" min="1" placeholder="Nº da temporada">
+            <input id="new-season-label" type="text" placeholder="Ex.: SEASON 02">
+            <button id="btn-create-season" type="button">+ CRIAR TEMPORADA</button>
+          </div>
+          <div id="season-list" class="lib-list"></div>
+        </article>
+      </section>
+
+      <section class="lib-panel" data-panel="participants">
+        <div class="lib-title"><span>CCFV // INSCRIÇÕES</span><h2>JOGADORES + CLUBES</h2></div>
+        <article class="lib-card">
+          <div class="lib-toolbar"><input id="participant-search" placeholder="Buscar jogador ou clube..."><span id="participant-counter">0 / 32</span></div>
+          <div class="lib-table-wrap"><table><thead><tr><th>SLOT</th><th>CLUBE</th><th>PAÍS</th><th>POTE</th><th>JOGADOR</th><th>STATUS</th><th>AÇÃO</th></tr></thead><tbody id="participants-table"></tbody></table></div>
+        </article>
+      </section>
+
+      <section class="lib-panel" data-panel="draw">
+        <div class="lib-title"><span>CCFV // SORTEIO OFICIAL</span><h2>POTES + GRUPOS</h2></div>
+        <article class="lib-card"><div id="pots-grid" class="lib-pots"></div></article>
+      </section>
+
+      <section class="lib-panel" data-panel="groups">
+        <div class="lib-title"><span>CCFV // FASE DE GRUPOS</span><h2>CLASSIFICAÇÃO</h2></div>
+        <div id="groups-grid" class="lib-groups"></div>
+      </section>
+
+      <section class="lib-panel" data-panel="matches">
+        <div class="lib-title"><span>CCFV // OPERAÇÃO</span><h2>PARTIDAS</h2></div>
+        <article class="lib-card"><div id="matches-list" class="lib-matches"></div></article>
+      </section>
+
+      <section class="lib-panel" data-panel="knockout">
+        <div class="lib-title"><span>CCFV // FASE FINAL</span><h2>MATA-MATA</h2></div>
+        <article class="lib-card"><div id="knockout-list" class="lib-knockout"></div></article>
+      </section>
+
+      <section class="lib-panel" data-panel="history">
+        <div class="lib-title"><span>CCFV // LEGADO</span><h2>CAMPEÃO + HISTÓRIA</h2></div>
+        <article class="lib-card"><div id="history-content"></div></article>
+      </section>
+
+      <section class="lib-panel" data-panel="audit">
+        <div class="lib-title"><span>CCFV // RASTREABILIDADE</span><h2>AUDITORIA</h2></div>
+        <article class="lib-card"><div class="lib-table-wrap"><table><thead><tr><th>DATA</th><th>AÇÃO</th><th>ATO</th><th>PAYLOAD</th></tr></thead><tbody id="audit-table"></tbody></table></div></article>
+      </section>
+    </main>
+  </div>
+
+  <div id="result-modal" class="lib-modal" hidden>
+    <div class="lib-modal-card">
+      <header><div><span>CCFV // RESULTADO</span><h2>LANÇAR RESULTADO</h2></div><button type="button" data-close-result>×</button></header>
+      <input id="result-match-id" type="hidden">
+      <div class="lib-scoreline"><strong id="result-home-name">CASA</strong><input id="result-home-score" type="number" min="0" value="0"><span>x</span><input id="result-away-score" type="number" min="0" value="0"><strong id="result-away-name">FORA</strong></div>
+      <div class="lib-form-grid four"><label>ET CASA<input id="result-home-extra" type="number" min="0" value="0"></label><label>ET FORA<input id="result-away-extra" type="number" min="0" value="0"></label><label>PÊN. CASA<input id="result-home-penalties" type="number" min="0"></label><label>PÊN. FORA<input id="result-away-penalties" type="number" min="0"></label></div>
+      <div class="lib-form-grid four"><label>VERM. CASA<input id="result-home-red" type="number" min="0" value="0"></label><label>VERM. FORA<input id="result-away-red" type="number" min="0" value="0"></label><label>AMA. CASA<input id="result-home-yellow" type="number" min="0" value="0"></label><label>AMA. FORA<input id="result-away-yellow" type="number" min="0" value="0"></label></div>
+      <label>OBSERVAÇÃO<textarea id="result-notes" rows="3"></textarea></label>
+      <label>EVIDÊNCIA / LINK<input id="result-evidence"></label>
+      <button id="submit-result" class="primary" type="button">VALIDAR RESULTADO</button>
+    </div>
+  </div>
+
+  <script src="/admin/js/auth.js" defer></script>
+  <script src="/admin/js/libertadores.js" defer></script>
+</body>
+</html>
