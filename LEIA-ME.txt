@@ -1,27 +1,5 @@
-CCFV — CORREÇÃO FINAL DO CADASTRO CHAMPIONS
+PATCH CIRURGICO — HISTORIA / TROFEUS
 
-Substituir apenas:
-admin/js/admin.js
-
-O problema corrigido era o carregamento do cadastro de jogador depender diretamente da tabela `championships`, enquanto o painel da Champions já funciona através das views públicas.
-
-Agora o cadastro:
-- usa `championship_public_info` para localizar a Season 01;
-- possui fallback oficial com o UUID real da Season 01;
-- usa `championship_public_clubs` para listar os 32 clubes;
-- mantém o clube já selecionado na edição;
-- bloqueia clubes ocupados;
-- grava o vínculo através das RPCs `champions_admin_assign_club` / `champions_admin_remove_registration`;
-- sincroniza `player_competitions`;
-- não faz INSERT/UPDATE direto em `championship_registrations` pelo browser.
-
-Teste:
-1. Ctrl+Shift+R
-2. Admin > Jogadores > Novo Jogador
-3. marque Champions League
-4. abra o campo Clube da Champions
-5. deve aparecerem os 32 clubes
-6. escolha um clube livre e salve
-7. edite o jogador e confirme que o clube continua selecionado
-
-Não execute SQL adicional apenas para esse erro. O banco já possui os 32 clubes e o RPC de atribuição usado por esta versão.
+Substitui somente pages/historia.html, js/historia.js e css/historia.css.
+Os PNGs devem permanecer em assets/images/historia/trofeus/ com os nomes existentes.
+Nenhum outro arquivo do site faz parte deste patch.
