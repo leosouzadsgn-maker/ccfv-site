@@ -4794,6 +4794,68 @@
 }
 
 
+/* =========================================================
+   ESCUDO NA TABELA
+   =========================================================
+
+.ccfv-club-crest {
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    width:
+        32px;
+
+    height:
+        32px;
+
+    flex-shrink:
+        0;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius:
+        9px;
+
+    background:
+        rgba(255,255,255,.025);
+
+}
+
+.ccfv-club-crest img {
+
+    display:
+        block;
+
+    width:
+        24px;
+
+    height:
+        24px;
+
+    object-fit:
+        contain;
+
+}
+
+.ccfv-club-crest--champion {
+
+    border-color:
+        rgba(67,223,145,.30);
+
+    background:
+        rgba(31,143,95,.08);
+
+    box-shadow:
+        0 0 18px
+        rgba(31,143,95,.08);
+
+}
+
 .ccfv-club-position {
 
     display:

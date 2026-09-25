@@ -1515,18 +1515,14 @@
                                 class="ccfv-club-cell"
                             >
 
-                                <span
-                                    class="
-                                        ccfv-club-position
-                                        ${
-                                            index === 0
-                                                ? "ccfv-club-position--champion"
-                                                : ""
-                                        }
-                                    "
-                                >
-                                    ${index + 1}
-                                </span>
+                                ${crestHTML(
+                                    team,
+                                    `ccfv-club-crest${
+                                        index === 0
+                                            ? " ccfv-club-crest--champion"
+                                            : ""
+                                    }`
+                                )}
 
 
                                 <strong>
