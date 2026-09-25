@@ -479,14 +479,18 @@
 
             elements.seasonNextMatch.innerHTML = `
                 <div>
-                    <span class="ccfv-team-placeholder">${home?.shortName || "?"}</span>
+                    <span class="ccfv-team-placeholder ccfv-team-placeholder--crest">
+                        ${home ? `<img src="${escapeHTML(home.crest)}" alt="${escapeHTML(home.name)}" width="32" height="32" loading="lazy">` : "?"}
+                    </span>
                     <small>CASA · ${escapeHTML(home?.name || "A DEFINIR")}</small>
                 </div>
 
                 <strong>VS</strong>
 
                 <div>
-                    <span class="ccfv-team-placeholder">${away?.shortName || "?"}</span>
+                    <span class="ccfv-team-placeholder ccfv-team-placeholder--crest">
+                        ${away ? `<img src="${escapeHTML(away.crest)}" alt="${escapeHTML(away.name)}" width="32" height="32" loading="lazy">` : "?"}
+                    </span>
                     <small>FORA · ${escapeHTML(away?.name || "A DEFINIR")}</small>
                 </div>
             `;
@@ -1515,14 +1519,17 @@
                                 class="ccfv-club-cell"
                             >
 
-                                ${crestHTML(
-                                    team,
-                                    `ccfv-club-crest${
-                                        index === 0
-                                            ? " ccfv-club-crest--champion"
-                                            : ""
-                                    }`
-                                )}
+                                <span
+                                    class="ccfv-club-crest"
+                                >
+                                    <img
+                                        src="${escapeHTML(team.crest)}"
+                                        alt="${escapeHTML(team.name)}"
+                                        width="30"
+                                        height="30"
+                                        loading="lazy"
+                                    >
+                                </span>
 
 
                                 <strong>
