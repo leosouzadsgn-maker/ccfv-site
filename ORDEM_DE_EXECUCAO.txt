@@ -1,0 +1,31 @@
+CCFV CHAMPIONS — ÚLTIMO PASSO ANTES DO LANÇAMENTO
+
+1) Rode:
+   supabase/TESTE_FINAL_CHAMPIONS.sql
+
+2) Só prossiga se o teste automático retornar:
+   TESTE FINAL OK — 63 jogos + 32 históricos + campeão + ranking validados.
+
+3) Depois rode:
+   supabase/LIMPEZA_FINAL_CHAMPIONS.sql
+
+4) A limpeza deixa:
+   - 32 clubes oficiais preservados
+   - Season 01 em REGISTRATIONS
+   - 0 inscrições
+   - 0 jogos
+   - 0 grupos
+   - 0 jogadores TEST-CL-XX
+   - ranking CCFV zerado
+   - jogadores reais preservados
+
+5) Depois confira o relatório final:
+   status = REGISTRATIONS
+   inscricoes = 0
+   clubes_ocupados = 0
+   jogos = 0
+   grupos = 0
+
+IMPORTANTE:
+A limpeza zera Elo, pontos, vitórias, empates, derrotas, títulos e partidas
+dos jogadores existentes porque os dados da Season 01 foram somente de teste.
