@@ -5873,78 +5873,65 @@
     }
 }
 
-
 /* =========================================================
-   CCFV // BRASILEIRÃO — ESCUDOS PADRÃO
-   Ajuste cirúrgico: tabela + próxima rodada do hero.
+   CCFV — ESCUDOS OFICIAIS / AJUSTE CIRÚRGICO
+   Mantém o padrão visual pequeno usado no Mobile.
    ========================================================= */
-
-.ccfv-club-cell {
-    display: flex;
+.ccfv-brasileirao-table .ccfv-club-cell {
+    min-width: 0;
     align-items: center;
     gap: 10px;
-    min-width: 0;
 }
 
-.ccfv-club-crest {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
+.ccfv-brasileirao-table .ccfv-club-crest {
     width: 36px !important;
     height: 36px !important;
     min-width: 36px !important;
-    max-width: 36px !important;
     min-height: 36px !important;
+    max-width: 36px !important;
     max-height: 36px !important;
-    flex: 0 0 36px;
-    overflow: hidden;
+    flex: 0 0 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
 }
 
-.ccfv-club-crest img {
-    display: block !important;
+.ccfv-brasileirao-table .ccfv-club-crest img {
     width: 30px !important;
     height: 30px !important;
     min-width: 30px !important;
-    max-width: 30px !important;
     min-height: 30px !important;
+    max-width: 30px !important;
     max-height: 30px !important;
     object-fit: contain !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-.ccfv-brasileirao-season__next-match > div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-width: 0;
-}
-
-.ccfv-team-placeholder--crest {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    width: 44px !important;
-    height: 44px !important;
-    min-width: 44px !important;
-    max-width: 44px !important;
-    min-height: 44px !important;
-    max-height: 44px !important;
-    padding: 0 !important;
-    font-size: 0 !important;
-    line-height: 1 !important;
-}
-
-.ccfv-team-placeholder--crest img {
     display: block !important;
-    width: 32px !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    max-width: 32px !important;
-    min-height: 32px !important;
-    max-height: 32px !important;
-    object-fit: contain !important;
+    position: static !important;
     margin: 0 !important;
     padding: 0 !important;
 }
+
+.ccfv-brasileirao-season__next-match .ccfv-team-crest {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin: 0 auto 6px;
+}
+
+.ccfv-brasileirao-season__next-match .ccfv-team-crest img {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+    max-width: 30px;
+    max-height: 30px;
+    object-fit: contain;
+    display: block;
+    margin: 0;
+}
+
