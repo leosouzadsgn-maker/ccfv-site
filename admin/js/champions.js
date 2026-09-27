@@ -1243,19 +1243,24 @@
         bindEvents();
 
         try {
-            state.client = await getClient();
+           state.client = await getClient();
 
-            const { data, error } = await state.client.auth.getUser();
+const session =
+    await window.CCFVAuth.getSession();
 
-            if (error || !data?.user) {
-                throw new Error("Sessão administrativa não encontrada.");
-            }
+if (!session?.user) {
+    throw new Error(
+        "Sessão administrativa não encontrada."
+    );
+}
 
-            state.user = data.user;
+state.user =
+    session.user;
 
-            document.querySelector("#admin-user-email").textContent =
-                data.user.email || "ADMIN";
-
+document.querySelector(
+    "#admin-user-email"
+).textContent =
+    session.user.email || "ADMIN";
         } catch (error) {
             showMessage(error?.message || String(error), true);
             return;

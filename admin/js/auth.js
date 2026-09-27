@@ -46,18 +46,37 @@
     }
 
 
-    function isAdminPage() {
+   function isAdminPage() {
 
-        const path =
-            window.location.pathname;
+    const path =
+        window.location.pathname
+            .replace(/\/+$/, "");
 
+    /*
+     * Tudo dentro de /admin/ é área administrativa,
+     * exceto a própria página de login.
+     *
+     * Assim ficam protegidos:
+     * /admin/
+     * /admin/index.html
+     * /admin/champions.html
+     * /admin/libertadores.html
+     * e futuras páginas administrativas.
+     */
 
-        return (
-            path.endsWith("/admin/") ||
-            path.endsWith("/admin/index.html")
-        );
-
+    if (
+        path === "/admin/login.html"
+    ) {
+        return false;
     }
+
+    return (
+        path === "/admin" ||
+        path === "/admin/index.html" ||
+        path.startsWith("/admin/")
+    );
+
+}
 
 
     /* =====================================================
