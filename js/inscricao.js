@@ -23,6 +23,7 @@
         platform: $("#registration-platform"),
         team: $("#registration-team"),
         photo: $("#registration-photo"),
+        photoButton: $("#registration-photo-button"),
         photoPreview: $("#registration-photo-preview"),
         photoStatus: $("#registration-photo-status"),
         photoClear: $("#registration-photo-clear"),
@@ -115,8 +116,12 @@
             return;
         }
 
-        if (!/^image\/(png|jpeg|webp)$/i.test(file.type)) {
-            setMessage("Selecione JPG, PNG ou WEBP.");
+        const validType =
+            /^image\/(png|jpeg|webp)$/i.test(String(file.type || "")) ||
+            /\.(png|jpe?g|webp)$/i.test(String(file.name || ""));
+
+        if (!validType) {
+            setMessage("Selecione uma imagem JPG, PNG ou WEBP.");
             clearPhoto();
             return;
         }
@@ -164,7 +169,13 @@
             "image/webp": "webp"
         };
 
-        const extension = extMap[file.type] || "jpg";
+        const extension =
+            extMap[file.type] ||
+            (/\.png$/i.test(String(file.name || ""))
+                ? "png"
+                : /\.webp$/i.test(String(file.name || ""))
+                    ? "webp"
+                    : "jpg");
 
         const path =
             `${playerId}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
@@ -174,7 +185,13 @@
             .upload(path, file, {
                 cacheControl: "3600",
                 upsert: false,
-                contentType: file.type
+                contentType:
+                    file.type ||
+                    (extension === "png"
+                        ? "image/png"
+                        : extension === "webp"
+                            ? "image/webp"
+                            : "image/jpeg")
             });
 
         if (error) {
@@ -359,16 +376,32 @@
             submitRegistration
         );
 
+        dom.photoButton?.addEventListener(
+            "click",
+            event => {
+                event.preventDefault();
+                event.stopPropagation();
+                dom.photo?.click();
+            }
+        );
+
         dom.photo?.addEventListener(
             "change",
-            () => showPhoto(
-                dom.photo.files?.[0] || null
-            )
+            event => {
+                event.stopPropagation();
+                showPhoto(
+                    event.currentTarget.files?.[0] || null
+                );
+            }
         );
 
         dom.photoClear?.addEventListener(
             "click",
-            clearPhoto
+            event => {
+                event.preventDefault();
+                event.stopPropagation();
+                clearPhoto();
+            }
         );
 
         dom.whatsapp?.addEventListener(
