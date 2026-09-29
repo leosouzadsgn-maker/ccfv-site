@@ -1,0 +1,666 @@
+/* =========================================================
+   CCFV // INSCRIÇÃO PÚBLICA
+   Nova porta de entrada — não substitui o Admin.
+   ========================================================= */
+
+.ccfv-registration {
+    position: relative;
+    overflow: hidden;
+    background: #020403;
+    color: #fff;
+}
+
+.ccfv-registration-container {
+    position: relative;
+    width: min(calc(100% - 80px), 1400px);
+    margin-inline: auto;
+}
+
+.ccfv-header__action--active {
+    border-color: rgba(67,223,145,.44) !important;
+    color: #031008 !important;
+    background: #43df91 !important;
+}
+
+.ccfv-registration-hero {
+    position: relative;
+    min-height: 560px;
+    display: flex;
+    align-items: center;
+    padding: 145px 0 88px;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    background:
+        radial-gradient(circle at 82% 22%, rgba(67,223,145,.15), transparent 25%),
+        radial-gradient(circle at 15% 78%, rgba(77,97,255,.08), transparent 29%),
+        linear-gradient(135deg,#020403,#050914 57%,#020403);
+}
+
+.ccfv-registration-hero__grid {
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    bottom: -48%;
+    height: 76%;
+    transform: perspective(760px) rotateX(64deg);
+    background-image:
+        linear-gradient(rgba(67,223,145,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(67,223,145,.08) 1px, transparent 1px);
+    background-size: 72px 72px;
+    opacity: .2;
+    mask-image: linear-gradient(180deg, transparent,#000 38%,transparent);
+    -webkit-mask-image: linear-gradient(180deg, transparent,#000 38%,transparent);
+}
+
+.ccfv-registration-hero__glow {
+    position: absolute;
+    width: 650px;
+    height: 650px;
+    right: -180px;
+    top: -220px;
+    border-radius: 50%;
+    background: radial-gradient(circle,rgba(67,223,145,.13),rgba(81,103,255,.04) 42%,transparent 71%);
+    filter: blur(35px);
+    animation: ccfv-registration-glow 8s ease-in-out infinite;
+}
+
+@keyframes ccfv-registration-glow {
+    0%,100% { transform: scale(1); opacity: .75; }
+    50% { transform: scale(1.08); opacity: 1; }
+}
+
+.ccfv-registration-hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 230px;
+    align-items: center;
+    gap: 45px;
+}
+
+.ccfv-registration-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: #43df91;
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .18em;
+}
+
+.ccfv-registration-eyebrow i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #43df91;
+    box-shadow: 0 0 15px rgba(67,223,145,.9);
+}
+
+.ccfv-registration-hero h1 {
+    margin: 20px 0 0;
+    font-size: clamp(56px,7.5vw,108px);
+    font-weight: 950;
+    line-height: .8;
+    letter-spacing: -.075em;
+}
+
+.ccfv-registration-hero h1 strong {
+    display: block;
+    color: #43df91;
+}
+
+.ccfv-registration-hero p {
+    max-width: 650px;
+    margin: 28px 0 0;
+    color: rgba(255,255,255,.4);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.ccfv-registration-hero__seal {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 210px;
+    height: 210px;
+    margin-left: auto;
+    border: 1px solid rgba(67,223,145,.17);
+    border-radius: 50%;
+    background: radial-gradient(circle,rgba(67,223,145,.07),rgba(255,255,255,.01) 50%,transparent 70%);
+    box-shadow: inset 0 0 50px rgba(67,223,145,.035),0 24px 70px rgba(0,0,0,.25);
+}
+
+.ccfv-registration-hero__seal::before,
+.ccfv-registration-hero__seal::after {
+    content: "";
+    position: absolute;
+    inset: 18px;
+    border: 1px dashed rgba(255,194,82,.12);
+    border-radius: 50%;
+}
+
+.ccfv-registration-hero__seal::after {
+    inset: 34px;
+    border-style: solid;
+    border-color: rgba(67,223,145,.1);
+}
+
+.ccfv-registration-hero__seal span,
+.ccfv-registration-hero__seal strong,
+.ccfv-registration-hero__seal small {
+    position: relative;
+    z-index: 2;
+    display: block;
+    text-align: center;
+}
+
+.ccfv-registration-hero__seal span {
+    color: #43df91;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .22em;
+}
+
+.ccfv-registration-hero__seal strong {
+    margin-top: 6px;
+    font-size: 24px;
+    font-weight: 950;
+    letter-spacing: -.04em;
+}
+
+.ccfv-registration-hero__seal small {
+    margin-top: 4px;
+    color: rgba(255,255,255,.2);
+    font-size: 6px;
+    font-weight: 900;
+    letter-spacing: .18em;
+}
+
+.ccfv-registration-section {
+    padding: 108px 0 120px;
+    background: #030504;
+}
+
+.ccfv-registration-layout {
+    display: grid;
+    grid-template-columns: minmax(0,1.18fr) minmax(300px,.82fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.ccfv-registration-panel,
+.ccfv-registration-side {
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 24px;
+    background: linear-gradient(145deg,rgba(255,255,255,.022),rgba(255,255,255,.008));
+}
+
+.ccfv-registration-panel {
+    padding: 30px;
+}
+
+.ccfv-registration-panel__head > span,
+.ccfv-registration-side__heading > span,
+.ccfv-registration-success__head > span {
+    color: #43df91;
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: .17em;
+}
+
+.ccfv-registration-panel__head h2,
+.ccfv-registration-side__heading h2,
+.ccfv-registration-success__head h2 {
+    margin: 13px 0 0;
+    color: #fff;
+    font-size: clamp(38px,4.2vw,62px);
+    font-weight: 950;
+    line-height: .86;
+    letter-spacing: -.06em;
+}
+
+.ccfv-registration-panel__head h2 strong,
+.ccfv-registration-side__heading h2 strong,
+.ccfv-registration-success__head h2 strong {
+    color: #43df91;
+}
+
+.ccfv-registration-panel__head p,
+.ccfv-registration-side__heading p,
+.ccfv-registration-success__head p {
+    max-width: 620px;
+    margin: 18px 0 0;
+    color: rgba(255,255,255,.32);
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.ccfv-registration-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 28px;
+}
+
+.ccfv-registration-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 12px;
+}
+
+.ccfv-registration-form label,
+.ccfv-registration-photo-box,
+.ccfv-registration-security {
+    display: flex;
+    flex-direction: column;
+}
+
+.ccfv-registration-form label > span,
+.ccfv-registration-photo-box__intro span {
+    margin-bottom: 7px;
+    color: rgba(255,255,255,.28);
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: .14em;
+}
+
+.ccfv-registration-form label > span b,
+.ccfv-registration-photo-box__intro span b {
+    color: #ffc252;
+}
+
+.ccfv-registration-form input,
+.ccfv-registration-form select {
+    width: 100%;
+    height: 48px;
+    padding: 0 13px;
+    outline: none;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 11px;
+    color: #fff;
+    background: #07100b;
+    font: inherit;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.ccfv-registration-form input:focus,
+.ccfv-registration-form select:focus {
+    border-color: rgba(67,223,145,.4);
+    box-shadow: 0 0 0 3px rgba(67,223,145,.05);
+}
+
+.ccfv-registration-form label > small {
+    margin-top: 7px;
+    color: rgba(255,255,255,.19);
+    font-size: 7px;
+    line-height: 1.5;
+}
+
+.ccfv-registration-photo-box {
+    padding: 15px;
+    gap: 15px;
+    border: 1px dashed rgba(67,223,145,.16);
+    border-radius: 15px;
+    background: rgba(67,223,145,.012);
+}
+
+.ccfv-registration-photo-box__intro {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.ccfv-registration-photo-box__intro > div:first-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.ccfv-registration-photo-box__intro strong {
+    color: rgba(255,255,255,.72);
+    font-size: 11px;
+}
+
+.ccfv-registration-photo-box__intro small {
+    margin-top: 4px;
+    color: rgba(255,255,255,.2);
+    font-size: 7px;
+}
+
+.ccfv-registration-photo-box__status {
+    color: rgba(67,223,145,.66);
+    font-family: monospace;
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: .08em;
+}
+
+.ccfv-registration-photo-box__body {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.ccfv-registration-photo-preview {
+    width: 76px;
+    height: 96px;
+    flex: 0 0 76px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 13px;
+    background: rgba(255,255,255,.018);
+    color: rgba(255,255,255,.18);
+    font-size: 7px;
+    font-weight: 900;
+}
+
+.ccfv-registration-photo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ccfv-registration-photo-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ccfv-registration-photo-button,
+.ccfv-registration-photo-clear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 12px;
+    border: 1px solid rgba(67,223,145,.2);
+    border-radius: 9px;
+    color: #43df91;
+    background: rgba(67,223,145,.035);
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: .08em;
+    cursor: pointer;
+}
+
+.ccfv-registration-photo-clear {
+    border-color: rgba(255,255,255,.08);
+    color: rgba(255,255,255,.35);
+    background: rgba(255,255,255,.018);
+}
+
+.ccfv-registration-hidden-file { display: none !important; }
+
+.ccfv-registration-security {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 13px;
+    border: 1px solid rgba(67,223,145,.1);
+    border-radius: 13px;
+    background: rgba(67,223,145,.016);
+}
+
+.ccfv-registration-security__icon {
+    width: 25px;
+    height: 25px;
+    flex: 0 0 25px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(67,223,145,.25);
+    border-radius: 8px;
+    color: #031008;
+    background: #43df91;
+    font-size: 11px;
+    font-weight: 950;
+}
+
+.ccfv-registration-security strong {
+    display: block;
+    color: #43df91;
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: .12em;
+}
+
+.ccfv-registration-security p {
+    margin: 5px 0 0;
+    color: rgba(255,255,255,.25);
+    font-size: 8px;
+    line-height: 1.55;
+}
+
+.ccfv-registration-message {
+    min-height: 19px;
+    color: #ff8c8c;
+    font-size: 8px;
+    line-height: 1.5;
+}
+
+.ccfv-registration-message.is-success { color: #43df91; }
+
+.ccfv-registration-submit {
+    width: 100%;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 17px 0 20px;
+    border: 1px solid #d5ac4e;
+    border-radius: 13px;
+    color: #060606;
+    background: linear-gradient(135deg,#e5bf67,#d6ab4a);
+    font-size: 9px;
+    font-weight: 950;
+    letter-spacing: .12em;
+    cursor: pointer;
+    box-shadow: 0 17px 45px rgba(0,0,0,.2);
+    transition: transform .2s ease, filter .2s ease, opacity .2s ease;
+}
+
+.ccfv-registration-submit span:last-child {
+    width: 31px;
+    height: 31px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: 9px;
+    font-size: 16px;
+}
+
+.ccfv-registration-submit:hover { transform: translateY(-2px); filter: brightness(1.03); }
+.ccfv-registration-submit:disabled { opacity: .65; cursor: wait; transform: none; }
+
+.ccfv-registration-side {
+    padding: 28px;
+    position: sticky;
+    top: 90px;
+}
+
+.ccfv-registration-steps {
+    display: flex;
+    flex-direction: column;
+    margin-top: 25px;
+}
+
+.ccfv-registration-steps article {
+    display: grid;
+    grid-template-columns: 40px minmax(0,1fr);
+    gap: 12px;
+    padding: 16px 0;
+    border-top: 1px solid rgba(255,255,255,.05);
+}
+
+.ccfv-registration-steps article > span {
+    color: rgba(67,223,145,.5);
+    font-family: monospace;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.ccfv-registration-steps strong {
+    color: rgba(255,255,255,.78);
+    font-size: 8px;
+    font-weight: 950;
+}
+
+.ccfv-registration-steps p {
+    margin: 5px 0 0;
+    color: rgba(255,255,255,.23);
+    font-size: 8px;
+    line-height: 1.6;
+}
+
+.ccfv-registration-zero-card {
+    margin-top: 18px;
+    padding: 18px;
+    border: 1px solid rgba(67,223,145,.12);
+    border-radius: 14px;
+    background: radial-gradient(circle at 76% 20%,rgba(67,223,145,.08),transparent 46%),#040807;
+}
+
+.ccfv-registration-zero-card span,
+.ccfv-registration-zero-card small {
+    display: block;
+    color: rgba(255,255,255,.22);
+    font-size: 6px;
+    font-weight: 900;
+    letter-spacing: .12em;
+}
+
+.ccfv-registration-zero-card strong {
+    display: block;
+    margin-top: 6px;
+    color: #43df91;
+    font-family: monospace;
+    font-size: 46px;
+    font-weight: 950;
+    letter-spacing: -.06em;
+}
+
+.ccfv-registration-success {
+    padding: 110px 0 130px;
+    border-top: 1px solid rgba(255,255,255,.06);
+    background:
+        radial-gradient(circle at 50% 18%,rgba(67,223,145,.07),transparent 32%),
+        #020403;
+}
+
+.ccfv-registration-success__meta {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 10px;
+    margin-top: 28px;
+}
+
+.ccfv-registration-success__meta > div {
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 13px;
+    background: rgba(255,255,255,.012);
+}
+
+.ccfv-registration-success__meta span {
+    display: block;
+    color: rgba(255,255,255,.2);
+    font-size: 6px;
+    font-weight: 900;
+    letter-spacing: .12em;
+}
+
+.ccfv-registration-success__meta strong {
+    display: block;
+    margin-top: 5px;
+    color: #43df91;
+    font-size: 16px;
+    font-weight: 950;
+}
+
+.ccfv-registration-card-stage {
+    display: flex;
+    justify-content: center;
+    margin-top: 42px;
+    padding: 34px;
+    border: 1px solid rgba(255,255,255,.05);
+    border-radius: 25px;
+    background: linear-gradient(145deg,rgba(255,255,255,.018),rgba(67,223,145,.008));
+}
+
+.ccfv-registration-card {
+    width: min(100%, 410px);
+}
+
+.ccfv-registration-card .ccfv-player-card-item {
+    width: 100%;
+}
+
+.ccfv-registration-card .ccfv-player-card-preview {
+    margin-inline: auto;
+}
+
+.ccfv-registration-card .ccfv-player-card-download {
+    max-width: 420px;
+    margin-inline: auto;
+}
+
+.ccfv-registration-success__actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.ccfv-registration-secondary {
+    min-height: 44px;
+    padding: 0 17px;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 10px;
+    color: rgba(255,255,255,.52);
+    background: rgba(255,255,255,.018);
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: .11em;
+    cursor: pointer;
+}
+
+.ccfv-card-source {
+    position: fixed;
+    width: 1px;
+    height: 1px;
+    left: -10000px;
+    top: -10000px;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ccfv-registration[aria-busy="true"] { cursor: progress; }
+
+@media (max-width: 980px) {
+    .ccfv-registration-layout,
+    .ccfv-registration-hero__inner {
+        grid-template-columns: 1fr;
+    }
+    .ccfv-registration-side { position: static; }
+    .ccfv-registration-hero__seal { margin: 0; }
+}
+
+@media (max-width: 680px) {
+    .ccfv-registration-container { width: min(calc(100% - 28px),1400px); }
+    .ccfv-registration-hero { min-height: auto; padding: 120px 0 65px; }
+    .ccfv-registration-form-grid,
+    .ccfv-registration-success__meta { grid-template-columns: 1fr; }
+    .ccfv-registration-panel,
+    .ccfv-registration-side { padding: 20px; border-radius: 18px; }
+    .ccfv-registration-hero__seal { width: 170px; height: 170px; }
+    .ccfv-registration-photo-box__intro { flex-direction: column; }
+    .ccfv-registration-photo-box__body { align-items: flex-start; }
+    .ccfv-registration-photo-preview { width: 66px; height: 84px; flex-basis: 66px; }
+    .ccfv-registration-card-stage { padding: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ccfv-registration-hero__glow { animation: none; }
+    .ccfv-registration-submit { transition: none; }
+}
