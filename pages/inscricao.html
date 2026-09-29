@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#020403">
-<meta name="description" content="Inscrição oficial CCFV — cadastre seu jogador e receba seu Player Card.">
+<meta name="description" content="Inscrição oficial CCFV — cadastre seu jogador na Confederação Coliseu de Futebol Virtual.">
 <title>Inscrição — CCFV</title>
 <link rel="icon" type="image/png" href="../assets/images/logo/ccfv-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,11 +12,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/global.css">
 <link rel="stylesheet" href="../css/header.css">
-<link rel="stylesheet" href="../css/ranking.css">
 <link rel="stylesheet" href="../css/responsive.css">
 <link rel="stylesheet" href="../css/inscricao.css">
 </head>
 <body data-page="inscricao">
+
 <header class="ccfv-header" id="site-header">
   <div class="ccfv-header__inner">
     <a href="../index.html" class="ccfv-header__brand">
@@ -26,6 +26,7 @@
         <span class="ccfv-header__brand-subtitle">Confederação Coliseu de Futebol Virtual</span>
       </span>
     </a>
+
     <nav class="ccfv-header__nav" aria-label="Navegação principal">
       <a href="../index.html" class="ccfv-header__link">Início</a>
       <a href="brasileirao.html" class="ccfv-header__link">Brasileirão</a>
@@ -35,7 +36,9 @@
       <a href="ranking.html" class="ccfv-header__link">Ranking</a>
       <a href="historia.html" class="ccfv-header__link">História</a>
     </nav>
+
     <a href="inscricao.html" class="ccfv-header__action ccfv-header__action--active">Inscrição</a>
+
     <button type="button" class="ccfv-header__menu" aria-label="Abrir menu" aria-expanded="false">
       <span class="ccfv-header__menu-lines"><span></span><span></span><span></span></span>
     </button>
@@ -43,16 +46,27 @@
 </header>
 
 <main class="ccfv-registration">
+
   <section class="ccfv-registration-hero">
     <div class="ccfv-registration-hero__grid"></div>
     <div class="ccfv-registration-hero__glow"></div>
+
     <div class="ccfv-registration-container ccfv-registration-hero__inner">
       <div>
         <span class="ccfv-registration-eyebrow"><i></i> CCFV // REGISTRO OFICIAL</span>
-        <h1>ENTRE PARA<br><strong>A CCFV.</strong></h1>
-        <p>Faça seu cadastro como competidor. Seu jogador entra no sistema com 0 Elo e recebe o Player Card oficial assim que a inscrição for concluída.</p>
+
+        <h1>
+          ENTRE PARA<br>
+          <strong>A CCFV.</strong>
+        </h1>
+
+        <p>
+          Faça seu cadastro como competidor. Seu jogador entra no sistema com
+          0 Elo e passa a fazer parte oficialmente do Ranking CCFV.
+        </p>
       </div>
-      <div class="ccfv-registration-hero__seal">
+
+      <div class="ccfv-registration-hero__seal" aria-hidden="true">
         <span>CCFV</span>
         <strong>PLAYER</strong>
         <small>REGISTRO OFICIAL</small>
@@ -62,30 +76,51 @@
 
   <section class="ccfv-registration-section">
     <div class="ccfv-registration-container ccfv-registration-layout">
+
       <section class="ccfv-registration-panel" aria-labelledby="registration-title">
         <div class="ccfv-registration-panel__head">
           <span>CCFV // NOVO COMPETIDOR</span>
-          <h2 id="registration-title">FAÇA SUA<br><strong>INSCRIÇÃO.</strong></h2>
-          <p>Você não precisa criar conta. Preencha os dados abaixo e o sistema fará o registro oficial.</p>
+
+          <h2 id="registration-title">
+            FAÇA SUA<br>
+            <strong>INSCRIÇÃO.</strong>
+          </h2>
+
+          <p>
+            Você não precisa criar conta. Preencha os dados abaixo e o sistema
+            fará seu registro oficial na CCFV.
+          </p>
         </div>
 
         <form id="ccfv-registration-form" class="ccfv-registration-form" novalidate>
+
           <div class="ccfv-registration-form-grid">
+
             <label>
               <span>NOME COMPLETO <b>*</b></span>
-              <input id="registration-name" name="name" type="text" autocomplete="name" maxlength="90" placeholder="Ex: João Silva" required>
+              <input id="registration-name" name="name" type="text"
+                     autocomplete="name" maxlength="90"
+                     placeholder="Ex: João Silva" required>
             </label>
+
             <label>
               <span>WHATSAPP <b>*</b></span>
-              <input id="registration-whatsapp" name="whatsapp" type="tel" autocomplete="tel" maxlength="18" inputmode="tel" placeholder="(38) 99999-9999" required>
+              <input id="registration-whatsapp" name="whatsapp" type="tel"
+                     autocomplete="tel" maxlength="18" inputmode="tel"
+                     placeholder="(38) 99999-9999" required>
             </label>
+
           </div>
 
           <div class="ccfv-registration-form-grid">
+
             <label>
               <span>@ INSTAGRAM <b>*</b></span>
-              <input id="registration-instagram" name="instagram" type="text" autocomplete="off" maxlength="60" placeholder="@seuinstagram" required>
+              <input id="registration-instagram" name="instagram" type="text"
+                     autocomplete="off" maxlength="60"
+                     placeholder="@seuinstagram" required>
             </label>
+
             <label>
               <span>PLATAFORMA <b>*</b></span>
               <select id="registration-platform" name="platform" required>
@@ -95,62 +130,130 @@
                 <option value="MOBILE">MOBILE</option>
               </select>
             </label>
+
           </div>
 
           <label>
             <span>NOME DO TIME <b>*</b></span>
-            <input id="registration-team" name="team_name" type="text" maxlength="80" placeholder="Ex: CCFV Wolves" required>
-            <small>Esse é o nome informado no seu cadastro. A competição/clube será definido posteriormente pela administração quando necessário.</small>
+            <input id="registration-team" name="team_name" type="text"
+                   maxlength="80" placeholder="Ex: CCFV Wolves" required>
+            <small>
+              Esse nome fica registrado no seu cadastro. A competição e o clube
+              serão definidos posteriormente pela administração quando necessário.
+            </small>
           </label>
 
           <div class="ccfv-registration-photo-box">
+
             <div class="ccfv-registration-photo-box__intro">
               <div>
                 <span>FOTO DO JOGADOR <b>*</b></span>
                 <strong>Use uma foto nítida e frontal.</strong>
                 <small>JPG, PNG ou WEBP. Máximo recomendado: 5 MB.</small>
               </div>
-              <div class="ccfv-registration-photo-box__status" id="registration-photo-status">AGUARDANDO FOTO</div>
+
+              <div class="ccfv-registration-photo-box__status" id="registration-photo-status">
+                AGUARDANDO FOTO
+              </div>
             </div>
 
             <div class="ccfv-registration-photo-box__body">
-              <div class="ccfv-registration-photo-preview" id="registration-photo-preview">FOTO</div>
+
+              <div class="ccfv-registration-photo-preview" id="registration-photo-preview">
+                FOTO
+              </div>
+
               <div class="ccfv-registration-photo-actions">
-                <label class="ccfv-registration-photo-button" for="registration-photo">+ SELECIONAR FOTO</label>
-                <input id="registration-photo" name="photo" type="file" accept="image/png,image/jpeg,image/webp" class="ccfv-registration-hidden-file" required>
-                <button type="button" class="ccfv-registration-photo-clear" id="registration-photo-clear">REMOVER</button>
+
+                <label class="ccfv-registration-photo-button" for="registration-photo">
+                  + SELECIONAR FOTO
+                </label>
+
+                <input id="registration-photo" name="photo" type="file"
+                       accept="image/png,image/jpeg,image/webp"
+                       class="ccfv-registration-hidden-file" required>
+
+                <button type="button" class="ccfv-registration-photo-clear"
+                        id="registration-photo-clear">
+                  REMOVER
+                </button>
+
               </div>
             </div>
           </div>
 
           <div class="ccfv-registration-security">
             <div class="ccfv-registration-security__icon">✓</div>
+
             <div>
               <strong>REGISTRO PROTEGIDO</strong>
-              <p>O jogador nasce com 0 Elo e estatísticas zeradas. O visitante não escolhe competição nem altera ranking.</p>
+              <p>
+                O jogador nasce com 0 Elo e estatísticas zeradas.
+                A competição e os vínculos esportivos são administrados pela CCFV.
+              </p>
             </div>
           </div>
 
-          <div id="registration-message" class="ccfv-registration-message" role="status" aria-live="polite"></div>
+          <div id="registration-message"
+               class="ccfv-registration-message"
+               role="status"
+               aria-live="polite"></div>
 
-          <button id="registration-submit" class="ccfv-registration-submit" type="submit">
+          <button id="registration-submit"
+                  class="ccfv-registration-submit"
+                  type="submit">
             <span>FINALIZAR INSCRIÇÃO</span>
             <span>→</span>
           </button>
+
         </form>
       </section>
 
       <aside class="ccfv-registration-side">
+
         <div class="ccfv-registration-side__heading">
           <span>CCFV // O QUE ACONTECE?</span>
-          <h2>SEU REGISTRO<br><strong>EM 1 FLUXO.</strong></h2>
+
+          <h2>
+            SEU REGISTRO<br>
+            <strong>EM 1 FLUXO.</strong>
+          </h2>
         </div>
 
         <div class="ccfv-registration-steps">
-          <article><span>01</span><div><strong>CADASTRO</strong><p>Você envia seus dados e a foto do jogador.</p></div></article>
-          <article><span>02</span><div><strong>REGISTRO CCFV</strong><p>O sistema cria seu jogador oficial com 0 Elo.</p></div></article>
-          <article><span>03</span><div><strong>PLAYER CARD</strong><p>Seu card usa o mesmo visual oficial do Ranking CCFV.</p></div></article>
-          <article><span>04</span><div><strong>ADMINISTRAÇÃO</strong><p>A CCFV define competição, clube e demais vínculos quando necessário.</p></div></article>
+
+          <article>
+            <span>01</span>
+            <div>
+              <strong>CADASTRO</strong>
+              <p>Você envia seus dados e a foto do jogador.</p>
+            </div>
+          </article>
+
+          <article>
+            <span>02</span>
+            <div>
+              <strong>REGISTRO CCFV</strong>
+              <p>O sistema cria seu jogador oficial com 0 Elo.</p>
+            </div>
+          </article>
+
+          <article>
+            <span>03</span>
+            <div>
+              <strong>RANKING + CARD</strong>
+              <p>Seu jogador passa a aparecer no Ranking CCFV, onde o Player Card oficial fica disponível.</p>
+            </div>
+          </article>
+
+          <article>
+            <span>04</span>
+            <div>
+              <strong>ADMINISTRAÇÃO</strong>
+              <p>A CCFV define competição, clube e demais vínculos quando necessário.</p>
+            </div>
+          </article>
+
         </div>
 
         <div class="ccfv-registration-zero-card">
@@ -158,41 +261,86 @@
           <strong>0000</strong>
           <small>ELO · INICIANTE · 0 JOGOS</small>
         </div>
+
       </aside>
     </div>
   </section>
 
-  <section id="registration-success" class="ccfv-registration-success" hidden>
+  <section id="registration-success"
+           class="ccfv-registration-success"
+           hidden>
     <div class="ccfv-registration-container">
+
       <div class="ccfv-registration-success__head">
         <span>CCFV // REGISTRO CONCLUÍDO</span>
-        <h2>PLAYER<br><strong>CRIADO.</strong></h2>
-        <p id="registration-success-text">Seu cadastro foi concluído e seu Player Card oficial está pronto.</p>
+
+        <h2>
+          JOGADOR<br>
+          <strong>REGISTRADO.</strong>
+        </h2>
+
+        <p id="registration-success-text">
+          Seu cadastro foi concluído. Seu jogador já está disponível no Ranking CCFV.
+        </p>
       </div>
 
       <div class="ccfv-registration-success__meta">
-        <div><span>CÓDIGO</span><strong id="success-player-code">CCFV-000</strong></div>
-        <div><span>ELO INICIAL</span><strong>0000</strong></div>
-        <div><span>NÍVEL</span><strong>INICIANTE</strong></div>
+
+        <div>
+          <span>CÓDIGO</span>
+          <strong id="success-player-code">CCFV-000</strong>
+        </div>
+
+        <div>
+          <span>ELO INICIAL</span>
+          <strong>0000</strong>
+        </div>
+
+        <div>
+          <span>NÍVEL</span>
+          <strong>INICIANTE</strong>
+        </div>
+
       </div>
 
-      <div class="ccfv-registration-card-stage">
-        <div id="registration-card" class="ccfv-registration-card"></div>
+      <div class="ccfv-registration-success__notice">
+
+        <div class="ccfv-registration-success__notice-icon">✓</div>
+
+        <div>
+          <strong>SEU PLAYER CARD JÁ ESTÁ NO RANKING.</strong>
+          <p>
+            Acesse o Ranking CCFV para encontrar seu jogador e baixar
+            o Player Card oficial em PNG.
+          </p>
+        </div>
+
+        <a href="ranking.html" class="ccfv-registration-success__ranking-link">
+          IR PARA O RANKING →
+        </a>
+
       </div>
 
       <div class="ccfv-registration-success__actions">
-        <button type="button" class="ccfv-registration-secondary" id="registration-new">FAZER NOVA INSCRIÇÃO</button>
+        <a href="ranking.html" class="ccfv-registration-primary">
+          VER RANKING
+        </a>
+
+        <button type="button"
+                class="ccfv-registration-secondary"
+                id="registration-new">
+          FAZER NOVA INSCRIÇÃO
+        </button>
       </div>
+
     </div>
   </section>
-</main>
 
-<iframe id="ccfv-card-source" class="ccfv-card-source" title="Motor de Player Card CCFV" aria-hidden="true"></iframe>
+</main>
 
 <script src="../js/main.js" defer></script>
 <script src="/admin/js/auth.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
 <script src="../js/inscricao.js" defer></script>
+
 </body>
 </html>
