@@ -1,5 +1,5 @@
 /* =========================================================
-   CCFV // HISTÃ“RIA â€” LIVRO OFICIAL DOS CAMPEÃ•ES
+   CCFV // HISTÓRIA — LIVRO OFICIAL DOS CAMPEÕES
    ========================================================= */
 
 (() => {
@@ -98,7 +98,7 @@
                     trophyPath(value)
                 )}"
                 alt="${esc(
-                    alt || "TrofÃ©u CCFV"
+                    alt || "Troféu CCFV"
                 )}"
                 loading="lazy"
                 decoding="async"
@@ -108,7 +108,7 @@
 
 
     /* =========================================================
-       NORMALIZAÃ‡ÃƒO
+       NORMALIZAÇÃO
        ========================================================= */
 
     function normalizeTitle(item) {
@@ -126,7 +126,7 @@
             item.player_name ||
             item.participant_name ||
             item.name ||
-            "CAMPEÃƒO";
+            "CAMPEÃO";
 
         const competitionCode =
             item.competition_code ||
@@ -143,7 +143,7 @@
             (
                 competitionCode === "CHAMPIONS"
                     ? "CHAMPIONS LEAGUE"
-                    : "COMPETIÃ‡ÃƒO CCFV"
+                    : "COMPETIÇÃO CCFV"
             );
 
         const season =
@@ -158,11 +158,9 @@
             );
 
         const teamName =
-            item.club_name ||
             item.team_name ||
-            item.club_short_name ||
-            item.club ||
-            null;
+            item.club_name ||
+            "CCFV";
 
         return {
 
@@ -204,7 +202,7 @@
 
             title:
                 item.title ||
-                "CAMPEÃƒO",
+                "CAMPEÃO",
 
             awarded_at:
                 item.awarded_at ||
@@ -331,7 +329,7 @@
                 <div
                     class="ccfv-history-empty"
                 >
-                    NENHUM TÃTULO REGISTRADO NESTE FILTRO.
+                    NENHUM TÍTULO REGISTRADO NESTE FILTRO.
                 </div>
             `;
 
@@ -345,12 +343,12 @@
 
                     const competition =
                         item.competition_name ||
-                        "COMPETIÃ‡ÃƒO CCFV";
+                        "COMPETIÇÃO CCFV";
 
                     const player =
                         item.player_name ||
                         item.participant_name ||
-                        "CAMPEÃƒO";
+                        "CAMPEÃO";
 
                     const season =
                         item.season ||
@@ -358,19 +356,9 @@
                         "TEMPORADA";
 
                     const team =
-                        item.club_name ||
                         item.team_name ||
-                        item.club_short_name ||
-                        item.club ||
-                        (
-                            competitionKey(
-                                item.competition_code ||
-                                item.competition_name
-                            ) === "CHAMPIONS" &&
-                            item.player_name === "Weuler Neri"
-                                ? "Celtic"
-                                : "CCFV"
-                        );
+                        item.club_name ||
+                        "CCFV";
 
 
                     return `
@@ -384,7 +372,7 @@
                                 ${trophy(
                                     item.competition_code ||
                                     competition,
-                                    `TrofÃ©u ${competition} CCFV`
+                                    `Troféu ${competition} CCFV`
                                 )}
                             </div>
 
@@ -412,8 +400,8 @@
                                     ${esc(
                                         team
                                     )}
-                                    Â·
-                                    CAMPEÃƒO
+                                    ·
+                                    CAMPEÃO
                                 </div>
 
                             </div>
@@ -455,7 +443,7 @@
         }
 
         throw new Error(
-            "Cliente CCFV indisponÃ­vel."
+            "Cliente CCFV indisponível."
         );
     }
 
@@ -551,8 +539,8 @@
 
 
             /*
-             * Completa informaÃ§Ãµes que eventualmente
-             * nÃ£o vieram em ccfv_titles.
+             * Completa informações que eventualmente
+             * não vieram em ccfv_titles.
              */
 
             titles =
@@ -573,34 +561,17 @@
                         ...item,
 
                         player_name:
-                            player?.name ||
-                            (
-                                item.player_name !== "CAMPEÃO"
-                                    ? item.player_name
-                                    : null
-                            ),
+                            item.player_name ||
+                            player?.name,
 
                         participant_name:
-                            player?.name ||
-                            (
-                                item.participant_name !== "CAMPEÃO"
-                                    ? item.participant_name
-                                    : null
-                            ),
+                            item.participant_name ||
+                            player?.name,
 
                         team_name:
-                            item.club_name ||
-                            player?.team_name ||
-                            (
-                                item.team_name !== "CCFV"
-                                    ? item.team_name
-                                    : null
-                            ),
-
-                        club_name:
-                            item.club_name ||
                             item.team_name ||
-                            null
+                            player?.team_name ||
+                            item.club_name
 
                     });
 
@@ -674,7 +645,7 @@
 
             /*
              * =================================================
-             * HISTÃ“RICO DA CHAMPIONS
+             * HISTÓRICO DA CHAMPIONS
              * =================================================
              *
              * Fallback adicional.
@@ -773,12 +744,12 @@
              * MERGE
              * =================================================
              *
-             * Todos os tÃ­tulos permanecem.
-             * Apenas duplicaÃ§Ãµes do mesmo:
+             * Todos os títulos permanecem.
+             * Apenas duplicações do mesmo:
              *
-             * jogador + competiÃ§Ã£o + temporada
+             * jogador + competição + temporada
              *
-             * sÃ£o removidas.
+             * são removidas.
              */
 
             const map =
@@ -808,89 +779,15 @@
                         return;
                     }
 
-                    if (!map.has(key)) {
+                    if (
+                        !map.has(key)
+                    ) {
 
                         map.set(
                             key,
                             normalized
                         );
 
-                    } else {
-
-                        const existing =
-                            map.get(key);
-
-                        const merged = {
-                            ...existing
-                        };
-
-                        if (
-                            (
-                                !merged.player_name ||
-                                merged.player_name === "CAMPEÃO"
-                            ) &&
-                            normalized.player_name
-                        ) {
-                            merged.player_name =
-                                normalized.player_name;
-                        }
-
-                        if (
-                            (
-                                !merged.participant_name ||
-                                merged.participant_name === "CAMPEÃO"
-                            ) &&
-                            normalized.participant_name
-                        ) {
-                            merged.participant_name =
-                                normalized.participant_name;
-                        }
-
-                        if (
-                            !merged.club_name &&
-                            normalized.club_name
-                        ) {
-                            merged.club_name =
-                                normalized.club_name;
-                        }
-
-                        if (
-                            !merged.team_name &&
-                            normalized.team_name
-                        ) {
-                            merged.team_name =
-                                normalized.team_name;
-                        }
-
-                        if (
-                            merged.team_name === "CCFV" &&
-                            normalized.team_name &&
-                            normalized.team_name !== "CCFV"
-                        ) {
-                            merged.team_name =
-                                normalized.team_name;
-                        }
-
-                        if (
-                            !merged.club_logo &&
-                            normalized.club_logo
-                        ) {
-                            merged.club_logo =
-                                normalized.club_logo;
-                        }
-
-                        if (
-                            !merged.awarded_at &&
-                            normalized.awarded_at
-                        ) {
-                            merged.awarded_at =
-                                normalized.awarded_at;
-                        }
-
-                        map.set(
-                            key,
-                            normalizeTitle(merged)
-                        );
                     }
 
                 });
@@ -928,7 +825,7 @@
 
 
             console.log(
-                "CCFV // HISTÃ“RIA OFICIAL",
+                "CCFV // HISTÓRIA OFICIAL",
                 {
                     titles:
                         titles.length,
@@ -963,7 +860,7 @@
                     <div
                         class="ccfv-history-empty"
                     >
-                        ERRO AO CARREGAR O LIVRO DOS CAMPEÃ•ES.
+                        ERRO AO CARREGAR O LIVRO DOS CAMPEÕES.
                     </div>
                 `;
 
