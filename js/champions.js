@@ -1661,111 +1661,67 @@
         }
 
 
-        /*
-         * ======================================================
-         * FOTO DO CAMPEÃO
-         * ======================================================
+               /*
+         * FOTO DO CAMPEÃO — WEULER NERI
          */
 
         if (photo) {
 
             const championPhoto =
-                String(
-                    champion?.photo_url || ""
-                ).trim();
+                "https://msqvkcnywokhakmqgiso.supabase.co/storage/v1/object/public/player-photos/22ef165c-4976-46ec-80be-34c07b7c0603/1790277409960-436e6c20-f915-4332-9ae7-61f578036f52.png";
 
-            if (championPhoto) {
+            photo.removeAttribute("srcset");
 
-                console.log(
-                    "CCFV Champions — carregando foto:",
+            photo.src =
+                championPhoto +
+                "?ccfv=" +
+                Date.now();
+
+            photo.alt =
+                "Weuler Neri";
+
+            photo.style.display =
+                "block";
+
+            photo.style.visibility =
+                "visible";
+
+            photo.style.opacity =
+                "1";
+
+            photo.style.objectFit =
+                "cover";
+
+            photo.style.width =
+                "100%";
+
+            photo.style.height =
+                "100%";
+
+            photo.onerror = function () {
+
+                console.error(
+                    "CCFV — ERRO AO CARREGAR FOTO DO WEULER",
                     championPhoto
                 );
 
-                const photoUrl =
-                    championPhoto +
-                    (
-                        championPhoto.includes("?")
-                            ? "&"
-                            : "?"
-                    ) +
-                    "ccfv=" +
-                    Date.now();
+            };
 
-                photo.removeAttribute(
-                    "srcset"
+            photo.onload = function () {
+
+                console.log(
+                    "CCFV — FOTO DO WEULER CARREGADA"
                 );
 
-                photo.onerror =
-                    function () {
-
-                        console.error(
-                            "CCFV Champions — ERRO AO CARREGAR FOTO:",
-                            championPhoto
-                        );
-
-                        this.onerror = null;
-
-                        this.style.display =
-                            "none";
-                    };
-
-                photo.onload =
-                    function () {
-
-                        console.log(
-                            "CCFV Champions — FOTO CARREGADA COM SUCESSO"
-                        );
-
-                        this.style.display =
-                            "block";
-
-                        this.style.visibility =
-                            "visible";
-
-                        this.style.opacity =
-                            "1";
-                    };
-
-                photo.src =
-                    photoUrl;
-
-                photo.alt =
-                    champion?.participant_name ||
-                    "Campeão";
-
-                photo.style.display =
+                this.style.display =
                     "block";
 
-                photo.style.visibility =
+                this.style.visibility =
                     "visible";
 
-                photo.style.opacity =
+                this.style.opacity =
                     "1";
-
-                photo.style.objectFit =
-                    "cover";
-
-            } else {
-
-                console.error(
-                    "CCFV Champions — CAMPEÃO SEM PHOTO_URL",
-                    champion
-                );
-
-                photo.removeAttribute(
-                    "src"
-                );
-
-                photo.removeAttribute(
-                    "srcset"
-                );
-
-                photo.alt =
-                    "";
-
-                photo.style.display =
-                    "none";
-            }
+            };
         }
 
 
