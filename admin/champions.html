@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+﻿?<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#070b09">
-    <title>Champions League â€” Admin CCFV</title>
+    <title>Champions League — Admin CCFV</title>
     <link rel="icon" type="image/png" href="../assets/images/logo/ccfv-logo.png">
     <link rel="stylesheet" href="/admin/css/champions.css">
 </head>
@@ -31,13 +31,13 @@
             <a href="#groups" data-tab="groups">Grupos</a>
             <a href="#matches" data-tab="matches">Partidas</a>
             <a href="#knockout" data-tab="knockout">Mata-mata</a>
-            <a href="#history" data-tab="history">HistÃ³rico</a>
+            <a href="#history" data-tab="history">Histórico</a>
             <a href="#audit" data-tab="audit">Auditoria</a>
         </nav>
 
         <div class="admin-sidebar__footer">
-            <a href="/admin/dashboard.html">â† Painel principal</a>
-            <a href="/pages/champions.html" target="_blank">Abrir Champions â†—</a>
+            <a href="/admin/dashboard.html">← Painel principal</a>
+            <a href="/pages/champions.html" target="_blank">Abrir Champions ↗</a>
         </div>
 
     </aside>
@@ -46,12 +46,12 @@
 
         <header class="admin-topbar">
             <div>
-                <span>CCFV // OPERAÃ‡ÃƒO OFICIAL</span>
+                <span>CCFV // OPERAÇÃO OFICIAL</span>
                 <h1>CHAMPIONS LEAGUE</h1>
             </div>
 
             <div class="admin-user">
-                <span id="admin-user-email">Verificando sessÃ£o...</span>
+                <span id="admin-user-email">Verificando sessão...</span>
                 <button type="button" id="btn-refresh">Atualizar</button>
             </div>
         </header>
@@ -62,12 +62,12 @@
         <section class="admin-tab is-visible" data-panel="dashboard">
 
             <div class="admin-kpis">
-                <article><span>FASE</span><strong id="kpi-status">â€”</strong></article>
+                <article><span>FASE</span><strong id="kpi-status">—</strong></article>
                 <article><span>TREINADORES</span><strong id="kpi-participants">0 / 32</strong></article>
                 <article><span>CLUBES OCUPADOS</span><strong id="kpi-clubs">0 / 32</strong></article>
                 <article><span>JOGOS</span><strong id="kpi-matches">0 / 48</strong></article>
                 <article><span>PENDENTES</span><strong id="kpi-pending">0</strong></article>
-                <article><span>CAMPEÃƒO</span><strong id="kpi-champion">A DEFINIR</strong></article>
+                <article><span>CAMPEÃO</span><strong id="kpi-champion">A DEFINIR</strong></article>
             </div>
 
             <div class="admin-grid admin-grid--2">
@@ -75,8 +75,8 @@
                 <article class="admin-card">
                     <header>
                         <div>
-                            <span>CCFV // OPERAÃ‡ÃƒO</span>
-                            <h2>CONTROLE DA COMPETIÃ‡ÃƒO</h2>
+                            <span>CCFV // OPERAÇÃO</span>
+                            <h2>CONTROLE DA COMPETIÇÃO</h2>
                         </div>
                     </header>
 
@@ -86,21 +86,21 @@
                         <button data-action="generate-group-matches">GERAR 48 JOGOS</button>
                         <button data-action="recalculate">RECALCULAR TABELAS</button>
                         <button data-action="generate-r16">GERAR OITAVAS</button>
-                        <button data-action="generate-next">GERAR PRÃ“XIMA FASE</button>
+                        <button data-action="generate-next">GERAR PRÓXIMA FASE</button>
                         <button data-action="finish-season" class="danger">FINALIZAR TEMPORADA</button>
                     </div>
 
                     <p class="admin-help">
                         O sistema oficial continua controlado pelas RPCs da Champions.
-                        O Admin Ã© o centro operacional: sorteio, calendÃ¡rio, resultados,
-                        classificaÃ§Ã£o, mata-mata, histÃ³rico e auditoria.
+                        O Admin é o centro operacional: sorteio, calendário, resultados,
+                        classificação, mata-mata, histórico e auditoria.
                     </p>
                 </article>
 
                 <article class="admin-card">
                     <header>
                         <div>
-                            <span id="dashboard-season-label">SEASON —</span>
+                            <span id="dashboard-season-label">SEASON �</span>
                             <h2>FORMATO OFICIAL</h2>
                         </div>
                     </header>
@@ -108,10 +108,10 @@
                     <div class="format-list">
                         <div><span>Participantes</span><strong>32</strong></div>
                         <div><span>Clubes</span><strong>32</strong></div>
-                        <div><span>Grupos</span><strong>8 Ã— 4</strong></div>
+                        <div><span>Grupos</span><strong>8 × 4</strong></div>
                         <div><span>Jogos de grupos</span><strong>48</strong></div>
                         <div><span>Classificados</span><strong>2 / grupo</strong></div>
-                        <div><span>Mata-mata</span><strong>Jogo Ãºnico</strong></div>
+                        <div><span>Mata-mata</span><strong>Jogo único</strong></div>
                     </div>
                 </article>
 
@@ -120,7 +120,7 @@
             <div class="admin-card">
                 <header>
                     <div>
-                        <span>PRÃ“XIMOS JOGOS</span>
+                        <span>PRÓXIMOS JOGOS</span>
                         <h2>AGENDA OPERACIONAL</h2>
                     </div>
                     <button class="btn" data-go-tab="matches">ABRIR PARTIDAS</button>
@@ -135,7 +135,7 @@
         <section class="admin-tab" data-panel="season">
 
             <div class="section-title">
-                <span>CCFV // CONFIGURAÃ‡ÃƒO</span>
+                <span>CCFV // CONFIGURAÇÃO</span>
                 <h2>TEMPORADA</h2>
             </div>
 
@@ -145,15 +145,15 @@
                     <div class="season-create-box">
                         <div>
                             <span>NOVA TEMPORADA</span>
-                            <strong>ABRIR UMA NOVA EDIÃ‡ÃƒO.</strong>
+                            <strong>ABRIR UMA NOVA EDIÇÃO.</strong>
                             <small>
                                 Cria automaticamente 32 vagas, 32 clubes,
-                                4 potes e 8 grupos, pronta para inscriÃ§Ãµes.
+                                4 potes e 8 grupos, pronta para inscrições.
                             </small>
                         </div>
 
                         <div class="season-create-fields">
-                            <input id="new-season-number" type="number" min="1" placeholder="NÂº">
+                            <input id="new-season-number" type="number" min="1" placeholder="Nº">
                             <input id="new-season-label" type="text" placeholder="Ex.: SEASON 02">
                             <button type="button" class="btn" id="btn-create-season">
                                 + CRIAR TEMPORADA
@@ -168,27 +168,27 @@
 
                     <div>
                         <span>NOME</span>
-                        <strong id="season-name">â€”</strong>
+                        <strong id="season-name">—</strong>
                     </div>
 
                     <div>
                         <span>SEASON</span>
-                        <strong id="season-label">â€”</strong>
+                        <strong id="season-label">—</strong>
                     </div>
 
                     <div>
                         <span>STATUS</span>
-                        <strong id="season-status">â€”</strong>
+                        <strong id="season-status">—</strong>
                     </div>
 
                     <div>
-                        <span>INÃCIO</span>
-                        <strong id="season-start">â€”</strong>
+                        <span>INÍCIO</span>
+                        <strong id="season-start">—</strong>
                     </div>
 
                     <div>
                         <span>FIM</span>
-                        <strong id="season-end">â€”</strong>
+                        <strong id="season-end">—</strong>
                     </div>
 
                     <div>
@@ -199,7 +199,7 @@
                 </div>
 
                 <div class="settings-box">
-                    <span>CONFIGURAÃ‡ÃƒO DE JOGO</span>
+                    <span>CONFIGURAÇÃO DE JOGO</span>
                     <div id="season-settings"></div>
                 </div>
             </article>
@@ -233,7 +233,7 @@
                             <tr>
                                 <th>ESCUDO</th>
                                 <th>CLUBE</th>
-                                <th>PAÃS</th>
+                                <th>PAÍS</th>
                                 <th>TREINADOR</th>
                                 <th>PLATAFORMA</th>
                                 <th>STATUS</th>
@@ -260,7 +260,7 @@
 
             <div class="admin-card draw-action-card">
                 <div>
-                    <span>OPERAÃ‡ÃƒO</span>
+                    <span>OPERAÇÃO</span>
                     <h2>EXECUTAR SORTEIO</h2>
                     <p>O sorteio distribui um participante de cada pote em cada grupo.</p>
                 </div>
@@ -278,7 +278,7 @@
 
             <div class="section-title">
                 <span>CCFV // GROUP STAGE</span>
-                <h2>GRUPOS A â€” H</h2>
+                <h2>GRUPOS A — H</h2>
             </div>
 
             <div id="admin-groups-grid" class="admin-groups-grid"></div>
@@ -310,7 +310,7 @@
                         <option value="SCHEDULED">AGENDADAS</option>
                         <option value="VALIDATED">FINALIZADAS</option>
                         <option value="WO">W.O.</option>
-                        <option value="ADMIN_DECISION">DECISÃƒO ADMIN</option>
+                        <option value="ADMIN_DECISION">DECISÃO ADMIN</option>
                     </select>
 
                     <select id="match-group-filter">
@@ -358,7 +358,7 @@
 
             <div class="section-title">
                 <span>CCFV // HISTORY</span>
-                <h2>HISTÃ“RICO + HALL DA FAMA</h2>
+                <h2>HISTÓRICO + HALL DA FAMA</h2>
             </div>
 
             <div class="admin-grid admin-grid--2">
@@ -366,8 +366,8 @@
                 <article class="admin-card">
                     <header>
                         <div>
-                            <span id="dashboard-season-label">SEASON —</span>
-                            <h2>HISTÃ“RICO</h2>
+                            <span id="dashboard-season-label">SEASON �</span>
+                            <h2>HISTÓRICO</h2>
                         </div>
                     </header>
 
@@ -420,7 +420,7 @@
                         <thead>
                             <tr>
                                 <th>DATA</th>
-                                <th>AÃ‡ÃƒO</th>
+                                <th>AÇÃO</th>
                                 <th>ENTIDADE</th>
                                 <th>ID</th>
                                 <th>JUSTIFICATIVA</th>
@@ -444,10 +444,10 @@
 
     <div class="champions-modal__panel">
 
-        <button class="champions-modal__close" type="button" data-close-modal>Ã—</button>
+        <button class="champions-modal__close" type="button" data-close-modal>×</button>
 
         <span>CCFV // RESULTADO OFICIAL</span>
-        <h2 id="result-modal-title">LANÃ‡AR RESULTADO</h2>
+        <h2 id="result-modal-title">LANÇAR RESULTADO</h2>
 
         <div class="result-match-preview">
             <div>
@@ -482,27 +482,27 @@
                 <select id="result-type">
                     <option value="NORMAL">RESULTADO NORMAL</option>
                     <option value="WO">W.O.</option>
-                    <option value="ADMIN_DECISION">DECISÃƒO ADMINISTRATIVA</option>
+                    <option value="ADMIN_DECISION">DECISÃO ADMINISTRATIVA</option>
                 </select>
             </label>
 
             <label>
                 <span>VENCEDOR EM EMPATE</span>
                 <select id="result-winner-side">
-                    <option value="">NÃƒO SE APLICA</option>
+                    <option value="">NÃO SE APLICA</option>
                     <option value="HOME">CASA</option>
                     <option value="AWAY">FORA</option>
                 </select>
             </label>
 
             <label>
-                <span>PÃŠNALTIS CASA</span>
-                <input id="result-home-penalties" type="number" min="0" placeholder="â€”">
+                <span>PÊNALTIS CASA</span>
+                <input id="result-home-penalties" type="number" min="0" placeholder="—">
             </label>
 
             <label>
-                <span>PÃŠNALTIS FORA</span>
-                <input id="result-away-penalties" type="number" min="0" placeholder="â€”">
+                <span>PÊNALTIS FORA</span>
+                <input id="result-away-penalties" type="number" min="0" placeholder="—">
             </label>
 
         </div>
@@ -510,13 +510,13 @@
         <div class="result-extra-grid">
 
             <label>
-                <span>LINK DA EVIDÃŠNCIA</span>
+                <span>LINK DA EVIDÊNCIA</span>
                 <input id="result-evidence-url" type="url" placeholder="https://...">
             </label>
 
             <label>
-                <span>OBSERVAÃ‡ÃƒO DA PARTIDA</span>
-                <textarea id="result-notes" rows="3" placeholder="ObservaÃ§Ã£o oficial do administrador"></textarea>
+                <span>OBSERVAÇÃO DA PARTIDA</span>
+                <textarea id="result-notes" rows="3" placeholder="Observação oficial do administrador"></textarea>
             </label>
 
         </div>

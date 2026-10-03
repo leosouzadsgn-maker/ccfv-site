@@ -1,4 +1,4 @@
-﻿(() => {
+﻿?(() => {
     "use strict";
 
     const state = {
@@ -21,7 +21,7 @@
 
     const phaseLabel = {
         DRAFT: "DRAFT",
-        REGISTRATIONS: "INSCRIÃ‡Ã•ES",
+        REGISTRATIONS: "INSCRIÇÕES",
         CLUB_SELECTION: "ESCOLHA DE CLUBE",
         DRAW: "SORTEIO",
         GROUP_STAGE: "FASE DE GRUPOS",
@@ -108,7 +108,7 @@
     }
 
     function phaseText(phase) {
-        return phaseLabel[String(phase || "").toUpperCase()] || phase || "â€”";
+        return phaseLabel[String(phase || "").toUpperCase()] || phase || "—";
     }
 
     function statusText(status) {
@@ -118,11 +118,11 @@
             PENDING_VALIDATION: "PENDENTE",
             VALIDATED: "FINALIZADA",
             WO: "W.O.",
-            ADMIN_DECISION: "DECISÃƒO ADMIN",
+            ADMIN_DECISION: "DECISÃO ADMIN",
             CANCELLED: "CANCELADA"
         };
 
-        return map[String(status || "").toUpperCase()] || status || "â€”";
+        return map[String(status || "").toUpperCase()] || status || "—";
     }
 
     function formatDateTime(value) {
@@ -161,7 +161,7 @@
 
         while (!window.CCFVAuth?.getClient) {
             if (Date.now() - started > 10000) {
-                throw new Error("Supabase nÃ£o estÃ¡ disponÃ­vel.");
+                throw new Error("Supabase não está disponível.");
             }
 
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -183,7 +183,7 @@
 
         /*
          * Fallback para a view antiga caso a tabela direta
-         * não esteja disponível para a sessão administrativa.
+         * n�o esteja dispon�vel para a sess�o administrativa.
          */
         if (seasonsResult.error) {
 
@@ -332,7 +332,7 @@
 
         if (dashboardSeason) {
             dashboardSeason.textContent =
-                c.season_label || "SEASON —";
+                c.season_label || "SEASON �";
         }
 
         const occupied = state.clubs.filter(item => item.participant_id).length;
@@ -391,8 +391,8 @@
         return `
             <article class="compact-match">
                 <div>
-                    <span>${esc(phaseText(match.phase))} â€¢ #${esc(match.match_number)}</span>
-                    <strong>${esc(match.home_club_name || "A DEFINIR")} Ã— ${esc(match.away_club_name || "A DEFINIR")}</strong>
+                    <span>${esc(phaseText(match.phase))} • #${esc(match.match_number)}</span>
+                    <strong>${esc(match.home_club_name || "A DEFINIR")} × ${esc(match.away_club_name || "A DEFINIR")}</strong>
                 </div>
                 <div>
                     <span>${statusText(match.status)}</span>
@@ -406,19 +406,19 @@
         const c = state.championship || {};
         const settings = state.settings || {};
 
-        document.querySelector("#season-name").textContent = c.name || "â€”";
-        document.querySelector("#season-label").textContent = c.season_label || "â€”";
+        document.querySelector("#season-name").textContent = c.name || "—";
+        document.querySelector("#season-label").textContent = c.season_label || "—";
         document.querySelector("#season-status").textContent = phaseText(c.status);
-        document.querySelector("#season-start").textContent = c.start_date || "â€”";
-        document.querySelector("#season-end").textContent = c.end_date || "â€”";
+        document.querySelector("#season-start").textContent = c.start_date || "—";
+        document.querySelector("#season-end").textContent = c.end_date || "—";
 
         document.querySelector("#season-settings").innerHTML = `
             <div><span>TIME</span><strong>${esc(settings.match_team_mode || "AUTHENTIC")}</strong></div>
-            <div><span>DURAÃ‡ÃƒO</span><strong>${esc(settings.match_minutes || 10)} MIN</strong></div>
-            <div><span>CONDIÃ‡ÃƒO</span><strong>${esc(settings.condition_mode || "NORMAL")}</strong></div>
-            <div><span>EXTRA TIME</span><strong>${settings.extra_time_knockout ? "MATA-MATA" : "NÃƒO"}</strong></div>
-            <div><span>PÃŠNALTIS</span><strong>${settings.penalties_knockout ? "MATA-MATA" : "NÃƒO"}</strong></div>
-            <div><span>TIME REGISTRADO</span><strong>${settings.registered_club_required ? "OBRIGATÃ“RIO" : "NÃƒO"}</strong></div>
+            <div><span>DURAÇÃO</span><strong>${esc(settings.match_minutes || 10)} MIN</strong></div>
+            <div><span>CONDIÇÃO</span><strong>${esc(settings.condition_mode || "NORMAL")}</strong></div>
+            <div><span>EXTRA TIME</span><strong>${settings.extra_time_knockout ? "MATA-MATA" : "NÃO"}</strong></div>
+            <div><span>PÊNALTIS</span><strong>${settings.penalties_knockout ? "MATA-MATA" : "NÃO"}</strong></div>
+            <div><span>TIME REGISTRADO</span><strong>${settings.registered_club_required ? "OBRIGATÓRIO" : "NÃO"}</strong></div>
         `;
 
         const seasonList = document.querySelector("#season-list");
@@ -456,14 +456,14 @@
             <tr>
                 <td>${logoMarkup(club.slug, club.logo_path, club.name)}</td>
                 <td><strong>${esc(club.name)}</strong></td>
-                <td>${esc(club.country || "â€”")}</td>
+                <td>${esc(club.country || "—")}</td>
                 <td>
                     <strong>${esc(club.participant_name || "A DEFINIR")}</strong>
                     <small class="table-sub">${esc(club.participant_platform || "")}</small>
                 </td>
-                <td>${esc(club.participant_platform || "â€”")}</td>
+                <td>${esc(club.participant_platform || "—")}</td>
                 <td><span class="status-pill status-${esc(String(club.status || "").toLowerCase())}">${esc(statusText(club.status))}</span></td>
-                <td>${esc(club.pot_number ?? "â€”")}</td>
+                <td>${esc(club.pot_number ?? "—")}</td>
             </tr>
         `).join("") || `
             <tr><td colspan="7"><div class="empty-state">Nenhum clube encontrado.</div></td></tr>
@@ -475,7 +475,7 @@
         if (!holder) return;
 
         if (!state.pots.length) {
-            holder.innerHTML = `<div class="empty-state">Potes ainda nÃ£o preparados.</div>`;
+            holder.innerHTML = `<div class="empty-state">Potes ainda não preparados.</div>`;
             return;
         }
 
@@ -553,7 +553,7 @@
                             <h2>${code}</h2>
                         </div>
 
-                        <span>TOP 2 AVANÃ‡A</span>
+                        <span>TOP 2 AVANÇA</span>
                     </header>
 
                     <div class="group-table">
@@ -652,8 +652,8 @@
                     ${
                         finished
                             ? `
-                                <strong>${esc(match.home_score)} Ã— ${esc(match.away_score)}</strong>
-                                ${match.penalties_played ? `<small>PÃŠNALTIS ${esc(match.home_penalties)} Ã— ${esc(match.away_penalties)}</small>` : ""}
+                                <strong>${esc(match.home_score)} × ${esc(match.away_score)}</strong>
+                                ${match.penalties_played ? `<small>PÊNALTIS ${esc(match.home_penalties)} × ${esc(match.away_penalties)}</small>` : ""}
                               `
                             : `<strong>VS</strong>`
                     }
@@ -698,7 +698,7 @@
                                     ${match.evidence_url ? 'target="_blank" rel="noopener"' : ""}
                                     ${match.evidence_url ? "" : 'aria-disabled="true"'}
                                 >
-                                    EVIDÃŠNCIA
+                                    EVIDÊNCIA
                                 </a>
                               `
                             : `
@@ -706,7 +706,7 @@
                                     class="btn btn-primary"
                                     data-open-result="${esc(match.id)}"
                                 >
-                                    LANÃ‡AR RESULTADO
+                                    LANÇAR RESULTADO
                                 </button>
                               `
                     }
@@ -722,7 +722,7 @@
             item => String(item.group_id) === String(groupId)
         );
 
-        return row?.group_code || "â€”";
+        return row?.group_code || "—";
     }
 
     function renderKnockout() {
@@ -805,7 +805,7 @@
                     ${logoMarkup(match.home_club_slug, match.home_logo_path, match.home_club_name)}
                     <strong>${esc(match.home_club_name || "A DEFINIR")}</strong>
                     ${match.home_player_name ? `<small>${esc(match.home_player_name)}</small>` : ""}
-                    <b>${finished ? esc(match.home_score) : "â€”"}</b>
+                    <b>${finished ? esc(match.home_score) : "—"}</b>
                 </div>
 
                 <div class="ko-match__center">
@@ -814,7 +814,7 @@
                 </div>
 
                 <div class="ko-match__team ko-match__team--away">
-                    <b>${finished ? esc(match.away_score) : "â€”"}</b>
+                    <b>${finished ? esc(match.away_score) : "—"}</b>
                     <strong>${esc(match.away_club_name || "A DEFINIR")}</strong>
                     ${match.away_player_name ? `<small>${esc(match.away_player_name)}</small>` : ""}
                     ${logoMarkup(match.away_club_slug, match.away_logo_path, match.away_club_name)}
@@ -842,15 +842,15 @@
             tbody.innerHTML = state.history.length
                 ? state.history.map(item => `
                     <tr>
-                        <td>${esc(item.final_position ?? "â€”")}</td>
+                        <td>${esc(item.final_position ?? "—")}</td>
                         <td>
-                            <strong>${esc(item.participant_name || "â€”")}</strong>
+                            <strong>${esc(item.participant_name || "—")}</strong>
                             <small class="table-sub">${esc(item.platform || "")}</small>
                         </td>
                         <td>
                             <div class="history-club">
                                 ${logoMarkup(item.club_slug, item.logo_path, item.club_name)}
-                                ${esc(item.club_name || "â€”")}
+                                ${esc(item.club_name || "—")}
                             </div>
                         </td>
                         <td>${esc(phaseText(item.phase_reached))}</td>
@@ -860,7 +860,7 @@
                         <td>${esc(item.losses)}</td>
                     </tr>
                 `).join("")
-                : `<tr><td colspan="8"><div class="empty-state">Nenhum histÃ³rico registrado.</div></td></tr>`;
+                : `<tr><td colspan="8"><div class="empty-state">Nenhum histórico registrado.</div></td></tr>`;
         }
 
         if (hall) {
@@ -870,12 +870,12 @@
                         ${logoMarkup(item.club_slug, item.logo_path, item.club_name)}
                         <div>
                             <span>${esc(item.season)}</span>
-                            <strong>${esc(item.participant_name || "â€”")}</strong>
-                            <small>${esc(item.club_name || "â€”")} â€¢ ${esc(item.title)}</small>
+                            <strong>${esc(item.participant_name || "—")}</strong>
+                            <small>${esc(item.club_name || "—")} • ${esc(item.title)}</small>
                         </div>
                     </article>
                 `).join("")
-                : `<div class="empty-state">Nenhum campeÃ£o registrado.</div>`;
+                : `<div class="empty-state">Nenhum campeão registrado.</div>`;
         }
     }
 
@@ -889,8 +889,8 @@
                     <td>${esc(formatDateTime(item.created_at))}</td>
                     <td><strong>${esc(item.action)}</strong></td>
                     <td>${esc(item.entity)}</td>
-                    <td><code>${esc(item.entity_id || "â€”")}</code></td>
-                    <td>${esc(item.justification || "â€”")}</td>
+                    <td><code>${esc(item.entity_id || "—")}</code></td>
+                    <td>${esc(item.justification || "—")}</td>
                 </tr>
             `).join("")
             : `<tr><td colspan="5"><div class="empty-state">Nenhum evento de auditoria encontrado.</div></td></tr>`;
@@ -911,7 +911,7 @@
 
         await loadData();
 
-        showMessage(`${name} concluÃ­do.`);
+        showMessage(`${name} concluído.`);
         return data;
     }
 
@@ -921,13 +921,13 @@
         );
 
         if (!input?.value) {
-            throw new Error("Informe a data e o horÃ¡rio da partida.");
+            throw new Error("Informe a data e o horário da partida.");
         }
 
         const date = new Date(input.value);
 
         if (Number.isNaN(date.getTime())) {
-            throw new Error("Data/horÃ¡rio invÃ¡lido.");
+            throw new Error("Data/horário inválido.");
         }
 
         await rpc("champions_schedule_match", {
@@ -942,7 +942,7 @@
         );
 
         if (!match) {
-            showMessage("Partida nÃ£o encontrada.", true);
+            showMessage("Partida não encontrada.", true);
             return;
         }
 
@@ -966,7 +966,7 @@
         document.querySelector("#result-notes").value = "";
 
         document.querySelector("#result-modal-title").textContent =
-            `${phaseText(match.phase)} â€¢ JOGO ${match.match_number}`;
+            `${phaseText(match.phase)} • JOGO ${match.match_number}`;
 
         document.querySelector("#result-modal").hidden = false;
         document.body.classList.add("modal-open");
@@ -984,7 +984,7 @@
         const away = Number(document.querySelector("#result-away-score").value);
 
         if (!Number.isInteger(home) || !Number.isInteger(away) || home < 0 || away < 0) {
-            throw new Error("Informe um placar vÃ¡lido.");
+            throw new Error("Informe um placar válido.");
         }
 
         const type = document.querySelector("#result-type").value;
@@ -1060,7 +1060,7 @@
 
         if (name === "finish-season") {
             const confirmed = window.confirm(
-                "ATENÃ‡ÃƒO: finalizar a temporada fecha a Champions e grava Ranking, HistÃ³rico e Hall da Fama. Continuar?"
+                "ATENÇÃO: finalizar a temporada fecha a Champions e grava Ranking, Histórico e Hall da Fama. Continuar?"
             );
 
             if (!confirmed) return;
@@ -1083,7 +1083,7 @@
             seasonNumber = Number(rawNumber);
 
             if (!Number.isInteger(seasonNumber) || seasonNumber <= 0) {
-                throw new Error("NÃºmero de temporada invÃ¡lido.");
+                throw new Error("Número de temporada inválido.");
             }
         }
 
@@ -1277,7 +1277,7 @@ const session =
 
 if (!session?.user) {
     throw new Error(
-        "SessÃ£o administrativa nÃ£o encontrada."
+        "Sessão administrativa não encontrada."
     );
 }
 
