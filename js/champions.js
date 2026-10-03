@@ -24,7 +24,11 @@
         ARCHIVED: "ARQUIVADA"
     };
 
-    const resultStatuses = ["VALIDATED", "WO", "ADMIN_DECISION"];
+    const resultStatuses = [
+        "VALIDATED",
+        "WO",
+        "ADMIN_DECISION"
+    ];
 
     const esc = value => String(value ?? "")
         .replaceAll("&", "&amp;")
@@ -34,28 +38,56 @@
         .replaceAll("'", "&#039;");
 
     function clubLogo(slug, logoPath = "") {
-        const clean = String(slug || "").trim().toLowerCase();
 
-        const fallback = clean
-            ? `/assets/images/champions/clubs/${clean}.png`
-            : "";
+        const clean =
+            String(slug || "")
+                .trim()
+                .toLowerCase();
 
-        const stored = String(logoPath || "").trim();
+        const fallback =
+            clean
+                ? `/assets/images/champions/clubs/${clean}.png`
+                : "";
 
-        if (stored.startsWith("/assets/images/champions/clubs/")) {
+        const stored =
+            String(logoPath || "").trim();
+
+        if (
+            stored.startsWith(
+                "/assets/images/champions/clubs/"
+            )
+        ) {
             return stored;
         }
 
-        if (stored.startsWith("assets/images/champions/clubs/")) {
+        if (
+            stored.startsWith(
+                "assets/images/champions/clubs/"
+            )
+        ) {
             return `/${stored}`;
         }
 
         return fallback;
     }
 
-    function logoMarkup(slug, logoPath = "", alt = "") {
-        const src = clubLogo(slug, logoPath);
-        const fallback = clubLogo(slug, "");
+    function logoMarkup(
+        slug,
+        logoPath = "",
+        alt = ""
+    ) {
+
+        const src =
+            clubLogo(
+                slug,
+                logoPath
+            );
+
+        const fallback =
+            clubLogo(
+                slug,
+                ""
+            );
 
         if (!src) return "";
 
@@ -78,18 +110,34 @@
     }
 
     async function getClient() {
+
         if (window.CCFVAuth?.getClient) {
             return window.CCFVAuth.getClient();
         }
 
-        const started = Date.now();
+        const started =
+            Date.now();
 
-        while (!window.CCFVAuth?.getClient) {
-            if (Date.now() - started > 10000) {
-                throw new Error("Supabase não está disponível.");
+        while (
+            !window.CCFVAuth?.getClient
+        ) {
+
+            if (
+                Date.now() - started >
+                10000
+            ) {
+                throw new Error(
+                    "Supabase não está disponível."
+                );
             }
 
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        100
+                    )
+            );
         }
 
         return window.CCFVAuth.getClient();
@@ -97,114 +145,266 @@
 
     async function load() {
 
-        state.client = state.client || await getClient();
+        state.client =
+            state.client ||
+            await getClient();
 
-        const info = await state.client
-            .from("championship_public_info")
-            .select("*")
-            .order("season_number", { ascending: false })
-            .limit(1)
-            .maybeSingle();
+        const info =
+            await state.client
+                .from(
+                    "championship_public_info"
+                )
+                .select("*")
+                .order(
+                    "season_number",
+                    {
+                        ascending: false
+                    }
+                )
+                .limit(1)
+                .maybeSingle();
 
-        if (info.error) throw info.error;
+        if (info.error) {
+            throw info.error;
+        }
 
-        state.championship = info.data;
+        state.championship =
+            info.data;
 
         if (!state.championship) {
-            renderEmpty("Temporada da Champions ainda não cadastrada.");
+
+            renderEmpty(
+                "Temporada da Champions ainda não cadastrada."
+            );
+
             return;
         }
 
-        const id = state.championship.id;
+        const id =
+            state.championship.id;
 
-        const [clubs, standings, matches, champion] = await Promise.all([
+        const [
+            clubs,
+            standings,
+            matches,
+            champion
+        ] = await Promise.all([
 
             state.client
-                .from("championship_public_clubs")
+                .from(
+                    "championship_public_clubs"
+                )
                 .select("*")
-                .eq("championship_id", id)
-                .order("sort_order", { ascending: true }),
+                .eq(
+                    "championship_id",
+                    id
+                )
+                .order(
+                    "sort_order",
+                    {
+                        ascending: true
+                    }
+                ),
 
             state.client
-                .from("championship_public_standings")
+                .from(
+                    "championship_public_standings"
+                )
                 .select("*")
-                .eq("championship_id", id)
+                .eq(
+                    "championship_id",
+                    id
+                )
                 .order("group_code")
                 .order("position"),
 
             state.client
-                .from("championship_public_matches")
+                .from(
+                    "championship_public_matches"
+                )
                 .select("*")
-                .eq("championship_id", id)
+                .eq(
+                    "championship_id",
+                    id
+                )
                 .order("round_number")
                 .order("match_number"),
 
             state.client
-                .from("ccfv_champions_public_champion_v4")
+                .from(
+                    "ccfv_champions_public_champion_v4"
+                )
                 .select("*")
-                .eq("championship_id", id)
+                .eq(
+                    "championship_id",
+                    id
+                )
                 .maybeSingle()
 
         ]);
 
         if (clubs.error) {
-            console.warn("CCFV Champions clubes:", clubs.error);
+
+            console.warn(
+                "CCFV Champions clubes:",
+                clubs.error
+            );
         }
 
         if (standings.error) {
-            console.warn("CCFV Champions classificação:", standings.error);
+
+            console.warn(
+                "CCFV Champions classificação:",
+                standings.error
+            );
         }
 
         if (matches.error) {
-            console.warn("CCFV Champions partidas:", matches.error);
+
+            console.warn(
+                "CCFV Champions partidas:",
+                matches.error
+            );
         }
 
         if (champion.error) {
-            console.warn("CCFV Champions campeão:", champion.error);
+
+            console.warn(
+                "CCFV Champions campeão:",
+                champion.error
+            );
         }
 
-        state.champion = champion.data || null;
+        state.champion =
+            champion.data || null;
+
 
         /*
+         * ======================================================
+         * BUSCA DIRETA DO JOGADOR CAMPEÃO
+         * ======================================================
+         *
+         * Garante que a foto oficial venha diretamente
+         * da tabela players.
+         */
+
+        if (
+            state.champion?.participant_id
+        ) {
+
+            const playerResult =
+                await state.client
+                    .from("players")
+                    .select(
+                        "id, name, photo_url"
+                    )
+                    .eq(
+                        "id",
+                        state.champion.participant_id
+                    )
+                    .maybeSingle();
+
+            if (
+                !playerResult.error &&
+                playerResult.data
+            ) {
+
+                state.champion = {
+
+                    ...state.champion,
+
+                    participant_name:
+                        playerResult.data.name ||
+                        state.champion.participant_name,
+
+                    photo_url:
+                        playerResult.data.photo_url ||
+                        state.champion.photo_url
+                };
+
+                console.log(
+                    "CCFV Champions — FOTO DO CAMPEÃO:",
+                    state.champion.photo_url
+                );
+
+            } else {
+
+                console.error(
+                    "CCFV Champions — ERRO AO BUSCAR JOGADOR:",
+                    playerResult.error
+                );
+            }
+        }
+
+
+        /*
+         * ======================================================
          * FALLBACK 1
+         * ======================================================
          *
          * O campeão também pode existir no histórico.
          */
 
         if (!state.champion) {
 
-            const fallback = await state.client
-                .from("ccfv_champions_public_history_v4")
-                .select("*")
-                .eq("championship_id", id)
-                .eq("final_position", 1)
-                .maybeSingle();
+            const fallback =
+                await state.client
+                    .from(
+                        "ccfv_champions_public_history_v4"
+                    )
+                    .select("*")
+                    .eq(
+                        "championship_id",
+                        id
+                    )
+                    .eq(
+                        "final_position",
+                        1
+                    )
+                    .maybeSingle();
 
-            if (!fallback.error && fallback.data) {
-                state.champion = fallback.data;
+            if (
+                !fallback.error &&
+                fallback.data
+            ) {
+
+                state.champion =
+                    fallback.data;
             }
         }
 
+
         /*
+         * ======================================================
          * FALLBACK 2
+         * ======================================================
          *
          * Caso exista uma final validada mas a view ainda
-         * não tenha retornado o campeão, tenta localizar
-         * diretamente pelo resultado da final.
+         * não tenha retornado o campeão.
          */
 
-        state.clubs = clubs.data || [];
-        state.standings = standings.data || [];
-        state.matches = matches.data || [];
+        state.clubs =
+            clubs.data || [];
+
+        state.standings =
+            standings.data || [];
+
+        state.matches =
+            matches.data || [];
 
         if (!state.champion) {
 
-            const finalMatch = state.matches.find(match =>
-                match.phase === "FINAL" &&
-                resultStatuses.includes(
-                    String(match.status || "")
-                )
-            );
+            const finalMatch =
+                state.matches.find(
+                    match =>
+                        match.phase ===
+                            "FINAL" &&
+                        resultStatuses.includes(
+                            String(
+                                match.status || ""
+                            )
+                        )
+                );
 
             if (finalMatch) {
 
@@ -212,16 +412,22 @@
                     finalMatch.winner_registration_id;
 
                 const winnerClub =
-                    state.clubs.find(club =>
-                        String(club.championship_club_id) ===
-                        String(
-                            finalMatch.winner_club_id ||
-                            finalMatch.home_club_id ||
-                            ""
-                        )
+                    state.clubs.find(
+                        club =>
+                            String(
+                                club.championship_club_id
+                            ) ===
+                            String(
+                                finalMatch.winner_club_id ||
+                                finalMatch.home_club_id ||
+                                ""
+                            )
                     );
 
-                if (winnerRegistrationId || winnerClub) {
+                if (
+                    winnerRegistrationId ||
+                    winnerClub
+                ) {
 
                     state.champion = {
 
@@ -262,12 +468,15 @@
         render();
     }
 
+
     function render() {
 
-        const c = state.championship;
+        const c =
+            state.championship;
 
         const seasonLabel =
-            c?.season_label || "SEASON 01";
+            c?.season_label ||
+            "SEASON 01";
 
         const seasonLabelElement =
             document.querySelector(
@@ -275,6 +484,7 @@
             );
 
         if (seasonLabelElement) {
+
             seasonLabelElement.textContent =
                 seasonLabel;
         }
@@ -285,6 +495,7 @@
             );
 
         if (seasonStatus) {
+
             seasonStatus.textContent =
                 phaseLabel[c.status] ||
                 c.status ||
@@ -297,6 +508,7 @@
             );
 
         if (heroPhase) {
+
             heroPhase.textContent =
                 phaseLabel[c.status] ||
                 c.status ||
@@ -306,8 +518,9 @@
         const participants =
             new Set(
                 state.clubs
-                    .map(item =>
-                        item.participant_id
+                    .map(
+                        item =>
+                            item.participant_id
                     )
                     .filter(Boolean)
             ).size;
@@ -324,6 +537,7 @@
             );
 
         if (heroParticipants) {
+
             heroParticipants.textContent =
                 `${participants} / ${c.max_participants || 32}`;
         }
@@ -334,6 +548,7 @@
             );
 
         if (heroClubs) {
+
             heroClubs.textContent =
                 `${occupied} / ${c.total_clubs || 32}`;
         }
@@ -344,6 +559,7 @@
         renderKnockout();
         renderChampion();
     }
+
 
     function renderClubs() {
 
@@ -357,60 +573,71 @@
         if (!state.clubs.length) {
 
             el.innerHTML =
-                `<div class="ccfv-champions-empty">
+                `
+                <div
+                    class="ccfv-champions-empty"
+                >
                     Nenhum clube cadastrado.
-                </div>`;
+                </div>
+                `;
 
             return;
         }
 
         el.innerHTML =
-            state.clubs.map(club => `
+            state.clubs
+                .map(
+                    club => `
 
-                <article
-                    class="ccfv-champions-club"
-                >
-
-                    ${logoMarkup(
-                        club.slug,
-                        club.logo_path,
-                        club.name
-                    )}
-
-                    <div
-                        class="ccfv-champions-club__name"
+                    <article
+                        class="ccfv-champions-club"
                     >
 
-                        <strong>
-                            ${esc(club.name)}
-                        </strong>
-
-                        <span>
-                            ${esc(
-                                club.country ||
-                                "EUROPA"
-                            )}
-                        </span>
-
-                    </div>
-
-                    <span
-                        class="ccfv-champions-club__status"
-                    >
-
-                        ${esc(
-                            club.participant_id
-                                ? club.participant_name ||
-                                  "OCUPADO"
-                                : "DISPONÍVEL"
+                        ${logoMarkup(
+                            club.slug,
+                            club.logo_path,
+                            club.name
                         )}
 
-                    </span>
+                        <div
+                            class="ccfv-champions-club__name"
+                        >
 
-                </article>
+                            <strong>
+                                ${esc(
+                                    club.name
+                                )}
+                            </strong>
 
-            `).join("");
+                            <span>
+                                ${esc(
+                                    club.country ||
+                                    "EUROPA"
+                                )}
+                            </span>
+
+                        </div>
+
+                        <span
+                            class="ccfv-champions-club__status"
+                        >
+
+                            ${esc(
+                                club.participant_id
+                                    ? club.participant_name ||
+                                      "OCUPADO"
+                                    : "DISPONÍVEL"
+                            )}
+
+                        </span>
+
+                    </article>
+
+                `
+                )
+                .join("");
     }
+
 
     function renderGroups() {
 
@@ -433,32 +660,38 @@
         ];
 
         el.innerHTML =
-            groupCodes.map(code => {
+            groupCodes
+                .map(
+                    code => {
 
-                const rows =
-                    state.standings
-                        .filter(
-                            item =>
-                                item.group_code === code
-                        )
-                        .sort(
-                            (a, b) =>
-                                Number(
-                                    a.position || 99
-                                ) -
-                                Number(
-                                    b.position || 99
+                        const rows =
+                            state.standings
+                                .filter(
+                                    item =>
+                                        item.group_code ===
+                                        code
                                 )
-                        );
+                                .sort(
+                                    (a, b) =>
+                                        Number(
+                                            a.position || 99
+                                        ) -
+                                        Number(
+                                            b.position || 99
+                                        )
+                                );
 
-                const slots =
-                    Array.from(
-                        { length: 4 },
-                        (_, index) =>
-                            rows[index] || null
-                    );
+                        const slots =
+                            Array.from(
+                                {
+                                    length: 4
+                                },
+                                (_, index) =>
+                                    rows[index] ||
+                                    null
+                            );
 
-                return `
+                        return `
 
                     <article
                         class="ccfv-champions-group"
@@ -519,12 +752,13 @@
 
                             </div>
 
-                            ${slots.map(
-                                (row, index) => {
+                            ${slots
+                                .map(
+                                    (row, index) => {
 
-                                    if (!row) {
+                                        if (!row) {
 
-                                        return `
+                                            return `
 
                                             <div
                                                 class="ccfv-champions-group__row ccfv-champions-group__row--empty"
@@ -566,20 +800,22 @@
                                                 <span>—</span>
                                                 <span>—</span>
 
-                                                <strong>—</strong>
+                                                <strong>
+                                                    —
+                                                </strong>
 
                                             </div>
 
                                         `;
-                                    }
+                                        }
 
-                                    const gd =
-                                        Number(
-                                            row.goal_difference ||
-                                            0
-                                        );
+                                        const gd =
+                                            Number(
+                                                row.goal_difference ||
+                                                0
+                                            );
 
-                                    return `
+                                        return `
 
                                         <div
                                             class="ccfv-champions-group__row ${
@@ -693,8 +929,9 @@
                                         </div>
 
                                     `;
-                                }
-                            ).join("")}
+                                    }
+                                )
+                                .join("")}
 
                         </div>
 
@@ -739,8 +976,11 @@
                     </article>
 
                 `;
-            }).join("");
+                    }
+                )
+                .join("");
     }
+
 
     function renderMatches() {
 
@@ -765,40 +1005,47 @@
                             match.phase
                         )
                 )
-                .sort((a, b) => {
+                .sort(
+                    (a, b) => {
 
-                    const phaseOrder = {
-                        GROUP_STAGE: 1,
-                        ROUND_OF_16: 2,
-                        QUARTERFINALS: 3,
-                        SEMIFINALS: 4,
-                        FINAL: 5
-                    };
+                        const phaseOrder = {
 
-                    return (
-                        (
-                            phaseOrder[a.phase] ||
-                            99
+                            GROUP_STAGE: 1,
+                            ROUND_OF_16: 2,
+                            QUARTERFINALS: 3,
+                            SEMIFINALS: 4,
+                            FINAL: 5
+
+                        };
+
+                        return (
+
+                            (
+                                phaseOrder[a.phase] ||
+                                99
+                            ) -
+                            (
+                                phaseOrder[b.phase] ||
+                                99
+                            )
+
+                        ) ||
+
+                        Number(
+                            a.round_number || 0
                         ) -
-                        (
-                            phaseOrder[b.phase] ||
-                            99
-                        )
-                    ) ||
-                    Number(
-                        a.round_number || 0
-                    ) -
-                    Number(
-                        b.round_number || 0
-                    ) ||
-                    Number(
-                        a.match_number || 0
-                    ) -
-                    Number(
-                        b.match_number || 0
-                    );
+                        Number(
+                            b.round_number || 0
+                        ) ||
 
-                });
+                        Number(
+                            a.match_number || 0
+                        ) -
+                        Number(
+                            b.match_number || 0
+                        );
+                    }
+                );
 
         if (!ordered.length) {
 
@@ -814,63 +1061,71 @@
         }
 
         el.innerHTML =
-            ordered.map(match => {
+            ordered
+                .map(
+                    match => {
 
-                const finished =
-                    resultStatuses.includes(
-                        String(
-                            match.status || ""
-                        )
-                    );
+                        const finished =
+                            resultStatuses.includes(
+                                String(
+                                    match.status || ""
+                                )
+                            );
 
-                const status =
-                    String(
-                        match.status || ""
-                    ).toUpperCase();
+                        const status =
+                            String(
+                                match.status || ""
+                            ).toUpperCase();
 
-                const statusLabel = {
+                        const statusLabel = {
 
-                    VALIDATED:
-                        "RESULTADO OFICIAL",
+                            VALIDATED:
+                                "RESULTADO OFICIAL",
 
-                    WO:
-                        "W.O.",
+                            WO:
+                                "W.O.",
 
-                    ADMIN_DECISION:
-                        "DECISÃO ADMIN",
+                            ADMIN_DECISION:
+                                "DECISÃO ADMIN",
 
-                    SCHEDULED:
-                        "AGENDADA",
+                            SCHEDULED:
+                                "AGENDADA",
 
-                    IN_PROGRESS:
-                        "EM ANDAMENTO",
+                            IN_PROGRESS:
+                                "EM ANDAMENTO",
 
-                    PENDING_VALIDATION:
-                        "PENDENTE"
+                            PENDING_VALIDATION:
+                                "PENDENTE"
 
-                }[
-                    status
-                ] ||
-                status ||
-                "A DEFINIR";
+                        }[
+                            status
+                        ] ||
+                        status ||
+                        "A DEFINIR";
 
-                const score =
-                    finished
-                        ? `${esc(
-                            match.home_score
-                        )} <i>×</i> ${esc(
-                            match.away_score
-                        )}`
-                        : `<span class="match-vs">VS</span>`;
+                        const score =
+                            finished
+                                ? `${esc(
+                                    match.home_score
+                                )} <i>×</i> ${esc(
+                                    match.away_score
+                                )}`
+                                : `
+                                    <span
+                                        class="match-vs"
+                                    >
+                                        VS
+                                    </span>
+                                `;
 
-                const when =
-                    match.scheduled_at
-                        ? formatDateTime(
+                        const when =
                             match.scheduled_at
-                        )
-                        : "HORÁRIO A DEFINIR";
+                                ? formatDateTime(
+                                    match.scheduled_at
+                                )
+                                : "HORÁRIO A DEFINIR";
 
-                return `
+                        return `
 
                     <article
                         class="ccfv-champions-match"
@@ -1044,9 +1299,11 @@
                     </article>
 
                 `;
-
-            }).join("");
+                    }
+                )
+                .join("");
     }
+
 
     function knockoutPlaceholder(
         label,
@@ -1117,6 +1374,7 @@
 
         `;
     }
+
 
     function bracketCard(match) {
 
@@ -1220,6 +1478,7 @@
         `;
     }
 
+
     function renderKnockout() {
 
         const structure = [
@@ -1254,61 +1513,54 @@
 
         ];
 
-        structure.forEach(item => {
+        structure.forEach(
+            item => {
 
-            const target =
-                document.querySelector(
-                    item.selector
-                );
-
-            if (!target) return;
-
-            const matches =
-                state.matches
-                    .filter(
-                        match =>
-                            match.phase ===
-                            item.phase
-                    )
-                    .sort(
-                        (a, b) =>
-                            Number(
-                                a.match_number || 0
-                            ) -
-                            Number(
-                                b.match_number || 0
-                            )
+                const target =
+                    document.querySelector(
+                        item.selector
                     );
 
-            /*
-             * A chave física nunca desaparece.
-             *
-             * Se o Admin ainda não gerou a fase,
-             * mostramos os confrontos vazios.
-             *
-             * Quando os jogos existirem,
-             * eles substituem os slots.
-             */
+                if (!target) return;
 
-            target.innerHTML =
-                Array.from(
-                    {
-                        length:
-                            item.count
-                    },
-                    (_, index) =>
-                        matches[index]
-                            ? bracketCard(
-                                matches[index]
-                            )
-                            : knockoutPlaceholder(
-                                item.label,
-                                index + 1
-                            )
-                ).join("");
+                const matches =
+                    state.matches
+                        .filter(
+                            match =>
+                                match.phase ===
+                                item.phase
+                        )
+                        .sort(
+                            (a, b) =>
+                                Number(
+                                    a.match_number || 0
+                                ) -
+                                Number(
+                                    b.match_number || 0
+                                )
+                        );
 
-        });
+                target.innerHTML =
+                    Array.from(
+                        {
+                            length:
+                                item.count
+                        },
+                        (_, index) =>
+                            matches[index]
+                                ? bracketCard(
+                                    matches[index]
+                                )
+                                : knockoutPlaceholder(
+                                    item.label,
+                                    index + 1
+                                )
+                    ).join("");
+
+            }
+        );
     }
+
 
     function renderChampion() {
 
@@ -1384,11 +1636,9 @@
 
         }
 
+
         /*
          * NOME DO CAMPEÃO
-         *
-         * Antes estava usando club_name.
-         * Agora usa participant_name.
          */
 
         if (championName) {
@@ -1410,62 +1660,119 @@
 
         }
 
+
         /*
+         * ======================================================
          * FOTO DO CAMPEÃO
+         * ======================================================
          */
 
         if (photo) {
 
-    const championPhoto =
-        String(champion?.photo_url || "").trim();
+            const championPhoto =
+                String(
+                    champion?.photo_url || ""
+                ).trim();
 
-    if (championPhoto) {
+            if (championPhoto) {
 
-        const photoUrl =
-            championPhoto +
-            (championPhoto.includes("?") ? "&" : "?") +
-            "v=" + Date.now();
+                console.log(
+                    "CCFV Champions — carregando foto:",
+                    championPhoto
+                );
 
-        photo.removeAttribute("srcset");
+                const photoUrl =
+                    championPhoto +
+                    (
+                        championPhoto.includes("?")
+                            ? "&"
+                            : "?"
+                    ) +
+                    "ccfv=" +
+                    Date.now();
 
-        photo.onerror = function () {
-            console.error(
-                "CCFV Champions: não foi possível carregar a foto:",
-                championPhoto
-            );
+                photo.removeAttribute(
+                    "srcset"
+                );
 
-            this.onerror = null;
-            this.style.display = "none";
-        };
+                photo.onerror =
+                    function () {
 
-        photo.onload = function () {
-            this.style.display = "block";
-            this.style.visibility = "visible";
-        };
+                        console.error(
+                            "CCFV Champions — ERRO AO CARREGAR FOTO:",
+                            championPhoto
+                        );
 
-        photo.src = photoUrl;
+                        this.onerror = null;
 
-        photo.alt =
-            champion?.participant_name ||
-            "Campeão";
+                        this.style.display =
+                            "none";
+                    };
 
-        photo.style.display = "block";
-        photo.style.visibility = "visible";
-        photo.style.objectFit = "cover";
+                photo.onload =
+                    function () {
 
-    } else {
+                        console.log(
+                            "CCFV Champions — FOTO CARREGADA COM SUCESSO"
+                        );
 
-        photo.removeAttribute("src");
-        photo.removeAttribute("srcset");
+                        this.style.display =
+                            "block";
 
-        photo.alt = "";
+                        this.style.visibility =
+                            "visible";
 
-        photo.style.display = "none";
-    }
-}
+                        this.style.opacity =
+                            "1";
+                    };
+
+                photo.src =
+                    photoUrl;
+
+                photo.alt =
+                    champion?.participant_name ||
+                    "Campeão";
+
+                photo.style.display =
+                    "block";
+
+                photo.style.visibility =
+                    "visible";
+
+                photo.style.opacity =
+                    "1";
+
+                photo.style.objectFit =
+                    "cover";
+
+            } else {
+
+                console.error(
+                    "CCFV Champions — CAMPEÃO SEM PHOTO_URL",
+                    champion
+                );
+
+                photo.removeAttribute(
+                    "src"
+                );
+
+                photo.removeAttribute(
+                    "srcset"
+                );
+
+                photo.alt =
+                    "";
+
+                photo.style.display =
+                    "none";
+            }
+        }
+
 
         /*
+         * ======================================================
          * ESCUDO DO CAMPEÃO
+         * ======================================================
          */
 
         if (crest) {
@@ -1512,6 +1819,7 @@
         }
     }
 
+
     function clubLogoSrc(
         slug,
         logoPath = ""
@@ -1547,6 +1855,7 @@
             : "";
     }
 
+
     function formatDateTime(value) {
 
         if (!value) return "";
@@ -1571,19 +1880,23 @@
         ).format(date);
     }
 
+
     function renderEmpty(message) {
 
         document
             .querySelectorAll(
                 ".ccfv-champions-empty"
             )
-            .forEach(el => {
+            .forEach(
+                el => {
 
-                el.textContent =
-                    message;
+                    el.textContent =
+                        message;
 
-            });
+                }
+            );
     }
+
 
     window.addEventListener(
         "DOMContentLoaded",
@@ -1596,9 +1909,6 @@
                 /*
                  * A página pública acompanha
                  * o Admin automaticamente.
-                 *
-                 * Não depende de editar HTML
-                 * manualmente depois de um resultado.
                  */
 
                 window.setInterval(
