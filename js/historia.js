@@ -1,4 +1,4 @@
-﻿/* =========================================================
+/* =========================================================
    CCFV // HISTÃ“RIA â€” LIVRO OFICIAL DOS CAMPEÃ•ES
    ========================================================= */
 
@@ -158,9 +158,11 @@
             );
 
         const teamName =
-            item.team_name ||
             item.club_name ||
-            "CCFV";
+            item.team_name ||
+            item.club_short_name ||
+            item.club ||
+            null;
 
         return {
 
@@ -356,9 +358,19 @@
                         "TEMPORADA";
 
                     const team =
-                        item.team_name ||
                         item.club_name ||
-                        "CCFV";
+                        item.team_name ||
+                        item.club_short_name ||
+                        item.club ||
+                        (
+                            competitionKey(
+                                item.competition_code ||
+                                item.competition_name
+                            ) === "CHAMPIONS" &&
+                            item.player_name === "Weuler Neri"
+                                ? "Celtic"
+                                : "CCFV"
+                        );
 
 
                     return `
@@ -796,15 +808,89 @@
                         return;
                     }
 
-                    if (
-                        !map.has(key)
-                    ) {
+                    if (!map.has(key)) {
 
                         map.set(
                             key,
                             normalized
                         );
 
+                    } else {
+
+                        const existing =
+                            map.get(key);
+
+                        const merged = {
+                            ...existing
+                        };
+
+                        if (
+                            (
+                                !merged.player_name ||
+                                merged.player_name === "CAMPEÃO"
+                            ) &&
+                            normalized.player_name
+                        ) {
+                            merged.player_name =
+                                normalized.player_name;
+                        }
+
+                        if (
+                            (
+                                !merged.participant_name ||
+                                merged.participant_name === "CAMPEÃO"
+                            ) &&
+                            normalized.participant_name
+                        ) {
+                            merged.participant_name =
+                                normalized.participant_name;
+                        }
+
+                        if (
+                            !merged.club_name &&
+                            normalized.club_name
+                        ) {
+                            merged.club_name =
+                                normalized.club_name;
+                        }
+
+                        if (
+                            !merged.team_name &&
+                            normalized.team_name
+                        ) {
+                            merged.team_name =
+                                normalized.team_name;
+                        }
+
+                        if (
+                            merged.team_name === "CCFV" &&
+                            normalized.team_name &&
+                            normalized.team_name !== "CCFV"
+                        ) {
+                            merged.team_name =
+                                normalized.team_name;
+                        }
+
+                        if (
+                            !merged.club_logo &&
+                            normalized.club_logo
+                        ) {
+                            merged.club_logo =
+                                normalized.club_logo;
+                        }
+
+                        if (
+                            !merged.awarded_at &&
+                            normalized.awarded_at
+                        ) {
+                            merged.awarded_at =
+                                normalized.awarded_at;
+                        }
+
+                        map.set(
+                            key,
+                            normalizeTitle(merged)
+                        );
                     }
 
                 });
