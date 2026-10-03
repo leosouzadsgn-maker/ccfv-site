@@ -1,11 +1,9 @@
 /* =========================================================
    CCFV // HISTÓRIA — LIVRO DOS CAMPEÕES
-   Fonte oficial:
-   1. ccfv_titles
-   2. ccfv_champions_public_hall_v4
    ========================================================= */
 
 (() => {
+
     "use strict";
 
     const state = {
@@ -111,11 +109,9 @@
     }
 
 
-    /*
-     * ========================================================
-     * NORMALIZA UM TÍTULO
-     * ========================================================
-     */
+    /* =========================================================
+       NORMALIZAÇÃO
+       ========================================================= */
 
     function normalizeTitle(item) {
 
@@ -123,143 +119,111 @@
             return null;
         }
 
-        const competitionCode =
-            item.competition_code ||
-            item.competition ||
-            item.code ||
-            "";
-
-        const competitionName =
-            item.competition_name ||
-            item.competition ||
-            item.title ||
-            "COMPETIÇÃO CCFV";
-
-        const playerName =
-            item.player_name ||
-            item.participant_name ||
-            item.name ||
-            "CAMPEÃO";
-
-        const playerId =
-            item.player_id ||
-            item.participant_id ||
-            null;
-
-        const season =
-            item.season ||
-            item.season_label ||
-            item.season_number ||
-            "TEMPORADA";
-
-        const teamName =
-            item.team_name ||
-            item.club_name ||
-            "CCFV";
-
-        const clubName =
-            item.club_name ||
-            item.team_name ||
-            "";
-
-        const clubLogo =
-            item.club_logo ||
-            item.logo_path ||
-            "";
-
-        const awardedAt =
-            item.awarded_at ||
-            item.created_at ||
-            null;
-
-        const sourceId =
-            item.source_id ||
-            item.championship_id ||
-            item.id ||
-            null;
-
         return {
 
             ...item,
 
-            competition_code:
-                competitionCode,
-
-            competition_name:
-                competitionName,
-
-            player_name:
-                playerName,
-
             player_id:
-                playerId,
+                item.player_id ||
+                item.participant_id ||
+                null,
 
             participant_id:
                 item.participant_id ||
-                playerId,
+                item.player_id ||
+                null,
+
+            player_name:
+                item.player_name ||
+                item.participant_name ||
+                item.name ||
+                "CAMPEÃO",
+
+            participant_name:
+                item.participant_name ||
+                item.player_name ||
+                item.name ||
+                "CAMPEÃO",
+
+            competition_code:
+                item.competition_code ||
+                (
+                    item.competition_name
+                        ? competitionKey(
+                            item.competition_name
+                        )
+                        : "OUTRA"
+                ),
+
+            competition_name:
+                item.competition_name ||
+                "COMPETIÇÃO CCFV",
 
             season:
-                season,
+                item.season ||
+                item.season_label ||
+                item.season_number ||
+                "TEMPORADA",
 
             team_name:
-                teamName,
+                item.team_name ||
+                item.club_name ||
+                "CCFV",
 
             club_name:
-                clubName,
+                item.club_name ||
+                item.team_name ||
+                "",
 
             club_logo:
-                clubLogo,
+                item.club_logo ||
+                item.logo_path ||
+                "",
 
             title:
                 item.title ||
                 "CAMPEÃO",
 
             awarded_at:
-                awardedAt,
+                item.awarded_at ||
+                item.created_at ||
+                null
 
-            source_id:
-                sourceId
         };
     }
 
 
-    /*
-     * ========================================================
-     * CHAVE PARA EVITAR DUPLICAÇÃO
-     * ========================================================
-     */
-
     function titleKey(item) {
 
-        const x =
-            normalizeTitle(item);
+        const player =
+            item.player_id ||
+            item.participant_id ||
+            norm(item.player_name);
 
-        if (!x) {
-            return "";
-        }
+        const competition =
+            competitionKey(
+                item.competition_code ||
+                item.competition_name
+            );
+
+        const season =
+            norm(
+                item.season ||
+                item.season_label ||
+                ""
+            );
 
         return [
-
-            x.player_id ||
-            x.participant_id ||
-            norm(x.player_name),
-
-            competitionKey(
-                x.competition_code ||
-                x.competition_name
-            ),
-
-            norm(x.season)
-
+            player,
+            competition,
+            season
         ].join("|");
     }
 
 
-    /*
-     * ========================================================
-     * RENDER
-     * ========================================================
-     */
+    /* =========================================================
+       RENDER
+       ========================================================= */
 
     function render() {
 
@@ -283,10 +247,6 @@
                         ) === state.filter
                 );
 
-
-        /*
-         * CONTADORES
-         */
 
         const total =
             $("#history-total");
@@ -341,10 +301,6 @@
         }
 
 
-        /*
-         * SEM TÍTULOS
-         */
-
         if (!rows.length) {
 
             list.innerHTML = `
@@ -359,107 +315,108 @@
         }
 
 
-        /*
-         * LISTA DOS CAMPEÕES
-         */
-
         list.innerHTML =
             rows
-                .map(
-                    item => {
+                .map(item => {
 
-                        const comp =
-                            item.competition_name ||
-                            item.title ||
-                            "COMPETIÇÃO CCFV";
+                    const competition =
+                        item.competition_name ||
+                        "CHAMPIONS LEAGUE";
 
-                        const player =
-                            item.player_name ||
-                            item.participant_name ||
-                            "CAMPEÃO";
+                    const player =
+                        item.player_name ||
+                        item.participant_name ||
+                        "CAMPEÃO";
 
-                        const season =
-                            item.season ||
-                            item.season_label ||
-                            "TEMPORADA";
+                    const season =
+                        item.season ||
+                        item.season_label ||
+                        "SEASON 01";
 
-                        const team =
-                            item.team_name ||
-                            item.club_name ||
-                            "CCFV";
+                    const team =
+                        item.team_name ||
+                        item.club_name ||
+                        "CCFV";
 
-                        return `
 
-                            <article
-                                class="ccfv-history-entry"
+                    return `
+
+                        <article
+                            class="ccfv-history-entry"
+                        >
+
+                            <div
+                                class="ccfv-history-entry__trophy"
                             >
 
-                                <div
-                                    class="ccfv-history-entry__trophy"
-                                >
+                                ${trophy(
+                                    item.competition_code ||
+                                    competition,
+                                    `Troféu ${competition} CCFV`
+                                )}
 
-                                    ${trophy(
-                                        item.competition_code ||
-                                        comp,
-                                        `Troféu ${comp} CCFV`
+                            </div>
+
+
+                            <div>
+
+                                <div
+                                    class="ccfv-history-entry__competition"
+                                >
+                                    ${esc(
+                                        competition
                                     )}
-
-                                </div>
-
-
-                                <div>
-
-                                    <div
-                                        class="ccfv-history-entry__competition"
-                                    >
-                                        ${esc(comp)}
-                                    </div>
-
-
-                                    <div
-                                        class="ccfv-history-entry__name"
-                                    >
-                                        ${esc(player)}
-                                    </div>
-
-
-                                    <div
-                                        class="ccfv-history-entry__meta"
-                                    >
-                                        ${esc(team)}
-                                        ·
-                                        CAMPEÃO
-                                    </div>
-
                                 </div>
 
 
                                 <div
-                                    class="ccfv-history-entry__season"
+                                    class="ccfv-history-entry__name"
                                 >
-
-                                    TEMPORADA
-
-                                    <strong>
-                                        ${esc(season)}
-                                    </strong>
-
+                                    ${esc(
+                                        player
+                                    )}
                                 </div>
 
-                            </article>
 
-                        `;
-                    }
-                )
+                                <div
+                                    class="ccfv-history-entry__meta"
+                                >
+                                    ${esc(
+                                        team
+                                    )}
+                                    ·
+                                    CAMPEÃO
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                class="ccfv-history-entry__season"
+                            >
+
+                                TEMPORADA
+
+                                <strong>
+                                    ${esc(
+                                        season
+                                    )}
+                                </strong>
+
+                            </div>
+
+                        </article>
+
+                    `;
+
+                })
                 .join("");
     }
 
 
-    /*
-     * ========================================================
-     * CLIENTE SUPABASE
-     * ========================================================
-     */
+    /* =========================================================
+       SUPABASE
+       ========================================================= */
 
     async function getClient() {
 
@@ -469,7 +426,7 @@
                 "function"
         ) {
 
-            return window.CCFVAuth.getClient();
+            return await window.CCFVAuth.getClient();
 
         }
 
@@ -479,11 +436,9 @@
     }
 
 
-    /*
-     * ========================================================
-     * CARREGAMENTO OFICIAL
-     * ========================================================
-     */
+    /* =========================================================
+       CARREGAR HISTÓRIA
+       ========================================================= */
 
     async function load() {
 
@@ -494,9 +449,9 @@
 
 
             /*
-             * ==================================================
-             * 1. TABELA ccfv_titles
-             * ==================================================
+             * =================================================
+             * FONTE 1 — ccfv_titles
+             * =================================================
              */
 
             const titlesResult =
@@ -511,8 +466,7 @@
                     );
 
 
-            let titles =
-                [];
+            let titles = [];
 
 
             if (
@@ -524,19 +478,18 @@
 
                 titles =
                     titlesResult.data
-                        .map(normalizeTitle)
+                        .map(
+                            normalizeTitle
+                        )
                         .filter(Boolean);
 
             }
 
 
             /*
-             * ==================================================
-             * 2. HALL OF FAME V4
-             * ==================================================
-             *
-             * Mesmo que ccfv_titles funcione,
-             * SEMPRE consultamos o Hall.
+             * =================================================
+             * FONTE 2 — HALL OF FAME
+             * =================================================
              */
 
             const hallResult =
@@ -553,8 +506,7 @@
                     );
 
 
-            let hall =
-                [];
+            let hall = [];
 
 
             if (
@@ -569,19 +521,20 @@
                         .map(
                             item =>
                                 normalizeTitle({
+
                                     ...item,
 
                                     competition_code:
-                                        item.competition_code ||
                                         "CHAMPIONS",
 
                                     competition_name:
-                                        item.competition_name ||
                                         "CHAMPIONS LEAGUE",
 
                                     player_name:
-                                        item.participant_name ||
-                                        item.player_name,
+                                        item.participant_name,
+
+                                    participant_name:
+                                        item.participant_name,
 
                                     season:
                                         item.season_label ||
@@ -589,6 +542,7 @@
 
                                     awarded_at:
                                         item.created_at
+
                                 })
                         )
                         .filter(Boolean);
@@ -597,62 +551,154 @@
 
 
             /*
-             * ==================================================
-             * 3. MERGE + DEDUPE
-             * ==================================================
+             * =================================================
+             * FALLBACK DIRETO DA CHAMPIONS SEASON 01
+             * =================================================
+             *
+             * Caso as views antigas não tragam o registro,
+             * busca diretamente o histórico oficial.
              */
 
-            const merged =
-                [
-                    ...titles,
-                    ...hall
-                ];
+            if (
+                !titles.length &&
+                !hall.length
+            ) {
 
+                const directResult =
+                    await client
+                        .from(
+                            "championship_history"
+                        )
+                        .select(`
+                            *,
+                            players (
+                                id,
+                                name
+                            ),
+                            championships (
+                                season_number,
+                                season_label,
+                                code
+                            ),
+                            champions_clubs (
+                                name,
+                                slug,
+                                logo_path
+                            )
+                        `)
+                        .eq(
+                            "final_position",
+                            1
+                        )
+                        .order(
+                            "created_at",
+                            {
+                                ascending: false
+                            }
+                        );
 
-            const unique =
-                new Map();
-
-
-            merged.forEach(item => {
-
-                const k =
-                    titleKey(item);
-
-                if (!k) {
-                    return;
-                }
-
-                /*
-                 * ccfv_titles tem prioridade
-                 * sobre o Hall caso os dois tragam
-                 * o mesmo título.
-                 */
 
                 if (
-                    !unique.has(k) ||
-                    (
-                        String(
-                            item.competition_code ||
-                            ""
-                        ).toUpperCase() ===
-                        "CHAMPIONS"
+                    !directResult.error &&
+                    Array.isArray(
+                        directResult.data
                     )
                 ) {
 
-                    unique.set(
-                        k,
-                        item
-                    );
+                    hall =
+                        directResult.data
+                            .map(item =>
+                                normalizeTitle({
+
+                                    ...item,
+
+                                    competition_code:
+                                        "CHAMPIONS",
+
+                                    competition_name:
+                                        "CHAMPIONS LEAGUE",
+
+                                    player_id:
+                                        item.participant_id,
+
+                                    player_name:
+                                        item.players?.name ||
+                                        item.participant_name,
+
+                                    season:
+                                        item.championships?.season_label ||
+                                        (
+                                            item.championships?.season_number
+                                                ? `SEASON ${String(
+                                                    item.championships.season_number
+                                                ).padStart(2, "0")}`
+                                                : "SEASON 01"
+                                        ),
+
+                                    team_name:
+                                        item.champions_clubs?.name ||
+                                        item.club_name,
+
+                                    club_name:
+                                        item.champions_clubs?.name ||
+                                        item.club_name,
+
+                                    club_logo:
+                                        item.champions_clubs?.logo_path,
+
+                                    awarded_at:
+                                        item.created_at
+
+                                })
+                            )
+                            .filter(Boolean);
 
                 }
 
-            });
+            }
+
+
+            /*
+             * =================================================
+             * MERGE + DEDUPE
+             * =================================================
+             */
+
+            const map =
+                new Map();
+
+
+            [
+                ...titles,
+                ...hall
+            ]
+                .forEach(item => {
+
+                    const k =
+                        titleKey(item);
+
+                    if (!k) {
+                        return;
+                    }
+
+                    if (
+                        !map.has(k)
+                    ) {
+
+                        map.set(
+                            k,
+                            item
+                        );
+
+                    }
+
+                });
 
 
             state.all =
                 Array
                     .from(
-                        unique.values()
+                        map.values()
                     )
                     .sort(
                         (a, b) => {
@@ -678,9 +724,9 @@
 
 
             console.log(
-                "CCFV // HISTÓRIA CARREGADA:",
+                "CCFV // HISTÓRIA:",
                 {
-                    ccfv_titles:
+                    titles:
                         titles.length,
 
                     hall:
@@ -694,13 +740,14 @@
 
             render();
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
-                "CCFV // HISTORY:",
+                "CCFV // HISTORY ERROR:",
                 error
             );
-
 
             const list =
                 $("#history-list");
@@ -711,7 +758,7 @@
                     <div
                         class="ccfv-history-empty"
                     >
-                        NÃO FOI POSSÍVEL CARREGAR O LIVRO DOS CAMPEÕES.
+                        ERRO AO CARREGAR O LIVRO DOS CAMPEÕES.
                     </div>
                 `;
 
@@ -721,11 +768,9 @@
     }
 
 
-    /*
-     * ========================================================
-     * FILTROS
-     * ========================================================
-     */
+    /* =========================================================
+       FILTROS
+       ========================================================= */
 
     function bindFilters() {
 
@@ -733,52 +778,56 @@
             .querySelectorAll(
                 "[data-filter]"
             )
-            .forEach(
-                button => {
+            .forEach(button => {
 
-                    button.addEventListener(
-                        "click",
-                        () => {
+                button.addEventListener(
+                    "click",
+                    () => {
 
-                            document
-                                .querySelectorAll(
-                                    "[data-filter]"
+                        document
+                            .querySelectorAll(
+                                "[data-filter]"
+                            )
+                            .forEach(item =>
+                                item.classList.remove(
+                                    "is-active"
                                 )
-                                .forEach(
-                                    item =>
-                                        item.classList.remove(
-                                            "is-active"
-                                        )
-                                );
-
-
-                            button.classList.add(
-                                "is-active"
                             );
 
 
-                            state.filter =
-                                button.dataset.filter ||
-                                "TODOS";
+                        button.classList.add(
+                            "is-active"
+                        );
 
 
-                            render();
+                        state.filter =
+                            button.dataset.filter ||
+                            "TODOS";
 
-                        }
-                    );
 
-                }
-            );
+                        render();
+
+                    }
+                );
+
+            });
     }
 
 
-    /*
-     * ========================================================
-     * AUTO REFRESH
-     * ========================================================
-     */
+    /* =========================================================
+       INIT
+       ========================================================= */
 
-    function startAutoRefresh() {
+    async function init() {
+
+        bindFilters();
+
+        await load();
+
+
+        /*
+         * Atualização automática
+         */
 
         window.setInterval(
             () => {
@@ -795,23 +844,6 @@
             },
             15000
         );
-
-    }
-
-
-    /*
-     * ========================================================
-     * INIT
-     * ========================================================
-     */
-
-    async function init() {
-
-        bindFilters();
-
-        await load();
-
-        startAutoRefresh();
 
     }
 
