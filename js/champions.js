@@ -1416,33 +1416,53 @@
 
         if (photo) {
 
-            if (champion?.photo_url) {
+    const championPhoto =
+        String(champion?.photo_url || "").trim();
 
-                photo.src =
-                    champion.photo_url;
+    if (championPhoto) {
 
-                photo.alt =
-                    champion.participant_name ||
-                    "Campeão";
+        const photoUrl =
+            championPhoto +
+            (championPhoto.includes("?") ? "&" : "?") +
+            "v=" + Date.now();
 
-                photo.style.display =
-                    "";
+        photo.removeAttribute("srcset");
 
-            } else {
+        photo.onerror = function () {
+            console.error(
+                "CCFV Champions: não foi possível carregar a foto:",
+                championPhoto
+            );
 
-                photo.removeAttribute(
-                    "src"
-                );
+            this.onerror = null;
+            this.style.display = "none";
+        };
 
-                photo.alt =
-                    "";
+        photo.onload = function () {
+            this.style.display = "block";
+            this.style.visibility = "visible";
+        };
 
-                photo.style.display =
-                    isChampion
-                        ? ""
-                        : "none";
-            }
-        }
+        photo.src = photoUrl;
+
+        photo.alt =
+            champion?.participant_name ||
+            "Campeão";
+
+        photo.style.display = "block";
+        photo.style.visibility = "visible";
+        photo.style.objectFit = "cover";
+
+    } else {
+
+        photo.removeAttribute("src");
+        photo.removeAttribute("srcset");
+
+        photo.alt = "";
+
+        photo.style.display = "none";
+    }
+}
 
         /*
          * ESCUDO DO CAMPEÃO
