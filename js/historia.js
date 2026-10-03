@@ -1,9 +1,8 @@
 /* =========================================================
-   CCFV // HISTÓRIA — LIVRO DOS CAMPEÕES
+   CCFV // HISTÓRIA — LIVRO OFICIAL DOS CAMPEÕES
    ========================================================= */
 
 (() => {
-
     "use strict";
 
     const state = {
@@ -91,17 +90,16 @@
         );
     }
 
-    function trophy(
-        value,
-        alt = "Troféu CCFV"
-    ) {
+    function trophy(value, alt) {
 
         return `
             <img
                 src="${esc(
                     trophyPath(value)
                 )}"
-                alt="${esc(alt)}"
+                alt="${esc(
+                    alt || "Troféu CCFV"
+                )}"
                 loading="lazy"
                 decoding="async"
             >
@@ -119,61 +117,83 @@
             return null;
         }
 
+        const playerId =
+            item.player_id ||
+            item.participant_id ||
+            null;
+
+        const playerName =
+            item.player_name ||
+            item.participant_name ||
+            item.name ||
+            "CAMPEÃO";
+
+        const competitionCode =
+            item.competition_code ||
+            (
+                item.competition_name
+                    ? competitionKey(
+                        item.competition_name
+                    )
+                    : "OUTRA"
+            );
+
+        const competitionName =
+            item.competition_name ||
+            (
+                competitionCode === "CHAMPIONS"
+                    ? "CHAMPIONS LEAGUE"
+                    : "COMPETIÇÃO CCFV"
+            );
+
+        const season =
+            item.season ||
+            item.season_label ||
+            (
+                item.season_number
+                    ? `SEASON ${String(
+                        item.season_number
+                    ).padStart(2, "0")}`
+                    : "TEMPORADA"
+            );
+
+        const teamName =
+            item.team_name ||
+            item.club_name ||
+            "CCFV";
+
         return {
 
             ...item,
 
-            player_id:
-                item.player_id ||
-                item.participant_id ||
-                null,
+            player_id: playerId,
 
             participant_id:
                 item.participant_id ||
-                item.player_id ||
-                null,
+                playerId,
 
             player_name:
-                item.player_name ||
-                item.participant_name ||
-                item.name ||
-                "CAMPEÃO",
+                playerName,
 
             participant_name:
                 item.participant_name ||
-                item.player_name ||
-                item.name ||
-                "CAMPEÃO",
+                playerName,
 
             competition_code:
-                item.competition_code ||
-                (
-                    item.competition_name
-                        ? competitionKey(
-                            item.competition_name
-                        )
-                        : "OUTRA"
-                ),
+                competitionCode,
 
             competition_name:
-                item.competition_name ||
-                "COMPETIÇÃO CCFV",
+                competitionName,
 
             season:
-                item.season ||
-                item.season_label ||
-                item.season_number ||
-                "TEMPORADA",
+                season,
 
             team_name:
-                item.team_name ||
-                item.club_name ||
-                "CCFV",
+                teamName,
 
             club_name:
                 item.club_name ||
-                item.team_name ||
-                "",
+                teamName,
 
             club_logo:
                 item.club_logo ||
@@ -188,7 +208,6 @@
                 item.awarded_at ||
                 item.created_at ||
                 null
-
         };
     }
 
@@ -234,7 +253,7 @@
             return;
         }
 
-        const rows =
+        const filtered =
             state.filter === "TODOS"
 
                 ? state.all
@@ -244,7 +263,8 @@
                         competitionKey(
                             item.competition_code ||
                             item.competition_name
-                        ) === state.filter
+                        ) ===
+                        state.filter
                 );
 
 
@@ -261,7 +281,9 @@
         if (total) {
 
             total.textContent =
-                String(rows.length);
+                String(
+                    filtered.length
+                );
 
         }
 
@@ -271,7 +293,7 @@
             players.textContent =
                 String(
                     new Set(
-                        rows.map(
+                        filtered.map(
                             item =>
                                 item.player_id ||
                                 item.participant_id ||
@@ -288,7 +310,7 @@
             competitions.textContent =
                 String(
                     new Set(
-                        rows.map(
+                        filtered.map(
                             item =>
                                 competitionKey(
                                     item.competition_code ||
@@ -301,7 +323,7 @@
         }
 
 
-        if (!rows.length) {
+        if (!filtered.length) {
 
             list.innerHTML = `
                 <div
@@ -316,12 +338,12 @@
 
 
         list.innerHTML =
-            rows
+            filtered
                 .map(item => {
 
                     const competition =
                         item.competition_name ||
-                        "CHAMPIONS LEAGUE";
+                        "COMPETIÇÃO CCFV";
 
                     const player =
                         item.player_name ||
@@ -331,7 +353,7 @@
                     const season =
                         item.season ||
                         item.season_label ||
-                        "SEASON 01";
+                        "TEMPORADA";
 
                     const team =
                         item.team_name ||
@@ -340,7 +362,6 @@
 
 
                     return `
-
                         <article
                             class="ccfv-history-entry"
                         >
@@ -348,15 +369,12 @@
                             <div
                                 class="ccfv-history-entry__trophy"
                             >
-
                                 ${trophy(
                                     item.competition_code ||
                                     competition,
                                     `Troféu ${competition} CCFV`
                                 )}
-
                             </div>
-
 
                             <div>
 
@@ -368,7 +386,6 @@
                                     )}
                                 </div>
 
-
                                 <div
                                     class="ccfv-history-entry__name"
                                 >
@@ -376,7 +393,6 @@
                                         player
                                     )}
                                 </div>
-
 
                                 <div
                                     class="ccfv-history-entry__meta"
@@ -390,11 +406,9 @@
 
                             </div>
 
-
                             <div
                                 class="ccfv-history-entry__season"
                             >
-
                                 TEMPORADA
 
                                 <strong>
@@ -402,11 +416,9 @@
                                         season
                                     )}
                                 </strong>
-
                             </div>
 
                         </article>
-
                     `;
 
                 })
@@ -437,7 +449,7 @@
 
 
     /* =========================================================
-       CARREGAR HISTÓRIA
+       CARREGAMENTO
        ========================================================= */
 
     async function load() {
@@ -450,7 +462,8 @@
 
             /*
              * =================================================
-             * FONTE 1 — ccfv_titles
+             * FONTE PRINCIPAL
+             * ccfv_titles
              * =================================================
              */
 
@@ -488,7 +501,86 @@
 
             /*
              * =================================================
-             * FONTE 2 — HALL OF FAME
+             * BUSCA DOS NOMES DOS JOGADORES
+             * =================================================
+             */
+
+            const playersResult =
+                await client
+                    .from("players")
+                    .select(
+                        "id,name,photo_url,team_name"
+                    );
+
+
+            const playersMap =
+                new Map();
+
+
+            if (
+                !playersResult.error &&
+                Array.isArray(
+                    playersResult.data
+                )
+            ) {
+
+                playersResult.data.forEach(
+                    player => {
+
+                        playersMap.set(
+                            String(player.id),
+                            player
+                        );
+
+                    }
+                );
+
+            }
+
+
+            /*
+             * Completa informações que eventualmente
+             * não vieram em ccfv_titles.
+             */
+
+            titles =
+                titles.map(item => {
+
+                    const player =
+                        playersMap.get(
+                            String(
+                                item.player_id ||
+                                item.participant_id ||
+                                ""
+                            )
+                        );
+
+
+                    return normalizeTitle({
+
+                        ...item,
+
+                        player_name:
+                            item.player_name ||
+                            player?.name,
+
+                        participant_name:
+                            item.participant_name ||
+                            player?.name,
+
+                        team_name:
+                            item.team_name ||
+                            player?.team_name ||
+                            item.club_name
+
+                    });
+
+                });
+
+
+            /*
+             * =================================================
+             * HALL OF FAME
              * =================================================
              */
 
@@ -518,32 +610,33 @@
 
                 hall =
                     hallResult.data
-                        .map(
-                            item =>
-                                normalizeTitle({
+                        .map(item =>
+                            normalizeTitle({
 
-                                    ...item,
+                                ...item,
 
-                                    competition_code:
-                                        "CHAMPIONS",
+                                competition_code:
+                                    item.competition_code ||
+                                    "CHAMPIONS",
 
-                                    competition_name:
-                                        "CHAMPIONS LEAGUE",
+                                competition_name:
+                                    item.competition_name ||
+                                    "CHAMPIONS LEAGUE",
 
-                                    player_name:
-                                        item.participant_name,
+                                player_name:
+                                    item.participant_name,
 
-                                    participant_name:
-                                        item.participant_name,
+                                participant_name:
+                                    item.participant_name,
 
-                                    season:
-                                        item.season_label ||
-                                        item.season,
+                                season:
+                                    item.season_label ||
+                                    item.season,
 
-                                    awarded_at:
-                                        item.created_at
+                                awarded_at:
+                                    item.created_at
 
-                                })
+                            })
                         )
                         .filter(Boolean);
 
@@ -552,116 +645,111 @@
 
             /*
              * =================================================
-             * FALLBACK DIRETO DA CHAMPIONS SEASON 01
+             * HISTÓRICO DA CHAMPIONS
              * =================================================
              *
-             * Caso as views antigas não tragam o registro,
-             * busca diretamente o histórico oficial.
+             * Fallback adicional.
              */
 
+            const historyResult =
+                await client
+                    .from(
+                        "championship_history"
+                    )
+                    .select("*")
+                    .eq(
+                        "final_position",
+                        1
+                    )
+                    .order(
+                        "created_at",
+                        {
+                            ascending: false
+                        }
+                    );
+
+
+            let history = [];
+
+
             if (
-                !titles.length &&
-                !hall.length
+                !historyResult.error &&
+                Array.isArray(
+                    historyResult.data
+                )
             ) {
 
-                const directResult =
-                    await client
-                        .from(
-                            "championship_history"
-                        )
-                        .select(`
-                            *,
-                            players (
-                                id,
-                                name
-                            ),
-                            championships (
-                                season_number,
-                                season_label,
-                                code
-                            ),
-                            champions_clubs (
-                                name,
-                                slug,
-                                logo_path
-                            )
-                        `)
-                        .eq(
-                            "final_position",
-                            1
-                        )
-                        .order(
-                            "created_at",
-                            {
-                                ascending: false
-                            }
-                        );
+                history =
+                    historyResult.data
+                        .map(item => {
+
+                            const player =
+                                playersMap.get(
+                                    String(
+                                        item.participant_id ||
+                                        ""
+                                    )
+                                );
 
 
-                if (
-                    !directResult.error &&
-                    Array.isArray(
-                        directResult.data
-                    )
-                ) {
+                            return normalizeTitle({
 
-                    hall =
-                        directResult.data
-                            .map(item =>
-                                normalizeTitle({
+                                ...item,
 
-                                    ...item,
+                                competition_code:
+                                    "CHAMPIONS",
 
-                                    competition_code:
-                                        "CHAMPIONS",
+                                competition_name:
+                                    "CHAMPIONS LEAGUE",
 
-                                    competition_name:
-                                        "CHAMPIONS LEAGUE",
+                                player_id:
+                                    item.participant_id,
 
-                                    player_id:
-                                        item.participant_id,
+                                participant_id:
+                                    item.participant_id,
 
-                                    player_name:
-                                        item.players?.name ||
-                                        item.participant_name,
+                                player_name:
+                                    player?.name ||
+                                    item.participant_name,
 
-                                    season:
-                                        item.championships?.season_label ||
-                                        (
-                                            item.championships?.season_number
-                                                ? `SEASON ${String(
-                                                    item.championships.season_number
-                                                ).padStart(2, "0")}`
-                                                : "SEASON 01"
-                                        ),
+                                participant_name:
+                                    player?.name ||
+                                    item.participant_name,
 
-                                    team_name:
-                                        item.champions_clubs?.name ||
-                                        item.club_name,
+                                team_name:
+                                    item.club_name ||
+                                    player?.team_name,
 
-                                    club_name:
-                                        item.champions_clubs?.name ||
-                                        item.club_name,
+                                club_name:
+                                    item.club_name,
 
-                                    club_logo:
-                                        item.champions_clubs?.logo_path,
+                                season:
+                                    item.season_label ||
+                                    item.season ||
+                                    "SEASON 01",
 
-                                    awarded_at:
-                                        item.created_at
+                                awarded_at:
+                                    item.created_at
 
-                                })
-                            )
-                            .filter(Boolean);
+                            });
 
-                }
+                        })
+                        .filter(Boolean);
 
             }
 
 
             /*
              * =================================================
-             * MERGE + DEDUPE
+             * MERGE
              * =================================================
+             *
+             * Todos os títulos permanecem.
+             * Apenas duplicações do mesmo:
+             *
+             * jogador + competição + temporada
+             *
+             * são removidas.
              */
 
             const map =
@@ -670,24 +758,34 @@
 
             [
                 ...titles,
-                ...hall
+                ...hall,
+                ...history
             ]
                 .forEach(item => {
 
-                    const k =
-                        titleKey(item);
+                    const normalized =
+                        normalizeTitle(item);
 
-                    if (!k) {
+                    if (!normalized) {
+                        return;
+                    }
+
+                    const key =
+                        titleKey(
+                            normalized
+                        );
+
+                    if (!key) {
                         return;
                     }
 
                     if (
-                        !map.has(k)
+                        !map.has(key)
                     ) {
 
                         map.set(
-                            k,
-                            item
+                            key,
+                            normalized
                         );
 
                     }
@@ -703,34 +801,40 @@
                     .sort(
                         (a, b) => {
 
-                            const da =
+                            const dateA =
                                 a.awarded_at
                                     ? new Date(
                                         a.awarded_at
                                     ).getTime()
                                     : 0;
 
-                            const db =
+                            const dateB =
                                 b.awarded_at
                                     ? new Date(
                                         b.awarded_at
                                     ).getTime()
                                     : 0;
 
-                            return db - da;
+                            return (
+                                dateB -
+                                dateA
+                            );
 
                         }
                     );
 
 
             console.log(
-                "CCFV // HISTÓRIA:",
+                "CCFV // HISTÓRIA OFICIAL",
                 {
                     titles:
                         titles.length,
 
                     hall:
                         hall.length,
+
+                    championshipHistory:
+                        history.length,
 
                     total:
                         state.all.length
@@ -740,9 +844,7 @@
 
             render();
 
-        }
-
-        catch (error) {
+        } catch (error) {
 
             console.error(
                 "CCFV // HISTORY ERROR:",
@@ -824,10 +926,6 @@
 
         await load();
 
-
-        /*
-         * Atualização automática
-         */
 
         window.setInterval(
             () => {
