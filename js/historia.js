@@ -1,5 +1,5 @@
-/* =========================================================
-   CCFV // HISTÓRIA — LIVRO OFICIAL DOS CAMPEÕES
+﻿/* =========================================================
+   CCFV // HISTÃ“RIA â€” LIVRO OFICIAL DOS CAMPEÃ•ES
    ========================================================= */
 
 (() => {
@@ -98,7 +98,7 @@
                     trophyPath(value)
                 )}"
                 alt="${esc(
-                    alt || "Troféu CCFV"
+                    alt || "TrofÃ©u CCFV"
                 )}"
                 loading="lazy"
                 decoding="async"
@@ -108,7 +108,7 @@
 
 
     /* =========================================================
-       NORMALIZAÇÃO
+       NORMALIZAÃ‡ÃƒO
        ========================================================= */
 
     function normalizeTitle(item) {
@@ -126,7 +126,7 @@
             item.player_name ||
             item.participant_name ||
             item.name ||
-            "CAMPEÃO";
+            "CAMPEÃƒO";
 
         const competitionCode =
             item.competition_code ||
@@ -143,7 +143,7 @@
             (
                 competitionCode === "CHAMPIONS"
                     ? "CHAMPIONS LEAGUE"
-                    : "COMPETIÇÃO CCFV"
+                    : "COMPETIÃ‡ÃƒO CCFV"
             );
 
         const season =
@@ -202,7 +202,7 @@
 
             title:
                 item.title ||
-                "CAMPEÃO",
+                "CAMPEÃƒO",
 
             awarded_at:
                 item.awarded_at ||
@@ -329,7 +329,7 @@
                 <div
                     class="ccfv-history-empty"
                 >
-                    NENHUM TÍTULO REGISTRADO NESTE FILTRO.
+                    NENHUM TÃTULO REGISTRADO NESTE FILTRO.
                 </div>
             `;
 
@@ -343,12 +343,12 @@
 
                     const competition =
                         item.competition_name ||
-                        "COMPETIÇÃO CCFV";
+                        "COMPETIÃ‡ÃƒO CCFV";
 
                     const player =
                         item.player_name ||
                         item.participant_name ||
-                        "CAMPEÃO";
+                        "CAMPEÃƒO";
 
                     const season =
                         item.season ||
@@ -372,7 +372,7 @@
                                 ${trophy(
                                     item.competition_code ||
                                     competition,
-                                    `Troféu ${competition} CCFV`
+                                    `TrofÃ©u ${competition} CCFV`
                                 )}
                             </div>
 
@@ -400,8 +400,8 @@
                                     ${esc(
                                         team
                                     )}
-                                    ·
-                                    CAMPEÃO
+                                    Â·
+                                    CAMPEÃƒO
                                 </div>
 
                             </div>
@@ -443,7 +443,7 @@
         }
 
         throw new Error(
-            "Cliente CCFV indisponível."
+            "Cliente CCFV indisponÃ­vel."
         );
     }
 
@@ -539,8 +539,8 @@
 
 
             /*
-             * Completa informações que eventualmente
-             * não vieram em ccfv_titles.
+             * Completa informaÃ§Ãµes que eventualmente
+             * nÃ£o vieram em ccfv_titles.
              */
 
             titles =
@@ -561,17 +561,34 @@
                         ...item,
 
                         player_name:
-                            item.player_name ||
-                            player?.name,
+                            player?.name ||
+                            (
+                                item.player_name !== "CAMPEÃO"
+                                    ? item.player_name
+                                    : null
+                            ),
 
                         participant_name:
-                            item.participant_name ||
-                            player?.name,
+                            player?.name ||
+                            (
+                                item.participant_name !== "CAMPEÃO"
+                                    ? item.participant_name
+                                    : null
+                            ),
 
                         team_name:
-                            item.team_name ||
+                            item.club_name ||
                             player?.team_name ||
-                            item.club_name
+                            (
+                                item.team_name !== "CCFV"
+                                    ? item.team_name
+                                    : null
+                            ),
+
+                        club_name:
+                            item.club_name ||
+                            item.team_name ||
+                            null
 
                     });
 
@@ -645,7 +662,7 @@
 
             /*
              * =================================================
-             * HISTÓRICO DA CHAMPIONS
+             * HISTÃ“RICO DA CHAMPIONS
              * =================================================
              *
              * Fallback adicional.
@@ -744,12 +761,12 @@
              * MERGE
              * =================================================
              *
-             * Todos os títulos permanecem.
-             * Apenas duplicações do mesmo:
+             * Todos os tÃ­tulos permanecem.
+             * Apenas duplicaÃ§Ãµes do mesmo:
              *
-             * jogador + competição + temporada
+             * jogador + competiÃ§Ã£o + temporada
              *
-             * são removidas.
+             * sÃ£o removidas.
              */
 
             const map =
@@ -825,7 +842,7 @@
 
 
             console.log(
-                "CCFV // HISTÓRIA OFICIAL",
+                "CCFV // HISTÃ“RIA OFICIAL",
                 {
                     titles:
                         titles.length,
@@ -860,7 +877,7 @@
                     <div
                         class="ccfv-history-empty"
                     >
-                        ERRO AO CARREGAR O LIVRO DOS CAMPEÕES.
+                        ERRO AO CARREGAR O LIVRO DOS CAMPEÃ•ES.
                     </div>
                 `;
 
