@@ -1,5 +1,18 @@
-PATCH CIRURGICO — HISTORIA / TROFEUS
+CCFV — CORREÇÃO CIRÚRGICA
 
-Substitui somente pages/historia.html, js/historia.js e css/historia.css.
-Os PNGs devem permanecer em assets/images/historia/trofeus/ com os nomes existentes.
-Nenhum outro arquivo do site faz parte deste patch.
+Substituir estes arquivos mantendo os caminhos:
+
+css/header-side-menu.css
+js/main.js
+pages/brasileirao.html
+pages/champions.html
+pages/libertadores.html
+
+Correções:
+- restaura o carregamento correto de css/header.css;
+- elimina o escudão gigante causado pelo link CSS corrompido;
+- garante o menu lateral global;
+- garante main.js nas páginas Champions e Libertadores;
+- corrige o carregamento do main.js no Brasileirão.
+
+Não altera banco de dados nem os motores das competições.
