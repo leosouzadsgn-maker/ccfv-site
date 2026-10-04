@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -22,7 +23,14 @@
     <title>CCFV Mobile</title>
 
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- =====================================================
+         FONTES
+         ===================================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
 
     <link
         rel="preconnect"
@@ -36,6 +44,10 @@
     >
 
 
+    <!-- =====================================================
+         CSS
+         ===================================================== -->
+
     <link
         rel="stylesheet"
         href="../css/global.css"
@@ -43,8 +55,12 @@
 
     <link
         rel="stylesheet"
-        href="../css/header.css
-<link rel="stylesheet" href="../css/header-side-menu.css">"
+        href="../css/header.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/header-side-menu.css"
     >
 
     <link
@@ -60,8 +76,12 @@
 </head>
 
 
-<body data-mobile-page="">
+<body data-page="mobile">
 
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
 
     <header
         class="ccfv-header"
@@ -71,9 +91,12 @@
         <div class="ccfv-header__inner">
 
 
+            <!-- BRAND -->
+
             <a
                 href="../index.html"
                 class="ccfv-header__brand"
+                aria-label="CCFV — Início"
             >
 
                 <img
@@ -81,6 +104,7 @@
                     alt="CCFV"
                     class="ccfv-header__logo"
                 >
+
 
                 <span
                     class="ccfv-header__brand-text"
@@ -91,6 +115,7 @@
                     >
                         CCFV
                     </span>
+
 
                     <span
                         class="ccfv-header__brand-subtitle"
@@ -103,16 +128,82 @@
             </a>
 
 
-            <nav class="ccfv-header__nav" aria-label="Navegação principal">
-<a href="../index.html" class="ccfv-header__link">Início</a>
-<a href="brasileirao.html" class="ccfv-header__link">Brasileirão</a>
-<a href="champions.html" class="ccfv-header__link">Champions League</a>
-<a href="night.html" class="ccfv-header__link">Night Cup</a>
-<a href="mobile.html" class="ccfv-header__link is-active">Mobile</a>
-<a href="ranking.html" class="ccfv-header__link">Ranking</a>
-<a href="historia.html" class="ccfv-header__link">História</a>
-</nav>
 
+            <!-- NAV DESKTOP -->
+
+            <nav
+                class="ccfv-header__nav"
+                aria-label="Navegação principal"
+            >
+
+                <a
+                    href="../index.html"
+                    class="ccfv-header__link"
+                >
+                    Início
+                </a>
+
+
+                <a
+                    href="brasileirao.html"
+                    class="ccfv-header__link"
+                >
+                    Brasileirão
+                </a>
+
+
+                <a
+                    href="champions.html"
+                    class="ccfv-header__link"
+                >
+                    Champions League
+                </a>
+
+
+                <a
+                    href="libertadores.html"
+                    class="ccfv-header__link"
+                >
+                    Libertadores
+                </a>
+
+
+                <a
+                    href="night.html"
+                    class="ccfv-header__link"
+                >
+                    Night Cup
+                </a>
+
+
+                <a
+                    href="mobile.html"
+                    class="ccfv-header__link is-active"
+                >
+                    Mobile
+                </a>
+
+
+                <a
+                    href="ranking.html"
+                    class="ccfv-header__link"
+                >
+                    Ranking
+                </a>
+
+
+                <a
+                    href="historia.html"
+                    class="ccfv-header__link"
+                >
+                    História
+                </a>
+
+            </nav>
+
+
+
+            <!-- ACTION -->
 
             <a
                 href="mobile.html"
@@ -122,6 +213,9 @@
             </a>
 
 
+
+            <!-- MENU -->
+
             <button
                 type="button"
                 class="ccfv-header__menu"
@@ -129,33 +223,54 @@
                 aria-expanded="false"
             >
 
-                <span class="ccfv-header__menu-lines">
+                <span
+                    class="ccfv-header__menu-lines"
+                >
+
                     <span></span>
                     <span></span>
                     <span></span>
+
                 </span>
 
             </button>
+
 
         </div>
 
     </header>
 
 
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
     <main>
 
 
-        <!-- =====================================================
-             HERO MOBILE
-             ===================================================== -->
+        <!-- =================================================
+             HERO
+             ================================================= -->
 
-        <section class="ccfv-mobile-hero">
+        <section
+            class="ccfv-mobile-hero"
+        >
 
-            <div class="ccfv-mobile-hero__glow"></div>
+            <div
+                class="ccfv-mobile-hero__glow"
+                aria-hidden="true"
+            ></div>
 
-            <div class="ccfv-mobile-container">
 
-                <span class="ccfv-mobile-kicker">
+            <div
+                class="ccfv-mobile-container"
+            >
+
+
+                <span
+                    class="ccfv-mobile-kicker"
+                >
                     CCFV // MOBILE
                 </span>
 
@@ -163,6 +278,7 @@
                 <h1>
 
                     O COLISEU
+
                     <br>
 
                     <strong>
@@ -173,16 +289,25 @@
 
 
                 <p>
-                    O ecossistema mobile da CCFV reúne campeonato
-                    e copa em uma área própria, com jogadores
-                    e competições voltados para o Mobile.
+
+                    O ecossistema mobile da CCFV reúne
+                    campeonato e copa em uma área própria,
+                    com jogadores e competições voltados
+                    para o Mobile.
+
                 </p>
 
 
-                <div class="ccfv-mobile-actions">
+                <div
+                    class="ccfv-mobile-actions"
+                >
+
 
                     <a
-                        class="ccfv-mobile-button ccfv-mobile-button--primary"
+                        class="
+                            ccfv-mobile-button
+                            ccfv-mobile-button--primary
+                        "
                         href="brasileirao-mobile.html"
                     >
                         Brasileirão Mobile
@@ -196,7 +321,9 @@
                         Arena Cup
                     </a>
 
+
                 </div>
+
 
             </div>
 
@@ -204,15 +331,22 @@
 
 
 
-        <!-- =====================================================
+        <!-- =================================================
              COMPETIÇÕES
-             ===================================================== -->
+             ================================================= -->
 
-        <section class="ccfv-mobile-section">
+        <section
+            class="ccfv-mobile-section"
+        >
 
-            <div class="ccfv-mobile-container">
+            <div
+                class="ccfv-mobile-container"
+            >
 
-                <span class="ccfv-mobile-kicker">
+
+                <span
+                    class="ccfv-mobile-kicker"
+                >
                     CCFV // COMPETIÇÕES
                 </span>
 
@@ -220,6 +354,7 @@
                 <h2>
 
                     ESCOLHA SUA
+
                     <br>
 
                     <strong>
@@ -229,7 +364,9 @@
                 </h2>
 
 
-                <div class="ccfv-mobile-grid">
+                <div
+                    class="ccfv-mobile-grid"
+                >
 
 
                     <!-- BRASILEIRÃO MOBILE -->
@@ -239,7 +376,9 @@
                         href="brasileirao-mobile.html"
                     >
 
-                        <span class="ccfv-mobile-card__num">
+                        <span
+                            class="ccfv-mobile-card__num"
+                        >
                             01
                         </span>
 
@@ -247,16 +386,20 @@
                         <h3>
 
                             Brasileirão
+
                             <br>
+
                             Mobile
 
                         </h3>
 
 
                         <p>
+
                             Os mesmos 20 clubes,
                             os mesmos escudos e
                             38 rodadas.
+
                         </p>
 
 
@@ -275,7 +418,9 @@
                         href="arena-cup.html"
                     >
 
-                        <span class="ccfv-mobile-card__num">
+                        <span
+                            class="ccfv-mobile-card__num"
+                        >
                             02
                         </span>
 
@@ -283,15 +428,19 @@
                         <h3>
 
                             Arena
+
                             <br>
+
                             Cup
 
                         </h3>
 
 
                         <p>
+
                             Copa eliminatória do Mobile
                             com quartas, semifinais e final.
+
                         </p>
 
 
@@ -310,7 +459,9 @@
                         href="partidas-mobile.html"
                     >
 
-                        <span class="ccfv-mobile-card__num">
+                        <span
+                            class="ccfv-mobile-card__num"
+                        >
                             03
                         </span>
 
@@ -318,15 +469,19 @@
                         <h3>
 
                             Partidas
+
                             <br>
+
                             Mobile
 
                         </h3>
 
 
                         <p>
+
                             Veja todos os confrontos e
                             resultados registrados pelo Admin.
+
                         </p>
 
 
@@ -347,12 +502,23 @@
     </main>
 
 
+
+    <!-- =====================================================
+         SCRIPTS
+         ===================================================== -->
+
     <script
+        src="/admin/js/auth.js"
         defer
     ></script>
 
 
+    <script
         src="../js/main.js"
+        defer
+    ></script>
+
+
 </body>
 
 </html>
