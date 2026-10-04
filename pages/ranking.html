@@ -25,6 +25,10 @@
     </title>
 
 
+    <!-- =====================================================
+         FONTES
+         ===================================================== -->
+
     <link
         rel="preconnect"
         href="https://fonts.googleapis.com"
@@ -42,6 +46,10 @@
     >
 
 
+    <!-- =====================================================
+         CSS
+         ===================================================== -->
+
     <link
         rel="stylesheet"
         href="../css/global.css"
@@ -49,8 +57,12 @@
 
     <link
         rel="stylesheet"
-        href="../css/header.css
-<link rel="stylesheet" href="../css/header-side-menu.css">"
+        href="../css/header.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/header-side-menu.css"
     >
 
     <link
@@ -66,7 +78,7 @@
 </head>
 
 
-<body>
+<body data-page="ranking">
 
 
     <!-- =====================================================
@@ -81,9 +93,12 @@
         <div class="ccfv-header__inner">
 
 
+            <!-- BRAND -->
+
             <a
                 href="../index.html"
                 class="ccfv-header__brand"
+                aria-label="CCFV — Início"
             >
 
                 <img
@@ -91,6 +106,7 @@
                     alt="CCFV"
                     class="ccfv-header__logo"
                 >
+
 
                 <span
                     class="ccfv-header__brand-text"
@@ -101,6 +117,7 @@
                     >
                         CCFV
                     </span>
+
 
                     <span
                         class="ccfv-header__brand-subtitle"
@@ -113,24 +130,93 @@
             </a>
 
 
-            <nav class="ccfv-header__nav" aria-label="Navegação principal">
-<a href="../index.html" class="ccfv-header__link">Início</a>
-<a href="brasileirao.html" class="ccfv-header__link">Brasileirão</a>
-<a href="champions.html" class="ccfv-header__link">Champions League</a>
-<a href="night.html" class="ccfv-header__link">Night Cup</a>
-<a href="mobile.html" class="ccfv-header__link">Mobile</a>
-<a href="ranking.html" class="ccfv-header__link is-active">Ranking</a>
-<a href="historia.html" class="ccfv-header__link">História</a>
-</nav>
 
+            <!-- NAV DESKTOP -->
+
+            <nav
+                class="ccfv-header__nav"
+                aria-label="Navegação principal"
+            >
+
+                <a
+                    href="../index.html"
+                    class="ccfv-header__link"
+                >
+                    Início
+                </a>
+
+
+                <a
+                    href="brasileirao.html"
+                    class="ccfv-header__link"
+                >
+                    Brasileirão
+                </a>
+
+
+                <a
+                    href="champions.html"
+                    class="ccfv-header__link"
+                >
+                    Champions League
+                </a>
+
+
+                <a
+                    href="libertadores.html"
+                    class="ccfv-header__link"
+                >
+                    Libertadores
+                </a>
+
+
+                <a
+                    href="night.html"
+                    class="ccfv-header__link"
+                >
+                    Night Cup
+                </a>
+
+
+                <a
+                    href="mobile.html"
+                    class="ccfv-header__link"
+                >
+                    Mobile
+                </a>
+
+
+                <a
+                    href="ranking.html"
+                    class="ccfv-header__link is-active"
+                >
+                    Ranking
+                </a>
+
+
+                <a
+                    href="historia.html"
+                    class="ccfv-header__link"
+                >
+                    História
+                </a>
+
+            </nav>
+
+
+
+            <!-- HEADER ACTION -->
 
             <a
-                href="night.html#inscricao"
+                href="ranking.html"
                 class="ccfv-header__action"
             >
-                Participar
+                Ranking
             </a>
 
+
+
+            <!-- MOBILE MENU -->
 
             <button
                 type="button"
@@ -181,9 +267,11 @@
                     class="ccfv-ranking-hero__glow"
                 ></div>
 
+
                 <div
                     class="ccfv-ranking-hero__grid"
                 ></div>
+
 
                 <div
                     class="ccfv-ranking-hero__scan"
@@ -192,9 +280,13 @@
             </div>
 
 
+
             <div
                 class="ccfv-ranking-container"
             >
+
+
+                <!-- HERO CONTENT -->
 
                 <div
                     class="ccfv-ranking-hero__content"
@@ -237,9 +329,13 @@
                 </div>
 
 
+
+                <!-- HERO STATS -->
+
                 <div
                     class="ccfv-ranking-hero__stats"
                 >
+
 
                     <div>
 
@@ -250,7 +346,7 @@
                         <strong
                             id="ranking-player-count"
                         >
-                            08
+                            00
                         </strong>
 
                     </div>
@@ -281,12 +377,18 @@
 
                     </div>
 
+
                 </div>
+
+
+
+                <!-- HERO LEADER -->
 
                 <div
                     id="ranking-hero-leader"
                     class="ccfv-ranking-hero__leader"
                 ></div>
+
 
             </div>
 
@@ -306,9 +408,11 @@
                 class="ccfv-ranking-container"
             >
 
+
                 <div
                     class="ccfv-ranking-section-heading"
                 >
+
 
                     <div>
 
@@ -316,13 +420,22 @@
                             CCFV // LEADERBOARD
                         </span>
 
+
                         <h2>
+
                             RANKING
-                            <strong>GERAL.</strong>
+
+                            <strong>
+                                GERAL.
+                            </strong>
+
                         </h2>
 
                     </div>
 
+
+
+                    <!-- FILTROS -->
 
                     <div
                         class="ccfv-ranking-filter"
@@ -336,6 +449,7 @@
                             TODOS
                         </button>
 
+
                         <button
                             type="button"
                             data-platform="pc"
@@ -343,12 +457,14 @@
                             PC
                         </button>
 
+
                         <button
                             type="button"
                             data-platform="console"
                         >
                             CONSOLE
                         </button>
+
 
                         <button
                             type="button"
@@ -359,22 +475,34 @@
 
                     </div>
 
+
                 </div>
 
+
+
+                <!-- LISTA -->
 
                 <div
                     class="ccfv-ranking-list"
                     id="ranking-list"
                 ></div>
 
+
             </div>
+
+
 
             <a
                 href="jogadores.html"
                 class="ccfv-ranking-view-all"
             >
+
                 VER RANKING COMPLETO
-                <span>→</span>
+
+                <span>
+                    →
+                </span>
+
             </a>
 
         </section>
@@ -382,7 +510,7 @@
 
 
         <!-- =================================================
-             ELOS
+             NÍVEIS DE ELO
              ================================================= -->
 
         <section
@@ -393,9 +521,11 @@
                 class="ccfv-ranking-container"
             >
 
+
                 <div
                     class="ccfv-ranking-section-heading"
                 >
+
 
                     <div>
 
@@ -403,9 +533,15 @@
                             CCFV // ELO SYSTEM
                         </span>
 
+
                         <h2>
+
                             CONQUISTE SUA
-                            <strong>INSÍGNIA.</strong>
+
+                            <strong>
+                                INSÍGNIA.
+                            </strong>
+
                         </h2>
 
                     </div>
@@ -418,7 +554,9 @@
 
                     </p>
 
+
                 </div>
+
 
 
                 <div
@@ -426,46 +564,69 @@
                     id="ranking-level-grid"
                 ></div>
 
+
             </div>
 
         </section>
-
 
 
     </main>
 
 
 
-       <script
-    defer
-></script>
+    <!-- =====================================================
+         SCRIPTS
+         ===================================================== -->
 
-<script
-    src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"
-    defer
-></script>
 
-<script
-    src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"
-    defer
-></script>
+    <!-- HTML TO IMAGE -->
 
-<script
-    src="../js/ranking.js"
-    defer
-></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"
+        defer
+    ></script>
 
-<script
-    src="../js/ccfv-live.js"
-    defer
-></script>
 
-<script
-    src="../js/ranking-ui-live.js"
-    defer
-></script>
+    <!-- HTML2CANVAS -->
 
-    src="../js/main.js"
+    <script
+        src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"
+        defer
+    ></script>
+
+
+    <!-- RANKING -->
+
+    <script
+        src="../js/ranking.js"
+        defer
+    ></script>
+
+
+    <!-- LIVE DATA -->
+
+    <script
+        src="../js/ccfv-live.js"
+        defer
+    ></script>
+
+
+    <!-- RANKING UI LIVE -->
+
+    <script
+        src="../js/ranking-ui-live.js"
+        defer
+    ></script>
+
+
+    <!-- MENU LATERAL / SISTEMA GLOBAL -->
+
+    <script
+        src="../js/main.js"
+        defer
+    ></script>
+
+
 </body>
 
 </html>
