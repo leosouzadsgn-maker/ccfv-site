@@ -1,0 +1,7 @@
+PAGES/CHAMPIONS.HTML — UMA ÚNICA LINHA
+
+Antes de </body>, adicionar:
+
+<script src="../js/main.js" defer></script>
+
+Isso faz a página Champions usar o mesmo menu lateral global das demais páginas.

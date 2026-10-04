@@ -1,0 +1,6 @@
+OPCIONAL — HOME
+
+Na Home, a Copa do Mundo ainda pode estar aparecendo como "Em breve" no card.
+Para refletir a implementação, troque o span final do card da Copa por:
+
+<a class="ccfv-home-competition__link" href="pages/copa-do-mundo.html">Entrar na competição</a>

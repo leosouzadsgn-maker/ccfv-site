@@ -1,0 +1,36 @@
+CCFV — PACOTE FINAL DE COMPETIÇÕES
+
+ESTE PACOTE IMPLEMENTA:
+1. Menu lateral global no site público.
+2. Libertadores pública no padrão visual da Champions, com os 32 clubes e o jogador vinculado em cada clube.
+3. Copa do Mundo pública no padrão visual da Champions, com as 32 seleções e o jogador representante.
+4. Grupos, partidas, mata-mata e campeão nas duas páginas.
+5. Autoatualização pública a cada 15 segundos.
+6. Painel administrativo da Copa corrigido para usar as views públicas nas leituras, eliminando o erro de permission denied na tabela de temporadas.
+7. Painel da Copa com avanço automático de fase quando a fase atual estiver totalmente encerrada. Depois da final, registra campeão e cria a próxima temporada pelo RPC existente.
+
+ARQUIVOS:
+js/main.js
+css/header-side-menu.css
+pages/libertadores.html
+css/libertadores.css
+js/libertadores.js
+pages/copa-do-mundo.html
+css/copa-do-mundo.css
+js/copa-do-mundo.js
+admin/js/copa-do-mundo.js
+
+PARA MANTER O MENU LATERAL EM TODAS AS PÁGINAS:
+A maioria das páginas públicas já carrega /js/main.js. A página Champions é a exceção entre as páginas principais atuais.
+No pages/champions.html, incluir antes de </body>:
+<script src="../js/main.js" defer></script>
+
+A Home, Brasileirão, Night, Mobile, Ranking, História, Partidas, inscrição etc. já possuem o main.js no estado atual do repositório.
+
+IMPORTANTE:
+- Não mexer nos motores existentes de Champions, Brasileirão, Night Cup, Mobile ou Libertadores para esta etapa.
+- O painel da Libertadores já possuía motor próprio; o pacote melhora principalmente a apresentação pública.
+- O SQL da Copa do Mundo já foi executado pelo usuário.
+
+VALIDAÇÃO LOCAL:
+Os 4 arquivos JS novos/alterados passaram em `node --check`.
