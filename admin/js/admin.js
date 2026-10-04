@@ -4020,8 +4020,26 @@
        ===================================================== */
 
     function openSection(
-        sectionName
+        sectionName,
+        options = {}
     ) {
+
+        const updateUrl =
+            options.updateUrl !== false;
+
+
+        const targetSection =
+            document.getElementById(
+                `section-${sectionName}`
+            );
+
+
+        if (
+            !targetSection
+        ) {
+            return;
+        }
+
 
         dom.navItems.forEach(
             item => {
@@ -4041,12 +4059,41 @@
 
                 section.classList.toggle(
                     "is-active",
-                    section.id ===
-                        `section-${sectionName}`
+                    section ===
+                        targetSection
                 );
 
             }
         );
+
+
+        if (
+            updateUrl &&
+            window.history &&
+            typeof window.history.replaceState ===
+                "function"
+        ) {
+
+            const url =
+                new URL(
+                    window.location.href
+                );
+
+            url.searchParams.set(
+                "section",
+                sectionName
+            );
+
+            url.hash = "";
+
+            window.history.replaceState(
+                null,
+                "",
+                url.pathname +
+                url.search
+            );
+
+        }
 
 
         dom.sidebar?.classList.remove(
@@ -4058,40 +4105,57 @@
 
     function bindNavigation() {
 
-        dom.navItems.forEach(
-            item => {
+        /*
+         * Os itens que possuem data-section são controles internos
+         * do Admin e trocam a seção sem recarregar a página.
+         *
+         * Links <a> como Champions, Libertadores e Central possuem
+         * navegação própria e NÃO devem passar por openSection().
+         * Isso evita o menu ocultar todas as seções antes da navegação.
+         */
+        dom.navItems
+            .forEach(
+                item => {
 
-                item.addEventListener(
-                    "click",
-                    () => {
-
-                        openSection(
-                            item.dataset.section
-                        );
-
+                    if (
+                        !item.dataset.section
+                    ) {
+                        return;
                     }
-                );
-
-            }
-        );
 
 
-        dom.openSectionButtons.forEach(
-            button => {
+                    item.addEventListener(
+                        "click",
+                        () => {
 
-                button.addEventListener(
-                    "click",
-                    () => {
+                            openSection(
+                                item.dataset.section
+                            );
 
-                        openSection(
-                            button.dataset.openSection
-                        );
+                        }
+                    );
 
-                    }
-                );
+                }
+            );
 
-            }
-        );
+
+        dom.openSectionButtons
+            .forEach(
+                button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            openSection(
+                                button.dataset.openSection
+                            );
+
+                        }
+                    );
+
+                }
+            );
 
     }
 
@@ -4445,6 +4509,44 @@
 
 
         bindNavigation();
+
+
+        /*
+         * Central de Competições -> painel específico.
+         * Aceita query string ou hash para permitir links diretos.
+         */
+        const requestedSection =
+            new URLSearchParams(
+                window.location.search
+            ).get("section") ||
+            window.location.hash.replace(
+                /^#/,
+                ""
+            );
+
+
+        const requestedNavItem =
+            Array.from(
+                dom.navItems
+            ).find(
+                item =>
+                    item.dataset.section ===
+                    requestedSection
+            );
+
+
+        if (
+            requestedNavItem
+        ) {
+
+            openSection(
+                requestedSection,
+                {
+                    updateUrl: false
+                }
+            );
+
+        }
 
 
         bindMobileMenu();
