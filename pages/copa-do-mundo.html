@@ -17,22 +17,10 @@
 
     <meta
         name="description"
-        content="CCFV Copa do Mundo — Season 01. 32 seleções, 8 grupos e mata-mata até a grande final."
+        content="CCFV Copa do Mundo — 32 seleções, 8 grupos, partidas e mata-mata até a grande final."
     >
 
-    <meta
-        property="og:title"
-        content="Copa do Mundo — CCFV"
-    >
-
-    <meta
-        property="og:description"
-        content="A competição mundial da CCFV. 32 seleções, 8 grupos, oitavas, quartas, semifinais e final."
-    >
-
-    <title>
-        Copa do Mundo — CCFV
-    </title>
+    <title>Copa do Mundo — CCFV</title>
 
 
     <!-- =====================================================
@@ -91,13 +79,19 @@
         href="../css/responsive.css"
     >
 
-    <!-- MESMA BASE VISUAL DA CHAMPIONS -->
+    <!-- MESMA BASE DA CHAMPIONS -->
 
     <link
         rel="stylesheet"
         href="../css/champions.css"
     >
 
+    <!-- AJUSTES ESPECÍFICOS DA COPA -->
+
+    <link
+        rel="stylesheet"
+        href="../css/copa-do-mundo.css"
+    >
 
 </head>
 
@@ -116,8 +110,6 @@
 
     <div class="ccfv-header__inner">
 
-
-        <!-- BRAND -->
 
         <a
             href="../index.html"
@@ -145,8 +137,6 @@
 
         </a>
 
-
-        <!-- NAV DESKTOP -->
 
         <nav
             class="ccfv-header__nav"
@@ -212,8 +202,6 @@
         </nav>
 
 
-        <!-- ACTION -->
-
         <a
             href="#competicao"
             class="ccfv-header__action"
@@ -221,8 +209,6 @@
             Copa do Mundo
         </a>
 
-
-        <!-- MOBILE -->
 
         <button
             type="button"
@@ -259,7 +245,7 @@
          ===================================================== -->
 
     <section
-        class="ccfv-champions-hero"
+        class="ccfv-champions-hero ccfv-wc-master-hero"
         id="competicao"
     >
 
@@ -267,6 +253,7 @@
             class="ccfv-champions-hero__glow"
             aria-hidden="true"
         ></div>
+
 
         <div
             class="ccfv-champions-hero__grid"
@@ -278,8 +265,6 @@
             class="ccfv-champions-container ccfv-champions-hero__inner"
         >
 
-
-            <!-- HERO CONTENT -->
 
             <div class="ccfv-champions-hero__content">
 
@@ -318,8 +303,10 @@
 
                 <p>
 
-                    32 participantes. 32 seleções.
-                    8 grupos. Dois classificados por grupo
+                    32 participantes.
+                    32 seleções.
+                    8 grupos.
+                    Dois classificados por grupo
                     e uma corrida em jogo único
                     até a grande final.
 
@@ -327,6 +314,7 @@
 
 
                 <div class="ccfv-champions-hero__data">
+
 
                     <div>
 
@@ -379,13 +367,12 @@
 
                     </div>
 
+
                 </div>
 
             </div>
 
 
-
-            <!-- SEASON CARD -->
 
             <aside
                 class="ccfv-champions-season-card"
@@ -412,6 +399,7 @@
                 <div
                     class="ccfv-champions-season-card__progress"
                 >
+
 
                     <div>
 
@@ -451,6 +439,7 @@
 
                     </div>
 
+
                 </div>
 
             </aside>
@@ -462,7 +451,7 @@
 
 
     <!-- =====================================================
-         SEASON STATUS
+         STATUS
          ===================================================== -->
 
     <section
@@ -474,11 +463,13 @@
 
             <div class="ccfv-champions-heading">
 
+
                 <div>
 
                     <span>
                         CCFV // SEASON STATUS
                     </span>
+
 
                     <h2>
 
@@ -495,12 +486,13 @@
 
                 <p>
 
-                    A Copa do Mundo CCFV reúne
-                    32 seleções em oito grupos,
-                    com classificação detalhada
-                    e mata-mata em jogo único.
+                    O palco mundial da CCFV.
+                    As seleções são definidas pelo
+                    painel administrativo e a competição
+                    acompanha automaticamente cada fase.
 
                 </p>
+
 
             </div>
 
@@ -537,7 +529,7 @@
                     </strong>
 
                     <small>
-                        Quatro seleções por grupo.
+                        Quatro seleções em cada grupo.
                     </small>
 
                 </article>
@@ -599,11 +591,13 @@
 
             <div class="ccfv-champions-heading">
 
+
                 <div>
 
                     <span>
-                        CCFV // SELEÇÕES
+                        CCFV // SELEÇÕES OFICIAIS
                     </span>
+
 
                     <h2>
 
@@ -620,11 +614,12 @@
 
                 <p>
 
-                    Catálogo oficial da Season.
+                    Catálogo oficial da temporada.
                     Cada seleção recebe um único
-                    representante definido no Admin.
+                    representante definido pelo Admin.
 
                 </p>
+
 
             </div>
 
@@ -634,13 +629,10 @@
                 id="wc-teams"
             >
 
-                <div class="ccfv-champions-empty">
-
-                    Carregando seleções...
-
-                </div>
+                <!-- JS -->
 
             </div>
+
 
         </div>
 
@@ -662,11 +654,13 @@
 
             <div class="ccfv-champions-heading">
 
+
                 <div>
 
                     <span>
                         CCFV // DRAW + GROUPS
                     </span>
+
 
                     <h2>
 
@@ -683,12 +677,12 @@
 
                 <p>
 
-                    Os oito grupos possuem
-                    classificação completa com
-                    J, V, E, D, GP, GC, SG e PTS.
-                    Os dois melhores avançam.
+                    Os oito grupos ficam preparados
+                    desde o início. O sorteio apenas
+                    preenche as quatro vagas de cada grupo.
 
                 </p>
+
 
             </div>
 
@@ -698,13 +692,10 @@
                 id="wc-groups"
             >
 
-                <div class="ccfv-champions-empty">
-
-                    Os grupos ainda não foram sorteados.
-
-                </div>
+                <!-- JS -->
 
             </div>
+
 
         </div>
 
@@ -726,11 +717,13 @@
 
             <div class="ccfv-champions-heading">
 
+
                 <div>
 
                     <span>
                         CCFV // MATCHDAY
                     </span>
+
 
                     <h2>
 
@@ -747,11 +740,12 @@
 
                 <p>
 
-                    As partidas geradas pelo painel
-                    administrativo e seus resultados
-                    aparecem aqui automaticamente.
+                    As partidas geradas no painel
+                    administrativo aparecem aqui
+                    automaticamente com seus resultados.
 
                 </p>
+
 
             </div>
 
@@ -761,13 +755,10 @@
                 id="wc-matches"
             >
 
-                <div class="ccfv-champions-empty">
-
-                    Nenhuma partida cadastrada ainda.
-
-                </div>
+                <!-- JS -->
 
             </div>
+
 
         </div>
 
@@ -789,15 +780,17 @@
 
             <div class="ccfv-champions-heading">
 
+
                 <div>
 
                     <span>
                         CCFV // KNOCKOUT
                     </span>
 
+
                     <h2>
 
-                        A CAMINHO
+                        O CAMINHO
 
                         <strong>
                             DA GLÓRIA.
@@ -810,31 +803,26 @@
 
                 <p>
 
-                    Oitavas, quartas,
-                    semifinais e final.
-                    Os vencedores avançam
-                    automaticamente.
+                    Oitavas, quartas, semifinais
+                    e final em jogo único.
+                    A chave já fica desenhada
+                    aguardando os classificados.
 
                 </p>
 
-            </div>
 
+            </div>
 
 
             <div
-                class="ccfv-champions-knockout"
+                class="ccfv-wc-bracket"
                 id="wc-knockout"
             >
 
-                <div class="ccfv-champions-empty">
-
-                    O mata-mata aparecerá
-                    após a classificação
-                    da fase de grupos.
-
-                </div>
+                <!-- JS -->
 
             </div>
+
 
         </div>
 
@@ -843,82 +831,47 @@
 
 
     <!-- =====================================================
-         CAMPEÃO
+         HALL DA FAMA
          ===================================================== -->
 
     <section
         class="ccfv-champions-section ccfv-champions-champion"
+        id="hall"
     >
 
         <div class="ccfv-champions-container">
 
 
             <div
-                class="ccfv-champions-champion-card"
                 id="wc-champion"
+                class="ccfv-champions-champion-card"
             >
 
-                <span>
-                    CCFV // HALL DA FAMA
-                </span>
+                <div class="ccfv-wc-champion-inner">
+
+                    <span>
+                        CCFV // HALL DA FAMA
+                    </span>
 
 
-                <div
-                    class="champions-champion-badge"
-                >
-
-                    🏆 AGUARDANDO
-
-                </div>
-
-
-                <strong>
-                    CAMPEÃO DA COPA DO MUNDO
-                </strong>
-
-
-                <div
-                    class="champions-champion-visual"
-                >
-
-                    <div
-                        class="champions-champion-photo-frame"
-                    >
-
-                        <div
-                            class="champions-champion-photo-placeholder"
-                        >
-                            🏆
-                        </div>
-
+                    <div class="ccfv-wc-champion-badge">
+                        🏆 AGUARDANDO
                     </div>
 
 
-                    <div
-                        class="champions-champion-crest-frame"
-                    >
+                    <h2>
+                        A DEFINIR.
+                    </h2>
 
-                        <div
-                            class="champions-champion-crest-placeholder"
-                        >
-                            CCFV
-                        </div>
 
-                    </div>
+                    <p>
+                        A grande taça ainda está em disputa.
+                    </p>
 
                 </div>
-
-
-                <h2>
-                    A DEFINIR
-                </h2>
-
-
-                <p>
-                    A grande taça ainda está em disputa.
-                </p>
 
             </div>
+
 
         </div>
 
@@ -930,7 +883,7 @@
 
 
 <!-- =========================================================
-     JAVASCRIPT
+     JS
      ========================================================= -->
 
 <script
