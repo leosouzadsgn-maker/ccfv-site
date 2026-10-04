@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#020403">
+    <title>Competições — CCFV Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/admin/css/admin.css">
+    <link rel="stylesheet" href="/admin/css/competicoes.css">
+</head>
+<body>
+<div class="ccfv-admin ccfv-competitions-admin">
+    <aside class="ccfv-admin-sidebar">
+        <div class="ccfv-admin-brand">
+            <div class="ccfv-admin-brand__logo">CCFV</div>
+            <div>
+                <strong>CCFV</strong>
+                <span>PAINEL ADMINISTRATIVO</span>
+            </div>
+        </div>
+
+        <div class="ccfv-admin-sidebar__label">
+            CENTRAL
+        </div>
+
+        <nav class="ccfv-admin-nav">
+            <a href="/admin/competicoes.html" class="ccfv-admin-nav__item ccfv-admin-nav__link is-active">
+                <span>◫</span>
+                Central de Competições
+            </a>
+            <a href="/admin/index.html" class="ccfv-admin-nav__item ccfv-admin-nav__link">
+                <span>⌂</span>
+                Dashboard
+            </a>
+            <a href="/admin/index.html?section=players" class="ccfv-admin-nav__item ccfv-admin-nav__link">
+                <span>◈</span>
+                Jogadores
+            </a>
+            <a href="/admin/index.html?section=matches" class="ccfv-admin-nav__item ccfv-admin-nav__link">
+                <span>⚔</span>
+                Partidas
+            </a>
+            <a href="/admin/index.html?section=ranking" class="ccfv-admin-nav__item ccfv-admin-nav__link">
+                <span>№</span>
+                Ranking
+            </a>
+        </nav>
+
+        <div class="ccfv-admin-sidebar__label">
+            COMPETIÇÕES
+        </div>
+
+        <nav class="ccfv-admin-nav">
+            <a href="/admin/index.html?section=brasileirao" class="ccfv-admin-nav__item ccfv-admin-nav__link">
+                <span>◎</span>
+                Brasileirão
+            </a>
+            <a href="/admin/champions.html" class="ccfv-admin-nav__item ccfv-admin-nav__link">
+                <span>🏆</span>
+                Champions League
+            </a>
+            <a href="/admin/index.html?section=night" class="ccfv-admin-nav__item ccfv-admin-nav__link">
+                <span>✦</span>
+                Night Cup
+            </a>
+            <a href="/admin/libertadores.html" class="ccfv-admin-nav__item ccfv-admin-nav__link">
+                <span>✦</span>
+                Libertadores
+            </a>
+            <a href="/admin/index.html?section=mobile" class="ccfv-admin-nav__item ccfv-admin-nav__link">
+                <span>M</span>
+                Mobile
+            </a>
+            <a href="#" class="ccfv-admin-nav__item ccfv-admin-nav__link is-disabled" aria-disabled="true" tabindex="-1">
+                <span>🌐</span>
+                Copa do Mundo
+            </a>
+        </nav>
+
+        <div class="ccfv-admin-sidebar__label">
+            SISTEMA
+        </div>
+        <nav class="ccfv-admin-nav">
+            <a href="/pages/historia.html" target="_blank" rel="noopener" class="ccfv-admin-nav__item ccfv-admin-nav__link">
+                <span>▣</span>
+                História / Hall
+            </a>
+            <a href="/admin/index.html?section=settings" class="ccfv-admin-nav__item ccfv-admin-nav__link">
+                <span>⚙</span>
+                Configurações
+            </a>
+        </nav>
+
+        <div class="ccfv-admin-sidebar__bottom">
+            <a href="/" class="ccfv-admin-back-site">← Ver site</a>
+            <div class="ccfv-admin-system-status"><span></span>SISTEMA ONLINE</div>
+        </div>
+    </aside>
+
+    <main class="ccfv-admin-main">
+        <header class="ccfv-admin-topbar">
+            <div>
+                <div class="ccfv-admin-topbar__eyebrow">CCFV // CENTRAL OPERACIONAL</div>
+                <h1 class="ccfv-competitions-title">COMPETIÇÕES</h1>
+            </div>
+            <div class="ccfv-admin-topbar__right">
+                <span id="competition-admin-user">Verificando sessão...</span>
+                <button type="button" class="ccfv-admin-button" id="competition-refresh">Atualizar</button>
+            </div>
+        </header>
+
+        <section class="ccfv-competitions-page">
+            <div class="ccfv-competitions-intro">
+                <div>
+                    <span class="ccfv-competitions-eyebrow">CCFV // OPERAÇÃO OFICIAL</span>
+                    <h2>UMA CENTRAL.<br><strong>TODOS OS CAMPEONATOS.</strong></h2>
+                    <p>Um único ponto de entrada para os motores oficiais da CCFV. Os painéis existentes continuam isolados e preservados.</p>
+                </div>
+                <div class="ccfv-competitions-legend">
+                    <span><i class="is-live"></i> PAINEL DISPONÍVEL</span>
+                    <span><i class="is-soon"></i> EM IMPLANTAÇÃO</span>
+                </div>
+            </div>
+
+            <div id="competition-grid" class="ccfv-competition-grid"></div>
+
+            <div class="ccfv-competitions-safe-note">
+                <span>ARQUITETURA</span>
+                <strong>Os motores de Champions, Libertadores, Brasileirão, Night Cup e Mobile permanecem separados.</strong>
+                <small>Esta central atua somente como navegação e leitura de status. Nenhuma operação competitiva é executada aqui.</small>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="/admin/js/auth.js" defer></script>
+<script src="/admin/js/competicoes.js" defer></script>
+</body>
+</html>
