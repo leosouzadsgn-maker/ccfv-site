@@ -11,29 +11,12 @@
 body[data-page="copa-do-mundo"] {
     background:
         radial-gradient(
-            circle at 74% 8%,
-            rgba(67, 223, 145, .08),
+            circle at 72% 8%,
+            rgba(67,223,145,.08),
             transparent 30%
         ),
         #020403;
-
-    color: #ffffff;
-}
-
-
-/* =========================================================
-   HERO
-   ========================================================= */
-
-body[data-page="copa-do-mundo"]
-.ccfv-champions-hero {
-    overflow: hidden;
-}
-
-
-body[data-page="copa-do-mundo"]
-.ccfv-champions-hero__inner {
-    position: relative;
+    color:#fff;
 }
 
 
@@ -43,15 +26,9 @@ body[data-page="copa-do-mundo"]
 
 body[data-page="copa-do-mundo"]
 .ccfv-champions-status-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 10px;
-}
-
-
-body[data-page="copa-do-mundo"]
-.ccfv-champions-status-grid article {
-    min-height: 116px;
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:10px;
 }
 
 
@@ -61,362 +38,214 @@ body[data-page="copa-do-mundo"]
 
 body[data-page="copa-do-mundo"]
 #wc-teams {
-    display: grid !important;
-
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr)) !important;
-
-    gap: 12px !important;
-
-    align-items: stretch;
+    display:grid !important;
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:12px !important;
 }
 
 
 /* =========================================================
-   CARD DA SELEÇÃO
+   CARD DAS SELEÇÕES
    ========================================================= */
 
 body[data-page="copa-do-mundo"]
 #wc-teams .ccfv-wc-team-card {
-    position: relative;
 
-    display: flex !important;
+    position:relative;
 
-    flex-direction: column !important;
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:space-between;
 
-    justify-content: space-between;
+    min-width:0;
+    min-height:120px;
 
-    min-width: 0;
+    padding:15px !important;
 
-    min-height: 118px;
+    box-sizing:border-box;
 
-    padding: 15px !important;
-
-    box-sizing: border-box;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, .075) !important;
-
-    border-radius: 14px !important;
+    border:1px solid rgba(255,255,255,.07) !important;
+    border-radius:14px !important;
 
     background:
         linear-gradient(
             145deg,
-            rgba(255, 255, 255, .024),
-            rgba(255, 255, 255, .008)
+            rgba(255,255,255,.024),
+            rgba(255,255,255,.008)
         ) !important;
 
-    overflow: hidden;
-
-    transition:
-        transform .2s ease,
-        border-color .2s ease,
-        background .2s ease;
+    overflow:hidden;
 }
 
-
-body[data-page="copa-do-mundo"]
-#wc-teams .ccfv-wc-team-card:hover {
-    transform: translateY(-2px);
-
-    border-color:
-        rgba(67, 223, 145, .24) !important;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(67, 223, 145, .035),
-            rgba(255, 255, 255, .008)
-        ) !important;
-}
-
-
-/* =========================================================
-   TOPO DO CARD
-   ========================================================= */
 
 body[data-page="copa-do-mundo"]
 #wc-teams .ccfv-wc-team-card__top {
-    display: grid !important;
+
+    display:grid !important;
 
     grid-template-columns:
         44px
-        minmax(0, 1fr)
+        minmax(0,1fr)
         auto !important;
 
-    align-items: center;
+    align-items:center;
 
-    gap: 11px;
+    gap:11px;
 
-    width: 100%;
-
-    min-width: 0;
+    width:100%;
 }
 
 
-/* =========================================================
-   LOGO / ESCUDO
-   ========================================================= */
-
 body[data-page="copa-do-mundo"]
 #wc-teams .ccfv-wc-team-logo-wrap {
-    width: 44px !important;
-    height: 44px !important;
 
-    display: grid !important;
+    width:44px !important;
+    height:44px !important;
 
-    place-items: center;
+    display:grid !important;
+    place-items:center;
 
-    flex: 0 0 44px;
+    border:1px solid rgba(67,223,145,.10);
+    border-radius:11px;
 
-    min-width: 44px;
-
-    border-radius: 11px;
-
-    background:
-        rgba(67, 223, 145, .025);
-
-    border:
-        1px solid
-        rgba(67, 223, 145, .10);
+    background:rgba(67,223,145,.025);
 }
 
 
 body[data-page="copa-do-mundo"]
 #wc-teams .ccfv-wc-logo {
-    display: block !important;
 
-    width: 38px !important;
-    height: 38px !important;
+    width:38px !important;
+    height:38px !important;
 
-    max-width: 38px !important;
-    max-height: 38px !important;
+    object-fit:contain;
 
-    object-fit: contain;
-
-    margin: 0 !important;
-
-    border: 0 !important;
-
-    border-radius: 0 !important;
+    margin:0 !important;
 }
 
 
 body[data-page="copa-do-mundo"]
 #wc-teams .ccfv-wc-fallback-logo {
-    width: 38px !important;
-    height: 38px !important;
 
-    display: grid !important;
+    width:38px !important;
+    height:38px !important;
 
-    place-items: center;
+    display:grid !important;
+    place-items:center;
 
-    margin: 0 !important;
+    margin:0 !important;
 
-    box-sizing: border-box;
+    border:1px solid rgba(67,223,145,.14);
+    border-radius:10px;
 
-    border:
-        1px solid
-        rgba(67, 223, 145, .14);
+    color:#43df91;
 
-    border-radius: 10px;
-
-    background:
-        rgba(67, 223, 145, .035);
-
-    color:
-        #43df91;
-
-    font-size: 10px;
-
-    font-weight: 900;
-
-    letter-spacing: .03em;
+    font-size:10px;
+    font-weight:900;
 }
 
 
-/* =========================================================
-   INFORMAÇÕES
-   ========================================================= */
-
 body[data-page="copa-do-mundo"]
 #wc-teams .ccfv-wc-team-card__copy {
-    display: block !important;
 
-    min-width: 0;
-
-    width: 100%;
-
-    margin: 0 !important;
-
-    padding: 0 !important;
+    min-width:0;
 }
 
 
 body[data-page="copa-do-mundo"]
 #wc-teams .ccfv-wc-team-card__copy strong {
-    display: block !important;
 
-    width: 100%;
+    display:block !important;
 
-    margin: 0 !important;
-    padding: 0 !important;
+    margin:0 !important;
+    padding:0 !important;
 
-    overflow: hidden;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
 
-    white-space: nowrap;
+    color:#fff !important;
 
-    text-overflow: ellipsis;
-
-    color: #ffffff !important;
-
-    font-size: 12px !important;
-
-    font-weight: 800 !important;
-
-    line-height: 1.25 !important;
+    font-size:12px !important;
+    line-height:1.25 !important;
 }
 
 
 body[data-page="copa-do-mundo"]
 #wc-teams .ccfv-wc-team-card__copy span {
-    display: block !important;
 
-    margin:
-        5px 0 0 !important;
+    display:block !important;
 
-    padding: 0 !important;
+    margin-top:5px !important;
 
-    overflow: hidden;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
 
-    white-space: nowrap;
+    color:rgba(255,255,255,.30) !important;
 
-    text-overflow: ellipsis;
+    font-size:8px !important;
+    font-weight:800 !important;
 
-    color:
-        rgba(255, 255, 255, .32) !important;
-
-    font-size: 8px !important;
-
-    font-weight: 800 !important;
-
-    line-height: 1.2 !important;
-
-    letter-spacing: .06em;
+    line-height:1.2 !important;
 }
 
-
-/* =========================================================
-   NÚMERO DO SLOT
-   ========================================================= */
 
 body[data-page="copa-do-mundo"]
 #wc-teams .ccfv-wc-team-card__slot {
-    display: block !important;
 
-    align-self: flex-start;
+    color:rgba(67,223,145,.55) !important;
 
-    margin: 1px 0 0 !important;
-    padding: 0 !important;
-
-    color:
-        rgba(67, 223, 145, .55) !important;
-
-    font-size: 8px !important;
-
-    font-weight: 900 !important;
-
-    line-height: 1;
-
-    letter-spacing: .08em;
+    font-size:8px !important;
+    font-weight:900 !important;
 }
 
 
-/* =========================================================
-   JOGADOR / REPRESENTANTE
-   ========================================================= */
-
 body[data-page="copa-do-mundo"]
 #wc-teams .ccfv-wc-team-card__player {
-    display: flex !important;
 
-    align-items: center;
+    display:flex !important;
 
-    gap: 8px;
+    align-items:center;
+    gap:8px;
 
-    width: 100%;
+    width:100%;
+    min-width:0;
 
-    min-width: 0;
+    margin-top:13px !important;
+    padding-top:10px !important;
 
-    min-height: 28px;
+    border-top:1px solid rgba(255,255,255,.05) !important;
 
-    margin:
-        13px 0 0 !important;
+    color:rgba(255,255,255,.32) !important;
 
-    padding:
-        10px 0 0 !important;
-
-    border-top:
-        1px solid
-        rgba(255, 255, 255, .055) !important;
-
-    box-sizing: border-box;
-
-    color:
-        rgba(255, 255, 255, .32) !important;
-
-    font-size: 8px !important;
-
-    font-weight: 800 !important;
-
-    line-height: 1.2;
-
-    letter-spacing: .035em;
+    font-size:8px !important;
+    font-weight:800 !important;
 }
 
 
 body[data-page="copa-do-mundo"]
 #wc-teams .ccfv-wc-team-card__player.is-registered {
-    color:
-        #43df91 !important;
+
+    color:#43df91 !important;
+
 }
 
 
 body[data-page="copa-do-mundo"]
 #wc-teams .ccfv-wc-team-card__player img {
-    width: 25px !important;
-    height: 25px !important;
 
-    min-width: 25px;
-    min-height: 25px;
+    width:25px !important;
+    height:25px !important;
 
-    flex: 0 0 25px;
+    flex:0 0 25px;
 
-    object-fit: cover;
+    object-fit:cover;
 
-    margin: 0 !important;
-    padding: 0 !important;
+    border-radius:50% !important;
 
-    border:
-        1px solid
-        rgba(67, 223, 145, .20) !important;
+    border:1px solid rgba(67,223,145,.22) !important;
 
-    border-radius: 50% !important;
-}
-
-
-body[data-page="copa-do-mundo"]
-#wc-teams .ccfv-wc-team-card__player span {
-    display: block !important;
-
-    min-width: 0;
-
-    overflow: hidden;
-
-    white-space: nowrap;
-
-    text-overflow: ellipsis;
 }
 
 
@@ -426,221 +255,462 @@ body[data-page="copa-do-mundo"]
 
 body[data-page="copa-do-mundo"]
 #wc-groups {
-    display: grid !important;
+
+    display:grid !important;
 
     grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+        repeat(2,minmax(0,1fr));
 
-    gap: 12px;
+    gap:12px;
 
-    align-items: start;
 }
 
 
 body[data-page="copa-do-mundo"]
 #wc-groups .ccfv-champions-group {
-    min-width: 0;
 
-    overflow: hidden;
+    min-width:0;
 
-    border-radius: 16px;
+    overflow:hidden;
+
+    border-radius:16px;
+
 }
 
 
 /* =========================================================
-   VAGA "A DEFINIR"
-   ========================================================= */
-
-body[data-page="copa-do-mundo"]
-#wc-groups .ccfv-wc-empty-row {
-    min-height: 60px;
-}
-
-
-body[data-page="copa-do-mundo"]
-#wc-groups
-.ccfv-champions-group__placeholder-logo {
-    width: 30px !important;
-    height: 30px !important;
-
-    min-width: 30px;
-
-    display: grid !important;
-
-    place-items: center;
-
-    border:
-        1px dashed
-        rgba(67, 223, 145, .16);
-
-    border-radius: 50%;
-
-    background:
-        rgba(67, 223, 145, .018);
-}
-
-
-/* =========================================================
-   PLAYER DENTRO DO GRUPO
-   ========================================================= */
-
-body[data-page="copa-do-mundo"]
-#wc-groups .ccfv-wc-group-photo {
-    width: 18px !important;
-    height: 18px !important;
-
-    min-width: 18px;
-
-    margin:
-        0 5px 0 0 !important;
-
-    object-fit: cover;
-
-    border-radius: 50%;
-
-    border:
-        1px solid
-        rgba(67, 223, 145, .18);
-}
-
-
-/* =========================================================
-   PARTIDAS
-   ========================================================= */
-
-body[data-page="copa-do-mundo"]
-#wc-matches {
-    display: grid;
-
-    gap: 10px;
-}
-
-
-body[data-page="copa-do-mundo"]
-.ccfv-wc-match-card {
-    width: 100%;
-    min-width: 0;
-
-    overflow: hidden;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, .075);
-
-    border-radius: 16px;
-
-    background:
-        rgba(255, 255, 255, .012);
-}
-
-
-body[data-page="copa-do-mundo"]
-.ccfv-wc-match-card__meta {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 20px;
-
-    padding: 13px 16px;
-
-    border-bottom:
-        1px solid
-        rgba(255, 255, 255, .05);
-}
-
-
-body[data-page="copa-do-mundo"]
-.ccfv-wc-match-card__teams {
-    display: grid;
-
-    grid-template-columns:
-        minmax(0,1fr)
-        110px
-        minmax(0,1fr);
-
-    align-items: center;
-
-    gap: 20px;
-
-    padding: 20px;
-}
-
-
-body[data-page="copa-do-mundo"]
-.ccfv-wc-match-card__team {
-    min-width: 0;
-}
-
-
-/* =========================================================
-   BRACKET
+   BRACKET / MATA-MATA
+   MESMO CONCEITO DA CHAMPIONS
    ========================================================= */
 
 body[data-page="copa-do-mundo"]
 #wc-knockout {
-    display: grid;
 
-    gap: 14px;
+    display:grid !important;
+
+    grid-template-columns:
+        repeat(4,minmax(240px,1fr));
+
+    gap:12px;
+
+    width:100%;
+
+    overflow-x:auto;
+
+    padding-bottom:8px;
+
+    align-items:start;
+
 }
 
 
+/* =========================================================
+   CADA FASE = UMA COLUNA
+   ========================================================= */
+
 body[data-page="copa-do-mundo"]
-.ccfv-wc-bracket-phase {
-    overflow: hidden;
+#wc-knockout .ccfv-wc-bracket-phase {
+
+    min-width:240px;
+
+    padding:16px;
+
+    box-sizing:border-box;
 
     border:
         1px solid
-        rgba(255,255,255,.075);
+        rgba(255,255,255,.07);
 
-    border-radius: 16px;
+    border-radius:16px;
 
     background:
-        rgba(255,255,255,.012);
+        rgba(255,255,255,.016);
+
+}
+
+
+/* =========================================================
+   CABEÇALHO DA FASE
+   ========================================================= */
+
+body[data-page="copa-do-mundo"]
+#wc-knockout
+.ccfv-wc-bracket-phase > header {
+
+    display:block;
+
+    padding:0 0 12px;
+
+    margin:0 0 2px;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.05);
+
 }
 
 
 body[data-page="copa-do-mundo"]
+#wc-knockout
+.ccfv-wc-bracket-phase > header div {
+
+    display:block;
+
+}
+
+
+body[data-page="copa-do-mundo"]
+#wc-knockout
+.ccfv-wc-bracket-phase > header span {
+
+    display:block;
+
+    color:
+        rgba(255,255,255,.28);
+
+    font-size:9px;
+
+    font-weight:800;
+
+    letter-spacing:.12em;
+
+}
+
+
+body[data-page="copa-do-mundo"]
+#wc-knockout
+.ccfv-wc-bracket-phase > header strong {
+
+    display:block;
+
+    margin-top:4px;
+
+    color:#fff;
+
+    font-size:18px;
+
+    line-height:1.1;
+
+}
+
+
+body[data-page="copa-do-mundo"]
+#wc-knockout
+.ccfv-wc-bracket-phase > header small {
+
+    display:block;
+
+    margin-top:4px;
+
+    color:#43df91;
+
+    font-size:8px;
+
+    font-weight:900;
+
+    letter-spacing:.08em;
+
+}
+
+
+/* =========================================================
+   GRID DOS CONFRONTOS
+   ========================================================= */
+
+body[data-page="copa-do-mundo"]
+#wc-knockout
 .ccfv-wc-bracket-phase__grid {
-    padding: 15px;
 
-    display: grid;
+    display:flex !important;
 
-    gap: 10px;
+    flex-direction:column;
+
+    gap:0;
+
+    padding:0 !important;
+
+}
+
+
+/* =========================================================
+   CARTÃO DO CONFRONTO
+   ========================================================= */
+
+body[data-page="copa-do-mundo"]
+#wc-knockout
+.ccfv-wc-bracket-match {
+
+    position:relative;
+
+    display:block;
+
+    padding:12px 0;
+
+    margin:0;
+
+    border:0;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,.05);
+
+    background:transparent;
+
+}
+
+
+/* primeira partida sem linha de topo */
+
+body[data-page="copa-do-mundo"]
+#wc-knockout
+.ccfv-wc-bracket-match:first-child {
+
+    border-top:0;
+
+}
+
+
+/* =========================================================
+   NOME DO CONFRONTO
+   ========================================================= */
+
+body[data-page="copa-do-mundo"]
+#wc-knockout
+.ccfv-wc-bracket-match > small {
+
+    display:block;
+
+    margin-bottom:8px;
+
+    color:
+        rgba(255,255,255,.24);
+
+    font-size:7px;
+
+    font-weight:900;
+
+    letter-spacing:.08em;
+
+}
+
+
+/* =========================================================
+   LINHA DO TIME
+   ========================================================= */
+
+body[data-page="copa-do-mundo"]
+#wc-knockout
+.ccfv-wc-bracket-match > div {
+
+    display:grid;
+
+    grid-template-columns:
+        22px
+        minmax(0,1fr)
+        24px;
+
+    align-items:center;
+
+    gap:8px;
+
+    min-height:32px;
+
+    padding:4px 0;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.035);
+
 }
 
 
 body[data-page="copa-do-mundo"]
-.ccfv-wc-bracket-phase__grid--8 {
-    grid-template-columns:
-        repeat(4,minmax(0,1fr));
+#wc-knockout
+.ccfv-wc-bracket-match > div:last-child {
+
+    border-bottom:0;
+
+}
+
+
+/* =========================================================
+   CÍRCULO DE PLACEHOLDER
+   ========================================================= */
+
+body[data-page="copa-do-mundo"]
+#wc-knockout
+.ccfv-wc-bracket-match > div span:before {
+
+    content:"";
+
+    display:inline-block;
+
+    width:20px;
+    height:20px;
+
+    margin-right:7px;
+
+    vertical-align:middle;
+
+    border:
+        1px dashed
+        rgba(67,223,145,.22);
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(67,223,145,.07),
+            transparent 65%
+        );
+
+}
+
+
+/* =========================================================
+   NOME
+   ========================================================= */
+
+body[data-page="copa-do-mundo"]
+#wc-knockout
+.ccfv-wc-bracket-match > div span {
+
+    display:flex;
+
+    align-items:center;
+
+    min-width:0;
+
+    overflow:hidden;
+
+    white-space:nowrap;
+
+    text-overflow:ellipsis;
+
+    color:
+        #8fa59b;
+
+    font-size:9px;
+
+    font-weight:800;
+
+}
+
+
+/* =========================================================
+   PLACAR
+   ========================================================= */
+
+body[data-page="copa-do-mundo"]
+#wc-knockout
+.ccfv-wc-bracket-match > div b {
+
+    text-align:right;
+
+    color:
+        #d8e3de;
+
+    font-size:10px;
+
+    font-weight:900;
+
+}
+
+
+/* =========================================================
+   CONFRONTO REAL
+   ========================================================= */
+
+body[data-page="copa-do-mundo"]
+#wc-knockout
+.ccfv-wc-bracket-match
+span {
+
+    min-width:0;
+
+}
+
+
+/* =========================================================
+   QUANDO A FASE TEM POUCAS PARTIDAS,
+   DISTRIBUI MELHOR VERTICALMENTE
+   ========================================================= */
+
+body[data-page="copa-do-mundo"]
+#wc-knockout
+.ccfv-wc-bracket-phase:nth-child(2)
+.ccfv-wc-bracket-match {
+
+    margin-top:7px;
+
 }
 
 
 body[data-page="copa-do-mundo"]
-.ccfv-wc-bracket-phase__grid--4 {
-    grid-template-columns:
-        repeat(4,minmax(0,1fr));
+#wc-knockout
+.ccfv-wc-bracket-phase:nth-child(3)
+.ccfv-wc-bracket-match {
+
+    margin-top:26px;
+
 }
 
 
 body[data-page="copa-do-mundo"]
-.ccfv-wc-bracket-phase__grid--2 {
-    grid-template-columns:
-        repeat(2,minmax(0,1fr));
+#wc-knockout
+.ccfv-wc-bracket-phase:nth-child(3)
+.ccfv-wc-bracket-match:first-child {
 
-    max-width: 700px;
+    margin-top:8px;
+
 }
 
 
 body[data-page="copa-do-mundo"]
-.ccfv-wc-bracket-phase__grid--1 {
-    grid-template-columns:
-        minmax(260px,440px);
+#wc-knockout
+.ccfv-wc-bracket-phase:nth-child(4)
+.ccfv-wc-bracket-match {
 
-    justify-content: center;
+    margin-top:70px;
+
+}
+
+
+body[data-page="copa-do-mundo"]
+#wc-knockout
+.ccfv-wc-bracket-phase:nth-child(4)
+.ccfv-wc-bracket-match:first-child {
+
+    margin-top:18px;
+
+}
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-empty {
+
+    width:100%;
+
+    box-sizing:border-box;
+
+    padding:24px;
+
+    text-align:center;
+
+    color:
+        rgba(255,255,255,.28);
+
+    border:
+        1px dashed
+        rgba(255,255,255,.10);
+
+    border-radius:14px;
+
 }
 
 
@@ -650,43 +720,90 @@ body[data-page="copa-do-mundo"]
 
 body[data-page="copa-do-mundo"]
 #wc-champion {
-    overflow: hidden;
 
-    min-height: 320px;
+    min-height:320px;
+
+    overflow:hidden;
 
     border:
         1px solid
-        rgba(67, 223, 145, .18);
+        rgba(215,173,71,.18);
 
-    border-radius: 20px;
+    border-radius:28px;
 
     background:
         radial-gradient(
-            circle at 50% 0,
-            rgba(67, 223, 145, .10),
-            transparent 50%
+            circle at 50% -20%,
+            rgba(215,173,71,.10),
+            transparent 44%
         ),
-        rgba(67, 223, 145, .012);
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.03),
+            rgba(255,255,255,.008)
+        );
+
 }
 
 
 body[data-page="copa-do-mundo"]
 .ccfv-wc-champion-inner {
-    display: grid;
 
-    place-items: center;
+    display:grid;
 
-    padding:
-        60px 20px;
+    place-items:center;
 
-    text-align: center;
+    padding:65px 30px;
+
+    text-align:center;
+
+}
+
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-inner
+> span {
+
+    color:#d7ad47;
+
+    font-size:9px;
+
+    font-weight:900;
+
+    letter-spacing:.16em;
+
+}
+
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-badge {
+
+    margin-top:12px;
+
+    padding:7px 11px;
+
+    border:
+        1px solid
+        rgba(215,173,71,.20);
+
+    border-radius:999px;
+
+    color:#d7ad47;
+
+    font-size:8px;
+
+    font-weight:900;
+
+    letter-spacing:.08em;
+
 }
 
 
 body[data-page="copa-do-mundo"]
 .ccfv-wc-champion-inner h2 {
+
     margin:
-        15px 0 6px;
+        18px 0 8px;
 
     font-family:
         "Playfair Display",
@@ -694,29 +811,25 @@ body[data-page="copa-do-mundo"]
         serif;
 
     font-size:
-        clamp(46px, 7vw, 80px);
+        clamp(48px,7vw,82px);
 
-    line-height: .92;
+    line-height:.92;
 
-    letter-spacing:
-        -.06em;
+    letter-spacing:-.06em;
+
 }
 
 
 body[data-page="copa-do-mundo"]
-.ccfv-wc-champion-photo {
-    width: 100px !important;
-    height: 100px !important;
+.ccfv-wc-champion-inner p {
 
-    margin-top: 20px;
+    margin:0;
 
-    object-fit: cover;
+    color:
+        rgba(255,255,255,.38);
 
-    border-radius: 50%;
+    font-size:11px;
 
-    border:
-        1px solid
-        rgba(67, 223, 145, .24);
 }
 
 
@@ -724,29 +837,20 @@ body[data-page="copa-do-mundo"]
    RESPONSIVO
    ========================================================= */
 
-@media (max-width: 1100px) {
+@media (max-width:1100px) {
 
     body[data-page="copa-do-mundo"]
     #wc-teams {
 
         grid-template-columns:
-            repeat(3, minmax(0,1fr)) !important;
-
-    }
-
-
-    body[data-page="copa-do-mundo"]
-    #wc-groups {
-
-        grid-template-columns:
-            repeat(2,minmax(0,1fr));
+            repeat(3,minmax(0,1fr)) !important;
 
     }
 
 }
 
 
-@media (max-width: 900px) {
+@media (max-width:900px) {
 
     body[data-page="copa-do-mundo"]
     #wc-teams {
@@ -767,7 +871,7 @@ body[data-page="copa-do-mundo"]
 
 
     body[data-page="copa-do-mundo"]
-    .ccfv-wc-match-card__teams {
+    #wc-groups {
 
         grid-template-columns:
             1fr;
@@ -776,33 +880,23 @@ body[data-page="copa-do-mundo"]
 
 
     body[data-page="copa-do-mundo"]
-    .ccfv-wc-match-card__team--away {
+    #wc-knockout {
 
-        justify-content: flex-start;
-
-        text-align: left;
+        grid-template-columns:
+            repeat(4,minmax(230px,1fr));
 
     }
 
 }
 
 
-@media (max-width: 650px) {
+@media (max-width:650px) {
 
     body[data-page="copa-do-mundo"]
     #wc-teams {
 
         grid-template-columns:
             1fr !important;
-
-    }
-
-
-    body[data-page="copa-do-mundo"]
-    #wc-groups {
-
-        grid-template-columns:
-            1fr;
 
     }
 
@@ -817,56 +911,10 @@ body[data-page="copa-do-mundo"]
 
 
     body[data-page="copa-do-mundo"]
-    .ccfv-wc-team-card__top {
+    #wc-knockout {
 
         grid-template-columns:
-            42px
-            minmax(0,1fr)
-            auto !important;
-
-    }
-
-
-    body[data-page="copa-do-mundo"]
-    .ccfv-wc-team-logo-wrap {
-
-        width: 42px !important;
-        height: 42px !important;
-
-    }
-
-
-    body[data-page="copa-do-mundo"]
-    .ccfv-wc-logo {
-
-        width: 36px !important;
-        height: 36px !important;
-
-    }
-
-
-    body[data-page="copa-do-mundo"]
-    .ccfv-wc-fallback-logo {
-
-        width: 36px !important;
-        height: 36px !important;
-
-    }
-
-
-    body[data-page="copa-do-mundo"]
-    .ccfv-wc-bracket-phase__grid--8,
-    body[data-page="copa-do-mundo"]
-    .ccfv-wc-bracket-phase__grid--4,
-    body[data-page="copa-do-mundo"]
-    .ccfv-wc-bracket-phase__grid--2,
-    body[data-page="copa-do-mundo"]
-    .ccfv-wc-bracket-phase__grid--1 {
-
-        grid-template-columns:
-            1fr;
-
-        max-width: none;
+            repeat(4,minmax(220px,1fr));
 
     }
 
