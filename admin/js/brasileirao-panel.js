@@ -67,7 +67,10 @@
         <span class="slot">${String(i+1).padStart(2,"0")}</span>
         <div><strong>${esc(team)}</strong><small>${reg?.player_id ? "INSCRITO" : "AGUARDANDO"}</small></div>
         <select data-team="${esc(team)}">${options}</select>
-        <div class="actions"><button class="ccfv-btn" data-save="${esc(team)}">${reg?.player_id?"ATUALIZAR":"INSCRVER"}</button></div>
+        <div class="actions">
+          <button class="ccfv-btn" data-save="${esc(team)}">${reg?.player_id?"ATUALIZAR":"INSCREVER"}</button>
+          ${reg?.player_id ? `<button class="ccfv-btn danger" data-remove="${esc(reg.id)}">REMOVER</button>` : ""}
+        </div>
       </div>`;
     }).join("");
     $("#stat-registered").textContent=`${state.regs.length}/20`;
@@ -95,6 +98,18 @@
       msg("Clube inscrito com sucesso.");
       await load();
     }catch(e){msg(e.message||"Não foi possível salvar a inscrição.",true)}
+  }
+
+  async function removeRegistration(id){
+    if(!id) return;
+    if(!window.confirm("Remover esta inscrição do Brasileirão?")) return;
+    try{
+      const c=await client();
+      const {error}=await c.from("player_competitions").delete().eq("id",id).eq("competition","BRASILEIRAO");
+      if(error)throw error;
+      msg("Inscrição removida.");
+      await load();
+    }catch(e){msg(e.message||"Não foi possível remover a inscrição.",true)}
   }
 
   function buildSchedule(teams){
@@ -226,7 +241,12 @@
   function renderAll(){renderRegistrations();renderRound();renderStandings();$("#admin-user").textContent="Sessão autenticada";}
 
   function bind(){
-    $("#registration-list").addEventListener("click",e=>{const b=e.target.closest("[data-save]");if(b)saveRegistration(b.dataset.save);});
+    $("#registration-list").addEventListener("click",e=>{
+      const b=e.target.closest("[data-save]");
+      if(b){saveRegistration(b.dataset.save);return;}
+      const r=e.target.closest("[data-remove]");
+      if(r)removeRegistration(r.dataset.remove);
+    });
     $("#generate").addEventListener("click",generate);
     $("#load-round").addEventListener("click",load);
     $("#show-round").addEventListener("click",async()=>{state.round=Math.max(1,Math.min(38,Number($("#round").value)||1));await loadStandings();renderRound();renderStandings();});

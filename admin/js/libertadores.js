@@ -5,7 +5,7 @@
 (() => {
   "use strict";
 
-  const state = { client:null, season:null, seasons:[], clubs:[], matches:[], standings:[], audits:[], players:[] };
+  const state = { client:null, season:null, seasons:[], clubs:[], matches:[], standings:[], audits:[], players:[], autoAdvancing:false };
   const resultStatuses = ["VALIDATED","WO","ADMIN_DECISION"];
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -33,7 +33,7 @@
     const path=String(src||"").trim();
     return path?`<img class="lib-club-logo" src="${esc(path)}" alt="${esc(name)}" loading="lazy">`:`<span class="lib-club-initials">${esc(String(name||"CC").slice(0,3).toUpperCase())}</span>`;
   }
-  async function load(){
+  async function load(runAuto=true){
     const c=await client();
     const [seasons,clubs,matches,standings,audits,players] = await Promise.all([
       c.from("ccfv_libertadores_seasons").select("*").order("season_number",{ascending:false}),
@@ -41,13 +41,14 @@
       c.from("ccfv_libertadores_matches").select("*, home:home_club_id(id,name,logo_path,participant_id), away:away_club_id(id,name,logo_path,participant_id)").order("match_order"),
       c.from("ccfv_libertadores_public_standings").select("*").order("season_id").order("group_code").order("position"),
       c.from("ccfv_libertadores_audit").select("*").order("created_at",{ascending:false}).limit(100),
-      c.from("players").select("id,name,platform").order("name")
+      c.from("players").select("id,name,platform,photo_url").order("name")
     ]);
     const firstError=[seasons,clubs,matches,standings,audits,players].find(r=>r.error);
     if(firstError) throw firstError.error;
     state.seasons=seasons.data||[]; state.clubs=clubs.data||[]; state.matches=matches.data||[]; state.standings=standings.data||[]; state.audits=audits.data||[]; state.players=players.data||[];
     state.season=state.seasons[0]||null;
     renderAll();
+    if(runAuto) await autoAdvance();
   }
   function seasonMatches(){ return state.season?state.matches.filter(m=>String(m.season_id)===String(state.season.id)):[]; }
   function seasonClubs(){ return state.season?state.clubs.filter(c=>String(c.season_id)===String(state.season.id)):[]; }
@@ -133,9 +134,33 @@
         p_home_red:Number($("#result-home-red").value||0),p_away_red:Number($("#result-away-red").value||0),p_home_yellow:Number($("#result-home-yellow").value||0),p_away_yellow:Number($("#result-away-yellow").value||0),
         p_notes:$("#result-notes").value.trim()||null,p_evidence_url:$("#result-evidence").value.trim()||null
       });
-      closeResult(); await load(); message(data?.winner_club_id?"RESULTADO VALIDADO — VENCEDOR DEFINIDO.":"RESULTADO VALIDADO.");
+      closeResult();
+      message(data?.winner_club_id?"RESULTADO VALIDADO — VENCEDOR DEFINIDO.":"RESULTADO VALIDADO.");
+      await load();
     }catch(e){console.error(e);message(e.message||"Erro ao salvar resultado.",true);}
   }
+  async function autoAdvance(){
+    if(state.autoAdvancing || !state.season) return;
+    const phase=String(state.season.phase||"").toUpperCase();
+    const matches=seasonMatches().filter(m=>m.stage===phase);
+    if(!matches.length) return;
+    const complete=matches.every(m=>resultStatuses.includes(String(m.status||"")) && (phase==="GROUP_STAGE" || m.leg===2 || phase==="FINAL"));
+    if(!complete) return;
+
+    state.autoAdvancing=true;
+    try{
+      if(phase==="GROUP_STAGE") await rpc("ccfv_libertadores_generate_r16",{p_season_id:state.season.id});
+      else if(["ROUND_OF_16","QUARTERFINALS","SEMIFINALS"].includes(phase)) await rpc("ccfv_libertadores_generate_next_knockout",{p_season_id:state.season.id});
+      else if(phase==="FINAL") await rpc("ccfv_libertadores_finish_season",{p_season_id:state.season.id});
+    }catch(e){
+      console.warn("CCFV // LIBERTADORES AUTO ADVANCE:",e);
+    }finally{
+      state.autoAdvancing=false;
+    }
+
+    await load(false);
+  }
+
   async function execute(action){
     try{
       if(!state.season)throw new Error("NENHUMA TEMPORADA DISPONÍVEL.");
@@ -143,7 +168,11 @@
       if(action==="recalc"){await load();message("CLASSIFICAÇÃO ATUALIZADA.");return;}
       const [fn,args]=map[action]; if(!fn)throw new Error("Ação desconhecida.");
       if(!window.confirm("Confirmar esta operação? A ação ficará registrada na auditoria."))return;
-      const data=await rpc(fn,args); await load(); message(`${action.toUpperCase()} CONCLUÍDO.`); return data;
+      const data=await rpc(fn,args);
+      if(action==="draw-groups"){
+        await rpc("ccfv_libertadores_generate_group_matches",{p_season_id:state.season.id});
+      }
+      await load(); message(`${action.toUpperCase()} CONCLUÍDO.`); return data;
     }catch(e){console.error(e);message(e.message||"Operação não concluída.",true);}
   }
   async function createSeason(){

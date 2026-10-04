@@ -2008,14 +2008,6 @@
 
         <nav class="ccfv-admin-nav">
 
-            <a
-                href="/admin/competicoes.html"
-                class="ccfv-admin-nav__item ccfv-admin-nav__link"
-            >
-                <span>◫</span>
-                Central de Competições
-            </a>
-
 
             <button
                 type="button"
@@ -2076,11 +2068,6 @@
                 Champions League
             </a>
 
-
-            <a href="/admin/libertadores.html" class="ccfv-admin-nav__item ccfv-admin-nav__link">
-                <span>✦</span>
-                Libertadores
-            </a>
 
 
             <button
@@ -4224,6 +4211,24 @@
 
                     </label>
 
+                    <label class="ccfv-competition-check" id="competition-libertadores-label">
+                        <input type="checkbox" id="competition-libertadores">
+                        <span class="ccfv-competition-check__box">✓</span>
+                        <span class="ccfv-competition-check__content">
+                            <strong>LIBERTADORES</strong>
+                            <small>Representa um clube</small>
+                        </span>
+                    </label>
+
+                    <label class="ccfv-competition-check" id="competition-world-cup-label">
+                        <input type="checkbox" id="competition-world-cup">
+                        <span class="ccfv-competition-check__box">✓</span>
+                        <span class="ccfv-competition-check__content">
+                            <strong>COPA DO MUNDO</strong>
+                            <small>Representa uma seleção</small>
+                        </span>
+                    </label>
+
 
                     <label
                         class="ccfv-competition-check ccfv-platform-mobile-only"
@@ -4460,7 +4465,20 @@
                         32 clubes da Season 01.
                     </small>
 
+                
+                <div class="ccfv-competition-config" id="libertadores-config" style="display:none">
+                    <span class="ccfv-competition-config__label">CLUBE DA LIBERTADORES</span>
+                    <select id="libertadores-team" disabled><option value="">SELECIONE O CLUBE</option></select>
+                    <small class="ccfv-competition-config__help" id="libertadores-team-status">Carregando os 32 clubes da Libertadores...</small>
                 </div>
+
+                <div class="ccfv-competition-config" id="world-cup-config" style="display:none">
+                    <span class="ccfv-competition-config__label">SELEÇÃO DA COPA DO MUNDO</span>
+                    <select id="world-cup-team" disabled><option value="">SELECIONE A SELEÇÃO</option></select>
+                    <small class="ccfv-competition-config__help" id="world-cup-team-status">Carregando as 32 seleções da Copa...</small>
+                </div>
+
+</div>
 
 
 <div

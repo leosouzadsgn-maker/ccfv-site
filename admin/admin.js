@@ -3315,19 +3315,6 @@
 
         bindNavigation();
 
-        const requestedSection =
-            new URLSearchParams(window.location.search).get("section") ||
-            window.location.hash.replace(/^#/, "");
-
-        if (
-            requestedSection &&
-            document.querySelector(
-                `[data-section="${CSS.escape(requestedSection)}"]`
-            )
-        ) {
-            openSection(requestedSection);
-        }
-
         bindMobileMenu();
 
         bindPlayerModal();

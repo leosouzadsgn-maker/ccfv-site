@@ -371,6 +371,11 @@
     let championsRegistrations =
         [];
 
+    let libertadoresSeason = null;
+    let libertadoresClubs = [];
+    let worldCupSeason = null;
+    let worldCupTeams = [];
+
 
     /* =====================================================
        DOM
@@ -601,6 +606,56 @@
         championsTeamStatus:
             document.querySelector(
                 "#champions-team-status"
+            ),
+
+        competitionLibertadores:
+            document.querySelector(
+                "#competition-libertadores"
+            ),
+
+        competitionLibertadoresLabel:
+            document.querySelector(
+                "#competition-libertadores-label"
+            ),
+
+        libertadoresConfig:
+            document.querySelector(
+                "#libertadores-config"
+            ),
+
+        libertadoresTeam:
+            document.querySelector(
+                "#libertadores-team"
+            ),
+
+        libertadoresTeamStatus:
+            document.querySelector(
+                "#libertadores-team-status"
+            ),
+
+        competitionWorldCup:
+            document.querySelector(
+                "#competition-world-cup"
+            ),
+
+        competitionWorldCupLabel:
+            document.querySelector(
+                "#competition-world-cup-label"
+            ),
+
+        worldCupConfig:
+            document.querySelector(
+                "#world-cup-config"
+            ),
+
+        worldCupTeam:
+            document.querySelector(
+                "#world-cup-team"
+            ),
+
+        worldCupTeamStatus:
+            document.querySelector(
+                "#world-cup-team-status"
             ),
 
         playerRankPreview:
@@ -994,6 +1049,9 @@
 
                     }
                 );
+
+
+            augmentSpecialCompetitionsIntoPlayers();
 
 
             rebuildOccupiedBrasileiraoTeams(
@@ -1858,6 +1916,537 @@
 
 
     /* =====================================================
+       LIBERTADORES + COPA DO MUNDO — DADOS DE INSCRIÇÃO
+       ===================================================== */
+
+    function augmentSpecialCompetitionsIntoPlayers() {
+
+        if (!Array.isArray(players) || !players.length) {
+            return;
+        }
+
+        players = players.map(player => {
+
+            const baseCompetitions = (player.competitions || [])
+                .filter(item => {
+                    const code = String(item.competition || "").toUpperCase();
+                    return code !== "LIBERTADORES" && code !== "COPA_DO_MUNDO";
+                });
+
+            const extras = [];
+
+            const libertadores = getLibertadoresRegistration(player.id);
+            if (libertadores) {
+                extras.push({
+                    competition: "LIBERTADORES",
+                    team_name: libertadores.name || "A DEFINIR"
+                });
+            }
+
+            const worldCup = getWorldCupRegistration(player.id);
+            if (worldCup) {
+                extras.push({
+                    competition: "COPA_DO_MUNDO",
+                    team_name: worldCup.name || "A DEFINIR"
+                });
+            }
+
+            return {
+                ...player,
+                competitions: [
+                    ...baseCompetitions,
+                    ...extras
+                ]
+            };
+
+        });
+
+    }
+
+
+    async function loadSpecialCompetitionData() {
+
+        const client =
+            await getSupabase();
+
+        const [
+            libertadoresSeasonResult,
+            worldCupSeasonResult
+        ] = await Promise.all([
+
+            client
+                .from("ccfv_libertadores_public_seasons")
+                .select("*")
+                .order("season_number", { ascending: false })
+                .limit(1)
+                .maybeSingle(),
+
+            client
+                .from("ccfv_world_cup_public_seasons")
+                .select("*")
+                .order("season_number", { ascending: false })
+                .limit(1)
+                .maybeSingle()
+
+        ]);
+
+        libertadoresSeason =
+            libertadoresSeasonResult.error
+                ? null
+                : libertadoresSeasonResult.data || null;
+
+        worldCupSeason =
+            worldCupSeasonResult.error
+                ? null
+                : worldCupSeasonResult.data || null;
+
+        if (libertadoresSeason) {
+
+            const result =
+                await client
+                    .from("ccfv_libertadores_public_clubs")
+                    .select("*")
+                    .eq(
+                        "season_id",
+                        libertadoresSeason.id
+                    )
+                    .order("slot");
+
+            libertadoresClubs =
+                result.error
+                    ? []
+                    : result.data || [];
+
+        } else {
+
+            libertadoresClubs = [];
+
+        }
+
+        if (worldCupSeason) {
+
+            const result =
+                await client
+                    .from("ccfv_world_cup_public_teams")
+                    .select("*")
+                    .eq("season_id", worldCupSeason.id)
+                    .order("slot");
+
+            worldCupTeams =
+                result.error
+                    ? []
+                    : result.data || [];
+
+        } else {
+
+            worldCupTeams = [];
+
+        }
+
+        refreshLibertadoresTeamOptions();
+        refreshWorldCupTeamOptions();
+        augmentSpecialCompetitionsIntoPlayers();
+        renderPlayers();
+
+    }
+
+
+    function refreshLibertadoresTeamOptions() {
+
+        if (!dom.libertadoresTeam) {
+            return;
+        }
+
+        const currentValue =
+            String(
+                dom.libertadoresTeam.value ||
+                ""
+            );
+
+        dom.libertadoresTeam.innerHTML =
+            `<option value="">SELECIONE O CLUBE</option>`;
+
+        if (!libertadoresClubs.length) {
+
+            dom.libertadoresTeam.disabled =
+                true;
+
+            if (dom.libertadoresTeamStatus) {
+                dom.libertadoresTeamStatus.textContent =
+                    "Libertadores indisponível no momento.";
+            }
+
+            return;
+
+        }
+
+        libertadoresClubs.forEach(club => {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                club.id;
+
+            option.textContent =
+                club.name ||
+                "CLUBE";
+
+            const occupied =
+                Boolean(club.participant_id);
+
+            const current =
+                String(club.id) === currentValue;
+
+            if (occupied && !current) {
+                option.disabled = true;
+                option.textContent +=
+                    " — JÁ VINCULADO";
+            }
+
+            if (current) {
+                option.selected = true;
+            }
+
+            dom.libertadoresTeam.appendChild(
+                option
+            );
+
+        });
+
+        dom.libertadoresTeam.disabled = false;
+
+        if (dom.libertadoresTeamStatus) {
+            dom.libertadoresTeamStatus.textContent =
+                `${libertadoresClubs.length} clubes disponíveis na temporada atual.`;
+        }
+
+    }
+
+
+    function refreshWorldCupTeamOptions() {
+
+        if (!dom.worldCupTeam) {
+            return;
+        }
+
+        const currentValue =
+            String(
+                dom.worldCupTeam.value ||
+                ""
+            );
+
+        dom.worldCupTeam.innerHTML =
+            `<option value="">SELECIONE A SELEÇÃO</option>`;
+
+        if (!worldCupTeams.length) {
+
+            dom.worldCupTeam.disabled =
+                true;
+
+            if (dom.worldCupTeamStatus) {
+                dom.worldCupTeamStatus.textContent =
+                    "Copa do Mundo indisponível no momento.";
+            }
+
+            return;
+
+        }
+
+        worldCupTeams.forEach(team => {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                team.id;
+
+            option.textContent =
+                team.name ||
+                "SELEÇÃO";
+
+            const occupied =
+                Boolean(team.participant_id);
+
+            const current =
+                String(team.id) === currentValue;
+
+            if (occupied && !current) {
+                option.disabled = true;
+                option.textContent +=
+                    " — JÁ VINCULADO";
+            }
+
+            if (current) {
+                option.selected = true;
+            }
+
+            dom.worldCupTeam.appendChild(
+                option
+            );
+
+        });
+
+        dom.worldCupTeam.disabled = false;
+
+        if (dom.worldCupTeamStatus) {
+            dom.worldCupTeamStatus.textContent =
+                `${worldCupTeams.length} seleções disponíveis na temporada atual.`;
+        }
+
+    }
+
+
+    function getLibertadoresRegistration(playerId) {
+
+        return libertadoresClubs.find(
+            club =>
+                String(club.participant_id) ===
+                String(playerId)
+        ) || null;
+
+    }
+
+
+    function getWorldCupRegistration(playerId) {
+
+        return worldCupTeams.find(
+            team =>
+                String(team.participant_id) ===
+                String(playerId)
+        ) || null;
+
+    }
+
+
+    async function syncSpecialCompetitionRegistrations(
+        client,
+        playerId
+    ) {
+
+        if (
+            !libertadoresSeason &&
+            !worldCupSeason
+        ) {
+            return;
+        }
+
+        if (!libertadoresSeason || !libertadoresClubs.length) {
+            // Apenas a Copa poderá estar disponível.
+        } else {
+
+            const currentLib =
+                getLibertadoresRegistration(
+                    playerId
+                );
+
+            if (
+                dom.competitionLibertadores?.checked
+            ) {
+
+                const selectedClubId =
+                    String(
+                        dom.libertadoresTeam?.value ||
+                        ""
+                    );
+
+                if (!selectedClubId) {
+                    throw new Error(
+                        "SELECIONE O CLUBE DA LIBERTADORES."
+                    );
+                }
+
+                const selectedClub =
+                    libertadoresClubs.find(
+                        club =>
+                            String(club.id) ===
+                            selectedClubId
+                    );
+
+                if (!selectedClub) {
+                    throw new Error(
+                        "CLUBE DA LIBERTADORES NÃO ENCONTRADO."
+                    );
+                }
+
+                if (
+                    currentLib &&
+                    String(currentLib.id) !== selectedClubId
+                ) {
+
+                    const result =
+                        await client.rpc(
+                            "ccfv_libertadores_unregister_participant",
+                            {
+                                p_season_id:
+                                    libertadoresSeason.id,
+                                p_club_id:
+                                    currentLib.id
+                            }
+                        );
+
+                    if (result.error) {
+                        throw result.error;
+                    }
+
+                }
+
+                if (
+                    !currentLib ||
+                    String(currentLib.id) !== selectedClubId
+                ) {
+
+                    const result =
+                        await client.rpc(
+                            "ccfv_libertadores_register_participant",
+                            {
+                                p_season_id:
+                                    libertadoresSeason.id,
+                                p_club_id:
+                                    selectedClubId,
+                                p_player_id:
+                                    playerId
+                            }
+                        );
+
+                    if (result.error) {
+                        throw result.error;
+                    }
+
+                }
+
+            } else if (currentLib) {
+
+                const result =
+                    await client.rpc(
+                        "ccfv_libertadores_unregister_participant",
+                        {
+                            p_season_id:
+                                libertadoresSeason.id,
+                            p_club_id:
+                                currentLib.id
+                        }
+                    );
+
+                if (result.error) {
+                    throw result.error;
+                }
+
+            }
+
+        }
+
+        if (!worldCupSeason || !worldCupTeams.length) {
+            // Não há temporada ativa para sincronizar.
+        } else {
+
+            const currentWorld =
+                getWorldCupRegistration(
+                    playerId
+                );
+
+            if (
+                dom.competitionWorldCup?.checked
+            ) {
+
+                const selectedTeamId =
+                    String(
+                        dom.worldCupTeam?.value ||
+                        ""
+                    );
+
+                if (!selectedTeamId) {
+                    throw new Error(
+                        "SELECIONE A SELEÇÃO DA COPA DO MUNDO."
+                    );
+                }
+
+                const selectedTeam =
+                    worldCupTeams.find(
+                        team =>
+                            String(team.id) ===
+                            selectedTeamId
+                    );
+
+                if (!selectedTeam) {
+                    throw new Error(
+                        "SELEÇÃO DA COPA DO MUNDO NÃO ENCONTRADA."
+                    );
+                }
+
+                if (
+                    currentWorld &&
+                    String(currentWorld.id) !== selectedTeamId
+                ) {
+
+                    const result =
+                        await client.rpc(
+                            "ccfv_world_cup_unregister_participant",
+                            {
+                                p_season_id:
+                                    worldCupSeason.id,
+                                p_team_id:
+                                    currentWorld.id
+                            }
+                        );
+
+                    if (result.error) {
+                        throw result.error;
+                    }
+
+                }
+
+                if (
+                    !currentWorld ||
+                    String(currentWorld.id) !== selectedTeamId
+                ) {
+
+                    const result =
+                        await client.rpc(
+                            "ccfv_world_cup_register_participant",
+                            {
+                                p_season_id:
+                                    worldCupSeason.id,
+                                p_team_id:
+                                    selectedTeamId,
+                                p_player_id:
+                                    playerId
+                            }
+                        );
+
+                    if (result.error) {
+                        throw result.error;
+                    }
+
+                }
+
+            } else if (currentWorld) {
+
+                const result =
+                    await client.rpc(
+                        "ccfv_world_cup_unregister_participant",
+                        {
+                            p_season_id:
+                                worldCupSeason.id,
+                            p_team_id:
+                                currentWorld.id
+                        }
+                    );
+
+                if (result.error) {
+                    throw result.error;
+                }
+
+            }
+
+        }
+
+        await loadSpecialCompetitionData();
+
+    }
+
+
+    /* =====================================================
        FILTER
        ===================================================== */
 
@@ -1979,17 +2568,19 @@
             .map(
                 item => {
 
+                    const names = {
+                        BRASILEIRAO: "BRASILEIRÃO",
+                        CHAMPIONS_LEAGUE: "CHAMPIONS LEAGUE",
+                        NIGHT_CUP: "NIGHT CUP",
+                        BRASILEIRAO_MOBILE: "BRASILEIRÃO MOBILE",
+                        ARENA_CUP: "ARENA CUP MOBILE",
+                        LIBERTADORES: "LIBERTADORES",
+                        COPA_DO_MUNDO: "COPA DO MUNDO"
+                    };
+
                     const name =
-                        item.competition ===
-                            "BRASILEIRAO"
-
-                            ?
-
-                            "BRASILEIRÃO"
-
-                            :
-
-                            "NIGHT CUP";
+                        names[String(item.competition || "").toUpperCase()] ||
+                        String(item.competition || "COMPETIÇÃO");
 
 
                     return `
@@ -2482,277 +3073,148 @@
     function updateCompetitionUI() {
 
         const platform =
-            String(
-                dom.playerPlatform?.value ||
-                "PC"
-            ).toUpperCase();
+            String(dom.playerPlatform?.value || "PC").toUpperCase();
 
-        const isMobile =
-            platform === "MOBILE";
+        const isMobile = platform === "MOBILE";
 
-        if (isMobile && dom.champions) {
-            dom.champions.checked =
-                false;
-        }
-
-        const pcBrazil =
-            !isMobile &&
-            Boolean(
-                dom.competitionBrasileirao?.checked
-            );
-
-        const pcChampions =
-            !isMobile &&
-            Boolean(
-                dom.champions?.checked
-            );
-
-        const pcNight =
-            !isMobile &&
-            Boolean(
-                dom.competitionNight?.checked
-            );
-
-        const mobBrazil =
-            isMobile &&
-            Boolean(
-                dom.competitionBrasileiraoMobile?.checked
-            );
-
-        const mobArena =
-            isMobile &&
-            Boolean(
-                dom.competitionArenaMobile?.checked
-            );
+        const pcBrazil = !isMobile && Boolean(dom.competitionBrasileirao?.checked);
+        const pcChampions = !isMobile && Boolean(dom.champions?.checked);
+        const pcLibertadores = !isMobile && Boolean(dom.competitionLibertadores?.checked);
+        const pcWorldCup = !isMobile && Boolean(dom.competitionWorldCup?.checked);
+        const pcNight = !isMobile && Boolean(dom.competitionNight?.checked);
+        const mobBrazil = isMobile && Boolean(dom.competitionBrasileiraoMobile?.checked);
+        const mobArena = isMobile && Boolean(dom.competitionArenaMobile?.checked);
 
         [
             dom.competitionBrasileiraoLabel,
             dom.championsLabel,
+            dom.competitionLibertadoresLabel,
+            dom.competitionWorldCupLabel,
             dom.competitionNightLabel
         ].forEach(label => {
-
-            if (label) {
-                label.style.display =
-                    isMobile ? "none" : "";
-            }
-
+            if (label) label.style.display = isMobile ? "none" : "";
         });
 
         [
             dom.competitionBrasileiraoMobileLabel,
             dom.competitionArenaMobileLabel
         ].forEach(label => {
-
-            if (label) {
-                label.style.display =
-                    isMobile ? "" : "none";
-            }
-
+            if (label) label.style.display = isMobile ? "" : "none";
         });
 
         if (isMobile) {
-
-            if (dom.competitionBrasileirao) {
-                dom.competitionBrasileirao.checked =
-                    false;
-            }
-
-            if (dom.competitionNight) {
-                dom.competitionNight.checked =
-                    false;
-            }
-
+            dom.competitionBrasileirao && (dom.competitionBrasileirao.checked = false);
+            dom.champions && (dom.champions.checked = false);
+            dom.competitionLibertadores && (dom.competitionLibertadores.checked = false);
+            dom.competitionWorldCup && (dom.competitionWorldCup.checked = false);
+            dom.competitionNight && (dom.competitionNight.checked = false);
         } else {
-
-            if (dom.competitionBrasileiraoMobile) {
-                dom.competitionBrasileiraoMobile.checked =
-                    false;
-            }
-
-            if (dom.competitionArenaMobile) {
-                dom.competitionArenaMobile.checked =
-                    false;
-            }
-
+            dom.competitionBrasileiraoMobile && (dom.competitionBrasileiraoMobile.checked = false);
+            dom.competitionArenaMobile && (dom.competitionArenaMobile.checked = false);
         }
 
         [
             [dom.competitionBrasileiraoLabel, pcBrazil],
             [dom.championsLabel, pcChampions],
+            [dom.competitionLibertadoresLabel, pcLibertadores],
+            [dom.competitionWorldCupLabel, pcWorldCup],
             [dom.competitionNightLabel, pcNight],
             [dom.competitionBrasileiraoMobileLabel, mobBrazil],
             [dom.competitionArenaMobileLabel, mobArena]
-        ].forEach(
-            ([label, selected]) => {
-
-                if (!label) {
-                    return;
-                }
-
-                label.classList.toggle(
-                    "is-selected",
-                    selected
-                );
-
-                label.setAttribute(
-                    "aria-checked",
-                    String(selected)
-                );
-
-            }
-        );
+        ].forEach(([label, selected]) => {
+            if (!label) return;
+            label.classList.toggle("is-selected", selected);
+            label.setAttribute("aria-checked", String(selected));
+        });
 
         [
             [dom.brasileiraoConfig, pcBrazil],
             [dom.championsConfig, pcChampions],
+            [dom.libertadoresConfig, pcLibertadores],
+            [dom.worldCupConfig, pcWorldCup],
             [dom.nightConfig, pcNight],
             [dom.brasileiraoMobileConfig, mobBrazil],
             [dom.arenaMobileConfig, mobArena]
-        ].forEach(
-            ([element, show]) => {
+        ].forEach(([element, show]) => {
+            if (!element) return;
+            element.classList.toggle("is-visible", show);
+            element.style.display = show ? "block" : "none";
+        });
 
-                if (!element) {
-                    return;
-                }
-
-                element.classList.toggle(
-                    "is-visible",
-                    show
-                );
-
-                element.style.display =
-                    show
-                        ? "block"
-                        : "none";
-
-            }
-        );
-
-        if (dom.brasileiraoTeam) {
-            dom.brasileiraoTeam.disabled =
-                !pcBrazil;
-        }
-
-        if (dom.championsTeam) {
-            dom.championsTeam.disabled =
-                !pcChampions;
-        }
+        if (dom.brasileiraoTeam) dom.brasileiraoTeam.disabled = !pcBrazil;
+        if (dom.championsTeam) dom.championsTeam.disabled = !pcChampions;
+        if (dom.libertadoresTeam) dom.libertadoresTeam.disabled = !pcLibertadores || !libertadoresClubs.length;
+        if (dom.worldCupTeam) dom.worldCupTeam.disabled = !pcWorldCup || !worldCupTeams.length;
 
         refreshBrasileiraoTeamOptions();
         refreshChampionsTeamOptions();
+        refreshLibertadoresTeamOptions();
+        refreshWorldCupTeamOptions();
         refreshBrasileiraoMobileTeamOptions();
         updateCompetitionSummary();
     }
 
+
     function updateCompetitionSummary() {
 
         const summary =
-            document.querySelector(
-                "#player-competition-summary"
-            );
+            document.querySelector("#player-competition-summary");
 
-        if (!summary) {
-            return;
-        }
+        if (!summary) return;
 
         const platform =
-            String(
-                dom.playerPlatform?.value ||
-                "PC"
-            ).toUpperCase();
+            String(dom.playerPlatform?.value || "PC").toUpperCase();
 
         const selected = [];
 
         if (platform !== "MOBILE") {
 
             if (dom.competitionBrasileirao?.checked) {
-
-                selected.push(
-                    `BRASILEIRÃO — ${
-                        dom.brasileiraoTeam?.value ||
-                        "A DEFINIR"
-                    }`
-                );
+                selected.push(`BRASILEIRÃO — ${dom.brasileiraoTeam?.value || "A DEFINIR"}`);
             }
 
             if (dom.champions?.checked) {
-
-                const club =
-                    championsClubs.find(
-                        item =>
-                            String(item.id) ===
-                            String(
-                                dom.championsTeam?.value ||
-                                ""
-                            )
-                    );
-
-                selected.push(
-                    `CHAMPIONS LEAGUE — ${
-                        club?.champions_clubs?.name ||
-                        "A DEFINIR"
-                    }`
+                const club = championsClubs.find(item =>
+                    String(item.id) === String(dom.championsTeam?.value || "")
                 );
+                selected.push(`CHAMPIONS LEAGUE — ${club?.name || club?.champions_clubs?.name || "A DEFINIR"}`);
+            }
+
+            if (dom.competitionLibertadores?.checked) {
+                const club = libertadoresClubs.find(item =>
+                    String(item.id) === String(dom.libertadoresTeam?.value || "")
+                );
+                selected.push(`LIBERTADORES — ${club?.name || "A DEFINIR"}`);
+            }
+
+            if (dom.competitionWorldCup?.checked) {
+                const team = worldCupTeams.find(item =>
+                    String(item.id) === String(dom.worldCupTeam?.value || "")
+                );
+                selected.push(`COPA DO MUNDO — ${team?.name || "A DEFINIR"}`);
             }
 
             if (dom.competitionNight?.checked) {
-
-                selected.push(
-                    `NIGHT CUP — ${
-                        dom.nightTeam?.value?.trim() ||
-                        "A DEFINIR"
-                    }`
-                );
+                selected.push(`NIGHT CUP — ${dom.nightTeam?.value?.trim() || "A DEFINIR"}`);
             }
 
         } else {
 
             if (dom.competitionBrasileiraoMobile?.checked) {
-
-                selected.push(
-                    `BRASILEIRÃO MOBILE — ${
-                        dom.brasileiraoMobileTeam?.value ||
-                        "A DEFINIR"
-                    }`
-                );
+                selected.push(`BRASILEIRÃO MOBILE — ${dom.brasileiraoMobileTeam?.value || "A DEFINIR"}`);
             }
 
             if (dom.competitionArenaMobile?.checked) {
-
-                selected.push(
-                    `ARENA CUP MOBILE — ${
-                        dom.arenaMobileTeam?.value?.trim() ||
-                        "A DEFINIR"
-                    }`
-                );
+                selected.push(`ARENA CUP MOBILE — ${dom.arenaMobileTeam?.value?.trim() || "A DEFINIR"}`);
             }
 
         }
 
-        summary.innerHTML =
-            selected.length
-                ? selected
-                    .map(
-                        item =>
-                            `
-                                <span
-                                    class="ccfv-admin-competition-pill"
-                                >
-                                    ${escapeHTML(item)}
-                                </span>
-                            `
-                    )
-                    .join("")
-                : `
-                    <span
-                        class="
-                            ccfv-admin-competition-summary__empty
-                        "
-                    >
-                        NENHUMA COMPETIÇÃO SELECIONADA.
-                    </span>
-                `;
+        summary.innerHTML = selected.length
+            ? selected.map(item => `<span class="ccfv-admin-competition-pill">${escapeHTML(item)}</span>`).join("")
+            : `<span class="ccfv-admin-competition-summary__empty">NENHUMA COMPETIÇÃO SELECIONADA.</span>`;
     }
+
 
     function rebuildOccupiedBrasileiraoMobileTeams(exceptPlayerId = null) {
         const occupied = new Set();
@@ -2828,6 +3290,22 @@
                 "";
         }
 
+        if (dom.competitionLibertadores) {
+            dom.competitionLibertadores.checked = false;
+        }
+
+        if (dom.libertadoresTeam) {
+            dom.libertadoresTeam.value = "";
+        }
+
+        if (dom.competitionWorldCup) {
+            dom.competitionWorldCup.checked = false;
+        }
+
+        if (dom.worldCupTeam) {
+            dom.worldCupTeam.value = "";
+        }
+
 
         dom.competitionBrasileiraoMobile.checked =
             false;
@@ -2892,6 +3370,8 @@
 
         dom.competitionBrasileirao.checked = false;
         if (dom.champions) dom.champions.checked = false;
+        if (dom.competitionLibertadores) dom.competitionLibertadores.checked = false;
+        if (dom.competitionWorldCup) dom.competitionWorldCup.checked = false;
         dom.competitionNight.checked = false;
         dom.competitionBrasileiraoMobile.checked = false;
         dom.competitionArenaMobile.checked = false;
@@ -2979,6 +3459,22 @@
         if (dom.championsTeam) {
             dom.championsTeam.value =
                 "";
+        }
+
+        if (dom.competitionLibertadores) {
+            dom.competitionLibertadores.checked = false;
+        }
+
+        if (dom.libertadoresTeam) {
+            dom.libertadoresTeam.value = "";
+        }
+
+        if (dom.competitionWorldCup) {
+            dom.competitionWorldCup.checked = false;
+        }
+
+        if (dom.worldCupTeam) {
+            dom.worldCupTeam.value = "";
         }
 
 
@@ -3073,6 +3569,37 @@
 
                 }
             );
+
+
+        const libertadoresRegistration =
+            getLibertadoresRegistration(
+                player.id
+            );
+
+        if (libertadoresRegistration) {
+            if (dom.competitionLibertadores) {
+                dom.competitionLibertadores.checked = true;
+            }
+            if (dom.libertadoresTeam) {
+                dom.libertadoresTeam.value =
+                    libertadoresRegistration.id || "";
+            }
+        }
+
+        const worldCupRegistration =
+            getWorldCupRegistration(
+                player.id
+            );
+
+        if (worldCupRegistration) {
+            if (dom.competitionWorldCup) {
+                dom.competitionWorldCup.checked = true;
+            }
+            if (dom.worldCupTeam) {
+                dom.worldCupTeam.value =
+                    worldCupRegistration.id || "";
+            }
+        }
 
 
         const championsRegistration =
@@ -3436,8 +3963,16 @@
             }
         }
 
+        const specialCompetitionSelected =
+            dom.playerPlatform?.value !== "MOBILE" &&
+            (
+                Boolean(dom.competitionLibertadores?.checked) ||
+                Boolean(dom.competitionWorldCup?.checked)
+            );
+
         if (
-            selected.length === 0
+            selected.length === 0 &&
+            !specialCompetitionSelected
         ) {
 
             const platform =
@@ -3799,6 +4334,11 @@
                 playerId
             );
 
+            await syncSpecialCompetitionRegistrations(
+                client,
+                playerId
+            );
+
 
             closePlayerModal();
 
@@ -4020,26 +4560,8 @@
        ===================================================== */
 
     function openSection(
-        sectionName,
-        options = {}
+        sectionName
     ) {
-
-        const updateUrl =
-            options.updateUrl !== false;
-
-
-        const targetSection =
-            document.getElementById(
-                `section-${sectionName}`
-            );
-
-
-        if (
-            !targetSection
-        ) {
-            return;
-        }
-
 
         dom.navItems.forEach(
             item => {
@@ -4059,41 +4581,12 @@
 
                 section.classList.toggle(
                     "is-active",
-                    section ===
-                        targetSection
+                    section.id ===
+                        `section-${sectionName}`
                 );
 
             }
         );
-
-
-        if (
-            updateUrl &&
-            window.history &&
-            typeof window.history.replaceState ===
-                "function"
-        ) {
-
-            const url =
-                new URL(
-                    window.location.href
-                );
-
-            url.searchParams.set(
-                "section",
-                sectionName
-            );
-
-            url.hash = "";
-
-            window.history.replaceState(
-                null,
-                "",
-                url.pathname +
-                url.search
-            );
-
-        }
 
 
         dom.sidebar?.classList.remove(
@@ -4105,57 +4598,40 @@
 
     function bindNavigation() {
 
-        /*
-         * Os itens que possuem data-section são controles internos
-         * do Admin e trocam a seção sem recarregar a página.
-         *
-         * Links <a> como Champions, Libertadores e Central possuem
-         * navegação própria e NÃO devem passar por openSection().
-         * Isso evita o menu ocultar todas as seções antes da navegação.
-         */
-        dom.navItems
-            .forEach(
-                item => {
+        dom.navItems.forEach(
+            item => {
 
-                    if (
-                        !item.dataset.section
-                    ) {
-                        return;
+                item.addEventListener(
+                    "click",
+                    () => {
+
+                        openSection(
+                            item.dataset.section
+                        );
+
                     }
+                );
+
+            }
+        );
 
 
-                    item.addEventListener(
-                        "click",
-                        () => {
+        dom.openSectionButtons.forEach(
+            button => {
 
-                            openSection(
-                                item.dataset.section
-                            );
+                button.addEventListener(
+                    "click",
+                    () => {
 
-                        }
-                    );
+                        openSection(
+                            button.dataset.openSection
+                        );
 
-                }
-            );
+                    }
+                );
 
-
-        dom.openSectionButtons
-            .forEach(
-                button => {
-
-                    button.addEventListener(
-                        "click",
-                        () => {
-
-                            openSection(
-                                button.dataset.openSection
-                            );
-
-                        }
-                    );
-
-                }
-            );
+            }
+        );
 
     }
 
@@ -4286,6 +4762,36 @@
                 updateCompetitionSummary
             );
 
+        dom.competitionLibertadores
+            ?.addEventListener(
+                "change",
+                () => {
+                    refreshLibertadoresTeamOptions();
+                    updateCompetitionUI();
+                }
+            );
+
+        dom.libertadoresTeam
+            ?.addEventListener(
+                "change",
+                updateCompetitionSummary
+            );
+
+        dom.competitionWorldCup
+            ?.addEventListener(
+                "change",
+                () => {
+                    refreshWorldCupTeamOptions();
+                    updateCompetitionUI();
+                }
+            );
+
+        dom.worldCupTeam
+            ?.addEventListener(
+                "change",
+                updateCompetitionSummary
+            );
+
 
         dom.playerPlatform
             ?.addEventListener(
@@ -4295,6 +4801,9 @@
                     if (dom.playerPlatform.value === "MOBILE") {
                         dom.competitionBrasileirao.checked = false;
                         dom.competitionNight.checked = false;
+                        if (dom.champions) dom.champions.checked = false;
+                        if (dom.competitionLibertadores) dom.competitionLibertadores.checked = false;
+                        if (dom.competitionWorldCup) dom.competitionWorldCup.checked = false;
                     } else {
                         dom.competitionBrasileiraoMobile.checked = false;
                         dom.competitionArenaMobile.checked = false;
@@ -4511,44 +5020,6 @@
         bindNavigation();
 
 
-        /*
-         * Central de Competições -> painel específico.
-         * Aceita query string ou hash para permitir links diretos.
-         */
-        const requestedSection =
-            new URLSearchParams(
-                window.location.search
-            ).get("section") ||
-            window.location.hash.replace(
-                /^#/,
-                ""
-            );
-
-
-        const requestedNavItem =
-            Array.from(
-                dom.navItems
-            ).find(
-                item =>
-                    item.dataset.section ===
-                    requestedSection
-            );
-
-
-        if (
-            requestedNavItem
-        ) {
-
-            openSection(
-                requestedSection,
-                {
-                    updateUrl: false
-                }
-            );
-
-        }
-
-
         bindMobileMenu();
 
 
@@ -4575,6 +5046,10 @@
             await loadPlayers();
 
             await loadChampionsData();
+
+            await loadSpecialCompetitionData();
+
+            updateCompetitionUI();
 
 
             console.log(

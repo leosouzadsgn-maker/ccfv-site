@@ -1,107 +1,131 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <meta name="theme-color" content="#020403">
-    <meta name="description" content="CCFV Copa do Mundo — 32 seleções, grupos, partidas, mata-mata e campeão.">
-    <title>Copa do Mundo — CCFV</title>
-    <link rel="icon" type="image/png" href="../assets/images/logo/ccfv-logo.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap">
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/responsive.css">
-    <link rel="stylesheet" href="../css/copa-do-mundo.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#020403">
+<meta name="description" content="CCFV Copa do Mundo — 32 seleções, grupos, partidas, mata-mata e campeão.">
+<title>Copa do Mundo — CCFV</title>
+<link rel="icon" href="../assets/images/logo/ccfv-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/header.css
+<link rel="stylesheet" href="../css/header-side-menu.css">">
+<link rel="stylesheet" href="../css/responsive.css">
+<link rel="stylesheet" href="../css/champions.css">
+<link rel="stylesheet" href="../css/copa-do-mundo.css">
 </head>
 <body data-page="copa-do-mundo">
+
 <header class="ccfv-header" id="site-header">
     <div class="ccfv-header__inner">
-        <a href="../index.html" class="ccfv-header__brand" aria-label="CCFV">
+        <a href="../index.html" class="ccfv-header__brand" aria-label="CCFV — início">
             <img src="../assets/images/logo/ccfv-logo.png" alt="CCFV" class="ccfv-header__logo">
-            <span class="ccfv-header__brand-text"><span class="ccfv-header__brand-name">CCFV</span><span class="ccfv-header__brand-subtitle">Confederação Coliseu de Futebol Virtual</span></span>
+            <span class="ccfv-header__brand-text">
+                <span class="ccfv-header__brand-name">CCFV</span>
+                <span class="ccfv-header__brand-subtitle">Confederação Coliseu de Futebol Virtual</span>
+            </span>
         </a>
-        <nav class="ccfv-header__nav"></nav>
-        <span class="ccfv-header__action">COPA DO MUNDO</span>
-        <button type="button" class="ccfv-header__menu" aria-label="Abrir menu" aria-expanded="false"><span class="ccfv-header__menu-lines"><span></span><span></span><span></span></span></button>
+
+        <nav class="ccfv-header__nav" aria-label="Navegação principal">
+            <a href="../index.html" class="ccfv-header__link">Início</a>
+            <a href="brasileirao.html" class="ccfv-header__link">Brasileirão</a>
+            <a href="champions.html" class="ccfv-header__link">Champions League</a>
+            <a href="libertadores.html" class="ccfv-header__link">Libertadores</a>
+            <a href="night.html" class="ccfv-header__link">Night Cup</a>
+            <a href="mobile.html" class="ccfv-header__link">Mobile</a>
+            <a href="ranking.html" class="ccfv-header__link">Ranking</a>
+            <a href="historia.html" class="ccfv-header__link">História</a>
+        </nav>
+
+        <a href="#grupos" class="ccfv-header__action">Copa do Mundo</a>
+
+        <button type="button" class="ccfv-header__menu" aria-label="Abrir menu" aria-expanded="false">
+            <span class="ccfv-header__menu-lines"><span></span><span></span><span></span></span>
+        </button>
     </div>
 </header>
 
-<main class="ccfv-world-cup">
-    <section class="ccfv-wc-hero">
-        <div class="ccfv-wc-hero__grid"></div>
-        <div class="ccfv-wc-hero__glow"></div>
+<main class="ccfv-wc">
+    <section class="ccfv-wc-hero" id="competicao">
         <div class="ccfv-wc-container ccfv-wc-hero__inner">
-            <div class="ccfv-wc-hero__content">
-                <span class="ccfv-wc-kicker"><i></i>CCFV // COMPETIÇÃO GLOBAL</span>
-                <div class="ccfv-wc-mark"><span>CCFV</span><strong>WORLD CUP</strong></div>
-                <h1>COPA DO MUNDO <span>A TAÇA MÁXIMA.</span></h1>
+            <div>
+                <span class="ccfv-wc-kicker">CCFV // COMPETIÇÃO GLOBAL</span>
+                <h1>A COPA DO<br><strong>MUNDO.</strong></h1>
                 <p>32 seleções. Oito grupos. Uma corrida até a taça máxima do universo CCFV.</p>
-                <div class="ccfv-wc-data" id="wc-hero-data"></div>
-            </div>
-            <aside class="ccfv-wc-season-card">
-                <span>CCFV // TEMPORADA</span>
-                <strong id="wc-season-label">SEASON 01</strong>
-                <div class="ccfv-wc-season-status" id="wc-season-status">CARREGANDO...</div>
-                <div class="ccfv-wc-season-progress">
-                    <div><span>PARTICIPANTES</span><strong id="wc-participants">0 / 32</strong></div>
-                    <div><span>SELEÇÕES OCUPADAS</span><strong id="wc-teams-count">0 / 32</strong></div>
-                    <div><span>FASE</span><strong id="wc-phase">INSCRIÇÕES</strong></div>
+                <div class="ccfv-wc-actions">
+                    <a href="#selecoes">VER SELEÇÕES</a>
+                    <a href="#grupos">VER GRUPOS</a>
                 </div>
-            </aside>
+            </div>
+            <img src="../assets/images/historia/trofeus/copa-do-mundo.png" alt="Troféu Copa do Mundo CCFV">
+        </div>
+    </section>
+
+    <section class="ccfv-wc-section">
+        <div class="ccfv-wc-container">
+            <div id="wc-stats" class="ccfv-wc-stats"></div>
         </div>
     </section>
 
     <section class="ccfv-wc-section" id="selecoes">
         <div class="ccfv-wc-container">
             <div class="ccfv-wc-heading">
-                <div><span>CCFV // SELEÇÕES OFICIAIS</span><h2>AS <strong>32 SELEÇÕES.</strong></h2></div>
-                <p>As seleções são pré-cadastradas por temporada. O Admin define qual jogador representa cada país.</p>
+                <span>CCFV // SELEÇÕES OFICIAIS</span>
+                <h2>AS <strong>32 SELEÇÕES.</strong></h2>
+                <p>O elenco oficial da competição. Cada seleção recebe um único representante por temporada, definido pelo Admin.</p>
             </div>
             <div id="wc-teams" class="ccfv-wc-teams"></div>
         </div>
     </section>
 
-    <section class="ccfv-wc-section ccfv-wc-groups-section" id="grupos">
-        <div class="ccfv-wc-container">
-            <div class="ccfv-wc-heading">
-                <div><span>CCFV // DRAW + GROUPS</span><h2>GRUPOS <strong>A — H.</strong></h2></div>
-                <p>Quatro seleções por grupo. As duas melhores avançam automaticamente para as oitavas.</p>
+    <section class="ccfv-champions-section ccfv-champions-groups ccfv-wc-section--groups" id="grupos">
+        <div class="ccfv-champions-container">
+            <div class="ccfv-champions-heading">
+                <div>
+                    <span>CCFV // DRAW + GROUPS</span>
+                    <h2>GRUPOS <strong>A — H.</strong></h2>
+                </div>
+                <p>Classificação completa com J, V, E, D, GP, GC, SG e PTS. Os dois primeiros de cada grupo avançam.</p>
             </div>
-            <div id="wc-groups" class="ccfv-wc-groups"></div>
+            <div id="wc-groups" class="ccfv-champions-groups-grid ccfv-wc-detailed-groups"></div>
         </div>
     </section>
 
-    <section class="ccfv-wc-section" id="partidas">
-        <div class="ccfv-wc-container">
-            <div class="ccfv-wc-heading">
-                <div><span>CCFV // MATCH CENTER</span><h2>PARTIDAS <strong>OFICIAIS.</strong></h2></div>
-                <p>Os resultados lançados pelo Admin são refletidos automaticamente aqui.</p>
+    <section class="ccfv-champions-section" id="partidas">
+        <div class="ccfv-champions-container">
+            <div class="ccfv-champions-heading">
+                <div>
+                    <span>CCFV // MATCHDAY</span>
+                    <h2>PARTIDAS <strong>OFICIAIS.</strong></h2>
+                </div>
+                <p>Resultados validados pelo painel administrativo aparecem aqui automaticamente.</p>
             </div>
             <div id="wc-matches" class="ccfv-wc-matches"></div>
         </div>
     </section>
 
-    <section class="ccfv-wc-section" id="mata-mata">
-        <div class="ccfv-wc-container">
-            <div class="ccfv-wc-heading">
-                <div><span>CCFV // KNOCKOUT</span><h2>RUMO À <strong>FINAL.</strong></h2></div>
-                <p>Oitavas, quartas e semifinais são alimentadas automaticamente após a conclusão de cada fase.</p>
+    <section class="ccfv-champions-section" id="mata-mata">
+        <div class="ccfv-champions-container">
+            <div class="ccfv-champions-heading">
+                <div>
+                    <span>CCFV // KNOCKOUT</span>
+                    <h2>A CAMINHO <strong>DA TAÇA.</strong></h2>
+                </div>
+                <p>Oitavas, quartas, semifinais e final em jogo único, com pênaltis em caso de empate no mata-mata.</p>
             </div>
             <div id="wc-knockout" class="ccfv-wc-knockout"></div>
         </div>
     </section>
 
-    <section class="ccfv-wc-section ccfv-wc-champion-section" id="campeao">
-        <div class="ccfv-wc-container">
-            <div id="wc-champion"></div>
-        </div>
+    <section class="ccfv-champions-section ccfv-champions-champion">
+        <div class="ccfv-champions-container" id="wc-champion"></div>
     </section>
 </main>
 
-<script src="/admin/js/auth.js" defer></script>
 <script src="../js/main.js" defer></script>
-<script src="../js/copa-do-mundo.js?v=20261004-final" defer></script>
+<script src="../js/copa-do-mundo.js" defer></script>
 </body>
 </html>

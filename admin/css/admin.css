@@ -2319,29 +2319,3 @@ select {
 .ccfv-admin-nav__link:hover {
     text-decoration: none;
 }
-
-/* =========================================================
-   CCFV // CENTRAL DE COMPETIÇÕES
-   Sidebar preparado para crescimento
-   ========================================================= */
-
-.ccfv-admin-sidebar {
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(67,223,145,.22) transparent;
-}
-
-.ccfv-admin-sidebar::-webkit-scrollbar {
-    width: 5px;
-}
-
-.ccfv-admin-sidebar::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.ccfv-admin-sidebar::-webkit-scrollbar-thumb {
-    background: rgba(67,223,145,.20);
-    border-radius: 999px;
-}
-

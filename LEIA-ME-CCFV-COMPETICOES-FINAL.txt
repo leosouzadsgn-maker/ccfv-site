@@ -1,0 +1,55 @@
+CCFV — PACOTE FINAL DE COMPETIÇÕES
+
+O pacote deixa a estrutura das competições separada e organizada.
+
+PUBLICO
+- Menu lateral global em todas as páginas públicas.
+- Champions League continua com seu motor e visual próprios.
+- Libertadores possui catálogo de 32 clubes, participante vinculado, grupos detalhados, partidas, mata-mata e campeão.
+- Copa do Mundo possui 32 seleções, participante vinculado, grupos detalhados, partidas, mata-mata e campeão.
+
+ADMIN
+- Cada competição possui seu próprio painel.
+- Brasileirão: 20 clubes, inscrições, 38 rodadas, resultados e classificação.
+- Champions League: painel existente preservado.
+- Libertadores: 32 clubes, inscrições, sorteio, grupos, 96 jogos, mata-mata, resultados e avanço automático.
+- Night Cup: painel próprio preservado.
+- Mobile: painel próprio preservado.
+- Copa do Mundo: 32 seleções, inscrições, sorteio, 48 jogos de grupos, mata-mata, resultados e avanço automático.
+
+JOGADOR
+O modal Novo/Editar Jogador possui:
+- Brasileirão
+- Champions League
+- Libertadores
+- Copa do Mundo
+- Night Cup
+- Brasileirão Mobile
+- Arena Cup Mobile
+
+A foto atual do jogador continua preservada durante edição quando nenhuma nova foto é escolhida.
+
+BANCO — COPA DO MUNDO
+O arquivo supabase/CCFV_COPA_DO_MUNDO.sql contém o motor completo e as correções finais.
+Como o SQL original pode já ter sido executado no Supabase, também existe:
+
+supabase/CCFV_COPA_DO_MUNDO_CORRECOES.sql
+
+Execute esse arquivo no Supabase para aplicar as views completas, os dados de participante/foto e a desvinculação segura.
+
+IMPORTANTE
+Git/GitHub não executa SQL no Supabase automaticamente. O SQL precisa ser executado no projeto Supabase.
+
+GIT
+Depois de colocar os arquivos deste pacote no projeto:
+
+git add -A
+git commit -m "feat: finalizar paineis de competicoes e copa do mundo"
+git push origin main
+git status
+
+VALIDAÇÃO REALIZADA NO PACOTE
+- JavaScript validado com node --check.
+- IDs duplicados verificados: nenhum nos painéis principais.
+- Referências locais de HTML verificadas.
+- Páginas principais testadas via servidor local com retorno HTTP 200.

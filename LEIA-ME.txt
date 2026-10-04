@@ -1,41 +1,5 @@
-CCFV — PAINÉIS PRÓPRIOS DE COMPETIÇÃO
+PATCH CIRURGICO — HISTORIA / TROFEUS
 
-Este pacote adiciona:
-- /admin/competicoes.html
-- /admin/brasileirao.html
-- /admin/night.html
-- /admin/mobile.html
-- /admin/copa-do-mundo.html
-- /admin/css/competition-shell.css
-- /admin/js/brasileirao-panel.js
-- /admin/js/copa-do-mundo.js
-- /supabase/CCFV_COPA_DO_MUNDO.sql
-- /pages/copa-do-mundo.html
-- /css/copa-do-mundo.css
-- /js/copa-do-mundo.js
-- /js/main.js (menu lateral público)
-- /css/header-side-menu.css
-
-COMPETIÇÕES EXISTENTES:
-Champions -> /admin/champions.html
-Libertadores -> /admin/libertadores.html
-Night -> usa o motor atual admin/js/night.js
-Mobile -> usa o motor atual admin/js/mobile.js
-
-BRASILEIRÃO:
-O painel novo usa player_competitions para inscrição dos 20 clubes e o RPC
-register_ccfv_match para registrar resultados/ELO. A geração cria as 380
-partidas na tabela matches com competition=BRASILEIRAO.
-
-COPA DO MUNDO:
-Execute CCFV_COPA_DO_MUNDO.sql no Supabase uma única vez. O motor é isolado
-em ccfv_world_cup_* e não altera os motores existentes.
-
-MENU PÚBLICO:
-O novo js/main.js injeta o menu lateral global e carrega automaticamente
-/css/header-side-menu.css. Não é necessário editar os headers de todas as páginas.
-
-IMPORTANTE:
-Este pacote NÃO consegue publicar no GitHub sozinho porque a integração de
-escrita retornou 403. Copie os arquivos mantendo os caminhos. Depois faça seu
-commit/push.
+Substitui somente pages/historia.html, js/historia.js e css/historia.css.
+Os PNGs devem permanecer em assets/images/historia/trofeus/ com os nomes existentes.
+Nenhum outro arquivo do site faz parte deste patch.

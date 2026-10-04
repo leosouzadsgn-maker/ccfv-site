@@ -104,3 +104,39 @@ a{color:inherit;text-decoration:none}
   .ccfv-match{grid-template-columns:1fr auto}
   .ccfv-match .score{grid-column:2;grid-row:1/3}
 }
+
+/* =========================================================
+   WORLD CUP — ADMIN AVANÇADO
+   ========================================================= */
+.ccfv-wc-admin-team-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,360px);gap:14px;align-items:center;padding:12px;border:1px solid rgba(255,255,255,.05);border-radius:12px;background:rgba(255,255,255,.012)}
+.ccfv-wc-admin-team-main{display:grid;grid-template-columns:32px 38px minmax(0,1fr);gap:10px;align-items:center;min-width:0}
+.ccfv-wc-admin-slot{color:var(--green);font-size:8px;font-weight:900}
+.ccfv-wc-admin-logo{width:34px;height:34px;object-fit:contain;border-radius:8px}
+.ccfv-wc-admin-logo--initials{display:grid;place-items:center;background:#07140d;border:1px solid rgba(67,223,145,.12);color:var(--green);font-size:8px;font-weight:900}
+.ccfv-wc-admin-team-main strong,.ccfv-wc-admin-team-main small,.ccfv-wc-admin-team-main em{display:block}
+.ccfv-wc-admin-team-main strong{font-size:10px}
+.ccfv-wc-admin-team-main small{color:rgba(255,255,255,.29);font-size:7px;margin-top:3px;font-style:normal}
+.ccfv-wc-admin-team-main em{color:var(--green);font-size:8px;font-weight:900;margin-top:4px;font-style:normal}
+.ccfv-wc-admin-team-action{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px;align-items:center}
+.ccfv-wc-admin-team-action select{width:100%;min-height:36px;background:#07100b;color:#fff;border:1px solid var(--line);border-radius:8px;padding:0 8px}
+.ccfv-wc-admin-team-action .ccfv-btn{white-space:nowrap}
+.ccfv-wc-detailed-groups{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.ccfv-wc-admin-group .ccfv-champions-group__table-wrap{overflow-x:auto}
+.ccfv-wc-admin-group .ccfv-champions-group__thead,.ccfv-wc-admin-group .ccfv-champions-group__row{min-width:680px}
+.ccfv-wc-admin-match{padding:14px;border:1px solid rgba(255,255,255,.05);border-radius:11px;background:rgba(255,255,255,.012)}
+.ccfv-wc-admin-match__meta{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}
+.ccfv-wc-admin-match__meta small{color:rgba(255,255,255,.28);font-size:7px;font-weight:900;letter-spacing:.08em}
+.ccfv-wc-admin-match__meta span{color:var(--green);font-size:7px;font-weight:900}
+.ccfv-wc-admin-match__meta span.is-finished{color:#a6eecb}
+.ccfv-wc-admin-match__teams{display:grid;grid-template-columns:1fr 80px 1fr;gap:12px;align-items:center}
+.ccfv-wc-admin-match__teams>div{min-width:0}
+.ccfv-wc-admin-match__teams>div:last-child{text-align:right}
+.ccfv-wc-admin-match__teams strong,.ccfv-wc-admin-match__teams small{display:block}
+.ccfv-wc-admin-match__teams strong{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ccfv-wc-admin-match__teams small{margin-top:3px;color:rgba(255,255,255,.29);font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ccfv-wc-admin-match__teams>b{text-align:center;font-size:18px}
+.ccfv-wc-admin-champion{display:flex;align-items:center;justify-content:center;gap:20px;text-align:center;padding:28px;border:1px solid rgba(67,223,145,.18);border-radius:16px;background:radial-gradient(circle at 50% 0,rgba(67,223,145,.08),transparent 55%)}
+.ccfv-wc-admin-champion img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:1px solid rgba(67,223,145,.18)}
+.ccfv-wc-admin-champion h3{margin:9px 0 3px;font-size:26px}
+.ccfv-wc-admin-champion p{margin:0;color:rgba(255,255,255,.35);font-size:9px}
+@media(max-width:900px){.ccfv-wc-admin-team-row{grid-template-columns:1fr}.ccfv-wc-admin-team-action{grid-template-columns:1fr}.ccfv-wc-detailed-groups{grid-template-columns:1fr!important}.ccfv-wc-admin-match__teams{grid-template-columns:1fr}.ccfv-wc-admin-match__teams>div:last-child{text-align:left}.ccfv-wc-admin-match__teams>b{text-align:left}}
