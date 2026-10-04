@@ -1,0 +1,12 @@
+No admin/index.html, no menu lateral do Admin:
+1) Troque o botão <button ... data-section="brasileirao">Brasileirão</button> por:
+<a href="/admin/brasileirao.html" class="ccfv-admin-nav__item ccfv-admin-nav__link"><span>◎</span>Brasileirão</a>
+
+2) Troque o botão <button ... data-section="night">Night Cup</button> por:
+<a href="/admin/night.html" class="ccfv-admin-nav__item ccfv-admin-nav__link"><span>✦</span>Night Cup</a>
+
+3) Troque o botão <button ... data-section="mobile">Mobile</button> por:
+<a href="/admin/mobile.html" class="ccfv-admin-nav__item ccfv-admin-nav__link"><span>M</span>Mobile</a>
+
+Champions e Libertadores já apontam para os painéis próprios.
+A Central passa a usar /admin/competicoes.html como ponto de entrada.

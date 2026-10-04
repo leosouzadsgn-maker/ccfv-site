@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#020403">
+<title>Brasileirão — Admin CCFV</title>
+<link rel="icon" type="image/png" href="../assets/images/logo/ccfv-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/admin/css/competition-shell.css">
+</head>
+<body>
+<div class="ccfv-competition-admin">
+<aside class="ccfv-competition-sidebar" id="competition-sidebar">
+<div class="ccfv-brand">
+<img src="../assets/images/logo/ccfv-logo.png" alt="CCFV">
+<div><strong>CCFV ADMIN</strong><span>BRASILEIRÃO</span></div>
+</div>
+<div class="ccfv-sidebar-label">CENTRAL</div>
+<nav class="ccfv-side-nav">
+<a href="/admin/competicoes.html">▦ Central de Competições</a>
+<a href="/admin/index.html">⌂ Dashboard</a>
+</nav>
+<div class="ccfv-sidebar-label">COMPETIÇÃO</div>
+<nav class="ccfv-side-nav">
+<a class="is-current-competition" href="/admin/brasileirao.html">◉ Brasileirão</a>
+<a href="/admin/champions.html">🏆 Champions League</a>
+<a href="/admin/libertadores.html">✦ Libertadores</a>
+<a href="/admin/night.html">✦ Night Cup</a>
+<a href="/admin/mobile.html">M Mobile</a>
+<a href="/admin/copa-do-mundo.html">◈ Copa do Mundo</a>
+</nav>
+<div class="ccfv-sidebar-label">SISTEMA</div>
+<nav class="ccfv-side-nav">
+<a href="/pages/historia.html">▣ História / Hall</a>
+</nav>
+<div class="ccfv-sidebar-footer">
+<a href="/">← Ver site</a>
+<a href="/admin/login.html">Sair / trocar conta</a>
+</div>
+</aside>
+
+<main class="ccfv-main">
+<header class="ccfv-topbar">
+<div><span>CCFV // OPERAÇÃO OFICIAL</span><h1>BRASILEIRÃO</h1></div>
+<div class="ccfv-user"><span id="admin-user">Verificando sessão...</span><button class="ccfv-btn" id="refresh">Atualizar</button></div>
+</header>
+
+<section class="ccfv-page">
+<span class="ccfv-kicker">CCFV // CAMPEONATO NACIONAL</span>
+<h2>GERAR O<br><strong>BRASILEIRÃO.</strong></h2>
+<p class="ccfv-lead">Painel exclusivo do Brasileirão CCFV. Inscreva os 20 treinadores, gere a tabela completa de 38 rodadas e administre os resultados usando o motor oficial já existente.</p>
+
+<div id="message" class="ccfv-message" hidden></div>
+
+<div class="ccfv-stat-grid">
+<div class="ccfv-stat"><span>INSCRITOS</span><strong id="stat-registered">00/20</strong></div>
+<div class="ccfv-stat"><span>PARTIDAS GERADAS</span><strong id="stat-matches">000</strong></div>
+<div class="ccfv-stat"><span>JOGOS ENCERRADOS</span><strong id="stat-finished">000</strong></div>
+<div class="ccfv-stat"><span>PRÓXIMA RODADA</span><strong id="stat-round">01</strong></div>
+</div>
+
+<div class="ccfv-grid">
+<article class="ccfv-card">
+<header><div><span>01 // INSCRIÇÕES</span><h3>20 CLUBES</h3></div><span class="ccfv-chip" id="registration-status">CONFIGURANDO</span></header>
+<p>Vincule um jogador cadastrado a cada clube. O mesmo jogador não pode ocupar dois clubes.</p>
+<div id="registration-list" class="ccfv-list"></div>
+</article>
+
+<article class="ccfv-card">
+<header><div><span>02 // TEMPORADA</span><h3>CONTROLE</h3></div></header>
+<p>A temporada é gerada somente depois que os 20 clubes estiverem preenchidos.</p>
+<div class="ccfv-actions">
+<button class="ccfv-btn primary" id="generate">GERAR 38 RODADAS</button>
+<button class="ccfv-btn" id="load-round">ATUALIZAR PARTIDAS</button>
+</div>
+<div style="height:14px"></div>
+<div class="ccfv-toolbar">
+<input id="round" type="number" min="1" max="38" value="1" placeholder="Rodada">
+<button class="ccfv-btn" id="show-round">Ver rodada</button>
+</div>
+<div id="round-list" class="ccfv-match-list"></div>
+</article>
+</div>
+
+<article class="ccfv-card" style="margin-top:14px">
+<header><div><span>03 // CLASSIFICAÇÃO OFICIAL</span><h3>TABLE</h3></div><span class="ccfv-chip">3 / 1 / 0</span></header>
+<div class="ccfv-table-wrap"><table class="ccfv-table"><thead><tr><th>POS</th><th>CLUBE</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GP</th><th>GC</th><th>SG</th><th>PTS</th></tr></thead><tbody id="standings"></tbody></table></div>
+</article>
+</section>
+</main>
+</div>
+
+<div class="ccfv-modal" id="result-modal" hidden>
+<div class="ccfv-modal-card">
+<div class="ccfv-toolbar"><div><span class="ccfv-kicker">CCFV // RESULTADO</span><h3 id="result-title">LANÇAR RESULTADO</h3></div><button class="ccfv-btn" id="close-result">Fechar</button></div>
+<form id="result-form">
+<div class="ccfv-form-grid">
+<label>CASA<input id="home-team" readonly></label>
+<label>FORA<input id="away-team" readonly></label>
+<label>PLACAR CASA<input id="home-score" type="number" min="0" value="0" required></label>
+<label>PLACAR FORA<input id="away-score" type="number" min="0" value="0" required></label>
+<label style="grid-column:1/-1">DATA/HORA<input id="played-at" type="datetime-local"></label>
+</div>
+<div class="ccfv-actions" style="margin-top:14px"><button class="ccfv-btn primary" type="submit">REGISTRAR RESULTADO</button></div>
+</form>
+</div>
+</div>
+
+<script src="/admin/js/auth.js" defer></script>
+<script src="/admin/js/brasileirao-panel.js" defer></script>
+</body>
+</html>

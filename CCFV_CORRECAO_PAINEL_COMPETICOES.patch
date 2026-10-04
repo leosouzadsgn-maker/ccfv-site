@@ -1,0 +1,29 @@
+*** Begin Patch
+*** Update File: admin/js/admin.js
+@@
+         bindNavigation();
+ 
++
++        // Abre diretamente o painel solicitado pela Central de Competições.
++        // Ex.: /admin/index.html?section=brasileirao
++        //      /admin/index.html?section=night
++        //      /admin/index.html?section=mobile
++        //      /admin/index.html?section=players
++        //      /admin/index.html?section=matches
++        //      /admin/index.html?section=ranking
++        const requestedSection =
++            new URLSearchParams(window.location.search).get("section") ||
++            window.location.hash.replace(/^#/, "");
++
++        if (
++            requestedSection &&
++            document.querySelector(
++                `[data-section="${CSS.escape(requestedSection)}"]`
++            )
++        ) {
++            openSection(requestedSection);
++        }
++
+ 
+         bindMobileMenu();
+*** End Patch

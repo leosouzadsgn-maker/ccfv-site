@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Night Cup — Admin CCFV</title>
+<link rel="icon" href="../assets/images/logo/ccfv-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/admin/css/competition-shell.css">
+<style>
+.ccfv-night-players{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ccfv-night-players select{width:100%;min-height:40px;padding:0 12px;background:#020403;color:#fff;border:1px solid var(--line);border-radius:9px}
+.ccfv-night-round{display:grid;gap:8px}
+.ccfv-night-game{border:1px solid rgba(255,255,255,.06);border-radius:11px;padding:12px;background:rgba(255,255,255,.012)}
+.ccfv-night-game__top{display:flex;justify-content:space-between;color:var(--green);font-size:8px;font-weight:900}
+.ccfv-night-teams{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-top:10px}
+.ccfv-night-team strong,.ccfv-night-team small{display:block}.ccfv-night-team small{color:var(--muted);font-size:8px}.ccfv-night-score{font-size:18px;font-weight:900}
+@media(max-width:700px){.ccfv-night-players{grid-template-columns:1fr}}
+#admin-toast.is-visible{opacity:1!important}</style></head>
+<body>
+<div class="ccfv-competition-admin">
+<aside class="ccfv-competition-sidebar">
+<div class="ccfv-brand"><img src="../assets/images/logo/ccfv-logo.png" alt="CCFV"><div><strong>CCFV ADMIN</strong><span>NIGHT CUP</span></div></div>
+<div class="ccfv-sidebar-label">CENTRAL</div><nav class="ccfv-side-nav"><a href="/admin/competicoes.html">▦ Central</a><a href="/admin/index.html">⌂ Dashboard</a></nav>
+<div class="ccfv-sidebar-label">COMPETIÇÕES</div><nav class="ccfv-side-nav"><a href="/admin/brasileirao.html">◉ Brasileirão</a><a href="/admin/champions.html">🏆 Champions</a><a href="/admin/libertadores.html">✦ Libertadores</a><a class="is-current-competition" href="/admin/night.html">✦ Night Cup</a><a href="/admin/mobile.html">M Mobile</a><a href="/admin/copa-do-mundo.html">◈ Copa do Mundo</a></nav>
+<div class="ccfv-sidebar-label">SISTEMA</div><nav class="ccfv-side-nav"><a href="/pages/historia.html">▣ História / Hall</a></nav>
+<div class="ccfv-sidebar-footer"><a href="/">← Ver site</a></div>
+</aside>
+<main class="ccfv-main"><header class="ccfv-topbar"><div><span>CCFV // EVENTO ESPECIAL</span><h1>NIGHT CUP</h1></div><div class="ccfv-user"><span>Sessão autenticada</span><button class="ccfv-btn" onclick="location.reload()">Atualizar</button></div></header>
+<section class="ccfv-page"><span class="ccfv-kicker">CCFV // MATA-MATA</span><h2>GERAR A<br><strong>NIGHT CUP.</strong></h2><p class="ccfv-lead">Painel exclusivo para selecionar os 8 jogadores, gerar a chave e administrar quartas, semifinais e final usando o motor atual da Night Cup.</p>
+<div id="section-night">
+<div class="ccfv-grid">
+<article class="ccfv-card"><header><div><span>01 // PARTICIPANTES</span><h3>8 JOGADORES</h3></div><span class="ccfv-chip" id="night-cup-status">SETUP</span></header>
+<div id="night-player-grid" class="ccfv-night-players"></div>
+<div class="ccfv-toolbar" style="margin-top:14px"><span id="night-setup-message" class="ccfv-muted">Selecione os 8 participantes.</span><button class="ccfv-btn primary" id="night-create">CRIAR CHAVE</button></div>
+</article>
+<article class="ccfv-card"><header><div><span>02 // CONTROLE</span><h3>COMPETIÇÃO</h3></div></header><p>O motor existente continua responsável pelo chaveamento e resultados.</p><button class="ccfv-btn danger" id="night-reset">RESETAR COPA</button></article>
+</div>
+<div class="ccfv-grid" style="margin-top:14px">
+<article class="ccfv-card"><header><div><span>03 // QUARTAS</span><h3>04 PARTIDAS</h3></div></header><div id="night-quarterfinals" class="ccfv-night-round"></div></article>
+<article class="ccfv-card"><header><div><span>04 // SEMIFINAIS</span><h3>02 PARTIDAS</h3></div></header><div id="night-semifinals" class="ccfv-night-round"></div></article>
+</div>
+<article class="ccfv-card" style="margin-top:14px"><header><div><span>05 // FINAL</span><h3>CAMPEÃO</h3></div></header><div id="night-final"></div><div id="night-champion" class="ccfv-chip" style="margin-top:12px"><span>CAMPEÃO: </span><strong id="night-champion-name">—</strong></div></article>
+</div></section></main></div>
+<div id="admin-toast" style="position:fixed;right:20px;bottom:20px;z-index:200;padding:12px 14px;border:1px solid rgba(67,223,145,.2);border-radius:10px;background:#07100b;color:#fff;font-size:10px;opacity:0;pointer-events:none;transition:.2s"></div>
+<script>
+(() => { const e=document.querySelector("#admin-toast"); if(!e)return;
+window.addEventListener("ccfv:toast",ev=>{e.textContent=ev.detail||"";e.style.opacity="1";setTimeout(()=>e.style.opacity="0",3200)});
+const old=window.alert; window.alert=old;
+})();
+</script>
+<script src="/admin/js/auth.js" defer></script>
+<script src="/admin/js/night.js" defer></script>
+</body></html>

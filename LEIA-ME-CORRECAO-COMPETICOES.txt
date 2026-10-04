@@ -1,0 +1,44 @@
+CCFV — CORREÇÃO DO ROTEAMENTO DOS PAINÉIS DE COMPETIÇÃO
+
+PROBLEMA
+A Central de Competições já envia para:
+/admin/index.html?section=brasileirao
+/admin/index.html?section=night
+/admin/index.html?section=mobile
+
+Porém o admin.js atual não lê esse parâmetro ao carregar a página. Por isso o Dashboard continua ativo.
+
+CORREÇÃO
+Adicionar o bloco indicado no arquivo:
+admin/js/admin.js
+
+Local exato: dentro de init(), imediatamente depois de:
+bindNavigation();
+
+O bloco está no arquivo:
+CCFV_CORRECAO_PAINEL_COMPETICOES.patch
+
+TESTE
+1. /admin/index.html?section=brasileirao -> CONTROLAR BRASILEIRÃO.
+2. /admin/index.html?section=night -> CONTROLAR NIGHT CUP.
+3. /admin/index.html?section=mobile -> CONTROLAR MOBILE.
+4. /admin/index.html?section=players -> seção Jogadores.
+5. /admin/index.html?section=matches -> seção Partidas.
+6. /admin/index.html?section=ranking -> seção Ranking.
+
+NÃO ALTERA
+- banco de dados
+- RPCs
+- motores de Champions
+- motor de Libertadores
+- motor de Brasileirão
+- motor de Night Cup
+- motor Mobile
+- autenticação
+
+GIT
+Depois de testar, adicionar SOMENTE:
+admin/js/admin.js
+
+Commit sugerido:
+fix: abrir painel da competicao pela central

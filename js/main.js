@@ -1,305 +1,105 @@
-/* =========================================================
-   CCFV — MAIN
-   Confederação Coliseu de Futebol Virtual
-   ========================================================= */
-
 (() => {
-    "use strict";
+"use strict";
+
+const CCFV={name:"CCFV",season:"Season 01",platform:"PC + Console"};
+
+const links=[
+["INÍCIO","/index.html","home"],
+["COMPETIÇÕES","/admin/competicoes.html","competicoes"],
+["BRASILEIRÃO","/pages/brasileirao.html","brasileirao"],
+["CHAMPIONS LEAGUE","/pages/champions.html","champions"],
+["LIBERTADORES","/pages/libertadores.html","libertadores"],
+["NIGHT CUP","/pages/night.html","night"],
+["MOBILE","/pages/mobile.html","mobile"],
+["COPA DO MUNDO","/pages/copa-do-mundo.html","copa-do-mundo"],
+["RANKING","/pages/ranking.html","ranking"],
+["HISTÓRIA","/pages/historia.html","historia"]
+];
+
+function currentPage(){
+ const p=window.location.pathname;
+ if(p.includes("brasileirao"))return"brasileirao";
+ if(p.includes("champions"))return"champions";
+ if(p.includes("libertadores"))return"libertadores";
+ if(p.includes("night"))return"night";
+ if(p.includes("mobile"))return"mobile";
+ if(p.includes("copa-do-mundo"))return"copa-do-mundo";
+ if(p.includes("ranking"))return"ranking";
+ if(p.includes("historia"))return"historia";
+ if(p.includes("competicoes"))return"competicoes";
+ return"home";
+}
+
+function loadSideMenuCSS(){
+ const href="/css/header-side-menu.css";
+ if(!document.querySelector(`link[href="${href}"]`)){
+  const link=document.createElement("link");link.rel="stylesheet";link.href=href;document.head.appendChild(link);
+ }
+}
+
+function initSideMenu(){
+ loadSideMenuCSS();
+ const header=document.querySelector("#site-header");
+ const button=document.querySelector(".ccfv-header__menu");
+ if(!header||!button||document.querySelector(".ccfv-side-menu"))return;
+
+ const menu=document.createElement("aside");
+ menu.className="ccfv-side-menu";
+ const page=currentPage();
+
+ menu.innerHTML=`
+  <div class="ccfv-side-menu__brand">
+   <img src="/assets/images/logo/ccfv-logo.png" alt="CCFV">
+   <div><strong>CCFV</strong><span>CONFEDERAÇÃO COLISEU</span></div>
+  </div>
+  <div class="ccfv-side-menu__label">UNIVERSO</div>
+  <nav class="ccfv-side-menu__nav">
+   ${links.map(([label,href,key])=>`
+    <a href="${href}" class="${page===key?"is-active":""}">
+      <span></span>${label}
+    </a>`).join("")}
+  </nav>
+  <div class="ccfv-side-menu__footer">
+   <small>SEASON 01 • PC + CONSOLE • MOBILE</small>
+   <a href="/admin/">ÁREA ADMINISTRATIVA →</a>
+  </div>`;
+
+ document.body.appendChild(menu);
+
+ const overlay=document.createElement("div");
+ overlay.className="ccfv-side-menu__overlay";
+ document.body.appendChild(overlay);
+
+ const close=()=>{
+   menu.classList.remove("is-open");
+   overlay.classList.remove("is-open");
+   document.body.classList.remove("ccfv-side-open");
+   button.setAttribute("aria-expanded","false");
+ };
+ const open=()=>{
+   menu.classList.add("is-open");
+   overlay.classList.add("is-open");
+   document.body.classList.add("ccfv-side-open");
+   button.setAttribute("aria-expanded","true");
+ };
+
+ button.addEventListener("click",e=>{
+   e.preventDefault();
+   menu.classList.contains("is-open")?close():open();
+ });
+ overlay.addEventListener("click",close);
+ document.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+ menu.querySelectorAll("a").forEach(a=>a.addEventListener("click",close));
+}
+
+function init(){
+ document.documentElement.classList.add("ccfv-ready");
+ document.body.classList.add("ccfv-app-ready");
+ initSideMenu();
+ document.querySelectorAll("[data-ccfv-season]").forEach(e=>e.textContent=CCFV.season);
+ document.querySelectorAll("[data-ccfv-platform]").forEach(e=>e.textContent=CCFV.platform);
+ document.dispatchEvent(new CustomEvent("ccfv:ready",{detail:CCFV}));
+}
 
-
-    /* =====================================================
-       CONFIGURAÇÃO GLOBAL
-       ===================================================== */
-
-    const CCFV = {
-        name: "CCFV",
-        season: "Season 01",
-        platform: "PC + Console"
-    };
-
-
-    /* =====================================================
-       MENU MOBILE
-       ===================================================== */
-
-    const initMobileMenu = () => {
-
-        const header =
-            document.querySelector("#site-header");
-
-        const button =
-            document.querySelector(".ccfv-header__menu");
-
-        const nav =
-            document.querySelector(".ccfv-header__nav");
-
-
-        if (!header || !button || !nav) {
-            return;
-        }
-
-
-        /* Evita registrar o evento duas vezes */
-        if (button.dataset.menuBound === "true") {
-            return;
-        }
-
-
-        button.dataset.menuBound = "true";
-
-
-        const closeMenu = () => {
-
-            button.setAttribute(
-                "aria-expanded",
-                "false"
-            );
-
-            button.setAttribute(
-                "aria-label",
-                "Abrir menu"
-            );
-
-            nav.classList.remove(
-                "is-mobile-open"
-            );
-
-            header.classList.remove(
-                "is-menu-open"
-            );
-
-            document.body.classList.remove(
-                "ccfv-mobile-menu-open"
-            );
-        };
-
-
-        const openMenu = () => {
-
-            button.setAttribute(
-                "aria-expanded",
-                "true"
-            );
-
-            button.setAttribute(
-                "aria-label",
-                "Fechar menu"
-            );
-
-            nav.classList.add(
-                "is-mobile-open"
-            );
-
-            header.classList.add(
-                "is-menu-open"
-            );
-
-            document.body.classList.add(
-                "ccfv-mobile-menu-open"
-            );
-        };
-
-
-        button.addEventListener(
-            "click",
-            (event) => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-
-                const isOpen =
-                    button.getAttribute(
-                        "aria-expanded"
-                    ) === "true";
-
-
-                if (isOpen) {
-                    closeMenu();
-                } else {
-                    openMenu();
-                }
-
-            }
-        );
-
-
-        /* Fecha ao clicar em qualquer link */
-        nav.querySelectorAll("a").forEach(
-            (link) => {
-
-                link.addEventListener(
-                    "click",
-                    () => {
-                        closeMenu();
-                    }
-                );
-
-            }
-        );
-
-
-        /* Fecha ao tocar fora do menu */
-        document.addEventListener(
-            "click",
-            (event) => {
-
-                const isOpen =
-                    button.getAttribute(
-                        "aria-expanded"
-                    ) === "true";
-
-
-                if (!isOpen) {
-                    return;
-                }
-
-
-                const clickedInsideHeader =
-                    header.contains(
-                        event.target
-                    );
-
-
-                if (!clickedInsideHeader) {
-                    closeMenu();
-                }
-
-            }
-        );
-
-
-        /* Fecha com ESC */
-        document.addEventListener(
-            "keydown",
-            (event) => {
-
-                if (
-                    event.key === "Escape"
-                ) {
-                    closeMenu();
-                }
-
-            }
-        );
-
-
-        /* Se voltar para desktop, fecha */
-        window.addEventListener(
-            "resize",
-            () => {
-
-                if (
-                    window.innerWidth > 900
-                ) {
-                    closeMenu();
-                }
-
-            }
-        );
-
-    };
-
-
-    /* =====================================================
-       DOCUMENT READY
-       ===================================================== */
-
-    const init = () => {
-
-        document.documentElement.classList.add(
-            "ccfv-ready"
-        );
-
-
-        document.body.classList.add(
-            "ccfv-app-ready"
-        );
-
-
-        /* =================================================
-           MENU
-           ================================================= */
-
-        initMobileMenu();
-
-
-        /* =================================================
-           TEMPORADA
-           ================================================= */
-
-        const seasonElements =
-            document.querySelectorAll(
-                "[data-ccfv-season]"
-            );
-
-
-        seasonElements.forEach(
-            (element) => {
-
-                element.textContent =
-                    CCFV.season;
-
-            }
-        );
-
-
-        /* =================================================
-           PLATAFORMA
-           ================================================= */
-
-        const platformElements =
-            document.querySelectorAll(
-                "[data-ccfv-platform]"
-            );
-
-
-        platformElements.forEach(
-            (element) => {
-
-                element.textContent =
-                    CCFV.platform;
-
-            }
-        );
-
-
-        /* =================================================
-           READY
-           ================================================= */
-
-        document.dispatchEvent(
-            new CustomEvent(
-                "ccfv:ready",
-                {
-                    detail: CCFV
-                }
-            )
-        );
-
-    };
-
-
-    /* =====================================================
-       START
-       ===================================================== */
-
-    if (
-        document.readyState === "loading"
-    ) {
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            init,
-            {
-                once: true
-            }
-        );
-
-    } else {
-
-        init();
-
-    }
-
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 })();

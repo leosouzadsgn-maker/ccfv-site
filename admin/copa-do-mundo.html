@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="theme-color" content="#020403">
+<title>Copa do Mundo — Admin CCFV</title>
+<link rel="icon" href="../assets/images/logo/ccfv-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/admin/css/competition-shell.css">
+</head>
+<body><div class="ccfv-competition-admin">
+<aside class="ccfv-competition-sidebar">
+<div class="ccfv-brand"><img src="../assets/images/logo/ccfv-logo.png" alt="CCFV"><div><strong>CCFV ADMIN</strong><span>COPA DO MUNDO</span></div></div>
+<div class="ccfv-sidebar-label">CENTRAL</div><nav class="ccfv-side-nav"><a href="/admin/competicoes.html">▦ Central</a><a href="/admin/index.html">⌂ Dashboard</a></nav>
+<div class="ccfv-sidebar-label">COMPETIÇÕES</div><nav class="ccfv-side-nav"><a href="/admin/brasileirao.html">◉ Brasileirão</a><a href="/admin/champions.html">🏆 Champions League</a><a href="/admin/libertadores.html">✦ Libertadores</a><a href="/admin/night.html">✦ Night Cup</a><a href="/admin/mobile.html">M Mobile</a><a class="is-current-competition" href="/admin/copa-do-mundo.html">◈ Copa do Mundo</a></nav>
+<div class="ccfv-sidebar-label">SISTEMA</div><nav class="ccfv-side-nav"><a href="/pages/historia.html">▣ História / Hall</a></nav>
+<div class="ccfv-sidebar-footer"><a href="/">← Ver site</a></div>
+</aside>
+<main class="ccfv-main"><header class="ccfv-topbar"><div><span>CCFV // COMPETIÇÃO GLOBAL</span><h1>COPA DO MUNDO</h1></div><div class="ccfv-user"><span>Sessão autenticada</span><button class="ccfv-btn" id="refresh">Atualizar</button></div></header>
+<section class="ccfv-page"><span class="ccfv-kicker">CCFV // 32 SELEÇÕES</span><h2>GERAR A<br><strong>COPA DO MUNDO.</strong></h2><p class="ccfv-lead">Painel próprio para cadastrar os 32 participantes, sortear os grupos, gerar os jogos, administrar o mata-mata e fechar oficialmente a temporada.</p>
+<div id="message" class="ccfv-message" hidden></div>
+<div class="ccfv-stat-grid">
+<div class="ccfv-stat"><span>TEMPORADA</span><strong id="stat-season">01</strong></div>
+<div class="ccfv-stat"><span>INSCRITOS</span><strong id="stat-registered">00/32</strong></div>
+<div class="ccfv-stat"><span>FASE</span><strong id="stat-phase">INSCRIÇÕES</strong></div>
+<div class="ccfv-stat"><span>PARTIDAS</span><strong id="stat-matches">000</strong></div>
+</div>
+<div class="ccfv-grid">
+<article class="ccfv-card"><header><div><span>01 // INSCRIÇÕES</span><h3>32 SELEÇÕES</h3></div></header><div id="team-list" class="ccfv-list"></div></article>
+<article class="ccfv-card"><header><div><span>02 // OPERAÇÃO</span><h3>GERAR COMPETIÇÃO</h3></div></header>
+<div class="ccfv-actions"><button class="ccfv-btn primary" id="draw">SORTEAR GRUPOS</button><button class="ccfv-btn" id="generate">GERAR 48 JOGOS</button><button class="ccfv-btn" id="generate-r16">GERAR OITAVAS</button><button class="ccfv-btn" id="next-phase">GERAR PRÓXIMA FASE</button><button class="ccfv-btn danger" id="finish">FINALIZAR TEMPORADA</button></div>
+<p class="ccfv-muted" style="margin-top:14px">A Copa usa tabelas e RPCs próprias. Os outros motores não são alterados.</p></article>
+</div>
+<div class="ccfv-grid" style="margin-top:14px">
+<article class="ccfv-card"><header><div><span>03 // GRUPOS</span><h3>CLASSIFICAÇÃO</h3></div></header><div id="groups"></div></article>
+<article class="ccfv-card"><header><div><span>04 // PARTIDAS</span><h3>JOGOS</h3></div></header><div class="ccfv-toolbar"><select id="stage-filter" style="min-height:36px;padding:0 10px;background:#07100b;color:#fff;border:1px solid var(--line);border-radius:9px"><option value="GROUP_STAGE">FASE DE GRUPOS</option><option value="ROUND_OF_16">OITAVAS</option><option value="QUARTERFINALS">QUARTAS</option><option value="SEMIFINALS">SEMIFINAIS</option><option value="FINAL">FINAL</option></select><button class="ccfv-btn" id="load-matches">Atualizar</button></div><div id="matches" class="ccfv-match-list"></div></article>
+</div>
+<article class="ccfv-card" style="margin-top:14px"><header><div><span>05 // HISTÓRIA</span><h3>CAMPEÃO</h3></div></header><div id="champion" class="ccfv-empty">A DEFINIR</div></article>
+</section></main></div>
+<div class="ccfv-modal" id="result-modal" hidden><div class="ccfv-modal-card"><div class="ccfv-toolbar"><h3>LANÇAR RESULTADO</h3><button class="ccfv-btn" id="close-result">Fechar</button></div><form id="result-form"><div class="ccfv-form-grid"><label>CASA<input id="home" readonly></label><label>FORA<input id="away" readonly></label><label>PLACAR CASA<input id="home-score" type="number" min="0" value="0"></label><label>PLACAR FORA<input id="away-score" type="number" min="0" value="0"></label><label>PÊNALTIS CASA<input id="home-pen" type="number" min="0"></label><label>PÊNALTIS FORA<input id="away-pen" type="number" min="0"></label><label style="grid-column:1/-1">OBSERVAÇÃO<textarea id="notes" rows="3"></textarea></label></div><button class="ccfv-btn primary" style="margin-top:14px" type="submit">VALIDAR RESULTADO</button></form></div></div>
+<script src="/admin/js/auth.js" defer></script><script src="/admin/js/copa-do-mundo.js" defer></script>
+</body></html>
