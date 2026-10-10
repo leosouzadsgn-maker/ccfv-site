@@ -292,80 +292,127 @@
     }
 
 
-    function teamLogo(
-        team
-    ) {
+   function teamLogo(team) {
+    const normalizeName = (value) =>
+        String(value || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, " ")
+            .trim();
 
-        const src =
-            String(
-                team?.logo_path ||
-                ""
-            ).trim();
+    // Nomes correspondentes aos arquivos da pasta de bandeiras.
+    const FLAG_FILES = {
+        "alemanha": "Alemanha",
+        "argentina": "Argentina",
+        "australia": "Australia",
+        "belgica": "Belgica",
+        "brasil": "Brasil",
+        "cabo verde": "Cabo-verde",
+        "camaroes": "Camaroes",
+        "canada": "Canada",
+        "chile": "Chile",
+        "colombia": "Colombia",
+        "coreia do sul": "Coreia-do-sul",
+        "croacia": "Croacia",
+        "dinamarca": "Dinamarca",
+        "equador": "Equador",
+        "espanha": "Espanha",
+        "estados unidos": "Estados-unidos",
+        "estados unidos b": "Estados-unidos",
+        "franca": "Franca",
+        "holanda": "Holanda",
+        "inglaterra": "Inglaterra",
+        "ira": "Ira",
+        "italia": "Italia",
+        "japao": "Japao",
+        "marrocos": "Marrocos",
+        "mexico": "Mexico",
+        "nigeria": "Nigeria",
+        "paraguai": "Paraguai",
+        "peru": "Peru",
+        "portugal": "Portugal",
+        "senegal": "Senegal",
+        "suica": "Suica",
+        "uruguai": "Uruguai",
+        "arabia saudita": "Arabia-saudita"
+    };
 
+    const name = String(team?.name || "Seleção");
+    const key = normalizeName(name);
+    const filename = FLAG_FILES[key];
 
-        if (
-            src
-        ) {
+    const sources = [];
 
-            return `
+    // Prioriza as bandeiras locais da pasta do projeto.
+    if (filename) {
+        const extensions = [
+            "png", "webp", "jpg", "jpeg", "svg",
+            "PNG", "WEBP", "JPG", "JPEG", "SVG"
+        ];
 
-                <img
-
-                    class="ccfv-champions-club__logo ccfv-wc-logo"
-
-                    src="${esc(src)}"
-
-                    alt="${esc(
-                        team?.name ||
-                        "Seleção"
-                    )}"
-
-                    loading="lazy"
-
-                    onerror="
-                        this.style.display='none';
-                        this.nextElementSibling.style.display='grid';
-                    "
-
-                >
-
-                <span
-                    class="
-                        ccfv-wc-fallback-logo
-                        ccfv-wc-fallback-logo--hidden
-                    "
-                >
-                    ${esc(
-                        initials(
-                            team?.name
-                        )
-                    )}
-                </span>
-
-            `;
-
-        }
-
-
-        return `
-
-            <span
-                class="
-                    ccfv-wc-fallback-logo
-                "
-            >
-
-                ${esc(
-                    initials(
-                        team?.name
-                    )
-                )}
-
-            </span>
-
-        `;
-
+        extensions.forEach((extension) => {
+            sources.push(
+                `/assets/images/copa-do-mundo/${filename}.${extension}`
+            );
+        });
     }
+
+    // Mantém o logo cadastrado no banco como alternativa.
+    const savedLogo = String(team?.logo_path || "").trim();
+
+    if (savedLogo && !sources.includes(savedLogo)) {
+        sources.push(savedLogo);
+    }
+
+    // Sem bandeira cadastrada: mantém o fallback de iniciais.
+    if (!sources.length) {
+        return `
+            <span class="ccfv-wc-fallback-logo">
+                ${esc(initials(name))}
+            </span>
+        `;
+    }
+
+    return `
+        <img
+            class="ccfv-champions-club__logo ccfv-wc-logo"
+            src="${esc(sources[0])}"
+            data-ccfv-flag-sources="${esc(JSON.stringify(sources))}"
+            data-ccfv-flag-index="0"
+            alt="${esc(name)}"
+            loading="lazy"
+            onerror="
+                try {
+                    const sources = JSON.parse(
+                        this.dataset.ccfvFlagSources || '[]'
+                    );
+
+                    const nextIndex =
+                        Number(this.dataset.ccfvFlagIndex || 0) + 1;
+
+                    if (nextIndex < sources.length) {
+                        this.dataset.ccfvFlagIndex = String(nextIndex);
+                        this.src = sources[nextIndex];
+                    } else {
+                        this.style.display = 'none';
+                        this.nextElementSibling.style.display = 'grid';
+                    }
+                } catch (error) {
+                    this.style.display = 'none';
+                    this.nextElementSibling.style.display = 'grid';
+                }
+            "
+        >
+
+        <span
+            class="ccfv-wc-fallback-logo ccfv-wc-fallback-logo--hidden"
+            style="display:none"
+        >
+            ${esc(initials(name))}
+        </span>
+    `;
+}
 
 
     /* =====================================================
