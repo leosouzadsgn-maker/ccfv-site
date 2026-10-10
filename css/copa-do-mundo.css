@@ -1205,3 +1205,166 @@ body[data-page="copa-do-mundo"]
         font-size: 9px !important;
     }
 }
+
+/* ================================================
+   CCFV — HALL DA FAMA DA COPA DO MUNDO
+   Foto compacta + bandeira da seleção campeã
+   ================================================ */
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 44px 24px;
+    text-align: center;
+}
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-visual {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    margin: 8px 0;
+}
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-inner .ccfv-wc-champion-photo {
+    display: block;
+    width: 124px !important;
+    min-width: 124px;
+    max-width: 124px !important;
+    height: 154px !important;
+    max-height: 154px !important;
+    object-fit: cover !important;
+    object-position: center 25%;
+    border: 1px solid rgba(215, 173, 71, .38);
+    border-radius: 14px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, .3);
+}
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-photo-fallback {
+    display: grid;
+    place-items: center;
+    width: 124px;
+    height: 154px;
+    border: 1px solid rgba(215, 173, 71, .3);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .03);
+    color: #43df91;
+    font-size: 30px;
+    font-weight: 900;
+}
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-flag {
+    display: grid;
+    place-items: center;
+    width: 112px;
+    height: 82px;
+    padding: 10px;
+    border: 1px solid rgba(67, 223, 145, .2);
+    border-radius: 14px;
+    background: rgba(67, 223, 145, .045);
+}
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-flag img.ccfv-wc-logo {
+    display: block;
+    width: 88px !important;
+    min-width: 0 !important;
+    max-width: 88px !important;
+    height: 58px !important;
+    max-height: 58px !important;
+    object-fit: contain !important;
+}
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-flag .ccfv-wc-fallback-logo {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 38px;
+    border: 1px solid rgba(67, 223, 145, .25);
+    border-radius: 8px;
+    color: #43df91;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-inner h2 {
+    margin: 6px 0 0;
+    font-size: clamp(34px, 5vw, 54px);
+    line-height: 1;
+}
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-inner .ccfv-wc-champion-team-name {
+    margin: 0;
+    color: #43df91;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-inner p {
+    margin: 0;
+}
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-badge.is-provisional {
+    border-color: rgba(67, 223, 145, .3);
+    color: #43df91;
+}
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-badge.is-official {
+    border-color: rgba(215, 173, 71, .35);
+    color: #d7ad47;
+}
+
+@media (max-width: 560px) {
+    body[data-page="copa-do-mundo"]
+    .ccfv-wc-champion-inner {
+        padding: 32px 14px;
+    }
+
+    body[data-page="copa-do-mundo"]
+    .ccfv-wc-champion-visual {
+        gap: 14px;
+    }
+
+    body[data-page="copa-do-mundo"]
+    .ccfv-wc-champion-inner .ccfv-wc-champion-photo,
+    body[data-page="copa-do-mundo"]
+    .ccfv-wc-champion-photo-fallback {
+        width: 100px !important;
+        min-width: 100px;
+        max-width: 100px !important;
+        height: 124px !important;
+        max-height: 124px !important;
+    }
+
+    body[data-page="copa-do-mundo"]
+    .ccfv-wc-champion-flag {
+        width: 92px;
+        height: 68px;
+        padding: 7px;
+    }
+
+    body[data-page="copa-do-mundo"]
+    .ccfv-wc-champion-flag img.ccfv-wc-logo {
+        width: 74px !important;
+        max-width: 74px !important;
+        height: 48px !important;
+        max-height: 48px !important;
+    }
+}

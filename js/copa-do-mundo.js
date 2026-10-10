@@ -2573,6 +2573,7 @@ function bracketRealMatch(match) {
        ===================================================== */
 
     
+
 function renderChampion() {
     const element = $("#wc-champion");
     if (!element) return;
@@ -2598,7 +2599,6 @@ function renderChampion() {
         ) || null;
     }
 
-    // Alternativa caso a consulta pública não retorne o ID do vencedor.
     if (!finalWinner && finalMatch) {
         const homeScore = Number(finalMatch.home_score);
         const awayScore = Number(finalMatch.away_score);
@@ -2634,9 +2634,7 @@ function renderChampion() {
         element.innerHTML = `
             <div class="ccfv-wc-champion-inner">
                 <span>CCFV // HALL DA FAMA</span>
-                <div class="ccfv-wc-champion-badge">
-                    🏆 AGUARDANDO
-                </div>
+                <div class="ccfv-wc-champion-badge">🏆 AGUARDANDO</div>
                 <h2>A DEFINIR.</h2>
                 <p>A grande taça ainda está em disputa.</p>
             </div>
@@ -2645,14 +2643,13 @@ function renderChampion() {
     }
 
     const isOfficial = Boolean(officialChampion);
-    const participantName =
-        champion.participant_name || champion.name;
-
-    const seasonLabel =
-        state.season?.season_label || "SEASON";
+    const participantName = champion.participant_name || champion.name;
+    const teamName = champion.name || "Seleção";
+    const seasonLabel = state.season?.season_label || "SEASON";
 
     element.innerHTML = `
         <div class="ccfv-wc-champion-inner is-confirmed">
+
             <span>
                 ${isOfficial
                     ? "🏆 CAMPEÃO DO MUNDO CCFV"
@@ -2667,24 +2664,43 @@ function renderChampion() {
                     : "🏆 AGUARDANDO FINALIZAÇÃO OFICIAL"}
             </div>
 
-            ${
-                champion.participant_photo_url
-                    ? `
-                        <img
-                            src="${esc(champion.participant_photo_url)}"
-                            alt="${esc(participantName)}"
-                            class="ccfv-wc-champion-photo"
-                            loading="lazy"
-                        >
-                    `
-                    : teamLogo(champion)
-            }
+            <div class="ccfv-wc-champion-visual">
+
+                ${
+                    champion.participant_photo_url
+                        ? `
+                            <img
+                                src="${esc(champion.participant_photo_url)}"
+                                alt="Foto de ${esc(participantName)}"
+                                class="ccfv-wc-champion-photo"
+                                loading="lazy"
+                            >
+                        `
+                        : `
+                            <div class="ccfv-wc-champion-photo-fallback">
+                                ${esc(initials(participantName))}
+                            </div>
+                        `
+                }
+
+                <div class="ccfv-wc-champion-flag">
+                    ${teamLogo(champion)}
+                </div>
+
+            </div>
 
             <h2>${esc(participantName)}</h2>
-            <p>${esc(champion.name)} · ${esc(seasonLabel)}</p>
+
+            <p class="ccfv-wc-champion-team-name">
+                ${esc(teamName)}
+            </p>
+
+            <p>${esc(seasonLabel)}</p>
+
         </div>
     `;
 }
+
 
 
     /* =====================================================
