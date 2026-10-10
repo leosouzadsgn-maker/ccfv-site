@@ -1,13 +1,257 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="theme-color" content="#020403">
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#020403">
 <title>Copa do Mundo — Admin CCFV</title>
 <link rel="icon" href="../assets/images/logo/ccfv-logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/admin/css/competition-shell.css">
+<style>
+/* =========================================================
+   CCFV WORLD CUP ADMIN — POLISH VISUAL
+   Escopado apenas à tela da Copa. Não altera o motor JS.
+   ========================================================= */
+.ccfv-wc-workspace > .ccfv-card { grid-column: 1 / -1; }
+.ccfv-wc-workspace > .ccfv-wc-groups-card { padding: 22px; }
+.ccfv-wc-workspace > .ccfv-wc-matches-card { padding: 22px; }
+
+/* Lista de seleções: mais limpa e alinhada */
+#team-list { gap: 8px; }
+.ccfv-wc-admin-team-row {
+  grid-template-columns: minmax(0,1fr) minmax(290px, 390px);
+  gap: 18px;
+  padding: 13px 15px;
+  border-color: rgba(255,255,255,.065);
+  border-radius: 12px;
+  background: linear-gradient(110deg,rgba(255,255,255,.025),rgba(255,255,255,.008));
+}
+.ccfv-wc-admin-team-row:hover { border-color: rgba(67,223,145,.19); }
+.ccfv-wc-admin-team-main { grid-template-columns: 32px 42px minmax(0,1fr); gap: 12px; }
+.ccfv-wc-admin-logo { width: 38px; height: 38px; }
+.ccfv-wc-admin-team-main strong { font-size: 11px; letter-spacing: .01em; }
+.ccfv-wc-admin-team-main small { font-size: 8px; }
+.ccfv-wc-admin-team-main em { font-size: 8px; line-height: 1.35; }
+.ccfv-wc-admin-team-action { grid-template-columns: minmax(0,1fr) auto; gap: 9px; }
+.ccfv-wc-admin-team-action select { min-height: 40px; padding: 0 12px; font-size: 12px; }
+.ccfv-wc-admin-team-action .ccfv-btn { min-height: 40px; padding: 0 15px; }
+
+/* Cards dos oito grupos */
+#groups.ccfv-wc-detailed-groups {
+  display: grid !important;
+  grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  gap: 14px !important;
+  align-items: start;
+}
+#groups .ccfv-wc-admin-group {
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.075);
+  border-radius: 15px;
+  background: linear-gradient(150deg,rgba(255,255,255,.027),rgba(255,255,255,.008));
+}
+#groups .ccfv-champions-group__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0;
+  padding: 16px 17px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  background: rgba(67,223,145,.025);
+}
+#groups .ccfv-champions-group__title,
+#groups .ccfv-champions-group__advance { display: flex; flex-direction: column; gap: 4px; }
+#groups .ccfv-champions-group__title span,
+#groups .ccfv-champions-group__advance span {
+  color: rgba(255,255,255,.34);
+  font-size: 8px;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: .14em;
+}
+#groups .ccfv-champions-group__title strong { color: #fff; font-size: 24px; line-height: 1; }
+#groups .ccfv-champions-group__advance { align-items: flex-end; text-align: right; }
+#groups .ccfv-champions-group__advance strong { color: #43df91; font-size: 10px; letter-spacing: .08em; }
+
+/* Classificação: todos os dados cabem no cartão sem barras horizontais */
+#groups .ccfv-champions-group__table-wrap { width: 100%; overflow: visible; }
+#groups .ccfv-champions-group__thead,
+#groups .ccfv-champions-group__row {
+  display: grid;
+  grid-template-columns: 25px minmax(135px,2fr) repeat(7,minmax(23px,.43fr)) 38px;
+  align-items: center;
+  column-gap: 5px;
+  width: 100%;
+  min-width: 0 !important;
+  padding: 0 12px;
+}
+#groups .ccfv-champions-group__thead {
+  min-height: 36px;
+  border-bottom: 1px solid rgba(255,255,255,.065);
+  color: rgba(255,255,255,.32);
+  background: rgba(0,0,0,.12);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .04em;
+}
+#groups .ccfv-champions-group__thead span { min-width: 0; text-align: center; white-space: nowrap; }
+#groups .ccfv-champions-group__thead span:nth-child(2) { text-align: left; }
+#groups .ccfv-champions-group__row {
+  min-height: 55px;
+  border-top: 1px solid rgba(255,255,255,.045);
+  color: rgba(255,255,255,.65);
+  font-size: 9px;
+}
+#groups .ccfv-champions-group__row:first-of-type { border-top: 0; }
+#groups .ccfv-champions-group__row.is-qualified { background: rgba(67,223,145,.045); }
+#groups .ccfv-champions-group__row > span:not(.group-position),
+#groups .ccfv-champions-group__row > strong.points { text-align: center; }
+#groups .ccfv-champions-group__row .group-position { color: rgba(67,223,145,.72); font-weight: 900; text-align: center; }
+#groups .ccfv-champions-group__row .points { color: #43df91; font-size: 10px; font-weight: 900; }
+#groups .goal-difference.positive { color: #43df91; }
+#groups .goal-difference.negative { color: #ff8d95; }
+#groups .ccfv-champions-group__club {
+  display: grid;
+  grid-template-columns: 27px minmax(0,1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+#groups .ccfv-champions-group__logo,
+#groups .ccfv-champions-group__placeholder-logo {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  border-radius: 7px;
+}
+#groups .ccfv-champions-group__placeholder-logo {
+  border: 1px dashed rgba(67,223,145,.23);
+  background: rgba(67,223,145,.025);
+  color: #43df91;
+  font-size: 8px;
+  font-weight: 900;
+}
+#groups .ccfv-champions-group__club > div { min-width: 0; }
+#groups .ccfv-champions-group__club strong {
+  display: block;
+  overflow: hidden;
+  color: #f5f8f6;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#groups .ccfv-champions-group__club small {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  margin-top: 4px;
+  overflow: hidden;
+  color: rgba(255,255,255,.32);
+  font-size: 7px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#groups .ccfv-wc-group-player-photo {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  object-fit: cover;
+  border: 1px solid rgba(67,223,145,.25);
+  border-radius: 50%;
+}
+#groups .ccfv-champions-group__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 12px;
+  padding: 12px 15px;
+  border-top: 1px solid rgba(255,255,255,.055);
+  color: rgba(255,255,255,.35);
+  background: rgba(0,0,0,.10);
+  font-size: 7px;
+  line-height: 1.5;
+}
+#groups .ccfv-champions-group__legend b { color: #43df91; margin-right: 3px; }
+
+/* Central de jogos */
+#matches.ccfv-match-list {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 10px;
+  align-items: start;
+}
+.ccfv-wc-admin-match {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 13px;
+  background: linear-gradient(145deg,rgba(255,255,255,.025),rgba(255,255,255,.008));
+}
+.ccfv-wc-admin-match__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.ccfv-wc-admin-match__meta small { color: rgba(255,255,255,.38); font-size: 8px; font-weight: 900; letter-spacing: .08em; }
+.ccfv-wc-admin-match__meta span { padding: 5px 8px; border: 1px solid rgba(67,223,145,.16); border-radius: 99px; color: #43df91; background: rgba(67,223,145,.04); font-size: 7px; }
+.ccfv-wc-admin-match__meta span.is-finished { color: #b2f1d1; }
+.ccfv-wc-admin-match__teams { display: grid; grid-template-columns: minmax(0,1fr) 76px minmax(0,1fr); gap: 10px; align-items: center; margin-bottom: 14px; }
+.ccfv-wc-admin-match__teams > div { min-width: 0; }
+.ccfv-wc-admin-match__teams > div:last-child { text-align: right; }
+.ccfv-wc-admin-match__teams strong { display: block; overflow: hidden; color: #fff; font-size: 11px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+.ccfv-wc-admin-match__teams small { display: block; margin-top: 5px; overflow: hidden; color: rgba(255,255,255,.36); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.ccfv-wc-admin-match__teams > b { text-align: center; color: #43df91; font-size: 17px; }
+.ccfv-wc-admin-match > .ccfv-btn { width: 100%; min-height: 38px; }
+
+/* Campeão */
+#champion.ccfv-wc-admin-champion { min-height: 175px; }
+#champion.ccfv-empty { color: rgba(255,255,255,.42); }
+
+@media (max-width: 1100px) {
+  #groups .ccfv-champions-group__thead,
+  #groups .ccfv-champions-group__row {
+    grid-template-columns: 24px minmax(130px,2fr) repeat(7,minmax(22px,.4fr)) 34px;
+    column-gap: 4px;
+  }
+  #matches.ccfv-match-list { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .ccfv-wc-admin-team-row { grid-template-columns: 1fr; gap: 12px; }
+  .ccfv-wc-admin-team-action { grid-template-columns: minmax(0,1fr) auto; }
+  #groups.ccfv-wc-detailed-groups { grid-template-columns: 1fr !important; }
+  #groups .ccfv-champions-group__thead,
+  #groups .ccfv-champions-group__row {
+    grid-template-columns: 24px minmax(125px,2fr) repeat(7,minmax(21px,.4fr)) 32px;
+    padding-left: 9px;
+    padding-right: 9px;
+    column-gap: 3px;
+  }
+  #groups .ccfv-champions-group__thead { font-size: 6px; }
+  #groups .ccfv-champions-group__row { font-size: 8px; }
+  .ccfv-wc-admin-match__teams { grid-template-columns: minmax(0,1fr) 58px minmax(0,1fr); }
+}
+@media (max-width: 480px) {
+  .ccfv-wc-workspace > .ccfv-wc-groups-card,
+  .ccfv-wc-workspace > .ccfv-wc-matches-card { padding: 13px 9px; }
+  .ccfv-wc-admin-team-action { grid-template-columns: 1fr; }
+  #groups .ccfv-champions-group__legend { gap: 6px 9px; }
+}
+</style>
 </head>
-<body><div class="ccfv-competition-admin">
+<body>
+<div class="ccfv-competition-admin">
 <aside class="ccfv-competition-sidebar">
 <div class="ccfv-brand"><img src="../assets/images/logo/ccfv-logo.png" alt="CCFV"><div><strong>CCFV ADMIN</strong><span>COPA DO MUNDO</span></div></div>
 <div class="ccfv-sidebar-label">CENTRAL</div><nav class="ccfv-side-nav"><a href="/admin/competicoes.html">▦ Central</a><a href="/admin/index.html">⌂ Dashboard</a></nav>
@@ -15,8 +259,12 @@
 <div class="ccfv-sidebar-label">SISTEMA</div><nav class="ccfv-side-nav"><a href="/pages/historia.html">▣ História / Hall</a></nav>
 <div class="ccfv-sidebar-footer"><a href="/">← Ver site</a></div>
 </aside>
-<main class="ccfv-main"><header class="ccfv-topbar"><div><span>CCFV // COMPETIÇÃO GLOBAL</span><h1>COPA DO MUNDO</h1></div><div class="ccfv-user"><span>Sessão autenticada</span><button class="ccfv-btn" id="refresh">Atualizar</button></div></header>
-<section class="ccfv-page"><span class="ccfv-kicker">CCFV // 32 SELEÇÕES</span><h2>GERAR A<br><strong>COPA DO MUNDO.</strong></h2><p class="ccfv-lead">Painel próprio para cadastrar os 32 participantes, sortear os grupos, gerar os jogos, administrar o mata-mata e fechar oficialmente a temporada.</p>
+<main class="ccfv-main">
+<header class="ccfv-topbar"><div><span>CCFV // COMPETIÇÃO GLOBAL</span><h1>COPA DO MUNDO</h1></div><div class="ccfv-user"><span>Sessão autenticada</span><button class="ccfv-btn" id="refresh">Atualizar</button></div></header>
+<section class="ccfv-page">
+<span class="ccfv-kicker">CCFV // 32 SELEÇÕES</span>
+<h2>GERAR A<br><strong>COPA DO MUNDO.</strong></h2>
+<p class="ccfv-lead">Painel próprio para cadastrar os 32 participantes, sortear os grupos, gerar os jogos, administrar o mata-mata e fechar oficialmente a temporada.</p>
 <div id="message" class="ccfv-message" hidden></div>
 <div class="ccfv-stat-grid">
 <div class="ccfv-stat"><span>TEMPORADA</span><strong id="stat-season">01</strong></div>
@@ -30,12 +278,16 @@
 <div class="ccfv-actions"><button class="ccfv-btn primary" id="draw">SORTEAR GRUPOS</button><button class="ccfv-btn" id="generate">GERAR 48 JOGOS</button><button class="ccfv-btn" id="generate-r16">GERAR OITAVAS</button><button class="ccfv-btn" id="next-phase">GERAR PRÓXIMA FASE</button><button class="ccfv-btn danger" id="finish">FINALIZAR TEMPORADA</button></div>
 <p class="ccfv-muted" style="margin-top:14px">A Copa usa tabelas e RPCs próprias. Os outros motores não são alterados.</p></article>
 </div>
-<div class="ccfv-grid" style="margin-top:14px">
-<article class="ccfv-card"><header><div><span>03 // GRUPOS</span><h3>CLASSIFICAÇÃO</h3></div></header><div id="groups"></div></article>
-<article class="ccfv-card"><header><div><span>04 // PARTIDAS</span><h3>JOGOS</h3></div></header><div class="ccfv-toolbar"><select id="stage-filter" style="min-height:36px;padding:0 10px;background:#07100b;color:#fff;border:1px solid var(--line);border-radius:9px"><option value="GROUP_STAGE">FASE DE GRUPOS</option><option value="ROUND_OF_16">OITAVAS</option><option value="QUARTERFINALS">QUARTAS</option><option value="SEMIFINALS">SEMIFINAIS</option><option value="FINAL">FINAL</option></select><button class="ccfv-btn" id="load-matches">Atualizar</button></div><div id="matches" class="ccfv-match-list"></div></article>
+<div class="ccfv-grid ccfv-wc-workspace" style="margin-top:14px">
+<article class="ccfv-card ccfv-wc-groups-card"><header><div><span>03 // GRUPOS</span><h3>CLASSIFICAÇÃO</h3></div><span class="ccfv-chip">8 GRUPOS · 4 SELEÇÕES</span></header><div id="groups" class="ccfv-wc-detailed-groups"></div></article>
+<article class="ccfv-card ccfv-wc-matches-card"><header><div><span>04 // PARTIDAS</span><h3>JOGOS</h3></div></header><div class="ccfv-toolbar"><select id="stage-filter" style="min-height:40px;padding:0 12px;background:#07100b;color:#fff;border:1px solid var(--line);border-radius:9px"><option value="GROUP_STAGE">FASE DE GRUPOS</option><option value="ROUND_OF_16">OITAVAS</option><option value="QUARTERFINALS">QUARTAS</option><option value="SEMIFINALS">SEMIFINAIS</option><option value="FINAL">FINAL</option></select><button class="ccfv-btn" id="load-matches">Atualizar</button></div><div id="matches" class="ccfv-match-list"></div></article>
 </div>
 <article class="ccfv-card" style="margin-top:14px"><header><div><span>05 // HISTÓRIA</span><h3>CAMPEÃO</h3></div></header><div id="champion" class="ccfv-empty">A DEFINIR</div></article>
-</section></main></div>
+</section>
+</main>
+</div>
 <div class="ccfv-modal" id="result-modal" hidden><div class="ccfv-modal-card"><div class="ccfv-toolbar"><h3>LANÇAR RESULTADO</h3><button class="ccfv-btn" id="close-result">Fechar</button></div><form id="result-form"><div class="ccfv-form-grid"><label>CASA<input id="home" readonly></label><label>FORA<input id="away" readonly></label><label>PLACAR CASA<input id="home-score" type="number" min="0" value="0"></label><label>PLACAR FORA<input id="away-score" type="number" min="0" value="0"></label><label>PÊNALTIS CASA<input id="home-pen" type="number" min="0"></label><label>PÊNALTIS FORA<input id="away-pen" type="number" min="0"></label><label style="grid-column:1/-1">OBSERVAÇÃO<textarea id="notes" rows="3"></textarea></label></div><button class="ccfv-btn primary" style="margin-top:14px" type="submit">VALIDAR RESULTADO</button></form></div></div>
-<script src="/admin/js/auth.js" defer></script><script src="/admin/js/copa-do-mundo.js" defer></script>
-</body></html>
+<script src="/admin/js/auth.js" defer></script>
+<script src="/admin/js/copa-do-mundo.js" defer></script>
+</body>
+</html>
