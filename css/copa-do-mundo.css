@@ -1113,3 +1113,95 @@ body[data-page="copa-do-mundo"] .ccfv-wc-match-card footer {
         font-size: 17px;
     }
 }
+
+/* CCFV COPA DO MUNDO — NOMES E BANDEIRAS NO CHAVEAMENTO */
+
+body[data-page="copa-do-mundo"]
+#wc-knockout .ccfv-wc-bracket-match__team-row {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 26px !important;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 5px 0;
+}
+
+body[data-page="copa-do-mundo"]
+#wc-knockout .ccfv-wc-bracket-match > div > .ccfv-wc-bracket-team {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+    white-space: normal;
+}
+
+body[data-page="copa-do-mundo"]
+#wc-knockout .ccfv-wc-bracket-match__team-row span::before {
+    content: none !important;
+    display: none !important;
+}
+
+body[data-page="copa-do-mundo"]
+#wc-knockout .ccfv-wc-bracket-team .ccfv-wc-logo {
+    display: block;
+    flex: 0 0 25px;
+    width: 25px !important;
+    min-width: 25px !important;
+    max-width: 25px !important;
+    height: 19px !important;
+    max-height: 19px !important;
+    object-fit: contain !important;
+}
+
+body[data-page="copa-do-mundo"]
+#wc-knockout .ccfv-wc-bracket-team .ccfv-wc-fallback-logo {
+    flex: 0 0 25px;
+    place-items: center;
+    width: 25px;
+    height: 19px;
+    border-radius: 4px;
+    font-size: 8px;
+}
+
+body[data-page="copa-do-mundo"]
+#wc-knockout .ccfv-wc-bracket-team__name {
+    display: block !important;
+    min-width: 0;
+    overflow: hidden;
+    color: #dce7e1 !important;
+    font-size: 10px !important;
+    font-weight: 800;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body[data-page="copa-do-mundo"]
+#wc-knockout .ccfv-wc-bracket-match__team-row > strong {
+    display: block;
+    min-width: 26px;
+    text-align: right;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-badge.is-provisional {
+    border-color: rgba(67, 223, 145, .25);
+    color: #43df91;
+}
+
+body[data-page="copa-do-mundo"]
+.ccfv-wc-champion-badge.is-official {
+    border-color: rgba(215, 173, 71, .35);
+    color: #d7ad47;
+}
+
+@media (max-width: 650px) {
+    body[data-page="copa-do-mundo"]
+    #wc-knockout .ccfv-wc-bracket-team__name {
+        font-size: 9px !important;
+    }
+}
