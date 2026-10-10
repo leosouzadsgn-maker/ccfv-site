@@ -919,3 +919,197 @@ body[data-page="copa-do-mundo"]
     }
 
 }
+/* =========================================================
+   CCFV WORLD CUP — PARTIDAS COMPACTAS
+   ========================================================= */
+
+body[data-page="copa-do-mundo"] #wc-matches {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 14px;
+    min-width: 0;
+}
+
+body[data-page="copa-do-mundo"] #wc-matches .ccfv-wc-match-card {
+    min-width: 0;
+    padding: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .08);
+    border-radius: 14px;
+    background: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, .035),
+        rgba(255, 255, 255, .012)
+    );
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-card__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, .07);
+    color: rgba(255, 255, 255, .48);
+    font-size: 9px;
+    font-weight: 800;
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-card__meta strong {
+    color: #43df91;
+    font-size: 8px;
+    letter-spacing: .06em;
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-card__meta strong.is-finished {
+    color: #43df91;
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-card__teams {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 92px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    padding: 18px 0 12px;
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-card__team {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-card__team--away {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-logo {
+    display: grid;
+    place-items: center;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 32px;
+    min-width: 42px;
+    overflow: hidden;
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-logo img {
+    display: block;
+    width: 40px !important;
+    min-width: 0 !important;
+    max-width: 40px !important;
+    height: 28px !important;
+    max-height: 28px !important;
+    object-fit: contain !important;
+    margin: 0 !important;
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-logo .ccfv-wc-fallback-logo {
+    width: 28px;
+    height: 28px;
+    place-items: center;
+    border: 1px solid rgba(67, 223, 145, .2);
+    border-radius: 7px;
+    color: #43df91;
+    font-size: 9px;
+    font-weight: 900;
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-card__team > div:last-child {
+    min-width: 0;
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-card__team strong {
+    display: block;
+    overflow: hidden;
+    color: #fff;
+    font-size: 11px;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-card__team small {
+    display: block;
+    margin-top: 4px;
+    overflow: hidden;
+    color: rgba(255, 255, 255, .42);
+    font-size: 9px;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-card__score {
+    min-width: 0;
+    text-align: center;
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-card__score strong {
+    display: block;
+    color: #43df91;
+    font-size: 21px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-card__score span {
+    display: block;
+    margin-top: 5px;
+    color: rgba(255, 255, 255, .34);
+    font-size: 8px;
+    line-height: 1.5;
+}
+
+body[data-page="copa-do-mundo"] .ccfv-wc-match-card footer {
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, .06);
+    color: rgba(255, 255, 255, .48);
+    font-size: 9px;
+}
+
+@media (max-width: 1050px) {
+    body[data-page="copa-do-mundo"] #wc-matches {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 560px) {
+    body[data-page="copa-do-mundo"] #wc-matches .ccfv-wc-match-card {
+        padding: 12px;
+    }
+
+    body[data-page="copa-do-mundo"] .ccfv-wc-match-card__teams {
+        grid-template-columns: minmax(0, 1fr) 62px minmax(0, 1fr);
+        gap: 6px;
+    }
+
+    body[data-page="copa-do-mundo"] .ccfv-wc-match-logo {
+        flex-basis: 30px;
+        width: 30px;
+        min-width: 30px;
+    }
+
+    body[data-page="copa-do-mundo"] .ccfv-wc-match-logo img {
+        width: 29px !important;
+        max-width: 29px !important;
+        height: 23px !important;
+        max-height: 23px !important;
+    }
+
+    body[data-page="copa-do-mundo"] .ccfv-wc-match-card__team {
+        gap: 5px;
+    }
+
+    body[data-page="copa-do-mundo"] .ccfv-wc-match-card__team strong {
+        font-size: 10px;
+    }
+
+    body[data-page="copa-do-mundo"] .ccfv-wc-match-card__score strong {
+        font-size: 17px;
+    }
+}
