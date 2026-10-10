@@ -880,86 +880,70 @@
         }
     }
 
-    async function autoAdvance() {
-        if (
-            state.autoAdvancing ||
-            !state.season
-        ) {
-            return;
-        }
-
-        const phase = currentPhase();
-
-        if (phase === "FINISHED") {
-            return;
-        }
-
-        const matches = currentMatches()
-            .filter(match => match.stage === phase);
-
-        if (!matches.length) {
-            return;
-        }
-
-        const complete = matches.every(match =>
-            DONE.has(String(match.status || ""))
-        );
-
-        if (!complete) {
-            return;
-        }
-
-        state.autoAdvancing = true;
-
-        try {
-            if (phase === "GROUP_STAGE") {
-                await rpc(
-                    "ccfv_world_cup_generate_round_of_16",
-                    {
-                        p_season_id: state.season.id
-                    }
-                );
-            } else if (
-                [
-                    "ROUND_OF_16",
-                    "QUARTERFINALS",
-                    "SEMIFINALS"
-                ].includes(phase)
-            ) {
-                await rpc(
-                    "ccfv_world_cup_generate_next_phase",
-                    {
-                        p_season_id: state.season.id,
-                        p_stage: phase
-                    }
-                );
-            } else if (phase === "FINAL") {
-                await rpc(
-                    "ccfv_world_cup_finish_season",
-                    {
-                        p_season_id: state.season.id
-                    }
-                );
-            }
-        } catch (error) {
-            console.warn(
-                "CCFV // WORLD CUP AUTO ADVANCE:",
-                error
-            );
-        } finally {
-            state.autoAdvancing = false;
-        }
-
-        if (phase !== currentPhase()) {
-            state.stage = currentPhase();
-        }
-
-        // Atualiza a tela sem entrar em loop.
-        const phaseNow = currentPhase();
-        if (phaseNow !== phase) {
-            await loadWithoutAutoAdvance();
-        }
+   async function autoAdvance() {
+    if (state.autoAdvancing || !state.season) {
+        return;
     }
+
+    const phase = currentPhase();
+
+    // A temporada só termina pelo botão FINALIZAR TEMPORADA.
+    if (phase === "FINAL" || phase === "FINISHED") {
+        return;
+    }
+
+    const matches = currentMatches().filter(
+        match => String(match.stage || "").toUpperCase() === phase
+    );
+
+    if (!matches.length) {
+        return;
+    }
+
+    const complete = matches.every(
+        match => DONE.has(String(match.status || "").toUpperCase())
+    );
+
+    if (!complete) {
+        return;
+    }
+
+    state.autoAdvancing = true;
+    let advanced = false;
+
+    try {
+        if (phase === "GROUP_STAGE") {
+            await rpc("ccfv_world_cup_generate_round_of_16", {
+                p_season_id: state.season.id
+            });
+
+            advanced = true;
+        } else if (
+            ["ROUND_OF_16", "QUARTERFINALS", "SEMIFINALS"].includes(phase)
+        ) {
+            await rpc("ccfv_world_cup_generate_next_phase", {
+                p_season_id: state.season.id,
+                p_stage: phase
+            });
+
+            advanced = true;
+        }
+    } catch (error) {
+        console.warn("CCFV // WORLD CUP AUTO ADVANCE:", error);
+        message(
+            error?.message || "Não foi possível gerar a próxima fase.",
+            true
+        );
+    } finally {
+        state.autoAdvancing = false;
+    }
+
+    // Atualiza a tela após gerar oitavas, quartas ou semifinais.
+    // Nunca chama finish_season automaticamente.
+    if (advanced) {
+        await loadWithoutAutoAdvance();
+    }
+}
 
     async function loadWithoutAutoAdvance() {
         const supabase = await client();
