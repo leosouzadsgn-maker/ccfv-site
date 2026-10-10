@@ -139,19 +139,35 @@
       await load();
     }catch(e){console.error(e);message(e.message||"Erro ao salvar resultado.",true);}
   }
-  async function autoAdvance(){
+  
+ async function autoAdvance(){
     if(state.autoAdvancing || !state.season) return;
+
     const phase=String(state.season.phase||"").toUpperCase();
+
+    // A final só é encerrada pelo botão manual "Finalizar temporada".
+    if(phase==="FINAL" || phase==="FINISHED") return;
+
     const matches=seasonMatches().filter(m=>m.stage===phase);
     if(!matches.length) return;
-    const complete=matches.every(m=>resultStatuses.includes(String(m.status||"")) && (phase==="GROUP_STAGE" || m.leg===2 || phase==="FINAL"));
+
+    const complete=matches.every(
+      m=>resultStatuses.includes(String(m.status||"")) &&
+         (phase==="GROUP_STAGE" || m.leg===2)
+    );
     if(!complete) return;
 
     state.autoAdvancing=true;
     try{
-      if(phase==="GROUP_STAGE") await rpc("ccfv_libertadores_generate_r16",{p_season_id:state.season.id});
-      else if(["ROUND_OF_16","QUARTERFINALS","SEMIFINALS"].includes(phase)) await rpc("ccfv_libertadores_generate_next_knockout",{p_season_id:state.season.id});
-      else if(phase==="FINAL") await rpc("ccfv_libertadores_finish_season",{p_season_id:state.season.id});
+      if(phase==="GROUP_STAGE"){
+        await rpc("ccfv_libertadores_generate_r16",{
+          p_season_id:state.season.id
+        });
+      }else if(["ROUND_OF_16","QUARTERFINALS","SEMIFINALS"].includes(phase)){
+        await rpc("ccfv_libertadores_generate_next_knockout",{
+          p_season_id:state.season.id
+        });
+      }
     }catch(e){
       console.warn("CCFV // LIBERTADORES AUTO ADVANCE:",e);
     }finally{
@@ -159,7 +175,7 @@
     }
 
     await load(false);
-  }
+}
 
   async function execute(action){
     try{
