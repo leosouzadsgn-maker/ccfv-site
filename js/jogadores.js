@@ -488,6 +488,17 @@
                                     0
                                 ),
 
+                            // Total de jogos: prioriza os contadores explícitos
+                            // e usa V + E + D apenas como piso de segurança.
+                            matches_played:
+                                Math.max(
+                                    Number(rankingPlayer?.matches_played) || 0,
+                                    Number(player?.matches_played) || 0,
+                                    (Number(rankingPlayer?.wins ?? player?.wins ?? 0) || 0) +
+                                    (Number(rankingPlayer?.draws ?? player?.draws ?? 0) || 0) +
+                                    (Number(rankingPlayer?.losses ?? player?.losses ?? 0) || 0)
+                                ),
+
                             wins:
                                 Number(
                                     rankingPlayer?.wins ??
@@ -1592,6 +1603,13 @@
             )
             .replace(/^@/, "");
 
+        const matchesPlayed = Math.max(
+            Number(player.matches_played) || 0,
+            (Number(player.wins) || 0) +
+            (Number(player.draws) || 0) +
+            (Number(player.losses) || 0)
+        );
+
         return `
 
             <article
@@ -1706,6 +1724,11 @@
                     <div>
                         <span>ELO</span>
                         <strong>${Number(player.elo) || 0}</strong>
+                    </div>
+
+                    <div>
+                        <span>JOGOS</span>
+                        <strong>${matchesPlayed}</strong>
                     </div>
 
                     <div>
