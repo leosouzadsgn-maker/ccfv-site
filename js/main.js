@@ -14,7 +14,6 @@ const links=[
     ["CHAMPIONS LEAGUE","/pages/champions.html","champions"],
     ["LIBERTADORES","/pages/libertadores.html","libertadores"],
     ["NIGHT CUP","/pages/night.html","night"],
-    ["MOBILE","/pages/mobile.html","mobile"],
     ["COPA DO MUNDO","/pages/copa-do-mundo.html","copa-do-mundo"],
     ["RANKING","/pages/ranking.html","ranking"],
     ["HISTÓRIA","/pages/historia.html","historia"]
@@ -23,19 +22,11 @@ const links=[
 function currentPage(){
     const p=window.location.pathname;
 
-    if(
-        p.includes("brasileirao-mobile")||
-        p.includes("ranking-mobile")||
-        p.includes("partidas-mobile")||
-        p.includes("arena-cup")
-    ) return "mobile";
-
-    if(p.includes("brasileirao")) return "brasileirao";
+if(p.includes("brasileirao")) return "brasileirao";
     if(p.includes("champions")) return "champions";
     if(p.includes("libertadores")) return "libertadores";
     if(p.includes("night")) return "night";
-    if(p.includes("mobile")) return "mobile";
-    if(p.includes("copa-do-mundo")) return "copa-do-mundo";
+if(p.includes("copa-do-mundo")) return "copa-do-mundo";
     if(p.includes("ranking")) return "ranking";
     if(p.includes("historia")) return "historia";
     if(p.includes("competicoes")) return "competicoes";
@@ -109,7 +100,7 @@ function initSideMenu(){
 
         <div class="ccfv-side-menu__footer">
             <small>
-                SEASON 01 • PC + CONSOLE • MOBILE
+                SEASON 01 • PC + CONSOLE
             </small>
 
             <a href="/admin/">

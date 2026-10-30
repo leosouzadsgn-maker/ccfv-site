@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="css/header-side-menu.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/home-champions.css">
 </head>
 <body data-page="home">
 
@@ -33,7 +34,8 @@
             <a href="pages/brasileirao.html" class="ccfv-header__link">Brasileirão</a>
             <a href="pages/champions.html" class="ccfv-header__link">Champions League</a>
             <a href="pages/night.html" class="ccfv-header__link">Night Cup</a>
-            <a href="pages/mobile.html" class="ccfv-header__link">Mobile</a>
+            <a href="pages/libertadores.html" class="ccfv-header__link">Libertadores</a>
+            <a href="pages/copa-do-mundo.html" class="ccfv-header__link">Copa do Mundo</a>
             <a href="pages/ranking.html" class="ccfv-header__link">Ranking</a>
             <a href="pages/historia.html" class="ccfv-header__link">História</a>
         </nav>
@@ -63,7 +65,7 @@
                     <a href="#competicoes" class="ccfv-home-button ccfv-home-button--primary">Explorar competições</a>
                     <a href="pages/ranking.html" class="ccfv-home-button ccfv-home-button--ghost">Ver ranking oficial</a>
                 </div>
-                <p class="ccfv-home-hero__micro">SEASON 01 • PC + CONSOLE • MOBILE • HISTÓRIA OFICIAL</p>
+                <p class="ccfv-home-hero__micro">SEASON 01 • PC + CONSOLE • HISTÓRIA OFICIAL</p>
             </div>
 
             <aside class="ccfv-home-season-card" data-reveal data-reveal-delay="140">
@@ -105,9 +107,9 @@
             <div class="ccfv-home-section__heading" data-reveal>
                 <div>
                     <span class="ccfv-home-section-kicker">CCFV // UNIVERSO COMPETITIVO</span>
-                    <h2 id="competicoes-title">SEIS CAMINHOS.<br><span>UMA HISTÓRIA.</span></h2>
+                    <h2 id="competicoes-title">CINCO COMPETIÇÕES.<br><span>UM LEGADO.</span></h2>
                 </div>
-                <p>A Home passa a ser o centro do universo CCFV: cada competição tem identidade própria, regras próprias e um caminho separado até o troféu.</p>
+                <p>Cinco competições oficiais. Cinco caminhos para a glória. Cada resultado constrói a história da Confederação Coliseu de Futebol Virtual.</p>
             </div>
 
             <div class="ccfv-home-competition-grid" data-reveal-group>
@@ -136,14 +138,6 @@
                 </article>
 
                 <article class="ccfv-home-competition" data-reveal data-reveal-delay="270">
-                    <div class="ccfv-home-competition__top"><span class="ccfv-home-competition__index">04 / MOBILE</span><span class="ccfv-home-competition__status">Hub Mobile</span></div>
-                    <div class="ccfv-home-competition__art"><img src="assets/images/historia/trofeus/brasileirao.png" alt="Troféu representativo do Mobile CCFV" loading="lazy" decoding="async"></div>
-                    <h3 class="ccfv-home-competition__name">Mobile</h3>
-                    <p class="ccfv-home-competition__sub">Brasileirão Mobile • Arena Cup</p>
-                    <a class="ccfv-home-competition__link" href="pages/mobile.html">Abrir hub mobile</a>
-                </article>
-
-                <article class="ccfv-home-competition" data-reveal data-reveal-delay="360">
                     <div class="ccfv-home-competition__top"><span class="ccfv-home-competition__index">05 / CONTINENTAL</span><span class="ccfv-home-competition__status is-live">Ativa</span></div>
                     <div class="ccfv-home-competition__art"><img src="assets/images/historia/trofeus/libertadores.png" alt="Troféu da Libertadores CCFV" loading="lazy" decoding="async"></div>
                     <h3 class="ccfv-home-competition__name">Libertadores</h3>
@@ -151,13 +145,33 @@
                     <a class="ccfv-home-competition__link" href="pages/libertadores.html">Abrir competição</a>
                 </article>
 
-                <article class="ccfv-home-competition" data-reveal data-reveal-delay="450">
+                <article class="ccfv-home-competition" data-reveal data-reveal-delay="360">
                     <div class="ccfv-home-competition__top"><span class="ccfv-home-competition__index">06 / GLOBAL</span><span class="ccfv-home-competition__status is-live">Ativa</span></div>
                     <div class="ccfv-home-competition__art"><img src="assets/images/historia/trofeus/copa-do-mundo.png" alt="Troféu da Copa do Mundo CCFV" loading="lazy" decoding="async"></div>
                     <h3 class="ccfv-home-competition__name">Copa do Mundo</h3>
                     <p class="ccfv-home-competition__sub">32 seleções • competição global</p>
                     <a class="ccfv-home-competition__link" href="pages/copa-do-mundo.html">Entrar na competição</a>
                 </article>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="ccfv-home-section ccfv-home-champions" id="hall-dos-campeoes" aria-labelledby="home-champions-title">
+        <div class="ccfv-home-section__inner">
+            <div class="ccfv-home-section__heading" data-reveal>
+                <div>
+                    <span class="ccfv-home-section-kicker">CCFV // HALL DA FAMA</span>
+                    <h2 id="home-champions-title">QUEM VENCEU.<br><span>ENTROU PARA A HISTÓRIA.</span></h2>
+                </div>
+                <p>Os campeões oficiais de cada competição, registrados no arquivo histórico da CCFV. Cada conquista tem nome, temporada e lugar no legado.</p>
+            </div>
+            <div class="ccfv-home-champions__grid" id="home-champions-grid" aria-live="polite">
+                <div class="ccfv-home-champions__loading">CARREGANDO OS CAMPEÕES OFICIAIS...</div>
+            </div>
+            <div class="ccfv-home-champions__footer">
+                <span>REGISTRO OFICIAL • CCFV</span>
+                <a href="pages/historia.html">ABRIR HISTÓRIA COMPLETA →</a>
             </div>
         </div>
     </section>
@@ -247,5 +261,6 @@
 <script src="js/animations.js" defer></script>
 <script src="js/data.js" defer></script>
 <script src="js/ccfv-live.js" defer></script>
+<script src="js/home-champions.js" defer></script>
 </body>
 </html>

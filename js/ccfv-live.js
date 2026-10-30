@@ -107,7 +107,7 @@
             throw error;
         }
 
-        return data || [];
+        return (data || []).filter(player => String(player?.platform || "").trim().toUpperCase() !== "MOBILE");
     }
 
     async function loadPlayerCompetitions(client) {
@@ -119,7 +119,7 @@
             throw error;
         }
 
-        return data || [];
+        return (data || []).filter(item => !["BRASILEIRAO_MOBILE", "ARENA_CUP"].includes(String(item.competition || "").toUpperCase()));
     }
 
     async function loadMatches(client) {
@@ -256,6 +256,7 @@
     function buildLiveRanking(players) {
 
         return (players || [])
+            .filter(player => String(player?.platform || "").trim().toUpperCase() !== "MOBILE")
             .map(player => ({
 
                 ...player,
@@ -1958,8 +1959,7 @@
                     loadPlayerCompetitions(client),
                     loadMatches(client),
                     loadNightMatches(client),
-                    loadRanking(client),
-                    loadMobileRanking(client)
+                    loadRanking(client)
                 ]);
 
             const [
@@ -1967,8 +1967,7 @@
                 playerCompetitionsResult,
                 matchesResult,
                 nightMatchesResult,
-                rankingResult,
-                mobileRankingResult
+                rankingResult
             ] = results;
 
             const readResult = (result, label) => {
@@ -1995,34 +1994,8 @@
             const officialRanking =
                 readResult(rankingResult, "RANKING");
 
-            const mobileRanking =
-                readResult(mobileRankingResult, "MOBILE RANKING");
-
-           const mobilePlayers =
-    mobileRanking.map(
-        player => ({
-            ...player,
-            id:
-                player?.id ||
-                player?.player_id ||
-                null,
-            platform: "MOBILE"
-        })
-    );
-
-            state.players =
-                [
-                    ...state.players,
-                    ...mobilePlayers
-                ];
-
             state.ranking =
-                buildLiveRanking(
-                    [
-                        ...officialRanking,
-                        ...mobilePlayers
-                    ]
-                );
+                buildLiveRanking(officialRanking);
 
 
             state.updatedAt =
