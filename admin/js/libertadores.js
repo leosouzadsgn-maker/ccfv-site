@@ -97,10 +97,226 @@
   function matchLabel(m){
     const stage=phaseLabel(m.stage); return `${stage}${m.group_code?` · GRUPO ${m.group_code}`:""}${m.tie_code?` · ${m.tie_code}`:""} · ${m.leg===2?"VOLTA":"IDA"}`;
   }
-  function renderMatches(){
-    const matches=seasonMatches();
-    $("#matches-list").innerHTML=matches.length?matches.map(m=>`<div class="lib-match" data-finished="${resultStatuses.includes(String(m.status||""))}"><span>${matchLabel(m)}</span><div><strong>${esc(m.home?.name||"Casa")}</strong> × <strong>${esc(m.away?.name||"Fora")}</strong><span>${m.scheduled_at?new Date(m.scheduled_at).toLocaleString("pt-BR"):"Data a definir"}</span></div><strong>${m.home_score!=null?`${m.home_score} × ${m.away_score}`:"—"}</strong><button type="button" data-open-result="${esc(m.id)}">${resultStatuses.includes(String(m.status||""))?"EDITAR":"RESULTADO"}</button></div>`).join(""):"<div class='lib-help'>Nenhuma partida gerada ainda.</div>";
-  }
+ 
+function renderMatches(){
+    const container = $("#matches-list");
+    if (!container) return;
+
+    const matches = seasonMatches();
+    const oldSearch = container.querySelector("#matches-search")?.value || "";
+    const groups = ["A","B","C","D","E","F","G","H"];
+
+    const stages = [
+        ["ROUND_OF_16","OITAVAS DE FINAL"],
+        ["QUARTERFINALS","QUARTAS DE FINAL"],
+        ["SEMIFINALS","SEMIFINAIS"],
+        ["FINAL","GRANDE FINAL"]
+    ];
+
+    const done = m =>
+        resultStatuses.includes(String(m.status || "").toUpperCase());
+
+    const sorted = list => [...list].sort(
+        (a,b) => Number(a.match_order || 0) - Number(b.match_order || 0)
+    );
+
+    function card(m,label){
+        const home = m.home?.name || "Casa";
+        const away = m.away?.name || "Fora";
+        const finished = done(m);
+
+        const hasScore =
+            m.home_score !== null &&
+            m.home_score !== undefined &&
+            m.away_score !== null &&
+            m.away_score !== undefined;
+
+        const score = hasScore
+            ? `${m.home_score} × ${m.away_score}`
+            : "VS";
+
+        const date = m.scheduled_at
+            ? new Date(m.scheduled_at).toLocaleString("pt-BR")
+            : "Data a definir";
+
+        return `
+            <article class="lib-match-card"
+                data-match-search="${esc([home,away,label].join(" "))}">
+
+                <div class="lib-match-card__top">
+                    <span>${esc(label)}</span>
+                    <span class="lib-match-status ${finished ? "is-done" : "is-pending"}">
+                        ${finished ? "CONCLUÍDO" : "PENDENTE"}
+                    </span>
+                </div>
+
+                <div class="lib-match-card__teams">
+                    <div class="lib-match-card__team">
+                        ${logo(m.home?.logo_path,home)}
+                        <strong>${esc(home)}</strong>
+                    </div>
+
+                    <div class="lib-match-card__score">${esc(score)}</div>
+
+                    <div class="lib-match-card__team is-away">
+                        <strong>${esc(away)}</strong>
+                        ${logo(m.away?.logo_path,away)}
+                    </div>
+                </div>
+
+                <div class="lib-match-card__footer">
+                    <span>${esc(date)}</span>
+                    <button type="button" data-open-result="${esc(m.id)}">
+                        ${finished ? "EDITAR RESULTADO" : "LANÇAR RESULTADO"}
+                    </button>
+                </div>
+            </article>
+        `;
+    }
+
+    // GRUPOS A ATÉ H
+
+    const groupHTML = groups.map(group => {
+        const games = sorted(matches.filter(m =>
+            m.stage === "GROUP_STAGE" &&
+            String(m.group_code || "").toUpperCase() === group
+        ));
+
+        if (!games.length) return "";
+
+        const completed = games.filter(done).length;
+
+        function leg(number,title){
+            const list = games.filter(m => Number(m.leg) === number);
+
+            return `
+                <div class="lib-match-leg">
+                    <div class="lib-match-leg__header">
+                        <strong>${title}</strong>
+                        <span>${list.length} PARTIDAS</span>
+                    </div>
+
+                    <div class="lib-match-leg__list">
+                        ${list.map(m => card(m,`GRUPO ${group} · ${title}`)).join("")}
+                    </div>
+                </div>
+            `;
+        }
+
+        return `
+            <section class="lib-match-group" data-match-section>
+                <header class="lib-match-group__header">
+                    <div>
+                        <span>CCFV // FASE DE GRUPOS</span>
+                        <h3>GRUPO ${group}</h3>
+                    </div>
+
+                    <div class="lib-match-group__progress">
+                        <strong>${completed}/${games.length}</strong>
+                        <span>RESULTADOS</span>
+                    </div>
+                </header>
+
+                <div class="lib-match-legs">
+                    ${leg(1,"IDA")}
+                    ${leg(2,"VOLTA")}
+                </div>
+            </section>
+        `;
+    }).join("");
+
+    // MATA-MATA
+
+    const knockoutHTML = stages.map(([stage,title]) => {
+        const games = sorted(matches.filter(m => m.stage === stage));
+
+        if (!games.length) return "";
+
+        const completed = games.filter(done).length;
+
+        return `
+            <section class="lib-match-group lib-match-knockout"
+                data-match-section>
+
+                <header class="lib-match-group__header">
+                    <div>
+                        <span>CCFV // FASE ELIMINATÓRIA</span>
+                        <h3>${title}</h3>
+                    </div>
+
+                    <div class="lib-match-group__progress">
+                        <strong>${completed}/${games.length}</strong>
+                        <span>RESULTADOS</span>
+                    </div>
+                </header>
+
+                <div class="lib-match-knockout__list">
+                    ${games.map(m => card(
+                        m,
+                        stage === "FINAL"
+                            ? "FINAL · JOGO ÚNICO"
+                            : `${title} · ${m.tie_code || ""} · ${Number(m.leg) === 2 ? "VOLTA" : "IDA"}`
+                    )).join("")}
+                </div>
+            </section>
+        `;
+    }).join("");
+
+    container.innerHTML = `
+        <div class="lib-matches-toolbar">
+            <div>
+                <strong>AGENDA DE JOGOS</strong>
+                <span>${matches.length} PARTIDAS CADASTRADAS</span>
+            </div>
+
+            <input
+                id="matches-search"
+                type="search"
+                placeholder="Buscar clube ou confronto..."
+                value="${esc(oldSearch)}"
+            >
+        </div>
+
+        ${groupHTML}
+        ${knockoutHTML}
+
+        ${matches.length ? "" : `
+            <div class="lib-empty-matches">
+                <strong>NENHUMA PARTIDA GERADA</strong>
+                <span>Os jogos aparecerão aqui após a geração da fase.</span>
+            </div>
+        `}
+    `;
+
+    // BUSCA DE PARTIDAS
+
+    const search = container.querySelector("#matches-search");
+
+    search?.addEventListener("input",() => {
+        const normalize = value => String(value || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g,"")
+            .toLowerCase()
+            .trim();
+
+        const query = normalize(search.value);
+
+        container.querySelectorAll("[data-match-search]").forEach(item => {
+            item.hidden = !normalize(item.dataset.matchSearch).includes(query);
+        });
+
+        container.querySelectorAll(".lib-match-leg").forEach(leg => {
+            const cards = [...leg.querySelectorAll("[data-match-search]")];
+            leg.hidden = cards.length > 0 && cards.every(item => item.hidden);
+        });
+
+        container.querySelectorAll("[data-match-section]").forEach(section => {
+            const cards = [...section.querySelectorAll("[data-match-search]")];
+            section.hidden = cards.length > 0 && cards.every(item => item.hidden);
+        });
+    });
+}
+
   function renderKnockout(){
     const stages=["ROUND_OF_16","QUARTERFINALS","SEMIFINALS","FINAL"];
     const matches=seasonMatches().filter(m=>stages.includes(m.stage));
