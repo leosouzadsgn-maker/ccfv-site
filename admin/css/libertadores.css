@@ -261,3 +261,65 @@
         flex-direction:column;
     }
 }
+
+/* ==========================================
+   MATA-MATA — CONFRONTOS E RESULTADOS
+   ========================================== */
+
+.lib-match-ties {
+    display: grid;
+    gap: 14px;
+}
+
+.lib-match-tie {
+    padding: 13px;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: rgba(255,255,255,.012);
+}
+
+.lib-match-tie[hidden] {
+    display: none;
+}
+
+.lib-match-tie__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.lib-match-tie__header strong {
+    font-size: 10px;
+    letter-spacing: .08em;
+}
+
+.lib-match-tie__header span {
+    color: var(--green);
+    font-size: 8px;
+    font-weight: 900;
+}
+
+.lib-match-ties .lib-match-legs {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+}
+
+.lib-match-knockout {
+    border-color: rgba(67,223,145,.22);
+}
+
+.lib-empty-leg {
+    padding: 18px 10px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 9px;
+    border: 1px dashed var(--line);
+    border-radius: 9px;
+}
+
+@media(max-width:850px) {
+    .lib-match-ties .lib-match-legs {
+        grid-template-columns: 1fr;
+    }
+}

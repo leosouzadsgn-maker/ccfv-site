@@ -317,13 +317,244 @@ function renderMatches(){
     });
 }
 
-  function renderKnockout(){
-    const stages=["ROUND_OF_16","QUARTERFINALS","SEMIFINALS","FINAL"];
-    const matches=seasonMatches().filter(m=>stages.includes(m.stage));
-    if(!matches.length){$("#knockout-list").innerHTML="<div class='lib-help'>O mata-mata aparecerá após a classificação necessária.</div>";return;}
-    const byTie=new Map(); matches.forEach(m=>{if(!byTie.has(m.tie_code))byTie.set(m.tie_code,[]);byTie.get(m.tie_code).push(m);});
-    $("#knockout-list").innerHTML=Array.from(byTie.entries()).map(([tie,arr])=>`<div class="lib-tie"><div class="lib-tie-title"><span>${esc(tie)}</span><span>${phaseLabel(arr[0].stage)}</span></div><div class="lib-tie-grid">${arr.sort((a,b)=>a.leg-b.leg).map(m=>`<div class="lib-tie-game"><span>${m.leg===1?"IDA":"VOLTA"}</span><div>${esc(m.home?.name||"Casa")} <strong>${m.home_score??"—"}</strong></div><div>${esc(m.away?.name||"Fora")} <strong>${m.away_score??"—"}</strong></div><button type="button" data-open-result="${esc(m.id)}">LANÇAR / EDITAR</button></div>`).join("")}</div></div>`).join("");
-  }
+  
+function renderKnockout(){
+    const container = $("#knockout-list");
+    if (!container) return;
+
+    const matches = seasonMatches().filter(m =>
+        ["ROUND_OF_16","QUARTERFINALS","SEMIFINALS","FINAL"].includes(m.stage)
+    );
+
+    const stages = [
+        ["ROUND_OF_16","OITAVAS DE FINAL"],
+        ["QUARTERFINALS","QUARTAS DE FINAL"],
+        ["SEMIFINALS","SEMIFINAIS"],
+        ["FINAL","GRANDE FINAL"]
+    ];
+
+    const done = m =>
+        resultStatuses.includes(String(m.status || "").toUpperCase());
+
+    function renderCard(m,label){
+        const home = m.home?.name || "Casa";
+        const away = m.away?.name || "Fora";
+        const finished = done(m);
+
+        const hasScore =
+            m.home_score !== null &&
+            m.home_score !== undefined &&
+            m.away_score !== null &&
+            m.away_score !== undefined;
+
+        const score = hasScore
+            ? `${m.home_score} × ${m.away_score}`
+            : "VS";
+
+        const date = m.scheduled_at
+            ? new Date(m.scheduled_at).toLocaleString("pt-BR")
+            : "Data a definir";
+
+        return `
+            <article class="lib-match-card"
+                data-knockout-search="${esc([
+                    home,away,label,m.tie_code || ""
+                ].join(" "))}">
+
+                <div class="lib-match-card__top">
+                    <span>${esc(label)}</span>
+
+                    <span class="lib-match-status ${finished ? "is-done" : "is-pending"}">
+                        ${finished ? "CONCLUÍDO" : "PENDENTE"}
+                    </span>
+                </div>
+
+                <div class="lib-match-card__teams">
+                    <div class="lib-match-card__team">
+                        ${logo(m.home?.logo_path,home)}
+                        <strong>${esc(home)}</strong>
+                    </div>
+
+                    <div class="lib-match-card__score">
+                        ${esc(score)}
+                    </div>
+
+                    <div class="lib-match-card__team is-away">
+                        <strong>${esc(away)}</strong>
+                        ${logo(m.away?.logo_path,away)}
+                    </div>
+                </div>
+
+                <div class="lib-match-card__footer">
+                    <span>${esc(date)}</span>
+
+                    <button type="button"
+                        data-open-result="${esc(m.id)}">
+                        ${finished ? "EDITAR RESULTADO" : "LANÇAR RESULTADO"}
+                    </button>
+                </div>
+            </article>
+        `;
+    }
+
+    function renderStage(stage,title){
+        const stageMatches = matches
+            .filter(m => m.stage === stage)
+            .sort((a,b) =>
+                Number(a.match_order || 0) -
+                Number(b.match_order || 0)
+            );
+
+        if (!stageMatches.length) return "";
+
+        const completed = stageMatches.filter(done).length;
+
+        const ties = new Map();
+
+        stageMatches.forEach(m => {
+            const pair = [
+                m.home_club_id || m.home?.id || "",
+                m.away_club_id || m.away?.id || ""
+            ].sort().join(":");
+
+            const key = stage === "FINAL"
+                ? `FINAL:${m.id}`
+                : m.tie_code || pair || m.id;
+
+            if (!ties.has(key)) ties.set(key,[]);
+            ties.get(key).push(m);
+        });
+
+        const tieHTML = Array.from(ties.values())
+            .map((games,index) => {
+                games.sort((a,b) =>
+                    Number(a.leg || 1) - Number(b.leg || 1)
+                );
+
+                if (stage === "FINAL") {
+                    return `
+                        <article class="lib-match-tie">
+                            <header class="lib-match-tie__header">
+                                <strong>DECISÃO DO TÍTULO</strong>
+                                <span>JOGO ÚNICO</span>
+                            </header>
+
+                            ${renderCard(games[0],"FINAL · JOGO ÚNICO")}
+                        </article>
+                    `;
+                }
+
+                function leg(number,label){
+                    const game = games.find(m =>
+                        Number(m.leg || 1) === number
+                    );
+
+                    return `
+                        <div class="lib-match-leg">
+                            <div class="lib-match-leg__header">
+                                <strong>${label}</strong>
+                                <span>${game ? (done(game) ? "CONCLUÍDO" : "PENDENTE") : "AGUARDANDO"}</span>
+                            </div>
+
+                            <div class="lib-match-leg__list">
+                                ${game
+                                    ? renderCard(game,`${title} · ${label}`)
+                                    : '<div class="lib-empty-leg">Partida ainda não gerada.</div>'
+                                }
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <article class="lib-match-tie">
+                        <header class="lib-match-tie__header">
+                            <strong>CONFRONTO ${String(index+1).padStart(2,"0")}</strong>
+                            <span>IDA + VOLTA</span>
+                        </header>
+
+                        <div class="lib-match-legs">
+                            ${leg(1,"IDA")}
+                            ${leg(2,"VOLTA")}
+                        </div>
+                    </article>
+                `;
+            }).join("");
+
+        return `
+            <section class="lib-match-group lib-match-knockout"
+                data-knockout-section>
+
+                <header class="lib-match-group__header">
+                    <div>
+                        <span>CCFV // FASE ELIMINATÓRIA</span>
+                        <h3>${title}</h3>
+                    </div>
+
+                    <div class="lib-match-group__progress">
+                        <strong>${completed}/${stageMatches.length}</strong>
+                        <span>RESULTADOS</span>
+                    </div>
+                </header>
+
+                <div class="lib-match-ties">
+                    ${tieHTML}
+                </div>
+            </section>
+        `;
+    }
+
+    container.innerHTML = `
+        <div class="lib-matches-toolbar">
+            <div>
+                <strong>CHAVEAMENTO OFICIAL</strong>
+                <span>${matches.length} PARTIDAS CADASTRADAS</span>
+            </div>
+
+            <input id="knockout-search"
+                type="search"
+                placeholder="Buscar clube ou confronto...">
+        </div>
+
+        ${stages.map(([stage,title]) =>
+            renderStage(stage,title)
+        ).join("")}
+
+        ${matches.length ? "" : `
+            <div class="lib-empty-matches">
+                <strong>MATA-MATA A DEFINIR</strong>
+                <span>Os confrontos aparecerão após a classificação.</span>
+            </div>
+        `}
+    `;
+
+    const search = container.querySelector("#knockout-search");
+
+    search?.addEventListener("input",() => {
+        const normalize = value => String(value || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g,"")
+            .toLowerCase()
+            .trim();
+
+        const query = normalize(search.value);
+
+        container.querySelectorAll("[data-knockout-search]").forEach(card => {
+            card.hidden = !normalize(card.dataset.knockoutSearch).includes(query);
+        });
+
+        container.querySelectorAll(".lib-match-tie").forEach(tie => {
+            const cards = [...tie.querySelectorAll("[data-knockout-search]")];
+            tie.hidden = cards.length > 0 && cards.every(card => card.hidden);
+        });
+
+        container.querySelectorAll("[data-knockout-section]").forEach(section => {
+            const cards = [...section.querySelectorAll("[data-knockout-search]")];
+            section.hidden = cards.length > 0 && cards.every(card => card.hidden);
+        });
+    });
+}
+
   function renderHistory(){
     const champion=seasonClubs().find(x=>x.status==="CHAMPION");
     $("#history-content").innerHTML=champion?`<div class="lib-history"><div class="lib-champion"><span>CAMPEÃO DA LIBERTADORES CCFV</span><strong>${esc(champion.name)}</strong><div>${esc(champion.participant_name||"A DEFINIR")}</div></div><p class="lib-help">Ao finalizar a temporada, o título é registrado na fonte oficial <code>ccfv_titles</code> com o troféu da Libertadores.</p></div>`:`<div class="lib-help">A competição ainda não possui campeão.</div>`;
