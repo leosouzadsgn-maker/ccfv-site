@@ -1,192 +1,242 @@
 (() => {
-"use strict";
 
-const CCFV={
-    name:"CCFV",
-    season:"Season 01",
-    platform:"PC + Console"
-};
+    "use strict";
 
-const links=[
-    ["INÍCIO","/index.html","home"],
-    ["COMPETIÇÕES","/index.html#competicoes","competicoes"],
-    ["BRASILEIRÃO","/pages/brasileirao.html","brasileirao"],
-    ["CHAMPIONS LEAGUE","/pages/champions.html","champions"],
-    ["LIBERTADORES","/pages/libertadores.html","libertadores"],
-    ["NIGHT CUP","/pages/night.html","night"],
-    ["COPA DO MUNDO","/pages/copa-do-mundo.html","copa-do-mundo"],
-    ["RANKING","/pages/ranking.html","ranking"],
-    ["HISTÓRIA","/pages/historia.html","historia"]
-];
+    const CCFV = {
+        name: "CCFV",
+        season: "Season 01",
+        platform: "PC + Console"
+    };
 
-function currentPage(){
-    const p=window.location.pathname;
+    const links = [
+        ["INÍCIO", "/index.html", "home"],
+        ["COMPETIÇÕES", "/index.html#competicoes", "competicoes"],
+        ["BRASILEIRÃO", "/pages/brasileirao.html", "brasileirao"],
+        ["CHAMPIONS LEAGUE", "/pages/champions.html", "champions"],
+        ["LIBERTADORES", "/pages/libertadores.html", "libertadores"],
+        ["NIGHT CUP", "/pages/night.html", "night"],
+        ["COPA DO MUNDO", "/pages/copa-do-mundo.html", "copa-do-mundo"],
+        ["RANKING", "/pages/ranking.html", "ranking"],
+        ["HISTÓRIA", "/pages/historia.html", "historia"]
+    ];
 
-if(p.includes("brasileirao")) return "brasileirao";
-    if(p.includes("champions")) return "champions";
-    if(p.includes("libertadores")) return "libertadores";
-    if(p.includes("night")) return "night";
-if(p.includes("copa-do-mundo")) return "copa-do-mundo";
-    if(p.includes("ranking")) return "ranking";
-    if(p.includes("historia")) return "historia";
-    if(p.includes("competicoes")) return "competicoes";
+    function currentPage() {
 
-    return "home";
-}
+        const p = window.location.pathname;
 
-function loadSideMenuCSS(){
-    const existing = document.querySelector(
-        'link[rel="stylesheet"][href*="header-side-menu.css"]'
-    );
+        if (p.includes("brasileirao")) return "brasileirao";
+        if (p.includes("champions")) return "champions";
+        if (p.includes("libertadores")) return "libertadores";
+        if (p.includes("night")) return "night";
+        if (p.includes("copa-do-mundo")) return "copa-do-mundo";
 
-    if(existing) return;
+        // Diretório de jogadores pertence ao Ranking
+        if (p.includes("jogadores")) return "ranking";
 
-    const link=document.createElement("link");
-    link.rel="stylesheet";
-    link.href="/css/header-side-menu.css";
-    document.head.appendChild(link);
-}
+        if (p.includes("ranking")) return "ranking";
+        if (p.includes("historia")) return "historia";
+        if (p.includes("competicoes")) return "competicoes";
 
-function initSideMenu(){
-    loadSideMenuCSS();
+        return "home";
+    }
 
-    const header=document.querySelector("#site-header");
-    const button=document.querySelector(".ccfv-header__menu");
+    function loadSideMenuCSS() {
 
-    if(
-        !header ||
-        !button ||
-        document.querySelector(".ccfv-side-menu")
-    ) return;
+        const existing = document.querySelector(
+            'link[rel="stylesheet"][href*="header-side-menu.css"]'
+        );
 
-    const menu=document.createElement("aside");
+        if (existing) return;
 
-    menu.className="ccfv-side-menu";
+        const link = document.createElement("link");
 
-    const page=currentPage();
+        link.rel = "stylesheet";
+        link.href = "/css/header-side-menu.css";
 
-    menu.innerHTML=`
-        <div class="ccfv-side-menu__brand">
-            <img
-                src="/assets/images/logo/ccfv-logo.png"
-                alt="CCFV"
-            >
-            <div>
-                <strong>CCFV</strong>
-                <span>CONFEDERAÇÃO COLISEU</span>
+        document.head.appendChild(link);
+    }
+
+    function initSideMenu() {
+
+        loadSideMenuCSS();
+
+        const header = document.querySelector("#site-header");
+        const button = document.querySelector(".ccfv-header__menu");
+
+        if (
+            !header ||
+            !button ||
+            document.querySelector(".ccfv-side-menu")
+        ) {
+            return;
+        }
+
+        const menu = document.createElement("aside");
+
+        menu.className = "ccfv-side-menu";
+
+        const page = currentPage();
+
+        menu.innerHTML = `
+
+            <div class="ccfv-side-menu__brand">
+
+                <img
+                    src="/assets/images/logo/ccfv-logo.png"
+                    alt="CCFV"
+                >
+
+                <div>
+                    <strong>CCFV</strong>
+                    <span>CONFEDERAÇÃO COLISEU</span>
+                </div>
+
             </div>
-        </div>
 
-        <div class="ccfv-side-menu__label">
-            UNIVERSO
-        </div>
+            <div class="ccfv-side-menu__label">
+                UNIVERSO
+            </div>
 
-        <nav
-            class="ccfv-side-menu__nav"
-            aria-label="Menu principal"
-        >
-            ${links.map(
-                ([label,href,key])=>`
-                    <a
-                        href="${href}"
-                        class="${page===key?"is-active":""}"
-                    >
-                        <span></span>
-                        ${label}
-                    </a>
-                `
-            ).join("")}
-        </nav>
+            <nav
+                class="ccfv-side-menu__nav"
+                aria-label="Menu principal"
+            >
 
-        <div class="ccfv-side-menu__footer">
-            <small>
-                SEASON 01 • PC + CONSOLE
-            </small>
+                ${links.map(
+                    ([label, href, key]) => `
+                        <a
+                            href="${href}"
+                            class="${page === key ? "is-active" : ""}"
+                        >
+                            <span></span>
+                            ${label}
+                        </a>
+                    `
+                ).join("")}
 
-            <a href="/admin/">
-                ÁREA ADMINISTRATIVA →
-            </a>
-        </div>
-    `;
+            </nav>
 
-    document.body.appendChild(menu);
+            <div class="ccfv-side-menu__footer">
 
-    const overlay=document.createElement("div");
-    overlay.className="ccfv-side-menu__overlay";
-    document.body.appendChild(overlay);
+                <small>
+                    SEASON 01 • PC + CONSOLE
+                </small>
 
-    const close=()=>{
-        menu.classList.remove("is-open");
-        overlay.classList.remove("is-open");
-        document.body.classList.remove("ccfv-side-open");
-        button.setAttribute("aria-expanded","false");
-        button.setAttribute("aria-label","Abrir menu");
-    };
+                <a href="/admin/">
+                    ÁREA ADMINISTRATIVA →
+                </a>
 
-    const open=()=>{
-        menu.classList.add("is-open");
-        overlay.classList.add("is-open");
-        document.body.classList.add("ccfv-side-open");
-        button.setAttribute("aria-expanded","true");
-        button.setAttribute("aria-label","Fechar menu");
-    };
+            </div>
 
-    button.addEventListener("click",event=>{
-        event.preventDefault();
-        event.stopPropagation();
+        `;
 
-        menu.classList.contains("is-open")
-            ? close()
-            : open();
-    });
+        document.body.appendChild(menu);
 
-    overlay.addEventListener("click",close);
+        const overlay = document.createElement("div");
 
-    document.addEventListener("keydown",event=>{
-        if(event.key==="Escape") close();
-    });
+        overlay.className = "ccfv-side-menu__overlay";
 
-    menu.querySelectorAll("a").forEach(link=>{
-        link.addEventListener("click",close);
-    });
-}
+        document.body.appendChild(overlay);
 
-function init(){
-    document.documentElement.classList.add("ccfv-ready");
-    document.body.classList.add("ccfv-app-ready");
+        const close = () => {
 
-    initSideMenu();
+            menu.classList.remove("is-open");
+            overlay.classList.remove("is-open");
 
-    document
-        .querySelectorAll("[data-ccfv-season]")
-        .forEach(element=>{
-            element.textContent=CCFV.season;
+            document.body.classList.remove("ccfv-side-open");
+
+            button.setAttribute("aria-expanded", "false");
+            button.setAttribute("aria-label", "Abrir menu");
+
+        };
+
+        const open = () => {
+
+            menu.classList.add("is-open");
+            overlay.classList.add("is-open");
+
+            document.body.classList.add("ccfv-side-open");
+
+            button.setAttribute("aria-expanded", "true");
+            button.setAttribute("aria-label", "Fechar menu");
+
+        };
+
+        button.addEventListener("click", event => {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            menu.classList.contains("is-open")
+                ? close()
+                : open();
+
         });
 
-    document
-        .querySelectorAll("[data-ccfv-platform]")
-        .forEach(element=>{
-            element.textContent=CCFV.platform;
+        overlay.addEventListener("click", close);
+
+        document.addEventListener("keydown", event => {
+
+            if (event.key === "Escape") {
+                close();
+            }
+
         });
 
-    document.dispatchEvent(
-        new CustomEvent(
-            "ccfv:ready",
-            {detail:CCFV}
-        )
-    );
-}
+        menu.querySelectorAll("a").forEach(link => {
 
-if(
-    document.readyState==="loading"
-){
-    document.addEventListener(
-        "DOMContentLoaded",
-        init,
-        {once:true}
-    );
-}else{
-    init();
-}
+            link.addEventListener("click", close);
+
+        });
+
+    }
+
+    function init() {
+
+        document.documentElement.classList.add("ccfv-ready");
+        document.body.classList.add("ccfv-app-ready");
+
+        initSideMenu();
+
+        document
+            .querySelectorAll("[data-ccfv-season]")
+            .forEach(element => {
+
+                element.textContent = CCFV.season;
+
+            });
+
+        document
+            .querySelectorAll("[data-ccfv-platform]")
+            .forEach(element => {
+
+                element.textContent = CCFV.platform;
+
+            });
+
+        document.dispatchEvent(
+            new CustomEvent(
+                "ccfv:ready",
+                {
+                    detail: CCFV
+                }
+            )
+        );
+
+    }
+
+    if (document.readyState === "loading") {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            init,
+            { once: true }
+        );
+
+    } else {
+
+        init();
+
+    }
 
 })();
