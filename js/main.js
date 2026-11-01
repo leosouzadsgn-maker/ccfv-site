@@ -1,3 +1,4 @@
+
 (() => {
 
     "use strict";
@@ -8,9 +9,14 @@
         platform: "PC + Console"
     };
 
+    // =====================================================
+    // NAVEGAÇÃO PRINCIPAL
+    // =====================================================
+
     const links = [
         ["INÍCIO", "/index.html", "home"],
         ["COMPETIÇÕES", "/index.html#competicoes", "competicoes"],
+        ["LIGA CCFV", "/liga/index.html", "liga"],
         ["BRASILEIRÃO", "/pages/brasileirao.html", "brasileirao"],
         ["CHAMPIONS LEAGUE", "/pages/champions.html", "champions"],
         ["LIBERTADORES", "/pages/libertadores.html", "libertadores"],
@@ -21,9 +27,18 @@
         ["HISTÓRIA", "/pages/historia.html", "historia"]
     ];
 
+
+    // =====================================================
+    // IDENTIFICA A PÁGINA ATUAL
+    // =====================================================
+
     function currentPage() {
 
         const p = window.location.pathname;
+
+        if (p === "/liga" || p.startsWith("/liga/")) {
+            return "liga";
+        }
 
         if (p.includes("brasileirao")) return "brasileirao";
         if (p.includes("champions")) return "champions";
@@ -42,6 +57,11 @@
         return "home";
     }
 
+
+    // =====================================================
+    // CARREGA CSS DO MENU LATERAL
+    // =====================================================
+
     function loadSideMenuCSS() {
 
         const existing = document.querySelector(
@@ -57,6 +77,11 @@
 
         document.head.appendChild(link);
     }
+
+
+    // =====================================================
+    // MENU LATERAL
+    // =====================================================
 
     function initSideMenu() {
 
@@ -81,6 +106,8 @@
 
         menu.innerHTML = `
 
+            <!-- MARCA -->
+
             <div class="ccfv-side-menu__brand">
 
                 <img
@@ -95,8 +122,11 @@
 
             </div>
 
+
+            <!-- NAVEGAÇÃO -->
+
             <div class="ccfv-side-menu__label">
-                UNIVERSO
+                UNIVERSO CCFV
             </div>
 
             <nav
@@ -118,11 +148,27 @@
 
             </nav>
 
+
+            <!-- RODAPÉ DO MENU -->
+
             <div class="ccfv-side-menu__footer">
 
                 <small>
                     SEASON 01 • PC + CONSOLE
                 </small>
+
+
+                <!-- ACESSO DIRETO AO LOGIN DA LIGA -->
+
+                <a
+                    class="ccfv-side-menu__liga"
+                    href="/liga/login.html"
+                >
+                    PAINEL DA LIGA →
+                </a>
+
+
+                <!-- ACESSO ADMINISTRATIVO -->
 
                 <a href="/admin/">
                     ÁREA ADMINISTRATIVA →
@@ -134,11 +180,21 @@
 
         document.body.appendChild(menu);
 
+
+        // =================================================
+        // OVERLAY
+        // =================================================
+
         const overlay = document.createElement("div");
 
         overlay.className = "ccfv-side-menu__overlay";
 
         document.body.appendChild(overlay);
+
+
+        // =================================================
+        // FECHAR MENU
+        // =================================================
 
         const close = () => {
 
@@ -152,6 +208,11 @@
 
         };
 
+
+        // =================================================
+        // ABRIR MENU
+        // =================================================
+
         const open = () => {
 
             menu.classList.add("is-open");
@@ -164,6 +225,11 @@
 
         };
 
+
+        // =================================================
+        // EVENTO DO BOTÃO
+        // =================================================
+
         button.addEventListener("click", event => {
 
             event.preventDefault();
@@ -175,8 +241,12 @@
 
         });
 
+
+        // Fechar clicando fora
         overlay.addEventListener("click", close);
 
+
+        // Fechar com ESC
         document.addEventListener("keydown", event => {
 
             if (event.key === "Escape") {
@@ -185,6 +255,8 @@
 
         });
 
+
+        // Fechar depois de acessar uma página
         menu.querySelectorAll("a").forEach(link => {
 
             link.addEventListener("click", close);
@@ -193,6 +265,11 @@
 
     }
 
+
+    // =====================================================
+    // INICIALIZAÇÃO
+    // =====================================================
+
     function init() {
 
         document.documentElement.classList.add("ccfv-ready");
@@ -200,6 +277,8 @@
 
         initSideMenu();
 
+
+        // Temporada
         document
             .querySelectorAll("[data-ccfv-season]")
             .forEach(element => {
@@ -208,6 +287,8 @@
 
             });
 
+
+        // Plataforma
         document
             .querySelectorAll("[data-ccfv-platform]")
             .forEach(element => {
@@ -216,6 +297,8 @@
 
             });
 
+
+        // Evento global CCFV
         document.dispatchEvent(
             new CustomEvent(
                 "ccfv:ready",
@@ -226,6 +309,11 @@
         );
 
     }
+
+
+    // =====================================================
+    // DOM READY
+    // =====================================================
 
     if (document.readyState === "loading") {
 
