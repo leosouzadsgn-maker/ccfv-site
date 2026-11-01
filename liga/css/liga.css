@@ -1690,3 +1690,213 @@ body.liga-page {
         animation-duration: .01ms !important;
     }
 }
+
+/* =========================================================
+   ACESSO DOS PARTICIPANTES — LIGA CCFV
+   ========================================================= */
+
+/* CABEÇALHO */
+
+.liga-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.liga-header-login {
+    min-height: 43px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 17px;
+
+    border: 1px solid rgba(255,255,255,.18);
+
+    color: rgba(255,255,255,.85) !important;
+
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .08em;
+
+    transition: .25s ease;
+}
+
+.liga-header-login:hover {
+    border-color: var(--liga-green);
+    color: var(--liga-green) !important;
+    background: rgba(47,199,131,.06);
+}
+
+.liga-header-cta {
+    min-height: 43px;
+    white-space: nowrap;
+}
+
+
+/* BOTÕES DO HERO */
+
+.liga-hero-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.liga-hero-actions .liga-button {
+    min-height: 54px;
+}
+
+
+/* CHAMADA FINAL */
+
+.liga-journey-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 13px;
+    margin-top: 30px;
+}
+
+.liga-journey-actions .liga-button {
+    min-height: 54px;
+}
+
+
+/* EFEITO DE DESTAQUE */
+
+.liga-header-cta,
+.liga-header-login,
+.liga-journey-actions .liga-button,
+.liga-hero-actions .liga-button {
+    transition:
+        transform .25s ease,
+        background .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+.liga-header-cta:hover,
+.liga-header-login:hover {
+    transform: translateY(-2px);
+}
+
+.liga-journey-actions .liga-button-primary:hover,
+.liga-hero-actions .liga-button-primary:hover {
+    box-shadow: 0 10px 30px rgba(47,199,131,.2);
+}
+
+
+/* TABLET */
+
+@media (max-width: 980px) {
+
+    .liga-header {
+        gap: 16px;
+    }
+
+    .liga-header-actions {
+        gap: 7px;
+    }
+
+    .liga-header-login {
+        padding: 0 10px;
+        font-size: 8px;
+    }
+
+}
+
+
+/* CELULAR */
+
+@media (max-width: 700px) {
+
+    .liga-header {
+        gap: 8px;
+    }
+
+    .liga-header-actions {
+        gap: 6px;
+    }
+
+    .liga-header-login {
+        min-height: 36px;
+        padding: 0 8px;
+        font-size: 7px;
+        letter-spacing: .02em;
+    }
+
+    .liga-header-cta {
+        min-height: 36px;
+        padding: 0 8px;
+        gap: 5px;
+        font-size: 7px;
+        letter-spacing: .03em;
+    }
+
+    .liga-hero-actions {
+        align-items: stretch;
+        flex-direction: column;
+        max-width: 300px;
+    }
+
+    .liga-hero-actions .liga-button {
+        width: 100%;
+    }
+
+    .liga-journey-actions {
+        align-items: stretch;
+        flex-direction: column;
+        max-width: 320px;
+    }
+
+    .liga-journey-actions .liga-button {
+        width: 100%;
+    }
+
+}
+
+
+/* CELULARES PEQUENOS */
+
+@media (max-width: 420px) {
+
+    .liga-header {
+        padding-inline: 12px;
+    }
+
+    .liga-brand {
+        gap: 6px;
+    }
+
+    .liga-brand img {
+        width: 31px;
+        height: 31px;
+    }
+
+    .liga-brand strong {
+        font-size: 9px;
+        letter-spacing: .08em;
+    }
+
+    .liga-brand small {
+        display: none;
+    }
+
+    .liga-header-actions {
+        gap: 5px;
+    }
+
+    .liga-header-login {
+        padding-inline: 6px;
+        font-size: 6px;
+    }
+
+    .liga-header-cta {
+        padding-inline: 7px;
+        font-size: 6px;
+    }
+
+}
