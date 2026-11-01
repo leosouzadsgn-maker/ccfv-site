@@ -485,3 +485,346 @@ body[data-page="libertadores"] {
     }
 
 }
+
+/* ==========================================
+   LIBERTADORES — PARTIDAS ORGANIZADAS
+   ========================================== */
+
+.lib-matches {
+    display: grid;
+    gap: 22px;
+}
+
+.lib-matches-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.lib-matches-toolbar div {
+    display: grid;
+    gap: 5px;
+}
+
+.lib-matches-toolbar strong {
+    color: #fff;
+    font-size: 14px;
+    letter-spacing: .06em;
+}
+
+.lib-matches-toolbar span {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.lib-matches-toolbar input {
+    width: min(100%, 320px);
+    background: #07100b;
+    color: white;
+    border: 1px solid rgba(67,223,145,.2);
+    border-radius: 10px;
+    padding: 12px 14px;
+    outline: none;
+}
+
+.lib-matches-toolbar input:focus {
+    border-color: var(--green);
+}
+
+.lib-match-group {
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 17px;
+    background: linear-gradient(
+        145deg,
+        rgba(67,223,145,.035),
+        rgba(255,255,255,.008)
+    );
+}
+
+.lib-match-group[hidden] {
+    display: none;
+}
+
+.lib-match-group__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 15px;
+}
+
+.lib-match-group__header > div:first-child {
+    display: grid;
+    gap: 5px;
+}
+
+.lib-match-group__header > div:first-child span {
+    color: var(--green);
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .15em;
+}
+
+.lib-match-group__header h3 {
+    font-size: 20px;
+    margin: 0;
+    letter-spacing: .04em;
+}
+
+.lib-match-group__progress {
+    display: grid;
+    text-align: right;
+    gap: 4px;
+}
+
+.lib-match-group__progress strong {
+    color: var(--green);
+    font-size: 17px;
+}
+
+.lib-match-group__progress span {
+    color: var(--muted);
+    font-size: 8px;
+    font-weight: 800;
+}
+
+.lib-match-legs {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 14px;
+}
+
+.lib-match-leg {
+    min-width: 0;
+    background: rgba(0,0,0,.18);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.lib-match-leg__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.lib-match-leg__header strong {
+    color: white;
+    font-size: 11px;
+    letter-spacing: .1em;
+}
+
+.lib-match-leg__header span {
+    color: var(--muted);
+    font-size: 8px;
+    font-weight: 800;
+}
+
+.lib-match-leg__list {
+    display: grid;
+    gap: 9px;
+}
+
+.lib-match-card {
+    min-width: 0;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    padding: 12px;
+    background: rgba(255,255,255,.018);
+    transition: border-color .2s, background .2s;
+}
+
+.lib-match-card:hover {
+    border-color: rgba(67,223,145,.3);
+    background: rgba(67,223,145,.025);
+}
+
+.lib-match-card[hidden] {
+    display: none;
+}
+
+.lib-match-card__top,
+.lib-match-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.lib-match-card__top {
+    margin-bottom: 12px;
+}
+
+.lib-match-card__top > span:first-child {
+    color: var(--muted);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: .06em;
+}
+
+.lib-match-status {
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .06em;
+}
+
+.lib-match-status.is-done {
+    color: var(--green);
+}
+
+.lib-match-status.is-pending {
+    color: #e9b85c;
+}
+
+.lib-match-card__teams {
+    display: grid;
+    grid-template-columns: minmax(0,1fr) 72px minmax(0,1fr);
+    align-items: center;
+    gap: 8px;
+}
+
+.lib-match-card__team {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lib-match-card__team.is-away {
+    justify-content: flex-end;
+}
+
+.lib-match-card__team strong {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 10px;
+}
+
+.lib-match-card__team .lib-club-logo,
+.lib-match-card__team .lib-club-initials {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+    object-fit: contain;
+    margin: 0;
+}
+
+.lib-match-card__score {
+    text-align: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.lib-match-card__footer {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+}
+
+.lib-match-card__footer > span {
+    color: var(--muted);
+    font-size: 8px;
+}
+
+.lib-match-card__footer button {
+    background: rgba(67,223,145,.09);
+    color: var(--green);
+    border: 1px solid rgba(67,223,145,.24);
+    border-radius: 7px;
+    padding: 9px 11px;
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .04em;
+}
+
+.lib-match-card__footer button:hover {
+    background: rgba(67,223,145,.17);
+}
+
+.lib-match-knockout {
+    border-color: rgba(67,223,145,.2);
+}
+
+.lib-match-card--knockout {
+    max-width: none;
+}
+
+.lib-empty-matches {
+    display: grid;
+    gap: 8px;
+    text-align: center;
+    padding: 45px 20px;
+    border: 1px dashed var(--line);
+    border-radius: 14px;
+}
+
+.lib-empty-matches strong {
+    color: var(--green);
+    font-size: 13px;
+}
+
+.lib-empty-matches span {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+@media(max-width:850px) {
+    .lib-match-legs {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width:560px) {
+    .lib-match-group {
+        padding: 11px;
+    }
+
+    .lib-match-card {
+        padding: 10px;
+    }
+
+    .lib-match-card__teams {
+        grid-template-columns: minmax(0,1fr) 52px minmax(0,1fr);
+        gap: 4px;
+    }
+
+    .lib-match-card__team {
+        gap: 5px;
+    }
+
+    .lib-match-card__team strong {
+        font-size: 9px;
+    }
+
+    .lib-match-card__team .lib-club-logo,
+    .lib-match-card__team .lib-club-initials {
+        width: 23px;
+        height: 23px;
+        flex-basis: 23px;
+    }
+
+    .lib-match-card__score {
+        font-size: 12px;
+    }
+
+    .lib-match-card__footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .lib-matches-toolbar input {
+        width: 100%;
+    }
+}

@@ -1,0 +1,45 @@
+CCFV — REMOÇÃO DO MÓDULO MOBILE + NOVA HOME / HALL DOS CAMPEÕES
+
+ANTES DE COMEÇAR
+- Faça o download deste pacote.
+- Copie ccfv_retirar_mobile_e_home_campeoes.cjs para a raiz do projeto ccfv-site.
+- Abra o terminal do VS Code na raiz do projeto.
+- Confirme que está na pasta correta com: dir (Windows) ou ls (Mac/Linux).
+
+EXECUÇÃO
+  node ccfv_retirar_mobile_e_home_campeoes.cjs
+
+O QUE O SCRIPT FAZ
+1. Remove Mobile do menu público e dos cards de competições da Home.
+2. Remove Mobile do menu e do painel principal do Admin.
+3. Remove Mobile como opção de plataforma em novos cadastros.
+4. Oculta jogadores legados da plataforma MOBILE das listas e do ranking públicos/principais do Admin, e filtra os vínculos `BRASILEIRAO_MOBILE` e `ARENA_CUP`.
+5. Redireciona as antigas URLs específicas de Mobile para o portal principal.
+6. Preserva menu hambúrguer, navegação responsiva e CSS para telas menores.
+7. Adiciona o Hall dos Campeões dinâmico à Home, lendo ccfv_titles e players.
+8. Cria css/home-champions.css e js/home-champions.js.
+9. Cria uma pasta de backup automática com os arquivos originais que forem alterados.
+
+MUITO IMPORTANTE
+- O script NÃO executa SQL.
+- NÃO apaga jogadores, títulos, partidas, tabelas, views nem registros do Supabase.
+- Os antigos dados Mobile continuam preservados no banco; apenas deixam de aparecer na operação principal.
+- Arquivos antigos de Mobile ficam no repositório como legado, mas suas páginas passam a redirecionar e deixam de ser carregadas pela navegação principal.
+
+REVISÃO ANTES DE PUBLICAR
+  git status
+  git diff --stat
+  git diff
+
+Se tudo estiver correto:
+  git add index.html js/main.js js/ccfv-live.js js/home-champions.js css/home-champions.css admin/index.html admin/js/admin.js admin/competicoes.html admin/brasileirao.html admin/night.html admin/copa-do-mundo.html admin/mobile.html pages
+  git commit -m "Remover modulo Mobile e modernizar Home CCFV"
+  git push origin main
+
+Depois, aguarde o deploy da Vercel e teste:
+- Home: https://ccfv-site.vercel.app/
+- Admin: https://ccfv-site.vercel.app/admin/index.html
+- Ranking: https://ccfv-site.vercel.app/pages/ranking.html
+- História: https://ccfv-site.vercel.app/pages/historia.html
+
+O Hall mostrará o último campeão registrado por competição. Quando uma competição ainda não tiver título em ccfv_titles, aparecerá “CAMPEÃO A DEFINIR”; nenhum campeão fictício é inserido.

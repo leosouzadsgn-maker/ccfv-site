@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Mobile — Admin CCFV</title>
+<link rel="icon" href="../assets/images/logo/ccfv-logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="/admin/css/competition-shell.css"></head>
+<body><div class="ccfv-competition-admin"><aside class="ccfv-competition-sidebar">
+<div class="ccfv-brand"><img src="../assets/images/logo/ccfv-logo.png" alt="CCFV"><div><strong>CCFV ADMIN</strong><span>MOBILE</span></div></div>
+<div class="ccfv-sidebar-label">CENTRAL</div><nav class="ccfv-side-nav"><a href="/admin/competicoes.html">▦ Central</a><a href="/admin/index.html">⌂ Dashboard</a></nav>
+<div class="ccfv-sidebar-label">COMPETIÇÕES</div><nav class="ccfv-side-nav"><a href="/admin/brasileirao.html">◉ Brasileirão</a><a href="/admin/champions.html">🏆 Champions</a><a href="/admin/libertadores.html">✦ Libertadores</a><a href="/admin/night.html">✦ Night Cup</a><a class="is-current-competition" href="/admin/mobile.html">M Mobile</a><a href="/admin/copa-do-mundo.html">◈ Copa do Mundo</a></nav>
+<div class="ccfv-sidebar-label">SISTEMA</div><nav class="ccfv-side-nav"><a href="/pages/historia.html">▣ História / Hall</a></nav><div class="ccfv-sidebar-footer"><a href="/">← Ver site</a></div>
+</aside><main class="ccfv-main"><header class="ccfv-topbar"><div><span>CCFV // ECOSSISTEMA MOBILE</span><h1>MOBILE</h1></div><div class="ccfv-user"><span>Sessão autenticada</span><button class="ccfv-btn" id="mobile-refresh">Atualizar</button></div></header>
+<section class="ccfv-page"><span class="ccfv-kicker">CCFV // MOBILE</span><h2>GERIR O<br><strong>MOBILE.</strong></h2><p class="ccfv-lead">Painel exclusivo do Brasileirão Mobile e Arena Cup Mobile. O motor atual continua sendo usado.</p>
+<div id="section-mobile">
+<div class="ccfv-grid"><article class="ccfv-card"><header><div><span>01 // RESULTADO</span><h3>REGISTRAR PARTIDA</h3></div></header>
+<form id="mobile-match-form"><div class="ccfv-form-grid">
+<label>COMPETIÇÃO<select id="mobile-competition"><option value="BRASILEIRAO_MOBILE">BRASILEIRÃO MOBILE</option><option value="ARENA_CUP">ARENA CUP</option></select></label>
+<label>FASE / RODADA<select id="mobile-stage"></select></label>
+<label>JOGADOR CASA<select id="mobile-home-player"><option value="">Selecione</option></select></label><label>JOGADOR FORA<select id="mobile-away-player"><option value="">Selecione</option></select></label>
+<label>CLUBE CASA<select id="mobile-home-team"><option>ATHLETICO-PR</option><option>ATLÉTICO-MG</option><option>BAHIA</option><option>BOTAFOGO</option><option>BRAGANTINO</option><option>CHAPECOENSE</option><option>CORINTHIANS</option><option>CORITIBA</option><option>CRUZEIRO</option><option>FLAMENGO</option><option>FLUMINENSE</option><option>GRÊMIO</option><option>INTERNACIONAL</option><option>MIRASSOL</option><option>PALMEIRAS</option><option>REMO</option><option>SANTOS</option><option>SÃO PAULO</option><option>VASCO</option><option>VITÓRIA</select></label>
+<label>CLUBE FORA<select id="mobile-away-team"><option>ATHLETICO-PR</option><option>ATLÉTICO-MG</option><option>BAHIA</option><option>BOTAFOGO</option><option>BRAGANTINO</option><option>CHAPECOENSE</option><option>CORINTHIANS</option><option>CORITIBA</option><option>CRUZEIRO</option><option>FLAMENGO</option><option>FLUMINENSE</option><option>GRÊMIO</option><option>INTERNACIONAL</option><option>MIRASSOL</option><option>PALMEIRAS</option><option>REMO</option><option>SANTOS</option><option>SÃO PAULO</option><option>VASCO</option><option>VITÓRIA</select></label>
+<label>PLACAR CASA<input id="mobile-home-score" type="number" min="0" max="99" value="0"></label><label>PLACAR FORA<input id="mobile-away-score" type="number" min="0" max="99" value="0"></label>
+<label style="grid-column:1/-1">DATA E HORA<input id="mobile-played-at" type="datetime-local"></label></div>
+<button class="ccfv-btn primary" style="margin-top:14px" id="mobile-match-submit" type="submit">REGISTRAR RESULTADO MOBILE</button></form></article>
+<article class="ccfv-card"><header><div><span>02 // STATUS</span><h3>ECOSSISTEMA</h3></div></header>
+<div class="ccfv-stat-grid"><div class="ccfv-stat"><span>JOGADORES</span><strong id="mobile-stat-players">00</strong></div><div class="ccfv-stat"><span>PARTIDAS</span><strong id="mobile-stat-matches">00</strong></div><div class="ccfv-stat"><span>RANKING</span><strong id="mobile-stat-ranking">00</strong></div><div class="ccfv-stat"><span>STATUS</span><strong>LIVE</strong></div></div>
+<div id="mobile-admin-list" class="ccfv-empty" style="margin-top:14px">CARREGANDO DADOS MOBILE.</div></article></div></div></section></main></div>
+<div id="admin-toast" style="position:fixed;right:20px;bottom:20px;z-index:200;padding:12px 14px;border:1px solid rgba(67,223,145,.2);border-radius:10px;background:#07100b;color:#fff;font-size:10px;opacity:0;pointer-events:none;transition:.2s"></div>
+<script src="/admin/js/auth.js" defer></script><script src="/admin/js/mobile.js" defer></script></body></html>
