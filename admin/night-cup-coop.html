@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#020403">
+<title>Night Cup Co-Op — Admin CCFV</title>
+
+<link rel="icon" href="../assets/images/logo/ccfv-logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/admin/css/competition-shell.css">
+<link rel="stylesheet" href="/admin/css/night-cup-coop.css">
+</head>
+
+<body>
+
+<div class="ccfv-competition-admin">
+
+<aside class="ccfv-competition-sidebar">
+
+    <div class="ccfv-brand">
+        <img src="../assets/images/logo/ccfv-logo.png" alt="CCFV">
+        <div>
+            <strong>CCFV ADMIN</strong>
+            <span>NIGHT CUP CO-OP</span>
+        </div>
+    </div>
+
+    <div class="ccfv-sidebar-label">CENTRAL</div>
+
+    <nav class="ccfv-side-nav">
+        <a href="/admin/competicoes.html">▦ Central de Competições</a>
+        <a href="/admin/index.html">⌂ Dashboard</a>
+    </nav>
+
+    <div class="ccfv-sidebar-label">COMPETIÇÕES</div>
+
+    <nav class="ccfv-side-nav">
+        <a href="/admin/brasileirao.html">◉ Brasileirão</a>
+        <a href="/admin/champions.html">🏆 Champions League</a>
+        <a href="/admin/libertadores.html">✦ Libertadores</a>
+        <a href="/admin/night.html">✦ Night Cup</a>
+        <a class="is-current-competition" href="/admin/night-cup-coop.html">⚡ Night Cup Co-Op</a>
+        <a href="/admin/copa-do-mundo.html">◈ Copa do Mundo</a>
+    </nav>
+
+    <div class="ccfv-sidebar-label">SISTEMA</div>
+
+    <nav class="ccfv-side-nav">
+        <a href="/pages/historia.html">▣ História / Hall</a>
+    </nav>
+
+    <div class="ccfv-sidebar-footer">
+        <a href="/pages/night-cup-coop.html">↗ Ver página pública</a>
+        <a href="/">← Ver site</a>
+    </div>
+
+</aside>
+
+
+<main class="ccfv-main">
+
+<header class="ccfv-topbar">
+    <div>
+        <span>CCFV // TORNEIO DE DUPLAS</span>
+        <h1>NIGHT CUP CO-OP</h1>
+    </div>
+
+    <div class="ccfv-user">
+        <span>Sessão autenticada</span>
+        <button class="ccfv-btn" id="coop-refresh" type="button">ATUALIZAR</button>
+    </div>
+</header>
+
+
+<section class="ccfv-page coop-page">
+
+    <div class="coop-heading">
+
+        <div>
+            <span class="ccfv-kicker">CCFV // EVENTO ESPECIAL • 4 DUPLAS</span>
+
+            <h2>
+                NIGHT CUP<br>
+                <strong>CO-OP.</strong>
+            </h2>
+
+            <p class="ccfv-lead">
+                Cadastre oito jogadores, forme quatro duplas,
+                sorteie as semifinais e acompanhe a grande final.
+                Uma competição independente da Night Cup individual.
+            </p>
+        </div>
+
+        <div class="coop-logo-frame">
+            <img
+                src="/assets/images/night-cup-coop-logo.png"
+                alt="Night Cup Co-Op"
+                onerror="this.style.display='none'"
+            >
+
+            <div class="coop-logo-fallback">
+                <span>CCFV</span>
+                <strong>CO-OP</strong>
+                <small>TORNEIO DE DUPLAS</small>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="coop-stats">
+
+        <article>
+            <span>FORMATO</span>
+            <strong>4 DUPLAS</strong>
+        </article>
+
+        <article>
+            <span>PARTIDAS</span>
+            <strong>03</strong>
+        </article>
+
+        <article>
+            <span>FASES</span>
+            <strong>SEMI + FINAL</strong>
+        </article>
+
+        <article>
+            <span>CAMPEÃO</span>
+            <strong>+14 ELO / JOGADOR</strong>
+        </article>
+
+    </div>
+
+
+    <div id="coop-message" class="ccfv-message" role="status">
+        Conectando ao banco de dados da CCFV...
+    </div>
+
+
+    <!-- CADASTRO DAS DUPLAS -->
+
+    <section class="ccfv-card coop-setup">
+
+        <header>
+            <div>
+                <span>01 // INSCRIÇÕES</span>
+                <h3>FORMAR AS QUATRO DUPLAS</h3>
+            </div>
+
+            <span class="ccfv-chip" id="coop-edition-status">
+                AGUARDANDO
+            </span>
+        </header>
+
+        <p class="ccfv-lead">
+            Escolha dois jogadores diferentes em cada dupla.
+            Um jogador não poderá participar de duas duplas.
+            O sorteio será feito aleatoriamente pelo banco de dados.
+        </p>
+
+        <div class="coop-edition-name">
+            <label for="coop-edition-name">NOME DA EDIÇÃO</label>
+            <input
+                id="coop-edition-name"
+                type="text"
+                maxlength="80"
+                placeholder="NIGHT CUP CO-OP #01"
+            >
+        </div>
+
+        <div id="coop-pair-form" class="coop-pair-grid">
+            <div class="ccfv-empty">Carregando jogadores...</div>
+        </div>
+
+        <div class="ccfv-toolbar coop-setup-actions">
+            <span class="ccfv-muted" id="coop-pair-counter">
+                0/8 jogadores selecionados
+            </span>
+
+            <button
+                class="ccfv-btn primary"
+                id="coop-create"
+                type="button"
+                disabled
+            >
+                SORTEAR E CRIAR CHAVE
+            </button>
+        </div>
+
+    </section>
+
+
+    <!-- CHAVEAMENTO -->
+
+    <section class="coop-live-section">
+
+        <div class="coop-section-title">
+
+            <div>
+                <span class="ccfv-kicker">02 // CHAVEAMENTO</span>
+
+                <h2>
+                    CAMINHO ATÉ A <strong>FINAL.</strong>
+                </h2>
+            </div>
+
+            <span class="ccfv-chip" id="coop-current-edition">
+                NENHUMA EDIÇÃO
+            </span>
+
+        </div>
+
+
+        <div class="coop-bracket-grid">
+
+            <section class="ccfv-card">
+
+                <header>
+                    <div>
+                        <span>FASE 01</span>
+                        <h3>SEMIFINAIS</h3>
+                    </div>
+
+                    <span class="ccfv-chip">02 PARTIDAS</span>
+                </header>
+
+                <div id="coop-semifinals" class="coop-match-list">
+                    <div class="ccfv-empty">
+                        Aguardando o sorteio das duplas.
+                    </div>
+                </div>
+
+            </section>
+
+
+            <section class="ccfv-card">
+
+                <header>
+                    <div>
+                        <span>FASE 02</span>
+                        <h3>GRANDE FINAL</h3>
+                    </div>
+
+                    <span class="ccfv-chip">01 PARTIDA</span>
+                </header>
+
+                <div id="coop-final" class="coop-match-list">
+                    <div class="ccfv-empty">
+                        A final será criada após as duas semifinais.
+                    </div>
+                </div>
+
+                <div id="coop-podium" class="coop-podium" hidden></div>
+
+            </section>
+
+        </div>
+
+    </section>
+
+
+    <!-- HISTÓRICO -->
+
+    <section class="ccfv-card coop-history-card">
+
+        <header>
+            <div>
+                <span>03 // ARQUIVO</span>
+                <h3>EDIÇÕES ANTERIORES</h3>
+            </div>
+        </header>
+
+        <div id="coop-history" class="coop-history-list">
+            <div class="ccfv-empty">Carregando histórico...</div>
+        </div>
+
+    </section>
+
+</section>
+
+</main>
+</div>
+
+
+<div id="coop-toast" class="coop-toast" role="status" aria-live="polite"></div>
+
+<script src="/admin/js/auth.js" defer></script>
+<script src="/admin/js/night-cup-coop.js" defer></script>
+
+</body>
+</html>

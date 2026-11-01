@@ -15,6 +15,7 @@
         ["CHAMPIONS LEAGUE", "/pages/champions.html", "champions"],
         ["LIBERTADORES", "/pages/libertadores.html", "libertadores"],
         ["NIGHT CUP", "/pages/night.html", "night"],
+        ["NIGHT CUP CO-OP", "/pages/night-cup-coop.html", "night-coop"],
         ["COPA DO MUNDO", "/pages/copa-do-mundo.html", "copa-do-mundo"],
         ["RANKING", "/pages/ranking.html", "ranking"],
         ["HISTÓRIA", "/pages/historia.html", "historia"]
@@ -27,6 +28,7 @@
         if (p.includes("brasileirao")) return "brasileirao";
         if (p.includes("champions")) return "champions";
         if (p.includes("libertadores")) return "libertadores";
+        if (p.includes("night-cup-coop")) return "night-coop";
         if (p.includes("night")) return "night";
         if (p.includes("copa-do-mundo")) return "copa-do-mundo";
 

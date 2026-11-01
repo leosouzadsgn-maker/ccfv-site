@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#020403">
+<meta name="description" content="Night Cup Co-Op CCFV — competição oficial de duplas, com semifinais e grande final.">
+<title>Night Cup Co-Op — CCFV</title>
+
+<link rel="icon" href="../assets/images/logo/ccfv-logo.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/global.css">
+<link rel="stylesheet" href="../css/header.css">
+<link rel="stylesheet" href="../css/header-side-menu.css">
+<link rel="stylesheet" href="../css/night-cup-coop.css">
+<link rel="stylesheet" href="../css/responsive.css">
+</head>
+
+<body data-page="night-coop">
+
+<header class="ccfv-header" id="site-header">
+    <div class="ccfv-header__inner">
+
+        <a href="../index.html" class="ccfv-header__brand">
+            <img src="../assets/images/logo/ccfv-logo.png" alt="CCFV" class="ccfv-header__logo">
+
+            <span class="ccfv-header__brand-text">
+                <span class="ccfv-header__brand-name">CCFV</span>
+                <span class="ccfv-header__brand-subtitle">Confederação Coliseu de Futebol Virtual</span>
+            </span>
+        </a>
+
+        <nav class="ccfv-header__nav" aria-label="Navegação principal">
+            <a href="../index.html" class="ccfv-header__link">Início</a>
+            <a href="night.html" class="ccfv-header__link">Night Cup</a>
+            <a href="night-cup-coop.html" class="ccfv-header__link is-active">Night Cup Co-Op</a>
+            <a href="ranking.html" class="ccfv-header__link">Ranking</a>
+            <a href="historia.html" class="ccfv-header__link">História</a>
+        </nav>
+
+        <a href="night.html" class="ccfv-header__action">Night Cup individual</a>
+
+        <button type="button" class="ccfv-header__menu" aria-label="Abrir menu" aria-expanded="false">
+            <span class="ccfv-header__menu-lines">
+                <span></span><span></span><span></span>
+            </span>
+        </button>
+
+    </div>
+</header>
+
+
+<main class="coop-public">
+
+    <section class="coop-public-hero">
+
+        <div class="coop-public-hero__glow"></div>
+        <div class="coop-public-hero__grid"></div>
+
+        <div class="coop-public-hero__inner">
+
+            <div class="coop-public-hero__content">
+
+                <span class="coop-public-eyebrow">
+                    <i></i>
+                    CCFV // TORNEIO OFICIAL DE DUPLAS
+                </span>
+
+                <h1>
+                    NIGHT CUP
+                    <strong>CO-OP.</strong>
+                </h1>
+
+                <p>
+                    Quatro duplas. Duas semifinais. Uma grande final.
+                    A disputa em equipe da Confederação Coliseu de Futebol Virtual.
+                </p>
+
+                <div class="coop-public-actions">
+                    <a href="#chaveamento" class="coop-public-button coop-public-button--primary">
+                        Acompanhar chaveamento
+                    </a>
+
+                    <a href="night.html" class="coop-public-button">
+                        Night Cup individual
+                    </a>
+                </div>
+
+                <div class="coop-public-meta">
+                    <div><strong>04</strong><span>DUPLAS</span></div>
+                    <div><strong>08</strong><span>JOGADORES</span></div>
+                    <div><strong>03</strong><span>PARTIDAS</span></div>
+                </div>
+
+            </div>
+
+            <div class="coop-public-logo">
+                <img
+                    src="../assets/images/night-cup-coop-logo.png"
+                    alt="Logo Night Cup Co-Op"
+                    onerror="this.style.display='none'"
+                >
+
+                <div class="coop-public-logo__fallback">
+                    <span>CCFV</span>
+                    <strong>CO-OP</strong>
+                    <small>TORNEIO DE DUPLAS</small>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="coop-public-hero__bottom">
+            <span>CCFV // NIGHT CUP CO-OP</span>
+            <span>PC + CONSOLE</span>
+            <span>SEMIFINAL</span>
+            <span>FINAL</span>
+        </div>
+
+    </section>
+
+
+    <section class="coop-public-section coop-public-edition">
+
+        <div class="coop-public-container">
+
+            <div class="coop-public-section-heading">
+
+                <div>
+                    <span>CCFV // EDIÇÃO ATUAL</span>
+                    <h2>A DISPUTA <strong>ESTÁ AQUI.</strong></h2>
+                </div>
+
+                <span id="coop-public-status" class="coop-public-status">
+                    CARREGANDO
+                </span>
+
+            </div>
+
+            <div class="coop-public-edition-card">
+
+                <div>
+                    <small>EDIÇÃO OFICIAL</small>
+                    <h3 id="coop-public-edition">NIGHT CUP CO-OP</h3>
+                    <p id="coop-public-edition-message">
+                        Carregando dados da competição...
+                    </p>
+                </div>
+
+                <div class="coop-public-edition-badge">
+                    <span>CCFV</span>
+                    <strong>CO-OP</strong>
+                    <small>OFICIAL</small>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="coop-public-section" id="chaveamento">
+
+        <div class="coop-public-container">
+
+            <div class="coop-public-section-heading">
+                <div>
+                    <span>CCFV // BRACKET</span>
+                    <h2>CAMINHO ATÉ A <strong>FINAL.</strong></h2>
+                </div>
+
+                <p>
+                    Os confrontos das semifinais são definidos por sorteio.
+                    Os vencedores avançam automaticamente.
+                </p>
+            </div>
+
+
+            <div class="coop-public-bracket">
+
+                <section class="coop-public-stage">
+
+                    <div class="coop-public-stage__heading">
+                        <span>FASE 01</span>
+                        <strong>SEMIFINAIS</strong>
+                    </div>
+
+                    <div id="coop-public-semifinals" class="coop-public-match-list">
+                        <div class="coop-public-empty">Aguardando sorteio das duplas.</div>
+                    </div>
+
+                </section>
+
+
+                <section class="coop-public-stage coop-public-stage--final">
+
+                    <div class="coop-public-stage__heading">
+                        <span>FASE 02</span>
+                        <strong>GRANDE FINAL</strong>
+                    </div>
+
+                    <div id="coop-public-final" class="coop-public-match-list">
+                        <div class="coop-public-empty">Aguardando os finalistas.</div>
+                    </div>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="coop-public-section coop-public-podium-section">
+
+        <div class="coop-public-container">
+
+            <div class="coop-public-section-heading">
+                <div>
+                    <span>CCFV // HALL DA EDIÇÃO</span>
+                    <h2>OS DONOS <strong>DO TÍTULO.</strong></h2>
+                </div>
+            </div>
+
+            <div id="coop-public-podium" class="coop-public-podium">
+                <div class="coop-public-empty">O campeão será conhecido após a final.</div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="coop-public-section coop-public-rules">
+
+        <div class="coop-public-container">
+
+            <div class="coop-public-section-heading">
+                <div>
+                    <span>CCFV // REGRAS</span>
+                    <h2>DISPUTA EM <strong>DUPLAS.</strong></h2>
+                </div>
+            </div>
+
+            <div class="coop-public-rules-grid">
+
+                <article>
+                    <span>01</span>
+                    <strong>QUATRO DUPLAS</strong>
+                    <p>Oito jogadores formam quatro duplas para iniciar a competição.</p>
+                </article>
+
+                <article>
+                    <span>02</span>
+                    <strong>SORTEIO</strong>
+                    <p>Os confrontos das duas semifinais são definidos aleatoriamente.</p>
+                </article>
+
+                <article>
+                    <span>03</span>
+                    <strong>GRANDE FINAL</strong>
+                    <p>Os vencedores das semifinais disputam o título da edição.</p>
+                </article>
+
+                <article>
+                    <span>04</span>
+                    <strong>ELO ESPECIAL</strong>
+                    <p>O desempenho da dupla movimenta o ELO dos dois integrantes.</p>
+                </article>
+
+            </div>
+
+            <div class="coop-public-points">
+                <span>PREMIAÇÃO DE ELO POR JOGADOR</span>
+                <div><strong>CAMPEÃO</strong><b>+14 ELO</b></div>
+                <div><strong>VICE-CAMPEÃO</strong><b>+2 ELO</b></div>
+                <div><strong>SEMIFINALISTA</strong><b>-2 ELO</b></div>
+                <small>A pontuação é igual para os dois integrantes de cada dupla. Não há bônus adicional por título.</small>
+            </div>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<footer class="coop-public-footer">
+    <div class="coop-public-container">
+        <span>CCFV // CONFEDERAÇÃO COLISEU DE FUTEBOL VIRTUAL</span>
+        <a href="../index.html">VOLTAR AO PORTAL CCFV →</a>
+    </div>
+</footer>
+
+
+<script src="/admin/js/auth.js" defer></script>
+<script src="../js/main.js" defer></script>
+<script src="../js/night-cup-coop.js" defer></script>
+
+</body>
+</html>
