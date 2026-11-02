@@ -1,0 +1,2508 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#030805">
+    <meta name="robots" content="noindex,nofollow">
+
+    <title>Vínculos de Jogadores — CCFV Liga Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+
+        :root {
+            --bg: #030805;
+            --panel: #09130d;
+            --green: #25c985;
+            --green-light: #57e8a7;
+            --gold: #d6b45a;
+            --white: #f5f8f5;
+            --muted: #89968e;
+            --border: rgba(255,255,255,.075);
+            --red: #ff7777;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--white);
+            background:
+                radial-gradient(ellipse at 80% 0%, rgba(35,160,100,.09), transparent 40%),
+                var(--bg);
+            font-family: Inter, Arial, sans-serif;
+        }
+
+        button, input, textarea {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        /* ================================================
+           LAYOUT
+        ================================================ */
+
+        .layout {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 255px minmax(0,1fr);
+        }
+
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+            border-right: 1px solid var(--border);
+            background: rgba(3,9,6,.97);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 3px 7px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand img {
+            width: 46px;
+            height: 46px;
+            object-fit: contain;
+        }
+
+        .brand strong {
+            display: block;
+            font-size: 11px;
+            font-weight: 950;
+            letter-spacing: .1em;
+        }
+
+        .brand strong em {
+            color: var(--green);
+            font-style: normal;
+        }
+
+        .brand small {
+            display: block;
+            margin-top: 5px;
+            color: rgba(255,255,255,.3);
+            font-size: 6px;
+            font-weight: 900;
+            letter-spacing: .12em;
+        }
+
+        .nav-label {
+            margin: 25px 9px 9px;
+            color: rgba(214,180,90,.56);
+            font-size: 6px;
+            font-weight: 950;
+            letter-spacing: .16em;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .nav a {
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 0 11px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            color: rgba(255,255,255,.4);
+            font-size: 8px;
+            font-weight: 850;
+            transition: .2s ease;
+        }
+
+        .nav a span {
+            width: 19px;
+            color: rgba(255,255,255,.35);
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .nav a:hover {
+            color: white;
+            background: rgba(255,255,255,.035);
+        }
+
+        .nav a.active {
+            color: var(--green-light);
+            border-color: rgba(37,201,133,.18);
+            background: rgba(37,201,133,.065);
+        }
+
+        .nav a.active span {
+            color: var(--green-light);
+        }
+
+        .sidebar-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .sidebar-bottom a {
+            color: rgba(255,255,255,.38);
+            font-size: 7px;
+            font-weight: 900;
+        }
+
+        .sidebar-bottom a:hover {
+            color: var(--green);
+        }
+
+
+        /* ================================================
+           CONTEÚDO
+        ================================================ */
+
+        .main {
+            min-width: 0;
+            padding: 0 35px 45px;
+        }
+
+        .topbar {
+            min-height: 77px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .topbar-label {
+            color: rgba(255,255,255,.34);
+            font-size: 7px;
+            font-weight: 950;
+            letter-spacing: .15em;
+        }
+
+        .topbar-account {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .account-info {
+            text-align: right;
+        }
+
+        .account-info strong {
+            display: block;
+            max-width: 230px;
+            overflow: hidden;
+            color: rgba(255,255,255,.78);
+            font-size: 8px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .account-info small {
+            display: block;
+            margin-top: 4px;
+            color: var(--green);
+            font-size: 6px;
+            font-weight: 900;
+            letter-spacing: .12em;
+        }
+
+        .logout {
+            min-height: 34px;
+            padding: 0 12px;
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 8px;
+            color: rgba(255,255,255,.5);
+            background: transparent;
+            font-size: 7px;
+            font-weight: 900;
+        }
+
+        .logout:hover {
+            color: var(--red);
+            border-color: rgba(255,100,100,.3);
+        }
+
+
+        /* ================================================
+           CABEÇALHO DA PÁGINA
+        ================================================ */
+
+        .page-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+            margin: 39px 0 29px;
+        }
+
+        .eyebrow {
+            color: var(--gold);
+            font-size: 7px;
+            font-weight: 950;
+            letter-spacing: .19em;
+        }
+
+        h1 {
+            margin: 13px 0 11px;
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: clamp(35px,4vw,51px);
+            line-height: .97;
+            letter-spacing: -.045em;
+        }
+
+        h1 em {
+            color: var(--green);
+            font-style: normal;
+        }
+
+        .page-heading p {
+            max-width: 570px;
+            margin: 0;
+            color: rgba(255,255,255,.43);
+            font-size: 9px;
+            line-height: 1.85;
+        }
+
+        .refresh-button {
+            min-height: 40px;
+            padding: 0 14px;
+            border: 1px solid rgba(37,201,133,.22);
+            border-radius: 8px;
+            color: var(--green-light);
+            background: rgba(37,201,133,.045);
+            font-size: 7px;
+            font-weight: 950;
+            letter-spacing: .08em;
+            white-space: nowrap;
+            transition: .2s ease;
+        }
+
+        .refresh-button:hover {
+            background: rgba(37,201,133,.1);
+            border-color: rgba(37,201,133,.42);
+        }
+
+        .refresh-button:disabled {
+            opacity: .5;
+            cursor: wait;
+        }
+
+
+        /* ================================================
+           INDICADORES
+        ================================================ */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4,minmax(0,1fr));
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .stat {
+            min-height: 105px;
+            padding: 17px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            background: rgba(255,255,255,.018);
+        }
+
+        .stat span {
+            display: block;
+            color: rgba(255,255,255,.35);
+            font-size: 6px;
+            font-weight: 950;
+            letter-spacing: .12em;
+        }
+
+        .stat strong {
+            display: block;
+            margin-top: 12px;
+            color: white;
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: 30px;
+        }
+
+        .stat.pending strong {
+            color: var(--gold);
+        }
+
+        .stat.approved strong {
+            color: var(--green-light);
+        }
+
+        .stat.rejected strong {
+            color: var(--red);
+        }
+
+
+        /* ================================================
+           FILTROS
+        ================================================ */
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .filter-button {
+            min-height: 34px;
+            padding: 0 12px;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 7px;
+            color: rgba(255,255,255,.42);
+            background: transparent;
+            font-size: 7px;
+            font-weight: 900;
+            transition: .2s ease;
+        }
+
+        .filter-button:hover {
+            color: white;
+            border-color: rgba(255,255,255,.2);
+        }
+
+        .filter-button.active {
+            color: var(--green-light);
+            border-color: rgba(37,201,133,.26);
+            background: rgba(37,201,133,.07);
+        }
+
+        .search {
+            width: min(300px,100%);
+            height: 39px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 0 12px;
+            border: 1px solid rgba(255,255,255,.085);
+            border-radius: 8px;
+            background: rgba(255,255,255,.02);
+        }
+
+        .search span {
+            color: var(--gold);
+        }
+
+        .search input {
+            width: 100%;
+            min-width: 0;
+            border: 0;
+            outline: 0;
+            color: white;
+            background: transparent;
+            font-size: 8px;
+        }
+
+        .search input::placeholder {
+            color: rgba(255,255,255,.25);
+        }
+
+
+        /* ================================================
+           LISTAGEM
+        ================================================ */
+
+        .list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 15px 17px;
+            border: 1px solid var(--border);
+            border-bottom: 0;
+            border-radius: 11px 11px 0 0;
+            background: rgba(255,255,255,.018);
+        }
+
+        .list-header strong {
+            font-size: 8px;
+            font-weight: 950;
+            letter-spacing: .08em;
+        }
+
+        .list-header span {
+            color: rgba(255,255,255,.3);
+            font-size: 7px;
+        }
+
+        .request-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .request-card {
+            display: grid;
+            grid-template-columns: minmax(0,1fr) auto;
+            gap: 20px;
+            padding: 19px;
+            border: 1px solid var(--border);
+            border-radius: 0;
+            background: linear-gradient(110deg, rgba(255,255,255,.022), rgba(255,255,255,.009));
+            transition: .2s ease;
+        }
+
+        .request-card:last-child {
+            border-radius: 0 0 11px 11px;
+        }
+
+        .request-card:hover {
+            border-color: rgba(255,255,255,.13);
+        }
+
+        .request-main {
+            min-width: 0;
+        }
+
+        .request-title {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 13px;
+        }
+
+        .request-title h3 {
+            margin: 0;
+            color: var(--white);
+            font-size: 12px;
+            font-weight: 950;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 22px;
+            padding: 0 8px;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            font-size: 6px;
+            font-weight: 950;
+            letter-spacing: .08em;
+        }
+
+        .status-badge::before {
+            content: "";
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .status-pending {
+            color: var(--gold);
+            border-color: rgba(214,180,90,.18);
+            background: rgba(214,180,90,.06);
+        }
+
+        .status-active {
+            color: var(--green-light);
+            border-color: rgba(37,201,133,.18);
+            background: rgba(37,201,133,.06);
+        }
+
+        .status-rejected,
+        .status-blocked {
+            color: var(--red);
+            border-color: rgba(255,119,119,.17);
+            background: rgba(255,119,119,.05);
+        }
+
+        .request-email {
+            margin-bottom: 14px;
+            color: var(--green-light);
+            font-size: 8px;
+            font-weight: 750;
+            overflow-wrap: anywhere;
+        }
+
+        .request-data {
+            display: grid;
+            grid-template-columns: repeat(3,minmax(0,1fr));
+            gap: 13px;
+        }
+
+        .data-item {
+            min-width: 0;
+        }
+
+        .data-item span {
+            display: block;
+            margin-bottom: 5px;
+            color: rgba(255,255,255,.27);
+            font-size: 6px;
+            font-weight: 900;
+            letter-spacing: .09em;
+        }
+
+        .data-item strong {
+            display: block;
+            overflow-wrap: anywhere;
+            color: rgba(255,255,255,.77);
+            font-size: 8px;
+            font-weight: 800;
+        }
+
+        .request-date {
+            margin-top: 14px;
+            color: rgba(255,255,255,.28);
+            font-size: 7px;
+        }
+
+        .request-actions {
+            width: 135px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-button {
+            min-height: 37px;
+            border: 1px solid transparent;
+            border-radius: 7px;
+            font-size: 7px;
+            font-weight: 950;
+            letter-spacing: .06em;
+            transition: .2s ease;
+        }
+
+        .action-approve {
+            color: #031008;
+            background: var(--green);
+            border-color: var(--green-light);
+        }
+
+        .action-approve:hover {
+            background: #56e7a5;
+            box-shadow: 0 7px 20px rgba(37,201,133,.15);
+        }
+
+        .action-reject {
+            color: var(--red);
+            border-color: rgba(255,119,119,.25);
+            background: rgba(255,119,119,.035);
+        }
+
+        .action-reject:hover {
+            background: rgba(255,119,119,.09);
+        }
+
+        .action-button:disabled {
+            opacity: .45;
+            cursor: wait;
+        }
+
+
+        /* ================================================
+           ESTADOS DA LISTAGEM
+        ================================================ */
+
+        .empty-state,
+        .loading-state,
+        .error-state {
+            padding: 55px 20px;
+            border: 1px solid var(--border);
+            border-radius: 0 0 11px 11px;
+            text-align: center;
+            background: rgba(255,255,255,.015);
+        }
+
+        .empty-state-icon {
+            color: var(--gold);
+            font-size: 28px;
+        }
+
+        .empty-state h3 {
+            margin: 15px 0 8px;
+            font-size: 12px;
+        }
+
+        .empty-state p,
+        .loading-state p,
+        .error-state p {
+            color: rgba(255,255,255,.38);
+            font-size: 9px;
+            line-height: 1.7;
+        }
+
+        .error-state {
+            border-color: rgba(255,119,119,.2);
+        }
+
+        .error-state h3 {
+            color: var(--red);
+        }
+
+
+        /* ================================================
+           MODAL DE DECISÃO
+        ================================================ */
+
+        .modal-backdrop {
+            position: fixed;
+            z-index: 1000;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            background: rgba(0,0,0,.78);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal {
+            width: min(470px,100%);
+            padding: 25px;
+            border: 1px solid rgba(214,180,90,.24);
+            border-radius: 14px;
+            background: #09130d;
+            box-shadow: 0 30px 90px rgba(0,0,0,.5);
+        }
+
+        .modal-kicker {
+            color: var(--gold);
+            font-size: 7px;
+            font-weight: 950;
+            letter-spacing: .17em;
+        }
+
+        .modal h2 {
+            margin: 13px 0 9px;
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: 27px;
+        }
+
+        .modal-description {
+            margin: 0 0 19px;
+            color: rgba(255,255,255,.45);
+            font-size: 9px;
+            line-height: 1.8;
+        }
+
+        .modal label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(255,255,255,.45);
+            font-size: 7px;
+            font-weight: 900;
+            letter-spacing: .1em;
+        }
+
+        .modal textarea {
+            width: 100%;
+            min-height: 90px;
+            resize: vertical;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 8px;
+            outline: 0;
+            color: white;
+            background: rgba(255,255,255,.025);
+            font-size: 9px;
+            line-height: 1.6;
+        }
+
+        .modal textarea:focus {
+            border-color: rgba(37,201,133,.4);
+        }
+
+        .modal-error {
+            margin-top: 10px;
+            color: var(--red);
+            font-size: 8px;
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 9px;
+            margin-top: 19px;
+        }
+
+        .modal-actions button {
+            min-height: 42px;
+            flex: 1;
+            border-radius: 8px;
+            font-size: 7px;
+            font-weight: 950;
+        }
+
+        .modal-cancel {
+            border: 1px solid rgba(255,255,255,.1);
+            color: rgba(255,255,255,.55);
+            background: transparent;
+        }
+
+        .modal-confirm.approve {
+            border: 1px solid var(--green);
+            color: #031008;
+            background: var(--green);
+        }
+
+        .modal-confirm.reject {
+            border: 1px solid rgba(255,119,119,.4);
+            color: white;
+            background: #852e2e;
+        }
+
+        .modal-actions button:disabled {
+            opacity: .5;
+            cursor: wait;
+        }
+
+
+        /* TOAST */
+
+        .toast {
+            position: fixed;
+            z-index: 1200;
+            right: 22px;
+            bottom: 22px;
+            max-width: min(420px,calc(100% - 44px));
+            padding: 14px 17px;
+            border: 1px solid rgba(37,201,133,.3);
+            border-radius: 9px;
+            color: var(--green-light);
+            background: #0b2115;
+            box-shadow: 0 15px 40px rgba(0,0,0,.35);
+            font-size: 8px;
+            font-weight: 800;
+            line-height: 1.6;
+        }
+
+        .toast.error {
+            color: #ffaaaa;
+            border-color: rgba(255,119,119,.3);
+            background: #211010;
+        }
+
+
+        /* FOOTER */
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 36px;
+            padding-top: 17px;
+            border-top: 1px solid var(--border);
+            color: rgba(255,255,255,.2);
+            font-size: 6px;
+            font-weight: 900;
+            letter-spacing: .13em;
+        }
+
+
+        /* RESPONSIVO */
+
+        @media (max-width: 1050px) {
+
+            .main {
+                padding-right: 22px;
+                padding-left: 22px;
+            }
+
+            .request-data {
+                grid-template-columns: repeat(2,minmax(0,1fr));
+            }
+
+        }
+
+        @media (max-width: 760px) {
+
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 15px;
+                border-right: 0;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .brand {
+                padding-bottom: 14px;
+            }
+
+            .nav-label {
+                margin-top: 15px;
+            }
+
+            .nav {
+                display: grid;
+                grid-template-columns: repeat(2,minmax(0,1fr));
+            }
+
+            .sidebar-bottom {
+                flex-direction: row;
+                justify-content: space-between;
+                margin-top: 18px;
+                padding-top: 13px;
+            }
+
+            .main {
+                padding: 0 15px 30px;
+            }
+
+            .topbar {
+                min-height: 63px;
+            }
+
+            .page-heading {
+                align-items: flex-start;
+                flex-direction: column;
+                margin-top: 28px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2,minmax(0,1fr));
+            }
+
+            .toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .search {
+                width: 100%;
+            }
+
+            .request-card {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .request-actions {
+                width: 100%;
+                flex-direction: row;
+            }
+
+            .request-actions button {
+                flex: 1;
+            }
+
+            .footer {
+                flex-direction: column;
+                text-align: center;
+            }
+
+        }
+
+        @media (max-width: 430px) {
+
+            .request-data {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .account-info {
+                display: none;
+            }
+
+            .list-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .filters {
+                display: grid;
+                grid-template-columns: repeat(3,1fr);
+            }
+
+            .filter-button {
+                padding-inline: 8px;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <!-- VERIFICAÇÃO DE ACESSO -->
+
+    <div class="access-screen" id="access-screen"
+         style="position:fixed;inset:0;z-index:2000;display:grid;place-items:center;background:#030805;padding:20px;">
+
+        <div style="width:min(420px,100%);padding:28px;border:1px solid rgba(214,180,90,.2);border-radius:14px;background:#09130d;text-align:center;">
+
+            <h2 id="access-title"
+                style="font-family:'Playfair Display',Georgia,serif;">
+                Verificando acesso
+            </h2>
+
+            <p id="access-message"
+               style="color:#89968e;font-size:10px;line-height:1.7;">
+                Conferindo sua sessão e suas permissões administrativas.
+            </p>
+
+            <a href="/admin/login.html"
+               id="access-login"
+               hidden
+               style="color:#57e8a7;font-size:9px;font-weight:900;">
+                ACESSAR ADMIN CCFV →
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- APLICAÇÃO -->
+
+    <div class="layout" id="admin-layout" hidden>
+
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <a class="brand" href="/liga/index.html">
+
+                <img
+                    src="/liga/logos/01_logo_liga_ccfv.png"
+                    alt="Liga CCFV"
+                >
+
+                <span>
+                    <strong>CCFV <em>/ LIGA</em></strong>
+                    <small>ADMINISTRAÇÃO DA LIGA</small>
+                </span>
+
+            </a>
+
+
+            <div class="nav-label">
+                CENTRAL DA LIGA
+            </div>
+
+            <nav class="nav">
+
+                <a href="/liga/admin/index.html">
+                    <span>⌂</span>
+                    Visão geral
+                </a>
+
+                <a href="/liga/admin/vinculos.html" class="active">
+                    <span>◈</span>
+                    Vínculos
+                </a>
+
+            </nav>
+
+
+            <div class="nav-label">
+                GESTÃO DOS CLUBES
+            </div>
+
+            <nav class="nav">
+
+                <a class="disabled" aria-disabled="true">
+                    <span>♜</span>
+                    Clubes
+                </a>
+
+                <a class="disabled" aria-disabled="true">
+                    <span>▦</span>
+                    Temporadas
+                </a>
+
+                <a class="disabled" aria-disabled="true">
+                    <span>＋</span>
+                    Inscrições
+                </a>
+
+                <a class="disabled" aria-disabled="true">
+                    <span>◉</span>
+                    Divisões
+                </a>
+
+            </nav>
+
+
+            <div class="nav-label">
+                COMPETIÇÕES
+            </div>
+
+            <nav class="nav">
+
+                <a class="disabled" aria-disabled="true">
+                    <span>⚔</span>
+                    Campeonato
+                </a>
+
+                <a class="disabled" aria-disabled="true">
+                    <span>🏆</span>
+                    Copas
+                </a>
+
+                <a class="disabled" aria-disabled="true">
+                    <span>▤</span>
+                    Resultados
+                </a>
+
+            </nav>
+
+
+            <div class="sidebar-bottom">
+
+                <a href="/liga/admin/index.html">
+                    ← CENTRAL DA LIGA
+                </a>
+
+                <a href="/admin/">
+                    ADMIN PRINCIPAL CCFV ↗
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- CONTEÚDO -->
+
+        <main class="main">
+
+            <header class="topbar">
+
+                <span class="topbar-label">
+                    CCFV / ADMINISTRAÇÃO / LIGA / VÍNCULOS
+                </span>
+
+                <div class="topbar-account">
+
+                    <div class="account-info">
+
+                        <strong id="admin-email">
+                            Administrador
+                        </strong>
+
+                        <small>
+                            ADMINISTRADOR AUTORIZADO
+                        </small>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="logout"
+                        id="logout-button"
+                    >
+                        SAIR
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <!-- CABEÇALHO -->
+
+            <section class="page-heading">
+
+                <div>
+
+                    <span class="eyebrow">
+                        CCFV // PLAYER VERIFICATION
+                    </span>
+
+                    <h1>
+                        VÍNCULOS DE<br>
+                        <em>JOGADORES.</em>
+                    </h1>
+
+                    <p>
+                        Confira os cadastros esportivos, analise as solicitações
+                        de associação e valide a identidade dos participantes
+                        antes de liberar o acesso à gestão de clubes.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="refresh-button"
+                    id="refresh-button"
+                >
+                    ↻ ATUALIZAR SOLICITAÇÕES
+                </button>
+
+            </section>
+
+
+            <!-- INDICADORES -->
+
+            <section class="stats">
+
+                <article class="stat pending">
+                    <span>AGUARDANDO ANÁLISE</span>
+                    <strong id="stat-pending">—</strong>
+                </article>
+
+                <article class="stat approved">
+                    <span>VÍNCULOS APROVADOS</span>
+                    <strong id="stat-active">—</strong>
+                </article>
+
+                <article class="stat rejected">
+                    <span>REJEITADOS</span>
+                    <strong id="stat-rejected">—</strong>
+                </article>
+
+                <article class="stat">
+                    <span>TOTAL DE VÍNCULOS</span>
+                    <strong id="stat-total">—</strong>
+                </article>
+
+            </section>
+
+
+            <!-- FILTROS -->
+
+            <section class="toolbar">
+
+                <div class="filters">
+
+                    <button
+                        type="button"
+                        class="filter-button active"
+                        data-filter="PENDING"
+                    >
+                        PENDENTES
+                    </button>
+
+                    <button
+                        type="button"
+                        class="filter-button"
+                        data-filter="ACTIVE"
+                    >
+                        APROVADOS
+                    </button>
+
+                    <button
+                        type="button"
+                        class="filter-button"
+                        data-filter="REJECTED"
+                    >
+                        REJEITADOS
+                    </button>
+
+                    <button
+                        type="button"
+                        class="filter-button"
+                        data-filter="BLOCKED"
+                    >
+                        BLOQUEADOS
+                    </button>
+
+                    <button
+                        type="button"
+                        class="filter-button"
+                        data-filter="ALL"
+                    >
+                        TODOS
+                    </button>
+
+                </div>
+
+
+                <label class="search">
+
+                    <span>⌕</span>
+
+                    <input
+                        type="search"
+                        id="search-input"
+                        placeholder="Buscar jogador, código ou e-mail..."
+                        autocomplete="off"
+                    >
+
+                </label>
+
+            </section>
+
+
+            <!-- LISTA -->
+
+            <section>
+
+                <div class="list-header">
+
+                    <strong>
+                        SOLICITAÇÕES DE VÍNCULO
+                    </strong>
+
+                    <span id="list-counter">
+                        Carregando registros...
+                    </span>
+
+                </div>
+
+
+                <div class="request-list" id="request-list">
+
+                    <div class="loading-state">
+                        <p>Consultando solicitações no banco de dados...</p>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <footer class="footer">
+
+                <span>CCFV / LIGA — ADMINISTRAÇÃO DE VÍNCULOS</span>
+
+                <span>VALIDAÇÃO · SEGURANÇA · IDENTIDADE</span>
+
+            </footer>
+
+        </main>
+
+    </div>
+
+
+    <!-- MODAL DE APROVAÇÃO / REJEIÇÃO -->
+
+    <div
+        class="modal-backdrop"
+        id="decision-modal"
+        hidden
+    >
+
+        <section
+            class="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+        >
+
+            <span class="modal-kicker">
+                CCFV // DECISÃO ADMINISTRATIVA
+            </span>
+
+            <h2 id="modal-title">
+                Confirmar decisão
+            </h2>
+
+            <p
+                class="modal-description"
+                id="modal-description"
+            >
+                Revise a solicitação antes de continuar.
+            </p>
+
+
+            <form id="decision-form">
+
+                <label for="decision-note">
+                    OBSERVAÇÃO ADMINISTRATIVA (OPCIONAL)
+                </label>
+
+                <textarea
+                    id="decision-note"
+                    maxlength="500"
+                    placeholder="Adicione uma observação para o histórico da decisão..."
+                ></textarea>
+
+
+                <div
+                    class="modal-error"
+                    id="modal-error"
+                    hidden
+                    role="alert"
+                ></div>
+
+
+                <div class="modal-actions">
+
+                    <button
+                        type="button"
+                        class="modal-cancel"
+                        id="modal-cancel"
+                    >
+                        CANCELAR
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="modal-confirm approve"
+                        id="modal-confirm"
+                    >
+                        CONFIRMAR
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </div>
+
+
+    <div class="toast" id="toast" hidden></div>
+
+
+    <!-- SUPABASE E CONTROLE ADMINISTRATIVO -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <script>
+
+    (() => {
+
+        "use strict";
+
+
+        /* =================================================
+           CONFIGURAÇÃO
+        ================================================= */
+
+        const SUPABASE_URL =
+            "https://msqvkcnywokhakmqgiso.supabase.co";
+
+        const SUPABASE_PUBLISHABLE_KEY =
+            "sb_publishable_sanJ5WpLoquv4JH2ryYR6w_LxdaS2Q2";
+
+
+        let client = null;
+
+        let allRequests = [];
+
+        let activeFilter = "PENDING";
+
+        let selectedRequest = null;
+
+        let selectedDecision = null;
+
+        let toastTimeout = null;
+
+
+        const $ = selector =>
+            document.querySelector(selector);
+
+
+        /* =================================================
+           SEGURANÇA E ACESSO
+        ================================================= */
+
+        async function getClient() {
+
+            if (client) {
+                return client;
+            }
+
+            if (
+                !window.supabase ||
+                !window.supabase.createClient
+            ) {
+
+                throw new Error(
+                    "Biblioteca Supabase indisponível."
+                );
+
+            }
+
+            client = window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_PUBLISHABLE_KEY,
+                {
+                    auth: {
+                        persistSession: true,
+                        autoRefreshToken: true,
+                        detectSessionInUrl: true
+                    }
+                }
+            );
+
+            window.CCFVLigaAdminSupabase = client;
+
+            return client;
+
+        }
+
+
+        function denyAccess(message, showLogin = false) {
+
+            const screen = $("#access-screen");
+
+            $("#access-title").textContent =
+                "Acesso não autorizado";
+
+            $("#access-message").textContent =
+                message;
+
+            $("#access-login").hidden =
+                !showLogin;
+
+            screen.hidden = false;
+
+            $("#admin-layout").hidden = true;
+
+        }
+
+
+        async function verifyAdmin() {
+
+            const supabase = await getClient();
+
+            const {
+                data: sessionData,
+                error: sessionError
+            } = await supabase.auth.getSession();
+
+
+            if (sessionError) {
+                throw sessionError;
+            }
+
+
+            const session =
+                sessionData?.session;
+
+
+            if (!session) {
+
+                denyAccess(
+                    "Entre primeiro no Admin principal da CCFV.",
+                    true
+                );
+
+                return false;
+
+            }
+
+
+            const {
+                data: adminResult,
+                error: adminError
+            } = await supabase.rpc(
+                "ccfv_is_admin"
+            );
+
+
+            if (adminError) {
+                throw adminError;
+            }
+
+
+            const isAdmin =
+                adminResult === true ||
+                adminResult?.is_admin === true;
+
+
+            if (!isAdmin) {
+
+                denyAccess(
+                    "Sua conta não possui autorização administrativa para gerenciar a Liga."
+                );
+
+                return false;
+
+            }
+
+
+            $("#admin-email").textContent =
+                session.user.email || "Administrador";
+
+
+            $("#access-screen").hidden = true;
+
+            $("#admin-layout").hidden = false;
+
+            return true;
+
+        }
+
+
+        /* =================================================
+           UTILITÁRIOS
+        ================================================= */
+
+        function escapeHTML(value) {
+
+            return String(value ?? "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+
+        }
+
+
+        function formatDate(value) {
+
+            if (!value) {
+                return "Não informado";
+            }
+
+            const date = new Date(value);
+
+            if (Number.isNaN(date.getTime())) {
+                return "Data inválida";
+            }
+
+            return new Intl.DateTimeFormat(
+                "pt-BR",
+                {
+                    dateStyle: "short",
+                    timeStyle: "short"
+                }
+            ).format(date);
+
+        }
+
+
+        function formatStatus(value) {
+
+            const status =
+                String(value || "").toUpperCase();
+
+            const labels = {
+                PENDING: "PENDENTE",
+                ACTIVE: "APROVADO",
+                REJECTED: "REJEITADO",
+                BLOCKED: "BLOQUEADO"
+            };
+
+            return labels[status] || status;
+
+        }
+
+
+        function statusClass(value) {
+
+            const status =
+                String(value || "").toLowerCase();
+
+            return `status-${status}`;
+
+        }
+
+
+        function showToast(message, type = "success") {
+
+            const toast = $("#toast");
+
+            toast.textContent = message;
+
+            toast.className =
+                type === "error"
+                    ? "toast error"
+                    : "toast";
+
+            toast.hidden = false;
+
+            clearTimeout(toastTimeout);
+
+            toastTimeout = setTimeout(
+                () => {
+                    toast.hidden = true;
+                },
+                4500
+            );
+
+        }
+
+
+        /* =================================================
+           INDICADORES
+        ================================================= */
+
+        function updateStats() {
+
+            const count = status =>
+                allRequests.filter(
+                    item =>
+                        String(item.link_status).toUpperCase() === status
+                ).length;
+
+
+            $("#stat-pending").textContent =
+                count("PENDING");
+
+            $("#stat-active").textContent =
+                count("ACTIVE");
+
+            $("#stat-rejected").textContent =
+                count("REJECTED");
+
+            $("#stat-total").textContent =
+                allRequests.length;
+
+        }
+
+
+        /* =================================================
+           CARREGAR SOLICITAÇÕES
+        ================================================= */
+
+        async function loadRequests() {
+
+            const refreshButton =
+                $("#refresh-button");
+
+            const list =
+                $("#request-list");
+
+
+            refreshButton.disabled = true;
+
+            refreshButton.textContent =
+                "CONSULTANDO...";
+
+
+            list.innerHTML = `
+                <div class="loading-state">
+                    <p>Consultando solicitações no Supabase...</p>
+                </div>
+            `;
+
+
+            try {
+
+                const supabase =
+                    await getClient();
+
+
+                const {
+                    data,
+                    error
+                } = await supabase.rpc(
+                    "ccfv_league_admin_list_player_links",
+                    {
+                        p_status: "ALL",
+                        p_limit: 200
+                    }
+                );
+
+
+                if (error) {
+                    throw error;
+                }
+
+
+                if (data?.success !== true) {
+
+                    throw new Error(
+                        "A listagem administrativa não retornou sucesso."
+                    );
+
+                }
+
+
+                allRequests =
+                    Array.isArray(data.requests)
+                        ? data.requests
+                        : [];
+
+
+                updateStats();
+
+                renderRequests();
+
+
+                $("#list-counter").textContent =
+                    `${allRequests.length} registro(s) carregado(s)`;
+
+                console.log(
+                    "CCFV LIGA ADMIN // VÍNCULOS:",
+                    data
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "CCFV LIGA ADMIN // ERRO AO CARREGAR VÍNCULOS",
+                    error
+                );
+
+
+                list.innerHTML = `
+                    <div class="error-state">
+                        <h3>Não foi possível carregar as solicitações</h3>
+                        <p>${escapeHTML(error.message || "Erro desconhecido.")}</p>
+                    </div>
+                `;
+
+                $("#list-counter").textContent =
+                    "Falha na consulta";
+
+                showToast(
+                    error.message || "Erro ao carregar vínculos.",
+                    "error"
+                );
+
+            } finally {
+
+                refreshButton.disabled = false;
+
+                refreshButton.textContent =
+                    "↻ ATUALIZAR SOLICITAÇÕES";
+
+            }
+
+        }
+
+
+        /* =================================================
+           BUSCA E FILTROS
+        ================================================= */
+
+        function getFilteredRequests() {
+
+            const search =
+                String($("#search-input").value || "")
+                    .trim()
+                    .toLowerCase();
+
+
+            return allRequests.filter(item => {
+
+                const status =
+                    String(item.link_status || "")
+                        .toUpperCase();
+
+
+                const matchesStatus =
+                    activeFilter === "ALL" ||
+                    status === activeFilter;
+
+
+                const searchable = [
+                    item.player_name,
+                    item.player_code,
+                    item.account_email,
+                    item.whatsapp,
+                    item.platform,
+                    item.team_name
+                ]
+                    .filter(Boolean)
+                    .join(" ")
+                    .toLowerCase();
+
+
+                const matchesSearch =
+                    !search ||
+                    searchable.includes(search);
+
+
+                return matchesStatus && matchesSearch;
+
+            });
+
+        }
+
+
+        /* =================================================
+           RENDERIZAÇÃO
+        ================================================= */
+
+        function renderRequests() {
+
+            const list =
+                $("#request-list");
+
+            const filtered =
+                getFilteredRequests();
+
+
+            $("#list-counter").textContent =
+                `${filtered.length} de ${allRequests.length} registro(s)`;
+
+
+            if (!filtered.length) {
+
+                const message =
+                    activeFilter === "PENDING"
+                        ? "Não há solicitações aguardando aprovação."
+                        : "Nenhum registro encontrado com esse filtro.";
+
+
+                list.innerHTML = `
+
+                    <div class="empty-state">
+
+                        <div class="empty-state-icon">◈</div>
+
+                        <h3>Tudo em ordem</h3>
+
+                        <p>
+                            ${escapeHTML(message)}
+                        </p>
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            list.innerHTML =
+                filtered.map(item => {
+
+                    const name =
+                        item.player_name ||
+                        "Jogador não identificado";
+
+                    const email =
+                        item.account_email ||
+                        "E-mail indisponível";
+
+                    const code =
+                        item.player_code ||
+                        "Não informado";
+
+                    const phone =
+                        item.whatsapp ||
+                        "Não cadastrado";
+
+                    const platform =
+                        item.platform ||
+                        "Não informada";
+
+                    const team =
+                        item.team_name ||
+                        "Não informado";
+
+                    const status =
+                        String(item.link_status || "")
+                            .toUpperCase();
+
+                    const isPending =
+                        status === "PENDING";
+
+
+                    return `
+
+                        <article class="request-card">
+
+                            <div class="request-main">
+
+                                <div class="request-title">
+
+                                    <h3>
+                                        ${escapeHTML(name)}
+                                    </h3>
+
+                                    <span class="status-badge ${statusClass(status)}">
+                                        ${escapeHTML(formatStatus(status))}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="request-email">
+                                    ${escapeHTML(email)}
+                                </div>
+
+
+                                <div class="request-data">
+
+                                    <div class="data-item">
+
+                                        <span>CÓDIGO CCFV</span>
+
+                                        <strong>
+                                            ${escapeHTML(code)}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="data-item">
+
+                                        <span>WHATSAPP CADASTRADO</span>
+
+                                        <strong>
+                                            ${escapeHTML(phone)}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="data-item">
+
+                                        <span>PLATAFORMA</span>
+
+                                        <strong>
+                                            ${escapeHTML(platform)}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="data-item">
+
+                                        <span>TIME INFORMADO</span>
+
+                                        <strong>
+                                            ${escapeHTML(team)}
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="request-date">
+                                    SOLICITAÇÃO:
+                                    ${escapeHTML(formatDate(item.requested_at))}
+                                </div>
+
+                            </div>
+
+
+                            ${
+                                isPending
+                                    ? `
+
+                                        <div class="request-actions">
+
+                                            <button
+                                                type="button"
+                                                class="action-button action-approve"
+                                                data-action="review"
+                                                data-decision="APPROVE"
+                                                data-user-id="${escapeHTML(item.auth_user_id)}"
+                                            >
+                                                APROVAR
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                class="action-button action-reject"
+                                                data-action="review"
+                                                data-decision="REJECT"
+                                                data-user-id="${escapeHTML(item.auth_user_id)}"
+                                            >
+                                                REJEITAR
+                                            </button>
+
+                                        </div>
+
+                                    `
+                                    : ""
+                            }
+
+                        </article>
+
+                    `;
+
+                }).join("");
+
+        }
+
+
+        /* =================================================
+           ABRIR MODAL DE DECISÃO
+        ================================================= */
+
+        function openDecisionModal(
+            authUserId,
+            decision
+        ) {
+
+            const request =
+                allRequests.find(
+                    item =>
+                        item.auth_user_id === authUserId
+                );
+
+
+            if (!request) {
+
+                showToast(
+                    "Solicitação não encontrada. Atualize a lista.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (
+                String(request.link_status).toUpperCase() !== "PENDING"
+            ) {
+
+                showToast(
+                    "Esta solicitação não está mais pendente.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            selectedRequest = request;
+
+            selectedDecision = decision;
+
+
+            const approve =
+                decision === "APPROVE";
+
+
+            $("#modal-title").textContent =
+                approve
+                    ? "Aprovar vínculo?"
+                    : "Rejeitar vínculo?";
+
+
+            $("#modal-description").textContent =
+                approve
+                    ? `Confirme que ${request.player_name || "este jogador"} é o titular legítimo do cadastro ${request.player_code || ""}. Após aprovação, o participante poderá avançar para a criação do clube.`
+                    : `Você está prestes a rejeitar a solicitação de ${request.player_name || "este jogador"}. O participante poderá realizar uma nova solicitação posteriormente.`;
+
+
+            $("#modal-confirm").textContent =
+                approve ? "APROVAR VÍNCULO" : "REJEITAR VÍNCULO";
+
+
+            $("#modal-confirm").className =
+                `modal-confirm ${approve ? "approve" : "reject"}`;
+
+
+            $("#decision-note").value = "";
+
+            $("#modal-error").hidden = true;
+
+            $("#decision-modal").hidden = false;
+
+            $("#decision-note").focus();
+
+        }
+
+
+        function closeDecisionModal() {
+
+            $("#decision-modal").hidden = true;
+
+            $("#decision-form").reset();
+
+            selectedRequest = null;
+
+            selectedDecision = null;
+
+        }
+
+
+        /* =================================================
+           EXECUTAR DECISÃO ADMINISTRATIVA
+           RPC JÁ EXISTENTE NO BANCO
+        ================================================= */
+
+        async function submitDecision(event) {
+
+            event.preventDefault();
+
+
+            if (
+                !selectedRequest ||
+                !selectedDecision
+            ) {
+
+                return;
+
+            }
+
+
+            const button =
+                $("#modal-confirm");
+
+            const errorBox =
+                $("#modal-error");
+
+            const note =
+                String($("#decision-note").value || "")
+                    .trim();
+
+
+            if (note.length > 500) {
+
+                errorBox.textContent =
+                    "A observação pode ter no máximo 500 caracteres.";
+
+                errorBox.hidden = false;
+
+                return;
+
+            }
+
+
+            button.disabled = true;
+
+            $("#modal-cancel").disabled = true;
+
+            button.textContent =
+                "PROCESSANDO...";
+
+
+            errorBox.hidden = true;
+
+
+            try {
+
+                const supabase =
+                    await getClient();
+
+
+                const {
+                    data,
+                    error
+                } = await supabase.rpc(
+                    "ccfv_league_admin_review_player_link",
+                    {
+                        p_auth_user_id: selectedRequest.auth_user_id,
+                        p_decision: selectedDecision,
+                        p_note: note || null
+                    }
+                );
+
+
+                if (error) {
+                    throw error;
+                }
+
+
+                if (data?.success !== true) {
+
+                    throw new Error(
+                        "A decisão não foi confirmada pelo banco."
+                    );
+
+                }
+
+
+                const wasApproved =
+                    selectedDecision === "APPROVE";
+
+
+                closeDecisionModal();
+
+
+                showToast(
+                    wasApproved
+                        ? "Vínculo aprovado. O participante já poderá avançar na Liga."
+                        : "Solicitação rejeitada. A decisão foi registrada no histórico."
+                );
+
+
+                await loadRequests();
+
+
+            } catch (error) {
+
+                console.error(
+                    "CCFV LIGA ADMIN // ERRO NA DECISÃO",
+                    error
+                );
+
+
+                errorBox.textContent =
+                    error.message ||
+                    "Não foi possível registrar a decisão.";
+
+                errorBox.hidden = false;
+
+
+            } finally {
+
+                button.disabled = false;
+
+                $("#modal-cancel").disabled = false;
+
+                button.textContent =
+                    selectedDecision === "APPROVE"
+                        ? "APROVAR VÍNCULO"
+                        : "REJEITAR VÍNCULO";
+
+            }
+
+        }
+
+
+        /* =================================================
+           EVENTOS
+        ================================================= */
+
+        function bindEvents() {
+
+            $("#refresh-button").addEventListener(
+                "click",
+                loadRequests
+            );
+
+
+            $("#search-input").addEventListener(
+                "input",
+                renderRequests
+            );
+
+
+            document
+                .querySelectorAll("[data-filter]")
+                .forEach(button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            activeFilter =
+                                button.dataset.filter;
+
+
+                            document
+                                .querySelectorAll("[data-filter]")
+                                .forEach(item => {
+
+                                    item.classList.toggle(
+                                        "active",
+                                        item === button
+                                    );
+
+                                });
+
+
+                            renderRequests();
+
+                        }
+                    );
+
+                });
+
+
+            $("#request-list").addEventListener(
+                "click",
+                event => {
+
+                    const button =
+                        event.target.closest(
+                            "[data-action='review']"
+                        );
+
+
+                    if (!button) return;
+
+
+                    openDecisionModal(
+                        button.dataset.userId,
+                        button.dataset.decision
+                    );
+
+                }
+            );
+
+
+            $("#decision-form").addEventListener(
+                "submit",
+                submitDecision
+            );
+
+
+            $("#modal-cancel").addEventListener(
+                "click",
+                closeDecisionModal
+            );
+
+
+            $("#decision-modal").addEventListener(
+                "click",
+                event => {
+
+                    if (
+                        event.target.id === "decision-modal"
+                    ) {
+
+                        closeDecisionModal();
+
+                    }
+
+                }
+            );
+
+
+            document.addEventListener(
+                "keydown",
+                event => {
+
+                    if (
+                        event.key === "Escape" &&
+                        !$("#decision-modal").hidden
+                    ) {
+
+                        closeDecisionModal();
+
+                    }
+
+                }
+            );
+
+
+            $("#logout-button").addEventListener(
+                "click",
+                async () => {
+
+                    const button =
+                        $("#logout-button");
+
+                    button.disabled = true;
+
+                    button.textContent = "SAINDO...";
+
+
+                    try {
+
+                        const supabase =
+                            await getClient();
+
+                        const { error } =
+                            await supabase.auth.signOut();
+
+                        if (error) {
+                            throw error;
+                        }
+
+                        window.location.replace(
+                            "/admin/login.html"
+                        );
+
+                    } catch (error) {
+
+                        console.error(error);
+
+                        button.disabled = false;
+
+                        button.textContent = "SAIR";
+
+                        showToast(
+                            "Não foi possível encerrar sua sessão.",
+                            "error"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* =================================================
+           INICIALIZAÇÃO
+        ================================================= */
+
+        async function init() {
+
+            bindEvents();
+
+
+            try {
+
+                const authorized =
+                    await verifyAdmin();
+
+
+                if (!authorized) {
+                    return;
+                }
+
+
+                await loadRequests();
+
+
+                console.log(
+                    "CCFV LIGA ADMIN // MÓDULO DE VÍNCULOS ATIVO"
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "CCFV LIGA ADMIN // FALHA DE ACESSO",
+                    error
+                );
+
+
+                denyAccess(
+                    "Não foi possível validar seu acesso: " +
+                    (error.message || "erro desconhecido.")
+                );
+
+            }
+
+        }
+
+
+        init();
+
+    })();
+
+    </script>
+
+</body>
+</html>

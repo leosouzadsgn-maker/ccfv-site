@@ -1950,6 +1950,172 @@
             text-decoration:none;
         }
         .ccfv-admin-nav__link:hover { text-decoration:none; }
+        
+/* =====================================================
+   MENU ADMINISTRATIVO — LIGA CCFV
+   ===================================================== */
+
+.ccfv-admin-liga-group {
+    width: 100%;
+    margin-top: 7px;
+    border-top: 1px solid rgba(255,255,255,.055);
+    padding-top: 7px;
+}
+
+.ccfv-admin-liga-toggle {
+    min-height: 44px;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 0 12px;
+
+    list-style: none;
+    cursor: pointer;
+
+    border: 1px solid rgba(214,180,90,.17);
+    border-radius: 10px;
+
+    color: #e1c779;
+    background: linear-gradient(
+        100deg,
+        rgba(214,180,90,.075),
+        rgba(67,223,145,.025)
+    );
+
+    transition: .22s ease;
+}
+
+.ccfv-admin-liga-toggle::-webkit-details-marker {
+    display: none;
+}
+
+.ccfv-admin-liga-toggle:hover {
+    border-color: rgba(214,180,90,.38);
+    background: rgba(214,180,90,.09);
+}
+
+.ccfv-admin-liga-icon {
+    width: 19px;
+    font-size: 15px;
+    text-align: center;
+}
+
+.ccfv-admin-liga-toggle strong {
+    flex: 1;
+
+    font-size: 8px;
+    font-weight: 950;
+    letter-spacing: .12em;
+}
+
+.ccfv-admin-liga-arrow {
+    color: #d6b45a;
+    font-size: 17px;
+    transition: transform .2s ease;
+}
+
+.ccfv-admin-liga-group[open]
+.ccfv-admin-liga-arrow {
+    transform: rotate(180deg);
+}
+
+
+/* SUBMENU */
+
+.ccfv-admin-liga-submenu {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    margin: 7px 0 5px 15px;
+    padding: 7px 0 7px 12px;
+
+    border-left: 1px solid rgba(214,180,90,.18);
+}
+
+.ccfv-admin-liga-caption {
+    margin: 10px 0 5px;
+
+    color: rgba(214,180,90,.55);
+
+    font-size: 6px;
+    font-weight: 950;
+    letter-spacing: .13em;
+}
+
+.ccfv-admin-liga-caption:first-child {
+    margin-top: 2px;
+}
+
+
+/* LINKS FUNCIONAIS */
+
+.ccfv-admin-liga-subitem {
+    min-height: 34px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 0 9px;
+
+    border: 1px solid transparent;
+    border-radius: 7px;
+
+    color: rgba(255,255,255,.53);
+    text-decoration: none;
+
+    font-size: 7px;
+    font-weight: 800;
+
+    transition: .2s ease;
+}
+
+.ccfv-admin-liga-subitem span {
+    width: 15px;
+
+    color: #43df91;
+    font-size: 11px;
+    text-align: center;
+}
+
+.ccfv-admin-liga-subitem:hover {
+    color: #ffffff;
+    border-color: rgba(67,223,145,.12);
+    background: rgba(67,223,145,.055);
+    text-decoration: none;
+}
+
+
+/* MÓDULOS AINDA NÃO DISPONÍVEIS */
+
+.ccfv-admin-liga-coming {
+    min-height: 31px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+
+    padding: 0 9px;
+
+    color: rgba(255,255,255,.23);
+
+    font-size: 7px;
+    font-weight: 800;
+}
+
+.ccfv-admin-liga-coming small {
+    color: rgba(255,255,255,.18);
+
+    font-size: 5px;
+    font-weight: 900;
+    letter-spacing: .06em;
+}
+
         #champions-config { display:none; }
         #champions-config.is-visible { display:block; }
         #champions-team option { color:#fff; background:#07100b; }
@@ -2100,6 +2266,106 @@
                 Ranking
 
             </button>
+
+            
+<!-- =========================================
+     CENTRAL ADMINISTRATIVA — LIGA CCFV
+========================================= -->
+
+<details class="ccfv-admin-liga-group">
+
+    <summary class="ccfv-admin-liga-toggle">
+
+        <span class="ccfv-admin-liga-icon">⚽</span>
+
+        <strong>LIGA CCFV</strong>
+
+        <span class="ccfv-admin-liga-arrow">⌄</span>
+
+    </summary>
+
+
+    <div class="ccfv-admin-liga-submenu">
+
+        <div class="ccfv-admin-liga-caption">
+            PAINEL DA LIGA
+        </div>
+
+        <a
+            href="/liga/admin/index.html"
+            class="ccfv-admin-liga-subitem"
+        >
+            <span>⌂</span>
+            Visão geral
+        </a>
+
+        <a
+            href="/liga/admin/vinculos.html"
+            class="ccfv-admin-liga-subitem"
+        >
+            <span>◈</span>
+            Vínculos de jogadores
+        </a>
+
+
+        <div class="ccfv-admin-liga-caption">
+            GESTÃO DOS CLUBES
+        </div>
+
+        <span class="ccfv-admin-liga-coming">
+            Clubes <small>EM BREVE</small>
+        </span>
+
+        <span class="ccfv-admin-liga-coming">
+            Temporadas <small>EM BREVE</small>
+        </span>
+
+        <span class="ccfv-admin-liga-coming">
+            Inscrições <small>EM BREVE</small>
+        </span>
+
+        <span class="ccfv-admin-liga-coming">
+            Divisões <small>EM BREVE</small>
+        </span>
+
+
+        <div class="ccfv-admin-liga-caption">
+            COMPETIÇÕES
+        </div>
+
+        <span class="ccfv-admin-liga-coming">
+            Campeonato <small>EM BREVE</small>
+        </span>
+
+        <span class="ccfv-admin-liga-coming">
+            Copas <small>EM BREVE</small>
+        </span>
+
+        <span class="ccfv-admin-liga-coming">
+            Resultados <small>EM BREVE</small>
+        </span>
+
+
+        <div class="ccfv-admin-liga-caption">
+            ADMINISTRAÇÃO
+        </div>
+
+        <span class="ccfv-admin-liga-coming">
+            Premiações <small>EM BREVE</small>
+        </span>
+
+        <span class="ccfv-admin-liga-coming">
+            Histórico <small>EM BREVE</small>
+        </span>
+
+        <span class="ccfv-admin-liga-coming">
+            Configurações <small>EM BREVE</small>
+        </span>
+
+    </div>
+
+</details>
+
 
         </nav>
 

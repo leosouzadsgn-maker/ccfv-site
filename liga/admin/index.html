@@ -1,0 +1,1210 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#030805">
+
+    <title>Administração da Liga — CCFV</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #030805;
+            --panel: #08130d;
+            --green: #25c985;
+            --green-light: #57e8a7;
+            --gold: #d6b45a;
+            --white: #f5f8f5;
+            --muted: #89968e;
+            --border: rgba(255,255,255,.075);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--white);
+            background:
+                radial-gradient(ellipse at 80% 0%, rgba(35,160,100,.11), transparent 40%),
+                var(--bg);
+            font-family: Inter, Arial, sans-serif;
+        }
+
+        button, a {
+            font: inherit;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .admin-layout {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 255px minmax(0,1fr);
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 25px 17px;
+            border-right: 1px solid var(--border);
+            background: rgba(3,9,6,.97);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 8px 25px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+
+        .brand strong {
+            display: block;
+            font-size: 12px;
+            font-weight: 950;
+            letter-spacing: .12em;
+        }
+
+        .brand strong span {
+            color: var(--green);
+        }
+
+        .brand small {
+            display: block;
+            margin-top: 5px;
+            color: rgba(255,255,255,.35);
+            font-size: 6px;
+            font-weight: 900;
+            letter-spacing: .12em;
+        }
+
+        .nav-label {
+            margin: 26px 10px 10px;
+            color: rgba(214,180,90,.55);
+            font-size: 7px;
+            font-weight: 900;
+            letter-spacing: .16em;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .nav a {
+            min-height: 43px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 0 12px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            color: rgba(255,255,255,.43);
+            font-size: 9px;
+            font-weight: 800;
+            transition: .2s ease;
+        }
+
+        .nav a span {
+            width: 19px;
+            color: rgba(255,255,255,.35);
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .nav a:hover {
+            color: white;
+            background: rgba(255,255,255,.035);
+        }
+
+        .nav a.active {
+            color: var(--green-light);
+            border-color: rgba(37,201,133,.2);
+            background: rgba(37,201,133,.075);
+        }
+
+        .nav a.active span {
+            color: var(--green-light);
+        }
+
+        .nav a.disabled {
+            opacity: .38;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .nav a.disabled small {
+            margin-left: auto;
+            color: var(--gold);
+            font-size: 6px;
+        }
+
+        .sidebar-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .sidebar-bottom a {
+            color: rgba(255,255,255,.4);
+            font-size: 8px;
+            font-weight: 800;
+        }
+
+        .sidebar-bottom a:hover {
+            color: var(--green);
+        }
+
+        /* MAIN */
+
+        .main {
+            min-width: 0;
+            padding: 0 36px 45px;
+        }
+
+        .topbar {
+            min-height: 78px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .topbar-label {
+            color: rgba(255,255,255,.35);
+            font-size: 8px;
+            font-weight: 900;
+            letter-spacing: .15em;
+        }
+
+        .topbar-account {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            min-width: 0;
+        }
+
+        .account-info {
+            text-align: right;
+            min-width: 0;
+        }
+
+        .account-info strong {
+            display: block;
+            max-width: 250px;
+            overflow: hidden;
+            color: rgba(255,255,255,.8);
+            font-size: 8px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .account-info small {
+            display: block;
+            margin-top: 5px;
+            color: var(--green);
+            font-size: 6px;
+            font-weight: 900;
+            letter-spacing: .13em;
+        }
+
+        .logout {
+            min-height: 35px;
+            padding: 0 12px;
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 8px;
+            color: rgba(255,255,255,.55);
+            background: transparent;
+            font-size: 7px;
+            font-weight: 900;
+            transition: .2s ease;
+        }
+
+        .logout:hover {
+            color: #ff9999;
+            border-color: rgba(255,100,100,.3);
+        }
+
+        /* PAGE HEADER */
+
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
+            margin: 42px 0 28px;
+        }
+
+        .eyebrow {
+            color: var(--gold);
+            font-size: 7px;
+            font-weight: 950;
+            letter-spacing: .2em;
+        }
+
+        h1 {
+            margin: 13px 0 10px;
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: clamp(35px,4vw,53px);
+            line-height: .98;
+            letter-spacing: -.045em;
+        }
+
+        h1 em {
+            color: var(--green);
+            font-style: normal;
+        }
+
+        .page-heading p {
+            max-width: 520px;
+            margin: 0;
+            color: rgba(255,255,255,.43);
+            font-size: 10px;
+            line-height: 1.8;
+        }
+
+        .season-chip {
+            flex-shrink: 0;
+            padding: 10px 13px;
+            border: 1px solid rgba(214,180,90,.2);
+            border-radius: 8px;
+            color: var(--gold);
+            background: rgba(214,180,90,.045);
+            font-size: 7px;
+            font-weight: 900;
+            letter-spacing: .1em;
+        }
+
+        /* WELCOME PANEL */
+
+        .welcome {
+            position: relative;
+            overflow: hidden;
+            padding: 30px;
+            border: 1px solid rgba(37,201,133,.17);
+            border-radius: 16px;
+            background:
+                linear-gradient(110deg, rgba(16,53,34,.72), rgba(7,17,11,.92));
+        }
+
+        .welcome::after {
+            content: "CCFV";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,.025);
+            font-size: clamp(70px,13vw,160px);
+            font-weight: 950;
+            letter-spacing: -.08em;
+            pointer-events: none;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+            max-width: 620px;
+        }
+
+        .welcome-kicker {
+            color: var(--green-light);
+            font-size: 7px;
+            font-weight: 950;
+            letter-spacing: .17em;
+        }
+
+        .welcome h2 {
+            margin: 14px 0 10px;
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: clamp(27px,3vw,37px);
+        }
+
+        .welcome p {
+            margin: 0;
+            color: rgba(255,255,255,.5);
+            font-size: 10px;
+            line-height: 1.8;
+        }
+
+        /* SECTION */
+
+        .section-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 15px;
+            margin: 37px 0 15px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: .03em;
+        }
+
+        .section-heading span {
+            color: rgba(255,255,255,.3);
+            font-size: 7px;
+        }
+
+        /* MODULE CARDS */
+
+        .modules {
+            display: grid;
+            grid-template-columns: repeat(3,minmax(0,1fr));
+            gap: 13px;
+        }
+
+        .module {
+            position: relative;
+            min-height: 165px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 19px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: rgba(255,255,255,.018);
+            transition: .22s ease;
+        }
+
+        .module.available {
+            border-color: rgba(37,201,133,.23);
+            background: linear-gradient(145deg, rgba(37,201,133,.055), rgba(255,255,255,.012));
+        }
+
+        .module.available:hover {
+            transform: translateY(-3px);
+            border-color: rgba(37,201,133,.5);
+            box-shadow: 0 15px 35px rgba(0,0,0,.2);
+        }
+
+        .module-icon {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 17px;
+            border: 1px solid rgba(37,201,133,.2);
+            border-radius: 9px;
+            color: var(--green-light);
+            background: rgba(37,201,133,.06);
+            font-size: 16px;
+        }
+
+        .module h3 {
+            margin: 0 0 7px;
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .module p {
+            max-width: 260px;
+            margin: 0;
+            color: rgba(255,255,255,.35);
+            font-size: 8px;
+            line-height: 1.7;
+        }
+
+        .module-arrow {
+            position: absolute;
+            right: 17px;
+            top: 18px;
+            color: var(--green);
+            font-size: 17px;
+        }
+
+        .module-status {
+            margin-top: auto;
+            padding-top: 17px;
+            color: var(--green-light);
+            font-size: 6px;
+            font-weight: 950;
+            letter-spacing: .12em;
+        }
+
+        .module.disabled {
+            opacity: .52;
+            cursor: default;
+        }
+
+        .module.disabled .module-icon {
+            color: var(--gold);
+            border-color: rgba(214,180,90,.14);
+            background: rgba(214,180,90,.035);
+        }
+
+        .module.disabled .module-status {
+            color: var(--gold);
+        }
+
+        /* FOOTER */
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 42px;
+            padding-top: 18px;
+            border-top: 1px solid var(--border);
+            color: rgba(255,255,255,.2);
+            font-size: 6px;
+            font-weight: 900;
+            letter-spacing: .13em;
+        }
+
+        /* ACCESS */
+
+        .access-screen {
+            position: fixed;
+            z-index: 999;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            padding: 25px;
+            background: #030805;
+        }
+
+        .access-card {
+            width: min(420px,100%);
+            padding: 30px;
+            border: 1px solid rgba(214,180,90,.2);
+            border-radius: 15px;
+            background: #08130d;
+            text-align: center;
+        }
+
+        .access-card h2 {
+            margin: 0 0 10px;
+            font-family: "Playfair Display", Georgia, serif;
+            font-size: 28px;
+        }
+
+        .access-card p {
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 1.7;
+        }
+
+        .access-card a {
+            display: inline-block;
+            margin-top: 12px;
+            color: var(--green-light);
+            font-size: 9px;
+            font-weight: 900;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        /* RESPONSIVO */
+
+        @media (max-width: 1050px) {
+            .modules {
+                grid-template-columns: repeat(2,minmax(0,1fr));
+            }
+
+            .main {
+                padding-right: 22px;
+                padding-left: 22px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                padding: 15px;
+                border-right: 0;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .brand {
+                padding-bottom: 13px;
+            }
+
+            .nav-label {
+                margin-top: 14px;
+            }
+
+            .nav {
+                display: grid;
+                grid-template-columns: repeat(2,minmax(0,1fr));
+            }
+
+            .sidebar-bottom {
+                flex-direction: row;
+                justify-content: space-between;
+                margin-top: 17px;
+                padding-top: 13px;
+            }
+
+            .main {
+                padding: 0 16px 30px;
+            }
+
+            .topbar {
+                min-height: 65px;
+            }
+
+            .page-heading {
+                align-items: flex-start;
+                flex-direction: column;
+                margin-top: 28px;
+            }
+
+            .modules {
+                grid-template-columns: 1fr;
+            }
+
+            .module {
+                min-height: 145px;
+            }
+
+            .welcome {
+                padding: 23px;
+            }
+
+            .footer {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="access-screen" id="access-screen">
+        <div class="access-card">
+            <h2 id="access-title">Verificando acesso</h2>
+            <p id="access-message">
+                Conferindo sua sessão e suas permissões administrativas.
+            </p>
+            <a href="/admin/login.html" id="access-login" hidden>
+                ACESSAR ADMIN CCFV →
+            </a>
+        </div>
+    </div>
+
+
+    <div class="admin-layout" id="admin-layout" hidden>
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <a class="brand" href="/liga/index.html">
+                <img src="../logos/01_logo_liga_ccfv.png" alt="Liga CCFV">
+
+                <span>
+                    <strong>CCFV <span>/ LIGA</span></strong>
+                    <small>ADMINISTRAÇÃO DA LIGA</small>
+                </span>
+            </a>
+
+
+            <div class="nav-label">CENTRAL DA LIGA</div>
+
+            <nav class="nav">
+
+                <a href="/liga/admin/index.html" class="active">
+                    <span>⌂</span>
+                    Visão geral
+                </a>
+
+                <a href="/liga/admin/vinculos.html">
+                    <span>◈</span>
+                    Vínculos
+                </a>
+
+            </nav>
+
+
+            <div class="nav-label">GESTÃO DOS CLUBES</div>
+
+            <nav class="nav">
+
+                <a class="disabled" aria-disabled="true">
+                    <span>♜</span>
+                    Clubes <small>EM BREVE</small>
+                </a>
+
+                <a class="disabled" aria-disabled="true">
+                    <span>▦</span>
+                    Temporadas <small>EM BREVE</small>
+                </a>
+
+                <a class="disabled" aria-disabled="true">
+                    <span>＋</span>
+                    Inscrições <small>EM BREVE</small>
+                </a>
+
+                <a class="disabled" aria-disabled="true">
+                    <span>◉</span>
+                    Divisões <small>EM BREVE</small>
+                </a>
+
+            </nav>
+
+
+            <div class="nav-label">COMPETIÇÕES</div>
+
+            <nav class="nav">
+
+                <a class="disabled" aria-disabled="true">
+                    <span>⚔</span>
+                    Campeonato <small>EM BREVE</small>
+                </a>
+
+                <a class="disabled" aria-disabled="true">
+                    <span>🏆</span>
+                    Copas <small>EM BREVE</small>
+                </a>
+
+                <a class="disabled" aria-disabled="true">
+                    <span>▤</span>
+                    Resultados <small>EM BREVE</small>
+                </a>
+
+            </nav>
+
+
+            <div class="sidebar-bottom">
+
+                <a href="/admin/">← ADMIN PRINCIPAL CCFV</a>
+
+                <a href="/liga/index.html">PORTAL DA LIGA ↗</a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- CONTEÚDO PRINCIPAL -->
+
+        <main class="main">
+
+            <header class="topbar">
+
+                <span class="topbar-label">
+                    CCFV / ADMINISTRAÇÃO / LIGA
+                </span>
+
+                <div class="topbar-account">
+
+                    <div class="account-info">
+                        <strong id="admin-email">Administrador</strong>
+                        <small>ADMINISTRADOR AUTORIZADO</small>
+                    </div>
+
+                    <button class="logout" id="logout-button">
+                        SAIR
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <section class="page-heading">
+
+                <div>
+                    <span class="eyebrow">CCFV // LEAGUE MANAGEMENT</span>
+
+                    <h1>
+                        CENTRAL DA<br>
+                        <em>LIGA CCFV.</em>
+                    </h1>
+
+                    <p>
+                        Gerencie os participantes, os clubes, as temporadas
+                        e todas as operações da Liga CCFV em um ambiente
+                        administrativo independente.
+                    </p>
+                </div>
+
+                <div class="season-chip">
+                    SEASON 01 · CCFV
+                </div>
+
+            </section>
+
+
+            <!-- BOAS-VINDAS -->
+
+            <section class="welcome">
+
+                <div class="welcome-content">
+
+                    <span class="welcome-kicker">
+                        PAINEL DE CONTROLE DA LIGA
+                    </span>
+
+                    <h2>
+                        Uma nova estrutura.<br>
+                        Um novo legado.
+                    </h2>
+
+                    <p>
+                        Esta é a central administrativa da Liga CCFV.
+                        Aqui ficarão reunidos os processos de validação,
+                        gestão dos clubes, temporadas e competições.
+                        Cada módulo terá suas próprias permissões e registros.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- MÓDULOS -->
+
+            <div class="section-heading">
+
+                <h2>MÓDULOS ADMINISTRATIVOS</h2>
+
+                <span>GESTÃO INDEPENDENTE DA LIGA</span>
+
+            </div>
+
+
+            <section class="modules">
+
+                <a
+                    class="module available"
+                    href="/liga/admin/vinculos.html"
+                >
+
+                    <span class="module-arrow">↗</span>
+
+                    <span class="module-icon">◈</span>
+
+                    <h3>Vínculos de jogadores</h3>
+
+                    <p>
+                        Analise solicitações, confira cadastros
+                        CCFV e aprove ou rejeite associações.
+                    </p>
+
+                    <span class="module-status">
+                        ACESSAR MÓDULO →
+                    </span>
+
+                </a>
+
+
+                <article class="module disabled">
+
+                    <span class="module-icon">♜</span>
+
+                    <h3>Gestão de clubes</h3>
+
+                    <p>
+                        Aprovação, identidade visual, proprietários
+                        e situação dos clubes.
+                    </p>
+
+                    <span class="module-status">
+                        EM DESENVOLVIMENTO
+                    </span>
+
+                </article>
+
+
+                <article class="module disabled">
+
+                    <span class="module-icon">▦</span>
+
+                    <h3>Temporadas</h3>
+
+                    <p>
+                        Criar temporadas, definir datas,
+                        mensalidade e situação da Liga.
+                    </p>
+
+                    <span class="module-status">
+                        EM DESENVOLVIMENTO
+                    </span>
+
+                </article>
+
+
+                <article class="module disabled">
+
+                    <span class="module-icon">＋</span>
+
+                    <h3>Inscrições</h3>
+
+                    <p>
+                        Analisar solicitações de participação
+                        e controlar as vagas disponíveis.
+                    </p>
+
+                    <span class="module-status">
+                        EM DESENVOLVIMENTO
+                    </span>
+
+                </article>
+
+
+                <article class="module disabled">
+
+                    <span class="module-icon">◉</span>
+
+                    <h3>Divisões</h3>
+
+                    <p>
+                        Organizar as Séries A, B e C,
+                        promoções e rebaixamentos.
+                    </p>
+
+                    <span class="module-status">
+                        EM DESENVOLVIMENTO
+                    </span>
+
+                </article>
+
+
+                <article class="module disabled">
+
+                    <span class="module-icon">⚔</span>
+
+                    <h3>Competições e resultados</h3>
+
+                    <p>
+                        Administrar campeonatos, copas,
+                        partidas e resultados oficiais.
+                    </p>
+
+                    <span class="module-status">
+                        EM DESENVOLVIMENTO
+                    </span>
+
+                </article>
+
+
+                <article class="module disabled">
+
+                    <span class="module-icon">🏆</span>
+
+                    <h3>Premiações</h3>
+
+                    <p>
+                        Controlar campeões, valores,
+                        troféus e entregas.
+                    </p>
+
+                    <span class="module-status">
+                        EM DESENVOLVIMENTO
+                    </span>
+
+                </article>
+
+
+                <article class="module disabled">
+
+                    <span class="module-icon">▤</span>
+
+                    <h3>Histórico</h3>
+
+                    <p>
+                        Consultar temporadas encerradas,
+                        decisões e registros da Liga.
+                    </p>
+
+                    <span class="module-status">
+                        EM DESENVOLVIMENTO
+                    </span>
+
+                </article>
+
+
+                <article class="module disabled">
+
+                    <span class="module-icon">⚙</span>
+
+                    <h3>Configurações</h3>
+
+                    <p>
+                        Regras, parâmetros operacionais
+                        e configurações gerais.
+                    </p>
+
+                    <span class="module-status">
+                        EM DESENVOLVIMENTO
+                    </span>
+
+                </article>
+
+            </section>
+
+
+            <footer class="footer">
+
+                <span>CCFV / LIGA — CENTRAL ADMINISTRATIVA</span>
+
+                <span>COMPETITIVIDADE · IDENTIDADE · LEGADO</span>
+
+            </footer>
+
+        </main>
+
+    </div>
+
+
+    <!-- SUPABASE AUTH + ADMIN GUARD -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+    (() => {
+
+        "use strict";
+
+        const SUPABASE_URL =
+            "https://msqvkcnywokhakmqgiso.supabase.co";
+
+        const SUPABASE_PUBLISHABLE_KEY =
+            "sb_publishable_sanJ5WpLoquv4JH2ryYR6w_LxdaS2Q2";
+
+
+        const screen =
+            document.getElementById("access-screen");
+
+        const title =
+            document.getElementById("access-title");
+
+        const message =
+            document.getElementById("access-message");
+
+        const loginLink =
+            document.getElementById("access-login");
+
+        const layout =
+            document.getElementById("admin-layout");
+
+
+        function denyAccess(text, showLogin = false) {
+
+            title.textContent = "Acesso não autorizado";
+
+            message.textContent = text;
+
+            loginLink.hidden = !showLogin;
+
+            screen.hidden = false;
+
+            layout.hidden = true;
+
+        }
+
+
+        async function init() {
+
+            try {
+
+                if (!window.supabase?.createClient) {
+
+                    throw new Error(
+                        "Biblioteca Supabase indisponível."
+                    );
+
+                }
+
+
+                const client =
+                    window.supabase.createClient(
+                        SUPABASE_URL,
+                        SUPABASE_PUBLISHABLE_KEY
+                    );
+
+
+                window.CCFVLigaAdminSupabase =
+                    client;
+
+
+                const {
+                    data: sessionData,
+                    error: sessionError
+                } = await client.auth.getSession();
+
+
+                if (sessionError) {
+
+                    throw sessionError;
+
+                }
+
+
+                const session =
+                    sessionData?.session;
+
+
+                if (!session) {
+
+                    denyAccess(
+                        "Entre primeiro no Admin principal da CCFV para acessar a administração da Liga.",
+                        true
+                    );
+
+                    return;
+
+                }
+
+
+                const {
+                    data: adminResult,
+                    error: adminError
+                } = await client.rpc(
+                    "ccfv_is_admin"
+                );
+
+
+                if (adminError) {
+
+                    throw adminError;
+
+                }
+
+
+                const isAdmin =
+                    adminResult === true ||
+                    adminResult?.is_admin === true;
+
+
+                if (!isAdmin) {
+
+                    denyAccess(
+                        "Sua conta está autenticada, mas não possui autorização administrativa para gerenciar a Liga."
+                    );
+
+                    return;
+
+                }
+
+
+                const email =
+                    document.getElementById("admin-email");
+
+
+                if (email) {
+
+                    email.textContent =
+                        session.user.email || "Administrador";
+
+                }
+
+
+                screen.hidden = true;
+
+                layout.hidden = false;
+
+
+                console.log(
+                    "CCFV LIGA ADMIN // ACESSO AUTORIZADO"
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "CCFV LIGA ADMIN // ERRO DE ACESSO",
+                    error
+                );
+
+
+                denyAccess(
+                    "Não foi possível validar suas permissões. " +
+                    (error?.message || "Verifique sua conexão e tente novamente.")
+                );
+
+            }
+
+        }
+
+
+        document
+            .getElementById("logout-button")
+            .addEventListener("click", async () => {
+
+                const button =
+                    document.getElementById("logout-button");
+
+                button.disabled = true;
+
+                button.textContent = "SAINDO...";
+
+
+                try {
+
+                    await window.CCFVLigaAdminSupabase.auth.signOut();
+
+                    window.location.replace(
+                        "/admin/login.html"
+                    );
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    button.disabled = false;
+
+                    button.textContent = "SAIR";
+
+                    alert(
+                        "Não foi possível encerrar sua sessão."
+                    );
+
+                }
+
+            });
+
+
+        init();
+
+    })();
+    </script>
+
+</body>
+</html>
