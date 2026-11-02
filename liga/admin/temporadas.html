@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#030805">
+  <meta name="robots" content="noindex,nofollow">
+  <title>TEMPORADAS DA LIGA. — CCFV Liga Admin</title>
+  <link rel="stylesheet" href="css/modulos.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/modulos.js" defer></script>
+</head>
+<body data-page="temporadas">
+  <div class="access-screen" id="access-screen"><div class="access-card"><h2 id="access-title">Verificando acesso</h2><p id="access-message">Conferindo sua sessão e suas permissões administrativas.</p><a href="/admin/login.html" id="access-login" hidden>ACESSAR ADMIN CCFV →</a></div></div>
+  <div class="admin-layout" id="admin-layout" hidden>
+    <aside class="sidebar">
+      <a class="brand" href="/liga/index.html"><img src="../logos/01_logo_liga_ccfv.png" alt="Liga CCFV"><span><strong>CCFV <em>/ LIGA</em></strong><small>ADMINISTRAÇÃO DA LIGA</small></span></a>
+      <div class="nav-label">CENTRAL DA LIGA</div><nav class="nav">
+<a href="/liga/admin/index.html"><span>⌂</span>Visão geral</a>
+<a href="/liga/admin/vinculos.html"><span>◈</span>Vínculos de jogadores</a>
+</nav>
+<div class="nav-label">GESTÃO DOS CLUBES</div><nav class="nav">
+<a href="/liga/admin/clubes.html"><span>♜</span>Clubes</a>
+<a href="/liga/admin/temporadas.html" class="active"><span>▦</span>Temporadas</a>
+<a href="/liga/admin/inscricoes.html"><span>＋</span>Inscrições</a>
+<a href="/liga/admin/divisoes.html"><span>◉</span>Divisões</a>
+</nav>
+<div class="nav-label">COMPETIÇÕES</div><nav class="nav">
+<a href="/liga/admin/campeonato.html"><span>⚔</span>Campeonato</a>
+<a href="/liga/admin/copas.html"><span>🏆</span>Copas</a>
+<a href="/liga/admin/resultados.html"><span>▤</span>Resultados</a>
+</nav>
+<div class="nav-label">ADMINISTRAÇÃO</div><nav class="nav">
+<a href="/liga/admin/premiacoes.html"><span>✧</span>Premiações</a>
+<a href="/liga/admin/historico.html"><span>◷</span>Histórico</a>
+<a href="/liga/admin/configuracoes.html"><span>⚙</span>Configurações</a>
+</nav>
+      <div class="sidebar-bottom"><a href="/admin/">← ADMIN PRINCIPAL CCFV</a><a href="/liga/index.html">PORTAL DA LIGA ↗</a></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><span class="topbar-label">CCFV / ADMINISTRAÇÃO / LIGA</span><div class="topbar-account"><div class="account-info"><strong id="admin-email">Administrador</strong><small>ACESSO ADMINISTRATIVO</small></div><button class="logout" id="logout-button" type="button">SAIR</button></div></header>
+      <section class="page-heading"><div><div class="eyebrow">CCFV // SEASON CONTROL</div><h1>TEMPORADAS <em>DA LIGA.</em></h1><p>Crie e acompanhe ciclos mensais da Liga, período de inscrições, calendário competitivo e encerramento de cada temporada.</p></div><div class="page-actions"><span class="status">ESTRUTURA INICIAL</span></div></section>
+      <div class="stats"><div class="stat"><span>TEMPORADA ATUAL</span><strong>—</strong></div><div class="stat"><span>EM PREPARAÇÃO</span><strong class="gold">—</strong></div><div class="stat"><span>ENCERRADAS</span><strong>—</strong></div><div class="stat"><span>CLUBES POR TEMPORADA</span><strong class="green">36</strong></div></div>
+<div class="notice"><div class="notice-icon">▦</div><div><b>CICLO MENSAL</b><p>A Liga foi planejada para temporadas mensais, com capacidade de 36 clubes distribuídos em três divisões. A criação e a troca de status serão ligadas às RPCs administrativas depois de confirmarmos os parâmetros exatos.</p></div></div>
+<section class="panel"><div class="panel-head"><strong>NOVA TEMPORADA</strong><span>FORMULÁRIO PREPARADO · ENVIO AINDA DESATIVADO</span></div><div class="panel-body"><div class="field-grid"><div class="field"><label>Código da temporada</label><input placeholder="Ex.: S02-2026" disabled></div><div class="field"><label>Nome da temporada</label><input placeholder="Temporada 02 — Novembro 2026" disabled></div><div class="field"><label>Data de início</label><input type="date" disabled></div><div class="field"><label>Data de encerramento</label><input type="date" disabled></div><div class="field"><label>Taxa mensal (R$)</label><input type="number" min="0" step="0.01" placeholder="0,00" disabled></div><div class="field"><label>Status inicial</label><select disabled><option>Rascunho</option><option>Inscrições abertas</option></select></div></div><div style="margin-top:15px"><button class="btn" disabled>CRIAR TEMPORADA</button></div></div></section>
+<section class="panel"><div class="panel-head"><strong>TEMPORADAS REGISTRADAS</strong><span>HISTÓRICO DE CICLOS</span></div><div class="empty"><div class="empty-icon">▦</div><h3>Temporadas ainda não carregadas</h3><p>Esta área será conectada à listagem administrativa de temporadas, com visualização de datas, status, taxa e quantidade de clubes.</p></div></section>
+      <footer class="footer"><span>CCFV // CONFEDERAÇÕES COLISEU DE FUTEBOL VIRTUAL</span><span>LIGA ADMINISTRATIVA · MÓDULO TEMPORADAS</span></footer>
+    </main>
+  </div>
+</body>
+</html>

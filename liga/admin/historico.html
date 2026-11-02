@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#030805">
+  <meta name="robots" content="noindex,nofollow">
+  <title>HISTÓRICO DA LIGA. — CCFV Liga Admin</title>
+  <link rel="stylesheet" href="css/modulos.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/modulos.js" defer></script>
+</head>
+<body data-page="historico">
+  <div class="access-screen" id="access-screen"><div class="access-card"><h2 id="access-title">Verificando acesso</h2><p id="access-message">Conferindo sua sessão e suas permissões administrativas.</p><a href="/admin/login.html" id="access-login" hidden>ACESSAR ADMIN CCFV →</a></div></div>
+  <div class="admin-layout" id="admin-layout" hidden>
+    <aside class="sidebar">
+      <a class="brand" href="/liga/index.html"><img src="../logos/01_logo_liga_ccfv.png" alt="Liga CCFV"><span><strong>CCFV <em>/ LIGA</em></strong><small>ADMINISTRAÇÃO DA LIGA</small></span></a>
+      <div class="nav-label">CENTRAL DA LIGA</div><nav class="nav">
+<a href="/liga/admin/index.html"><span>⌂</span>Visão geral</a>
+<a href="/liga/admin/vinculos.html"><span>◈</span>Vínculos de jogadores</a>
+</nav>
+<div class="nav-label">GESTÃO DOS CLUBES</div><nav class="nav">
+<a href="/liga/admin/clubes.html"><span>♜</span>Clubes</a>
+<a href="/liga/admin/temporadas.html"><span>▦</span>Temporadas</a>
+<a href="/liga/admin/inscricoes.html"><span>＋</span>Inscrições</a>
+<a href="/liga/admin/divisoes.html"><span>◉</span>Divisões</a>
+</nav>
+<div class="nav-label">COMPETIÇÕES</div><nav class="nav">
+<a href="/liga/admin/campeonato.html"><span>⚔</span>Campeonato</a>
+<a href="/liga/admin/copas.html"><span>🏆</span>Copas</a>
+<a href="/liga/admin/resultados.html"><span>▤</span>Resultados</a>
+</nav>
+<div class="nav-label">ADMINISTRAÇÃO</div><nav class="nav">
+<a href="/liga/admin/premiacoes.html"><span>✧</span>Premiações</a>
+<a href="/liga/admin/historico.html" class="active"><span>◷</span>Histórico</a>
+<a href="/liga/admin/configuracoes.html"><span>⚙</span>Configurações</a>
+</nav>
+      <div class="sidebar-bottom"><a href="/admin/">← ADMIN PRINCIPAL CCFV</a><a href="/liga/index.html">PORTAL DA LIGA ↗</a></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><span class="topbar-label">CCFV / ADMINISTRAÇÃO / LIGA</span><div class="topbar-account"><div class="account-info"><strong id="admin-email">Administrador</strong><small>ACESSO ADMINISTRATIVO</small></div><button class="logout" id="logout-button" type="button">SAIR</button></div></header>
+      <section class="page-heading"><div><div class="eyebrow">CCFV // AUDIT & HISTORY</div><h1>HISTÓRICO <em>DA LIGA.</em></h1><p>Consulte acontecimentos relevantes, decisões administrativas e alterações realizadas nos cadastros e competições.</p></div><div class="page-actions"><span class="status">ESTRUTURA INICIAL</span></div></section>
+      <div class="notice"><div class="notice-icon">◷</div><div><b>RASTREABILIDADE ADMINISTRATIVA</b><p>O histórico deve permitir identificar a ação, o responsável, o horário e os dados anteriores e posteriores quando houver alteração. Não será permitido editar ou apagar registros de auditoria por esta tela.</p></div></div>
+<section class="panel"><div class="panel-head"><strong>FILTROS DO HISTÓRICO</strong><span>CONSULTA SOMENTE LEITURA</span></div><div class="panel-body"><div class="field-grid"><div class="field"><label>Tipo de evento</label><select disabled><option>Todos os eventos</option><option>Vínculos</option><option>Clubes</option><option>Temporadas</option><option>Resultados</option></select></div><div class="field"><label>Período</label><select disabled><option>Todo o período</option><option>Últimos 7 dias</option><option>Últimos 30 dias</option></select></div><div class="field"><label>Responsável</label><input placeholder="Buscar administrador" disabled></div><div class="field"><label>Registro / referência</label><input placeholder="ID ou nome" disabled></div></div></div></section>
+<section class="panel"><div class="panel-head"><strong>REGISTROS DE AUDITORIA</strong><span>ORDEM CRONOLÓGICA</span></div><div class="empty"><div class="empty-icon">◷</div><h3>Histórico ainda não carregado</h3><p>Vamos conectar esta tela à tabela de auditoria da Liga, respeitando os campos reais do banco e exibindo os eventos em ordem cronológica.</p></div></section>
+      <footer class="footer"><span>CCFV // CONFEDERAÇÕES COLISEU DE FUTEBOL VIRTUAL</span><span>LIGA ADMINISTRATIVA · MÓDULO HISTORICO</span></footer>
+    </main>
+  </div>
+</body>
+</html>
