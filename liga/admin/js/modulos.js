@@ -121,6 +121,7 @@
   const clubStatusLabel = (status) => ({
     DRAFT: "RASCUNHO / EM ANÁLISE",
     ACTIVE: "ATIVO",
+    SUSPENDED: "SUSPENSO",
     INACTIVE: "INATIVO",
     ARCHIVED: "ARQUIVADO",
     PENDING: "PENDENTE",
@@ -175,7 +176,7 @@
     $("#clubs-stat-total").textContent = String(clubsCache.length);
     $("#clubs-stat-active").textContent = String(count("ACTIVE"));
     $("#clubs-stat-draft").textContent = String(count("DRAFT"));
-    $("#clubs-stat-inactive").textContent = String(count("INACTIVE") + count("ARCHIVED"));
+    $("#clubs-stat-inactive").textContent = String(count("INACTIVE") + count("SUSPENDED"));
   }
 
   function getFilteredClubs() {
@@ -377,8 +378,11 @@
   }[String(value || "").toUpperCase()] || String(value || "NÃO INFORMADO"));
 
   const enrollmentStatusLabel = (value) => ({
-    PENDING: "AGUARDANDO ANÁLISE", ACTIVE: "CONFIRMADA", WITHDRAWN: "DESISTÊNCIA",
-    REPLACED: "SUBSTITUÍDA", PROMOTED: "PROMOVIDA", RELEGATED: "REBAIXADA"
+    PENDING: "AGUARDANDO ANÁLISE",
+    CONFIRMED: "CONFIRMADA",
+    WITHDRAWN: "RETIRADA / DESISTÊNCIA",
+    DISQUALIFIED: "DESCLASSIFICADA",
+    COMPLETED: "CONCLUÍDA"
   }[String(value || "").toUpperCase()] || String(value || "NÃO INFORMADO"));
 
   async function fetchSeasons(force = false) {
@@ -505,11 +509,11 @@
 
   function enrollmentName(row) {
     const club = row?.club || row?.clubs || {};
-    return seasonValue(row,"club_name_snapshot","club_name","name") || seasonValue(club,"name") || "Clube sem nome";
+    return seasonValue(row,"club_name","club_name_snapshot","snapshot_name","name") || seasonValue(club,"name") || "Clube sem nome";
   }
   function enrollmentCrest(row) {
     const club = row?.club || row?.clubs || {};
-    return seasonValue(row,"crest_url_snapshot","crest_url") || seasonValue(club,"crest_url") || "";
+    return seasonValue(row,"club_crest_url","crest_url_snapshot","snapshot_crest_url","crest_url") || seasonValue(club,"crest_url") || "";
   }
   function enrollmentDivision(row) {
     return String(seasonValue(row,"division","division_code") || "NÃO DISTRIBUÍDA").toUpperCase();
@@ -548,7 +552,7 @@
     const term = String($("#enroll-search")?.value || "").trim().toLocaleLowerCase("pt-BR");
     const rows = seasonRowsCache.filter(row => {
       const status = enrollmentStatus(row);
-      const search = [enrollmentName(row), seasonValue(row,"player_name"), seasonValue(row,"player_code"), enrollmentDivision(row)]
+      const search = [enrollmentName(row), seasonValue(row,"player_name","owner_name"), seasonValue(row,"player_code","owner_player_code"), enrollmentDivision(row)]
         .filter(Boolean).join(" ").toLocaleLowerCase("pt-BR");
       return (enrollmentFilter === "ALL" || status === enrollmentFilter) && (!term || search.includes(term));
     });
@@ -556,8 +560,8 @@
     const count = status => seasonRowsCache.filter(row => enrollmentStatus(row) === status).length;
     if ($("#enroll-stat-total")) $("#enroll-stat-total").textContent = seasonRowsCache.length;
     if ($("#enroll-stat-pending")) $("#enroll-stat-pending").textContent = count("PENDING");
-    if ($("#enroll-stat-active")) $("#enroll-stat-active").textContent = count("ACTIVE");
-    if ($("#enroll-stat-other")) $("#enroll-stat-other").textContent = seasonRowsCache.length - count("PENDING") - count("ACTIVE");
+    if ($("#enroll-stat-active")) $("#enroll-stat-active").textContent = count("CONFIRMED");
+    if ($("#enroll-stat-other")) $("#enroll-stat-other").textContent = seasonRowsCache.length - count("PENDING") - count("CONFIRMED");
     if (!rows.length) {
       list.innerHTML = `<div class="empty"><div class="empty-icon">＋</div><h3>Nenhuma inscrição encontrada</h3><p>Não existem registros para a temporada e os filtros selecionados.</p></div>`;
       return;
@@ -567,8 +571,8 @@
       const crest = clubSafeImage(enrollmentCrest(row));
       const crestHtml = crest ? `<img src="${clubEscape(crest)}" alt="" loading="lazy">` : `<span>⚽</span>`;
       const player = seasonValue(row,"player_name","owner_name","responsible_name") || "Jogador não retornado";
-      const position = seasonValue(row,"division_position");
-      return `<article class="data-card"><div class="data-card-head"><div class="data-card-title"><div class="mini-crest">${crestHtml}</div><div><h3>${clubEscape(enrollmentName(row))}</h3><small>${clubEscape(player)} · ${clubEscape(seasonValue(row,"player_code") || "Código não retornado")}</small></div></div><span class="status ${clubEscape(status.toLowerCase())}">${clubEscape(enrollmentStatusLabel(status))}</span></div><div class="data-card-grid"><div><small>DIVISÃO</small><strong>${clubEscape(enrollmentDivision(row))}</strong></div><div><small>POSIÇÃO</small><strong>${clubEscape(position ?? "A definir")}</strong></div><div><small>INSCRIÇÃO</small><strong>${clubEscape(seasonDate(seasonValue(row,"created_at","requested_at"),true))}</strong></div><div><small>CLUBE / PLAYER ID</small><strong>${clubEscape(seasonValue(row,"club_id") || seasonValue(row,"player_id") || "Não retornado")}</strong></div></div></article>`;
+      const position = divisionSlotPosition(row) === 999 ? null : divisionSlotPosition(row);
+      return `<article class="data-card"><div class="data-card-head"><div class="data-card-title"><div class="mini-crest">${crestHtml}</div><div><h3>${clubEscape(enrollmentName(row))}</h3><small>${clubEscape(player)} · ${clubEscape(seasonValue(row,"player_code","owner_player_code") || "Código não retornado")}</small></div></div><span class="status ${clubEscape(status.toLowerCase())}">${clubEscape(enrollmentStatusLabel(status))}</span></div><div class="data-card-grid"><div><small>DIVISÃO</small><strong>${clubEscape(enrollmentDivision(row))}</strong></div><div><small>POSIÇÃO</small><strong>${clubEscape(position ?? "A definir")}</strong></div><div><small>INSCRIÇÃO</small><strong>${clubEscape(seasonDate(seasonValue(row,"created_at","requested_at"),true))}</strong></div><div><small>CLUBE / PLAYER ID</small><strong>${clubEscape(seasonValue(row,"club_id") || seasonValue(row,"player_id") || "Não retornado")}</strong></div></div></article>`;
     }).join("");
   }
 
@@ -593,6 +597,18 @@
 
   function divisionLabel(value) {
     return ({ SERIE_A: "SÉRIE A", SERIE_B: "SÉRIE B", SERIE_C: "SÉRIE C", A: "SÉRIE A", B: "SÉRIE B", C: "SÉRIE C" })[String(value || "").toUpperCase()] || "SEM DIVISÃO";
+  }
+
+  // A RPC retorna qualifier_position global (1–36). A posição exibida
+  // dentro de cada série é local (1–12): 1–12, 13–24 e 25–36.
+  function divisionSlotPosition(row) {
+    const local = Number(seasonValue(row,"division_position"));
+    if (Number.isInteger(local) && local >= 1 && local <= 12) return local;
+    const global = Number(seasonValue(row,"qualifier_position"));
+    if (Number.isInteger(global) && global >= 1 && global <= 36) return ((global - 1) % 12) + 1;
+    const finalPosition = Number(seasonValue(row,"final_position"));
+    if (Number.isInteger(finalPosition) && finalPosition >= 1 && finalPosition <= 12) return finalPosition;
+    return 999;
   }
 
   async function loadDivisions() {
@@ -628,22 +644,29 @@
     list.innerHTML = series.map(group => {
       const rows = divisionRowsCache.filter(row => {
         const key = enrollmentDivision(row);
-        return key === group.key || key === group.key.replace("SERIE_", "");
-      }).sort((a,b) => Number(seasonValue(a,"division_position") || 999) - Number(seasonValue(b,"division_position") || 999));
+        const status = enrollmentStatus(row);
+        return (key === group.key || key === group.key.replace("SERIE_", "")) && ["CONFIRMED", "COMPLETED"].includes(status);
+      }).sort((a,b) => divisionSlotPosition(a) - divisionSlotPosition(b));
       rows.forEach(row => assigned.add(row));
-      const pendingPosition = rows.filter(item => !seasonValue(item,"division_position"));
+      const pendingPosition = rows.filter(item => divisionSlotPosition(item) === 999);
       const slots = Array.from({length:12}, (_, index) => {
         const position = index + 1;
-        const row = rows.find(item => Number(seasonValue(item,"division_position")) === position);
+        const row = rows.find(item => divisionSlotPosition(item) === position);
         if (!row) return `<div class="division-slot empty-slot"><span>${String(position).padStart(2,"0")}</span><small>POSIÇÃO NÃO ATRIBUÍDA</small></div>`;
         const crest = clubSafeImage(enrollmentCrest(row));
         return `<div class="division-slot"><span>${String(position).padStart(2,"0")}</span>${crest ? `<img src="${clubEscape(crest)}" alt="" loading="lazy">` : `<i>⚽</i>`}<strong>${clubEscape(enrollmentName(row))}</strong><small>${clubEscape(enrollmentStatusLabel(enrollmentStatus(row)))}</small></div>`;
       }).join("");
       return `<section class="division-card ${group.tone}"><header><div><span class="eyebrow">CCFV // DIVISION</span><h3>${group.label}</h3></div><strong>${rows.length}/12</strong></header><div class="division-slots">${slots}</div>${pendingPosition.length ? `<div class="division-pending-note">${pendingPosition.length} clube(s) na divisão sem posição definida: ${pendingPosition.map(item => clubEscape(enrollmentName(item))).join(", ")}</div>` : ""}</section>`;
     }).join("");
-    const unassigned = divisionRowsCache.filter(row => !assigned.has(row) || !["SERIE_A","SERIE_B","SERIE_C","A","B","C"].includes(enrollmentDivision(row)));
-    const count = (key) => divisionRowsCache.filter(row => enrollmentDivision(row) === key).length;
-    if ($("#division-stat-total")) $("#division-stat-total").textContent = divisionRowsCache.length;
+    const unassigned = divisionRowsCache.filter(row => {
+      const status = enrollmentStatus(row);
+      const eligible = ["CONFIRMED", "COMPLETED"].includes(status);
+      const hasDivision = ["SERIE_A","SERIE_B","SERIE_C","A","B","C"].includes(enrollmentDivision(row));
+      return eligible && (!assigned.has(row) || !hasDivision);
+    });
+    const eligibleRows = divisionRowsCache.filter(row => ["CONFIRMED", "COMPLETED"].includes(enrollmentStatus(row)));
+    const count = (key) => eligibleRows.filter(row => enrollmentDivision(row) === key).length;
+    if ($("#division-stat-total")) $("#division-stat-total").textContent = eligibleRows.length;
     if ($("#division-stat-a")) $("#division-stat-a").textContent = count("SERIE_A") + count("A");
     if ($("#division-stat-b")) $("#division-stat-b").textContent = count("SERIE_B") + count("B");
     if ($("#division-stat-c")) $("#division-stat-c").textContent = count("SERIE_C") + count("C");
