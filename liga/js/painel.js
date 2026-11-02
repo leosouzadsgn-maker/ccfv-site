@@ -128,21 +128,6 @@
     if (!registrations.length) { node.innerHTML = `<div class="empty-state">Nenhuma inscrição de temporada foi encontrada para este jogador.</div>`; return; }
     node.innerHTML = `<table><thead><tr><th>TEMPORADA</th><th>CLUBE</th><th>DIVISÃO</th><th>SITUAÇÃO</th><th>POSIÇÃO</th></tr></thead><tbody>${registrations.map(item=>`<tr><td>${escapeHTML(item.season_name || item.season_code || item.season_id)}</td><td>${escapeHTML(item.club_name || myClub?.name || "—")}</td><td>${escapeHTML(item.division || "A DEFINIR")}</td><td>${escapeHTML(statusLabel(item.status))}</td><td>${escapeHTML(item.qualifier_position ?? "—")}</td></tr>`).join("")}</tbody></table>`;
   }
-  async function loadPlayerClub(playerId) {
-    const {data,error}=await supabase.from("ccfv_league_clubs").select("id,owner_player_id,name,short_name,slug,crest_url,banner_url,primary_color,secondary_color,accent_color,motto,description,city,founded_year,status,created_at,updated_at").eq("owner_player_id",playerId).limit(1);
-    if(error) throw error;
-    myClub=Array.isArray(data)?data[0]||null:null;
-  }
-  async function loadPlayerRegistrations(playerId) {
-    const {data,error}=await supabase.from("ccfv_league_season_clubs").select("id,season_id,club_id,player_id,division,status,qualifier_position,created_at").eq("player_id",playerId).order("created_at",{ascending:false}).limit(30);
-    if(error) throw error;
-    registrations=(data||[]);
-  }
-  async function loadRegistrationSeasons() {
-    const {data,error}=await supabase.from("ccfv_league_seasons").select("id,season_code,name,starts_on,ends_on,status,is_test,monthly_fee,max_clubs").eq("status","REGISTRATION").order("starts_on",{ascending:true}).limit(20);
-    if(error) throw error;
-    seasons=data||[];
-  }
   async function submitClubForm(event) {
     event.preventDefault();
     if(DEMO){toast("Modo demonstração: seus dados não foram enviados nem salvos.");return;}
@@ -157,20 +142,32 @@
     await refreshLiveData();
   }
   async function refreshLiveData() {
-    const {data,error}=await supabase.rpc("ccfv_league_get_my_player_link");
+    // Uma única RPC segura retorna somente os dados do jogador autenticado.
+    // Isso evita SELECT direto nas tabelas protegidas por RLS e não depende
+    // de um player_id que a antiga RPC de vínculo não expunha.
+    const {data,error}=await supabase.rpc("ccfv_league_get_my_player_dashboard");
     if(error) throw error;
-    if(data?.success!==true) throw new Error("Não foi possível consultar o vínculo do jogador.");
+    if(data?.success!==true) throw new Error(data?.message || "Não foi possível consultar os dados do participante.");
+
     playerLink=data;
-    player=data.player||null;
-    const status=String(data.link_status||"NOT_LINKED").toUpperCase();
+    player=data.player || null;
+    const status=String(data.link_status || "NOT_LINKED").toUpperCase();
     if(status!=="ACTIVE") return showLinkGate(status,player?.name);
-    const playerId=player?.id||player?.player_id||data.player_id;
-    if(!playerId) throw new Error("O vínculo está ativo, mas a RPC não retornou o identificador do jogador. Precisamos conferir seu contrato antes de abrir os dados do clube.");
-    try { await loadPlayerClub(playerId); } catch(error) { console.warn("Leitura do clube próprio indisponível",error); myClub=null; $("#club-feedback").textContent="Não foi possível consultar o clube existente. Confira as permissões de leitura da tabela ccfv_league_clubs."; }
-    try { await loadPlayerRegistrations(playerId); } catch(error) { console.warn("Leitura das inscrições indisponível",error); registrations=[]; }
-    try { await loadRegistrationSeasons(); } catch(error) { console.warn("Leitura das temporadas indisponível",error); seasons=[]; }
-    renderPlayerData(); renderSeasons(); renderRegistrations();
+
+    const playerId=data.player_id || player?.id || player?.player_id;
+    if(!playerId) throw new Error("O vínculo está aprovado, mas a nova consulta segura não retornou o jogador associado. Confirme se o SQL CCFV_LIGA_PAINEL_DASHBOARD_RPC foi executado no Supabase.");
+
+    myClub=data.club || null;
+    registrations=Array.isArray(data.registrations) ? data.registrations : [];
+    seasons=Array.isArray(data.seasons) ? data.seasons : [];
+
+    renderPlayerData();
+    renderSeasons();
+    renderRegistrations();
     if(myClub) fillClubForm(myClub);
+    else {
+      $("#club-feedback").textContent="Seu vínculo está aprovado. Você já pode preparar a identidade do clube; o envio ficará disponível após a validação da função segura de criação.";
+    }
     showApp();
   }
   function showLinkGate(status,name) {
