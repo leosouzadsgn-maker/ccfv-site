@@ -66,18 +66,26 @@
           <form class="panel form-panel" id="club-form">
             <div class="panel-heading"><div><span class="eyebrow">ETAPA 01 · IDENTIDADE</span><h3>Dados do clube</h3></div><span class="required-note">* OBRIGATÓRIO</span></div>
             <div class="fields two">
-              <label class="field full"><span>NOME OFICIAL DO CLUBE *</span><input id="club-name" name="name" minlength="3" maxlength="80" placeholder="Ex.: Aurora Esporte Clube" required></label>
+              <label class="field full"><span>NOME OFICIAL DO CLUBE *</span><input id="club-name" name="name" minlength="3" maxlength="50" placeholder="Ex.: Aurora Esporte Clube" required></label>
               <label class="field"><span>ABREVIAÇÃO</span><input id="club-short" name="short_name" maxlength="12" placeholder="Ex.: AUR"></label>
               <label class="field"><span>IDENTIFICADOR (SLUG) *</span><input id="club-slug" name="slug" maxlength="80" placeholder="aurora-esporte-clube" required></label>
               <label class="field"><span>CIDADE</span><input id="club-city" name="city" maxlength="80" placeholder="Sua cidade"></label>
-              <label class="field"><span>ANO DE FUNDAÇÃO</span><input id="club-founded" name="founded_year" type="number" min="1900" max="2100" placeholder="2026"></label>
-              <label class="field full"><span>LEMA DO CLUBE</span><input id="club-motto" name="motto" maxlength="120" placeholder="Uma frase que representa sua identidade"></label>
+              <label class="field"><span>ANO DE FUNDAÇÃO</span><input id="club-founded" name="founded_year" type="number" min="1800" max="2100" placeholder="2026"></label>
+              <label class="field full"><span>LEMA DO CLUBE</span><input id="club-motto" name="motto" maxlength="100" placeholder="Uma frase que representa sua identidade"></label>
               <label class="field full"><span>APRESENTAÇÃO</span><textarea id="club-description" name="description" rows="3" maxlength="500" placeholder="Conte um pouco sobre a história e a identidade do clube..."></textarea></label>
             </div>
             <div class="panel-heading subheading"><div><span class="eyebrow">ETAPA 02 · IDENTIDADE VISUAL</span><h3>Escudo e materiais</h3></div></div>
             <div class="fields two">
-              <label class="field full"><span>URL DO ESCUDO * (HTTPS)</span><input id="club-crest" name="crest_url" type="url" placeholder="https://.../escudo.png" required></label>
-              <label class="field full"><span>URL DO BANNER (HTTPS)</span><input id="club-banner" name="banner_url" type="url" placeholder="https://.../banner.jpg"></label>
+              <label class="field full upload-field">
+                <span>ESCUDO OFICIAL DO CLUBE *</span>
+                <input id="club-crest-file" name="crest_file" type="file" accept="image/png,image/jpeg,image/webp">
+                <small id="club-crest-file-name" class="upload-hint">Selecione PNG, JPG ou WebP · até 5 MB</small>
+              </label>
+              <label class="field full upload-field">
+                <span>BANNER DO CLUBE</span>
+                <input id="club-banner-file" name="banner_file" type="file" accept="image/png,image/jpeg,image/webp">
+                <small id="club-banner-file-name" class="upload-hint">Opcional · PNG, JPG ou WebP · até 5 MB</small>
+              </label>
             </div>
             <div class="panel-heading subheading"><div><span class="eyebrow">ETAPA 03 · CORES OFICIAIS</span><h3>Paleta do clube</h3></div></div>
             <div class="color-fields">
@@ -85,8 +93,8 @@
               <label class="color-field"><span>SECUNDÁRIA</span><input id="club-secondary" type="color" value="#0B1210"><b id="club-secondary-code">#0B1210</b></label>
               <label class="color-field"><span>DESTAQUE</span><input id="club-accent" type="color" value="#D6B45A"><b id="club-accent-code">#D6B45A</b></label>
             </div>
-            <div class="form-feedback" id="club-feedback" role="status">A criação real será liberada após a conferência final da função segura do banco.</div>
-            <button class="btn primary wide" id="club-save" type="submit" disabled>GRAVAÇÃO AGUARDANDO VALIDAÇÃO DA RPC</button>
+            <div class="form-feedback" id="club-feedback" role="status">O envio do escudo é obrigatório. Os arquivos serão armazenados na área pública de imagens da Liga, com gravação restrita ao dono do clube.</div>
+            <button class="btn primary wide" id="club-save" type="submit">SALVAR IDENTIDADE DO CLUBE</button>
           </form>
           <aside class="preview-column">
             <article class="club-preview" id="club-preview">

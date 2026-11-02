@@ -4,8 +4,12 @@
   const SUPABASE_URL = "https://msqvkcnywokhakmqgiso.supabase.co";
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_sanJ5WpLoquv4JH2ryYR6w_LxdaS2Q2";
   const DEMO = new URLSearchParams(location.search).get("preview") === "1";
-  // Bloqueio intencional: a assinatura da RPC existe, mas o corpo de segurança e as permissões atuais ainda precisam ser auditados.
-  const PLAYER_WRITE_RPC_AUDITED = false;
+  // As RPCs de criação e edição foram auditadas a partir das definições fornecidas pelo administrador.
+  // O upload do Storage possui política própria que exige vínculo ACTIVE e clube pertencente ao usuário.
+  const PLAYER_WRITE_RPC_AUDITED = true;
+  const CLUB_ASSETS_BUCKET = "ccfv-club-assets";
+  const CLUB_ASSET_MAX_BYTES = 5 * 1024 * 1024;
+  const CLUB_ASSET_MIME_TYPES = ["image/png", "image/jpeg", "image/webp"];
   let supabase = null;
   let authUser = null;
   let playerLink = null;
@@ -13,6 +17,10 @@
   let myClub = null;
   let seasons = [];
   let registrations = [];
+  let existingCrestUrl = "";
+  let existingBannerUrl = "";
+  let crestObjectUrl = null;
+  let bannerObjectUrl = null;
   const $ = (selector) => document.querySelector(selector);
 
   function escapeHTML(value) {
@@ -46,7 +54,7 @@
     document.querySelectorAll("[data-open-tab]").forEach(button => button.addEventListener("click", () => openTab(button.dataset.openTab)));
   }
   function bindClubPreview() {
-    const fields = ["club-name","club-short","club-slug","club-city","club-motto","club-crest","club-banner","club-primary","club-secondary","club-accent"];
+    const fields = ["club-name","club-short","club-slug","club-city","club-motto","club-primary","club-secondary","club-accent"];
     fields.forEach(id => $("#"+id)?.addEventListener("input", updatePreview));
     $("#club-name")?.addEventListener("input", () => {
       if (!$("#club-slug").dataset.edited) $("#club-slug").value = slugify($("#club-name").value);
@@ -57,7 +65,8 @@
       const target = {"club-primary":"club-primary-code","club-secondary":"club-secondary-code","club-accent":"club-accent-code"}[id];
       $("#"+target).textContent = $("#"+id).value.toUpperCase();
     }));
-    $("#club-crest")?.addEventListener("change", updatePreview);
+    $("#club-crest-file")?.addEventListener("change", () => handleAssetSelection("crest"));
+    $("#club-banner-file")?.addEventListener("change", () => handleAssetSelection("banner"));
     $("#club-form")?.addEventListener("submit", submitClubForm);
   }
   function slugify(value) {
@@ -71,16 +80,65 @@
     $("#preview-primary").style.background = value("club-primary");
     $("#preview-secondary").style.background = value("club-secondary");
     $("#preview-accent").style.background = value("club-accent");
-    const crest = value("club-crest");
-    if (/^https:\/\//i.test(crest)) $("#club-preview-crest").src = crest;
-    else $("#club-preview-crest").src = "logos/01_logo_liga_ccfv.png";
-    const banner = value("club-banner");
-    $("#club-preview-banner").style.backgroundImage = /^https:\/\//i.test(banner) ? `linear-gradient(90deg,rgba(4,12,7,.2),rgba(4,12,7,.45)),url("${banner.replace(/["\\]/g,"")}")` : `linear-gradient(120deg,${value("club-primary")},${value("club-secondary")})`;
+    const crest = crestObjectUrl || existingCrestUrl;
+    $("#club-preview-crest").src = crest || "logos/01_logo_liga_ccfv.png";
+    const banner = bannerObjectUrl || existingBannerUrl;
+    $("#club-preview-banner").style.backgroundImage = banner
+      ? `linear-gradient(90deg,rgba(4,12,7,.2),rgba(4,12,7,.45)),url("${banner.replace(/["\\]/g, "")}")`
+      : `linear-gradient(120deg,${value("club-primary")},${value("club-secondary")})`;
+  }
+  function validateAssetFile(file, label) {
+    if (!file) return;
+    if (!CLUB_ASSET_MIME_TYPES.includes(file.type)) {
+      throw new Error(`${label}: use PNG, JPG ou WebP.`);
+    }
+    if (file.size > CLUB_ASSET_MAX_BYTES) {
+      throw new Error(`${label}: o arquivo ultrapassa 5 MB.`);
+    }
+  }
+  function handleAssetSelection(kind) {
+    const isCrest = kind === "crest";
+    const input = $(isCrest ? "#club-crest-file" : "#club-banner-file");
+    const label = $(isCrest ? "#club-crest-file-name" : "#club-banner-file-name");
+    const file = input?.files?.[0] || null;
+    const oldUrl = isCrest ? crestObjectUrl : bannerObjectUrl;
+    if (oldUrl) URL.revokeObjectURL(oldUrl);
+    if (isCrest) crestObjectUrl = null; else bannerObjectUrl = null;
+    if (!file) {
+      label.textContent = isCrest
+        ? (existingCrestUrl ? "Escudo atual mantido. Selecione outro para substituir." : "Selecione PNG, JPG ou WebP · até 5 MB")
+        : (existingBannerUrl ? "Banner atual mantido. Selecione outro para substituir." : "Opcional · PNG, JPG ou WebP · até 5 MB");
+      label.classList.remove("is-error", "is-success");
+      updatePreview();
+      return;
+    }
+    try {
+      validateAssetFile(file, isCrest ? "Escudo" : "Banner");
+      const objectUrl = URL.createObjectURL(file);
+      if (isCrest) crestObjectUrl = objectUrl; else bannerObjectUrl = objectUrl;
+      label.textContent = `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+      label.classList.remove("is-error");
+      label.classList.add("is-success");
+      updatePreview();
+    } catch (error) {
+      input.value = "";
+      label.textContent = error.message;
+      label.classList.remove("is-success");
+      label.classList.add("is-error");
+      toast(error.message);
+      updatePreview();
+    }
   }
   function fillClubForm(club) {
     if (!club) return;
-    const map = {"club-name":"name","club-short":"short_name","club-slug":"slug","club-city":"city","club-founded":"founded_year","club-motto":"motto","club-description":"description","club-crest":"crest_url","club-banner":"banner_url","club-primary":"primary_color","club-secondary":"secondary_color","club-accent":"accent_color"};
+    const map = {"club-name":"name","club-short":"short_name","club-slug":"slug","club-city":"city","club-founded":"founded_year","club-motto":"motto","club-description":"description","club-primary":"primary_color","club-secondary":"secondary_color","club-accent":"accent_color"};
     Object.entries(map).forEach(([id,key]) => { if (club[key] != null && $("#"+id)) $("#"+id).value = club[key]; });
+    existingCrestUrl = club.crest_url || "";
+    existingBannerUrl = club.banner_url || "";
+    const crestLabel = $("#club-crest-file-name");
+    const bannerLabel = $("#club-banner-file-name");
+    if (crestLabel) crestLabel.textContent = existingCrestUrl ? "Escudo atual cadastrado. Selecione outro para substituir." : "Selecione PNG, JPG ou WebP · até 5 MB";
+    if (bannerLabel) bannerLabel.textContent = existingBannerUrl ? "Banner atual cadastrado. Selecione outro para substituir." : "Opcional · PNG, JPG ou WebP · até 5 MB";
     updatePreview();
   }
   function bindColorCodes() {
@@ -128,18 +186,98 @@
     if (!registrations.length) { node.innerHTML = `<div class="empty-state">Nenhuma inscrição de temporada foi encontrada para este jogador.</div>`; return; }
     node.innerHTML = `<table><thead><tr><th>TEMPORADA</th><th>CLUBE</th><th>DIVISÃO</th><th>SITUAÇÃO</th><th>POSIÇÃO</th></tr></thead><tbody>${registrations.map(item=>`<tr><td>${escapeHTML(item.season_name || item.season_code || item.season_id)}</td><td>${escapeHTML(item.club_name || myClub?.name || "—")}</td><td>${escapeHTML(item.division || "A DEFINIR")}</td><td>${escapeHTML(statusLabel(item.status))}</td><td>${escapeHTML(item.qualifier_position ?? "—")}</td></tr>`).join("")}</tbody></table>`;
   }
+  function getClubPayload(crestUrl, bannerUrl) {
+    const value = id => $("#"+id).value.trim();
+    return {
+      p_name: value("club-name"),
+      p_slug: value("club-slug"),
+      p_short_name: value("club-short") || null,
+      p_crest_url: crestUrl || null,
+      p_banner_url: bannerUrl || null,
+      p_primary_color: value("club-primary"),
+      p_secondary_color: value("club-secondary"),
+      p_accent_color: value("club-accent"),
+      p_motto: value("club-motto") || null,
+      p_description: value("club-description") || null,
+      p_city: value("club-city") || null,
+      p_founded_year: value("club-founded") ? Number(value("club-founded")) : null
+    };
+  }
+  async function uploadClubAsset(file, clubId, kind) {
+    validateAssetFile(file, kind === "crest" ? "Escudo" : "Banner");
+    const extension = ({"image/png":"png","image/jpeg":"jpg","image/webp":"webp"})[file.type];
+    if (!extension) throw new Error("Formato de imagem não permitido.");
+    const path = `${authUser.id}/${clubId}/${kind}-${crypto.randomUUID()}.${extension}`;
+    const {error} = await supabase.storage.from(CLUB_ASSETS_BUCKET).upload(path, file, {
+      cacheControl: "31536000",
+      upsert: false,
+      contentType: file.type
+    });
+    if (error) throw error;
+    const {data} = supabase.storage.from(CLUB_ASSETS_BUCKET).getPublicUrl(path);
+    if (!data?.publicUrl) throw new Error("O arquivo foi enviado, mas não recebemos a URL pública.");
+    return data.publicUrl;
+  }
   async function submitClubForm(event) {
     event.preventDefault();
-    if(DEMO){toast("Modo demonstração: seus dados não foram enviados nem salvos.");return;}
-    if(!PLAYER_WRITE_RPC_AUDITED){$("#club-feedback").textContent="A tela está pronta, mas a gravação está temporariamente bloqueada até conferirmos a definição e as permissões da RPC ccfv_league_create_club.";toast("Criação ainda bloqueada para proteger seu cadastro.");return;}
-    // Liberação futura, após auditoria SQL da RPC; owner_player_id nunca é enviado pelo navegador.
-    const value=id=>$("#"+id).value.trim();
-    const payload={p_name:value("club-name"),p_slug:value("club-slug"),p_short_name:value("club-short")||null,p_crest_url:value("club-crest")||null,p_banner_url:value("club-banner")||null,p_primary_color:value("club-primary"),p_secondary_color:value("club-secondary"),p_accent_color:value("club-accent"),p_motto:value("club-motto")||null,p_description:value("club-description")||null,p_city:value("club-city")||null,p_founded_year:value("club-founded")?Number(value("club-founded")):null};
-    const {data,error}=await supabase.rpc("ccfv_league_create_club",payload);
-    if(error) throw error;
-    if(data?.success!==true) throw new Error(data?.message||"O banco não confirmou a criação.");
-    toast("Solicitação de criação recebida.");
-    await refreshLiveData();
+    if (DEMO) { toast("Modo demonstração: seus dados não foram enviados nem salvos."); return; }
+    if (!PLAYER_WRITE_RPC_AUDITED) { toast("A gravação está bloqueada até a auditoria das RPCs."); return; }
+
+    const crestFile = $("#club-crest-file")?.files?.[0] || null;
+    const bannerFile = $("#club-banner-file")?.files?.[0] || null;
+    try {
+      validateAssetFile(crestFile, "Escudo");
+      validateAssetFile(bannerFile, "Banner");
+      if (!crestFile && !existingCrestUrl) throw new Error("Selecione o escudo oficial do clube.");
+      if (!authUser?.id) throw new Error("Não foi possível identificar sua conta autenticada.");
+
+      const button = $("#club-save");
+      button.disabled = true;
+      button.textContent = "SALVANDO IDENTIDADE...";
+      $("#club-feedback").textContent = "Validando os dados do clube e preparando o envio dos arquivos...";
+
+      let clubId = myClub?.id || null;
+      if (!clubId) {
+        const createPayload = getClubPayload(null, null);
+        const {data,error} = await supabase.rpc("ccfv_league_create_club", createPayload);
+        if (error) throw error;
+        if (data?.success !== true || !data?.club_id) throw new Error(data?.message || "O banco não confirmou a criação do clube.");
+        clubId = data.club_id;
+        myClub = {id: clubId, status: data.status || "DRAFT"};
+        $("#club-feedback").textContent = "Clube criado como rascunho. Enviando o escudo e o banner...";
+      }
+
+      let crestUrl = existingCrestUrl;
+      let bannerUrl = existingBannerUrl;
+      if (crestFile) crestUrl = await uploadClubAsset(crestFile, clubId, "crest");
+      if (bannerFile) bannerUrl = await uploadClubAsset(bannerFile, clubId, "banner");
+
+      const updatePayload = getClubPayload(crestUrl, bannerUrl);
+      const {data:updateData,error:updateError} = await supabase.rpc("ccfv_league_update_my_club", updatePayload);
+      if (updateError) throw updateError;
+      if (updateData?.success !== true) throw new Error(updateData?.message || "O banco não confirmou a atualização do clube.");
+
+      existingCrestUrl = crestUrl;
+      existingBannerUrl = bannerUrl;
+      if (crestObjectUrl) URL.revokeObjectURL(crestObjectUrl);
+      if (bannerObjectUrl) URL.revokeObjectURL(bannerObjectUrl);
+      crestObjectUrl = null;
+      bannerObjectUrl = null;
+      $("#club-crest-file").value = "";
+      $("#club-banner-file").value = "";
+      $("#club-feedback").textContent = "Identidade salva. Seu clube está em análise administrativa; a inscrição na temporada será uma etapa separada.";
+      toast("Identidade do clube salva com sucesso.");
+      await refreshLiveData();
+      openTab("club");
+    } catch (error) {
+      console.error("CCFV CLUB ASSETS", error);
+      $("#club-feedback").textContent = error.message || "Não foi possível salvar a identidade do clube.";
+      toast(error.message || "Falha ao salvar a identidade do clube.");
+    } finally {
+      const button = $("#club-save");
+      button.disabled = false;
+      button.textContent = "SALVAR IDENTIDADE DO CLUBE";
+    }
   }
   async function refreshLiveData() {
     // Uma única RPC segura retorna somente os dados do jogador autenticado.
