@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/modulos.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/modulos.js" defer></script>
+  <script src="js/clubes-acoes.js" defer></script>
 </head>
 <body data-page="clubes">
   <div class="access-screen" id="access-screen">
@@ -127,7 +128,8 @@
       <div class="club-colors"><span>IDENTIDADE VISUAL</span><div><i id="club-color-primary"></i><i id="club-color-secondary"></i><i id="club-color-accent"></i></div></div>
       <div class="club-motto" id="club-modal-motto" hidden></div>
       <p class="club-description" id="club-modal-description">Sem descrição cadastrada.</p>
-      <div class="club-modal-note">As ações de aprovação e alteração de status serão habilitadas após validar os estados aceitos pelas funções administrativas do banco.</div>
+      <div class="club-modal-note" hidden>As ações administrativas são executadas pelas RPCs protegidas da Liga CCFV.</div>
+      <section id="club-admin-actions" class="club-admin-actions" aria-live="polite"></section>
     </section>
   </div>
 </body>
