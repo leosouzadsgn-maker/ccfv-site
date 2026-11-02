@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#030805">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Clubes da Liga — CCFV Admin</title>
+  <link rel="stylesheet" href="css/modulos.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/modulos.js" defer></script>
+</head>
+<body data-page="clubes">
+  <div class="access-screen" id="access-screen">
+    <div class="access-card">
+      <h2 id="access-title">Verificando acesso</h2>
+      <p id="access-message">Conferindo sua sessão e suas permissões administrativas.</p>
+      <a href="/admin/login.html" id="access-login" hidden>ACESSAR ADMIN CCFV →</a>
+    </div>
+  </div>
+
+  <div class="admin-layout" id="admin-layout" hidden>
+    <aside class="sidebar">
+      <a class="brand" href="/liga/index.html">
+        <img src="../logos/01_logo_liga_ccfv.png" alt="Liga CCFV">
+        <span><strong>CCFV <em>/ LIGA</em></strong><small>ADMINISTRAÇÃO DA LIGA</small></span>
+      </a>
+      <div class="nav-label">CENTRAL DA LIGA</div>
+      <nav class="nav">
+        <a href="/liga/admin/index.html"><span>⌂</span>Visão geral</a>
+        <a href="/liga/admin/vinculos.html"><span>◈</span>Vínculos de jogadores</a>
+      </nav>
+      <div class="nav-label">GESTÃO DOS CLUBES</div>
+      <nav class="nav">
+        <a href="/liga/admin/clubes.html" class="active"><span>♜</span>Clubes</a>
+        <a href="/liga/admin/temporadas.html"><span>▦</span>Temporadas</a>
+        <a href="/liga/admin/inscricoes.html"><span>＋</span>Inscrições</a>
+        <a href="/liga/admin/divisoes.html"><span>◉</span>Divisões</a>
+      </nav>
+      <div class="nav-label">COMPETIÇÕES</div>
+      <nav class="nav">
+        <a href="/liga/admin/campeonato.html"><span>⚔</span>Campeonato</a>
+        <a href="/liga/admin/copas.html"><span>🏆</span>Copas</a>
+        <a href="/liga/admin/resultados.html"><span>▤</span>Resultados</a>
+      </nav>
+      <div class="nav-label">ADMINISTRAÇÃO</div>
+      <nav class="nav">
+        <a href="/liga/admin/premiacoes.html"><span>✧</span>Premiações</a>
+        <a href="/liga/admin/historico.html"><span>◷</span>Histórico</a>
+        <a href="/liga/admin/configuracoes.html"><span>⚙</span>Configurações</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <a href="/admin/">← ADMIN PRINCIPAL CCFV</a>
+        <a href="/liga/index.html">PORTAL DA LIGA ↗</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <span class="topbar-label">CCFV / ADMINISTRAÇÃO / LIGA</span>
+        <div class="topbar-account">
+          <div class="account-info"><strong id="admin-email">Administrador</strong><small>ACESSO ADMINISTRATIVO</small></div>
+          <button class="logout" id="logout-button" type="button">SAIR</button>
+        </div>
+      </header>
+
+      <section class="page-heading">
+        <div>
+          <div class="eyebrow">CCFV // CLUB MANAGEMENT</div>
+          <h1>CLUBES <em>DA LIGA.</em></h1>
+          <p>Consulte os clubes cadastrados, confira seus responsáveis e acompanhe a situação de cada identidade dentro da Liga CCFV.</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn" id="clubs-refresh" type="button">↻ ATUALIZAR CLUBES</button>
+        </div>
+      </section>
+
+      <section class="stats clubs-stats" aria-label="Indicadores de clubes">
+        <div class="stat"><span>TOTAL RETORNADO</span><strong id="clubs-stat-total">—</strong></div>
+        <div class="stat"><span>ATIVOS</span><strong class="green" id="clubs-stat-active">—</strong></div>
+        <div class="stat"><span>EM ANÁLISE / RASCUNHO</span><strong class="gold" id="clubs-stat-draft">—</strong></div>
+        <div class="stat"><span>INATIVOS / ARQUIVADOS</span><strong id="clubs-stat-inactive">—</strong></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <strong>BASE DE CLUBES</strong>
+          <span id="clubs-counter">AGUARDANDO CONSULTA</span>
+        </div>
+        <div class="panel-body">
+          <div class="clubs-toolbar">
+            <div class="pill-row clubs-filters" role="group" aria-label="Filtrar clubes">
+              <button class="pill active" type="button" data-club-filter="ALL">TODOS</button>
+              <button class="pill" type="button" data-club-filter="ACTIVE">ATIVOS</button>
+              <button class="pill" type="button" data-club-filter="DRAFT">EM ANÁLISE</button>
+              <button class="pill" type="button" data-club-filter="INACTIVE">INATIVOS</button>
+              <button class="pill" type="button" data-club-filter="ARCHIVED">ARQUIVADOS</button>
+            </div>
+            <label class="clubs-search"><span>⌕</span><input id="clubs-search" type="search" placeholder="Buscar clube, responsável ou cidade..." autocomplete="off"></label>
+          </div>
+
+          <div id="clubs-list" class="clubs-list" aria-live="polite">
+            <div class="clubs-state"><div class="clubs-spinner"></div><p>Carregando clubes...</p></div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer"><span>CCFV // CONFEDERAÇÕES COLISEU DE FUTEBOL VIRTUAL</span><span>LIGA ADMINISTRATIVA · MÓDULO CLUBES</span></footer>
+    </main>
+  </div>
+
+  <div class="club-modal-backdrop" id="club-detail-modal" hidden>
+    <section class="club-modal" role="dialog" aria-modal="true" aria-labelledby="club-modal-title">
+      <button class="club-modal-close" type="button" id="club-modal-close" aria-label="Fechar">×</button>
+      <div class="club-modal-top">
+        <img id="club-modal-crest" src="" alt="Escudo do clube" hidden>
+        <div><div class="eyebrow">CCFV // CLUB PROFILE</div><h2 id="club-modal-title">Detalhes do clube</h2><span id="club-modal-status" class="status">STATUS</span></div>
+      </div>
+      <div class="club-modal-grid">
+        <div><span>NOME ABREVIADO</span><strong id="club-modal-short">—</strong></div>
+        <div><span>RESPONSÁVEL</span><strong id="club-modal-owner">—</strong></div>
+        <div><span>CIDADE</span><strong id="club-modal-city">—</strong></div>
+        <div><span>ANO DE FUNDAÇÃO</span><strong id="club-modal-founded">—</strong></div>
+        <div><span>IDENTIFICADOR</span><strong id="club-modal-slug">—</strong></div>
+        <div><span>CRIADO EM</span><strong id="club-modal-created">—</strong></div>
+      </div>
+      <div class="club-colors"><span>IDENTIDADE VISUAL</span><div><i id="club-color-primary"></i><i id="club-color-secondary"></i><i id="club-color-accent"></i></div></div>
+      <div class="club-motto" id="club-modal-motto" hidden></div>
+      <p class="club-description" id="club-modal-description">Sem descrição cadastrada.</p>
+      <div class="club-modal-note">As ações de aprovação e alteração de status serão habilitadas após validar os estados aceitos pelas funções administrativas do banco.</div>
+    </section>
+  </div>
+</body>
+</html>
