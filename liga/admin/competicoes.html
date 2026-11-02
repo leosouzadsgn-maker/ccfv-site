@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#06100b"><meta name="robots" content="noindex,nofollow">
+  <title>Motor de Competições — Liga CCFV</title>
+  <link rel="icon" href="../logos/01_logo_liga_ccfv.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/competicoes.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/competicoes.js?v=20261102-01" defer></script>
+</head>
+<body>
+  <div class="gate" id="gate"><div class="gate-card"><img src="../logos/01_logo_liga_ccfv.png" alt="Liga CCFV"><span class="eyebrow">CENTRAL ADMINISTRATIVA</span><h1 id="gate-title">Verificando acesso</h1><p id="gate-message">Validando sua sessão e autorização administrativa.</p><a class="btn primary" href="/admin/login.html">ENTRAR NO ADMIN CCFV</a></div></div>
+  <div class="app" id="app" hidden>
+    <aside class="sidebar">
+      <a class="brand" href="/liga/index.html"><img src="../logos/01_logo_liga_ccfv.png" alt="Liga CCFV"><span><b>CCFV <i>/ LIGA</i></b><small>MOTOR COMPETITIVO</small></span></a>
+      <div class="nav-label">OPERAÇÃO DA LIGA</div>
+      <button class="nav-item active" data-tab="season">▦ Temporadas</button>
+      <button class="nav-item" data-tab="enrollments">＋ Inscrições</button>
+      <button class="nav-item" data-tab="divisions">◉ Distribuição das séries</button>
+      <div class="nav-label">CADASTRO E CONTROLE</div>
+      <a class="nav-item" href="/liga/admin/clubes.html">♜ Clubes</a>
+      <a class="nav-item" href="/liga/admin/temporadas.html">▦ Cadastro de temporadas</a>
+      <a class="nav-item" href="/liga/admin/inscricoes.html">＋ Inscrições</a>
+      <a class="nav-item" href="/liga/admin/divisoes.html">◉ Visão das divisões</a>
+      <div class="nav-label">COMPETIÇÕES</div>
+      <button class="nav-item" data-tab="championship">⚔ Brasileirão CCFV</button>
+      <button class="nav-item" data-tab="cups">🏆 Copas</button>
+      <button class="nav-item" data-tab="matches">▤ Partidas e resultados</button>
+      <button class="nav-item" data-tab="standings">▥ Classificação</button>
+      <div class="sidebar-bottom"><a href="/liga/admin/index.html">← ADMIN DA LIGA</a><a href="/admin/">ADMIN PRINCIPAL CCFV ↗</a></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div><span class="top-kicker">CCFV / LIGA / OPERAÇÃO COMPETITIVA</span><strong id="admin-email">Administrador</strong></div><div class="top-actions"><label class="season-picker"><span>TEMPORADA</span><select id="season-select"><option value="">Carregando temporadas...</option></select></label><button class="btn ghost small" id="refresh-all">↻ ATUALIZAR</button><button class="btn ghost small" id="logout">SAIR</button></div></header>
+
+      <section class="view active" data-view="season">
+        <div class="page-heading"><div><span class="eyebrow">01 / CICLO COMPETITIVO</span><h1>TEMPORADAS <em>DA LIGA.</em></h1><p>Crie a temporada, configure o período e abra inscrições. Temporadas de teste são gratuitas e não substituem uma temporada oficial.</p></div><span class="status-chip">LIMITE · 36 CLUBES</span></div>
+        <div class="two-col">
+          <form class="panel" id="season-create-form"><div class="panel-title"><div><span class="eyebrow">NOVA TEMPORADA</span><h2>Criar ciclo</h2></div><span class="icon-box">▦</span></div>
+            <div class="fields"><label><span>CÓDIGO DA TEMPORADA</span><input id="season-code" required maxlength="40" placeholder="CCFV-2026-12"></label><label><span>NOME DA TEMPORADA</span><input id="season-name" required maxlength="100" placeholder="Temporada Dezembro 2026"></label><div class="field-row"><label><span>INÍCIO</span><input id="season-start" type="date" required></label><label><span>TÉRMINO</span><input id="season-end" type="date" required></label></div><label class="checkline"><input id="season-test" type="checkbox"><span>Temporada de teste (sem mensalidade)</span></label></div>
+            <div class="hint">A criação começa em RASCUNHO. Depois você abre as inscrições. A mensalidade será R$ 15,00 na temporada oficial e R$ 0,00 na temporada de teste.</div><button class="btn primary wide" type="submit" id="season-create">CRIAR TEMPORADA</button>
+          </form>
+          <section class="panel"><div class="panel-title"><div><span class="eyebrow">REGRAS DA TEMPORADA</span><h2>Configuração padrão</h2></div><span class="icon-box">⚙</span></div>
+            <div class="rule-grid"><div><b>36</b><span>clubes no total</span></div><div><b>12</b><span>clubes por série</span></div><div><b>22</b><span>rodadas por clube</span></div><div><b>3 / 1 / 0</b><span>vitória / empate / derrota</span></div></div>
+            <div class="hint">Fluxo obrigatório: RASCUNHO → INSCRIÇÕES → ATIVA → ENCERRADA → ARQUIVADA. A temporada só inicia com 36 inscrições confirmadas e 12 clubes distribuídos em cada série.</div>
+          </section>
+        </div>
+        <section class="panel"><div class="panel-title"><div><span class="eyebrow">TEMPORADAS REGISTRADAS</span><h2>Ciclos e status</h2></div><span class="counter" id="season-counter">—</span></div><div id="season-list" class="stack"><div class="empty">Carregando temporadas...</div></div></section>
+      </section>
+
+      <section class="view" data-view="enrollments">
+        <div class="page-heading"><div><span class="eyebrow">02 / ADMISSÃO DE CLUBES</span><h1>INSCRIÇÕES <em>DA TEMPORADA.</em></h1><p>Analise cada solicitação. Somente clubes aprovados e responsáveis com cadastro CCFV ativo podem ser confirmados.</p></div></div>
+        <div class="stats"><div><span>TOTAL</span><b id="en-stat-total">—</b></div><div><span>PENDENTES</span><b id="en-stat-pending">—</b></div><div><span>CONFIRMADAS</span><b id="en-stat-confirmed">—</b></div><div><span>OUTRAS</span><b id="en-stat-other">—</b></div></div>
+        <section class="panel"><div class="panel-title"><div><span class="eyebrow">SOLICITAÇÕES</span><h2>Clubes inscritos</h2></div><button class="btn ghost small" id="reload-enrollments">↻ ATUALIZAR</button></div><div id="enrollment-list" class="stack"><div class="empty">Selecione uma temporada.</div></div></section>
+      </section>
+
+      <section class="view" data-view="divisions">
+        <div class="page-heading"><div><span class="eyebrow">03 / ORGANIZAÇÃO ESPORTIVA</span><h1>DISTRIBUIÇÃO <em>DAS SÉRIES.</em></h1><p>Organize os 36 clubes em uma ordem geral. As posições 1–12 formam a Série A, 13–24 a Série B e 25–36 a Série C.</p></div></div>
+        <div class="notice">Use as setas para ajustar a ordem antes de confirmar. A distribuição grava `qualifier_position` e `division` nas inscrições; não mexe no cadastro original dos clubes.</div>
+        <section class="panel"><div class="panel-title"><div><span class="eyebrow">RANKING GERAL</span><h2>Ordem de distribuição</h2></div><div class="panel-actions"><span class="counter" id="division-counter">0 / 36</span><button class="btn primary small" id="save-divisions">CONFIRMAR 12 / 12 / 12</button></div></div><div id="division-list" class="rank-list"><div class="empty">Carregando inscrições confirmadas...</div></div><div class="division-summary" id="division-summary"></div></section>
+      </section>
+
+      <section class="view" data-view="championship">
+        <div class="page-heading"><div><span class="eyebrow">04 / CAMPEONATO REGULAR</span><h1>BRASILEIRÃO <em>CCFV.</em></h1><p>Três divisões independentes, turno e returno, 22 rodadas por clube e 396 partidas no total.</p></div><span class="status-chip">396 JOGOS</span></div>
+        <div class="rule-grid three"><div><b>132</b><span>Série A · 22 rodadas</span></div><div><b>132</b><span>Série B · 22 rodadas</span></div><div><b>132</b><span>Série C · 22 rodadas</span></div></div>
+        <div class="notice">O calendário só é gerado quando a temporada está ATIVA e contém exatamente 12 clubes confirmados e ativos em cada série. A geração é protegida contra duplicidade.</div>
+        <section class="panel"><div class="panel-title"><div><span class="eyebrow">GERAÇÃO AUTOMÁTICA</span><h2>Calendário das três séries</h2></div><button class="btn primary" id="generate-league">GERAR 396 PARTIDAS</button></div><div class="match-method"><div><b>1º TURNO</b><span>Rodadas 01–11 · todos contra todos</span></div><div><b>2º TURNO</b><span>Rodadas 12–22 · mando invertido</span></div><div><b>PONTUAÇÃO</b><span>3 pontos vitória · 1 empate · 0 derrota</span></div></div><div id="league-competitions" class="stack"><div class="empty">Selecione a temporada para consultar as competições.</div></div></section>
+      </section>
+
+      <section class="view" data-view="cups">
+        <div class="page-heading"><div><span class="eyebrow">05 / COMPETIÇÕES ELIMINATÓRIAS</span><h1>COPAS <em>CCFV.</em></h1><p>Gere as copas vinculadas à temporada. O mata-mata utiliza jogo único e pênaltis registrados separadamente quando houver empate.</p></div></div>
+        <div class="cup-grid">
+          <article class="cup-card"><span>36 CLUBES · TRÊS DIVISÕES</span><h2>Copa Interdivisional</h2><p>36 participantes. Quatro jogos preliminares entre as sementes 29–36; os 28 primeiros avançam diretamente ao chaveamento de 32.</p><button class="btn primary wide" data-generate-cup="INTERDIVISIONAL">GERAR INTERDIVISIONAL</button></article>
+          <article class="cup-card"><span>TOP 8 · SÉRIE A</span><h2>Copa Elite</h2><p>Oito primeiros colocados da Série A depois que todas as 66 partidas das 11 primeiras rodadas estiverem registradas.</p><button class="btn primary wide" data-generate-cup="ELITE">GERAR COPA ELITE</button></article>
+          <article class="cup-card"><span>24 CLUBES · SÉRIES B + C</span><h2>Copa Integração</h2><p>24 participantes. Oito jogos preliminares entre as sementes 9–24; os oito primeiros entram diretamente nas oitavas.</p><button class="btn primary wide" data-generate-cup="INTEGRACAO">GERAR INTEGRAÇÃO</button></article>
+        </div>
+        <div class="notice">A classificação para a Copa Elite considera pontos, vitórias, saldo de gols, gols marcados e nome do clube como último critério técnico. A chave gerada fica congelada na competição.</div>
+        <section class="panel"><div class="panel-title"><div><span class="eyebrow">CHAVES GERADAS</span><h2>Copas da temporada</h2></div><button class="btn ghost small" id="reload-cups">↻ ATUALIZAR</button></div><div id="cup-competitions" class="stack"><div class="empty">Nenhuma copa carregada.</div></div></section>
+      </section>
+
+      <section class="view" data-view="matches">
+        <div class="page-heading"><div><span class="eyebrow">06 / OPERAÇÃO DAS PARTIDAS</span><h1>PARTIDAS <em>E RESULTADOS.</em></h1><p>Agende confrontos e registre placares conferidos pela administração. Não existe envio de comprovantes pelo site.</p></div></div>
+        <section class="panel"><div class="filters"><label><span>COMPETIÇÃO</span><select id="match-competition"><option value="">Selecione uma competição</option></select></label><label><span>RODADA / FASE</span><select id="match-round"><option value="">Todas</option></select></label><button class="btn primary" id="load-matches">CARREGAR PARTIDAS</button></div><div id="match-list" class="stack"><div class="empty">Selecione uma competição.</div></div></section>
+      </section>
+
+      <section class="view" data-view="standings">
+        <div class="page-heading"><div><span class="eyebrow">07 / CLASSIFICAÇÃO OFICIAL</span><h1>TABELAS <em>DA LIGA.</em></h1><p>Classificação calculada a partir dos resultados registrados no motor competitivo.</p></div></div>
+        <section class="panel"><div class="filters"><label><span>DIVISÃO</span><select id="standings-competition"><option value="">Selecione uma série</option></select></label><button class="btn primary" id="load-standings">ATUALIZAR CLASSIFICAÇÃO</button></div><div id="standings-list" class="table-wrap"><div class="empty">Selecione uma divisão.</div></div></section>
+      </section>
+      <footer class="footer">CCFV · CONFEDERAÇÕES COLISEU DE FUTEBOL VIRTUAL <span>MOTOR COMPETITIVO V1 · MÓDULO INDEPENDENTE</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" hidden></div>
+</body>
+</html>
