@@ -1,0 +1,41 @@
+CCFV LIGA — PAINEL DO PARTICIPANTE
+Pacote inicial: 02/11/2026
+
+ARQUIVOS
+- liga/painel.html
+- liga/css/painel.css
+- liga/js/painel.js
+- supabase/DIAGNOSTICO_PAINEL_JOGADOR.sql
+
+COMO VER A INTERFACE
+Depois de copiar os arquivos para a raiz do projeto e publicar, abra:
+https://ccfv-site.vercel.app/liga/painel.html?preview=1
+
+O parâmetro preview=1 abre um modo de demonstração com dados fictícios. Nenhuma ação é gravada.
+
+COMO FUNCIONA O MODO REAL
+Abra /liga/painel.html sem preview. A página exige uma sessão do Supabase e consulta ccfv_league_get_my_player_link().
+- NOT_LINKED: orienta a vincular o cadastro CCFV.
+- PENDING: aguarda análise do administrador.
+- REJECTED/BLOCKED: apresenta a situação e orienta procurar o portal/admin.
+- ACTIVE: tenta consultar o clube do jogador e as inscrições/temporadas permitidas pelas policies atuais.
+
+IMPORTANTE — O QUE AINDA NÃO ESTÁ LIBERADO
+A interface apresenta o formulário completo de criação e prévia de escudo, banner e cores, mas o botão de gravação real permanece bloqueado. As assinaturas de ccfv_league_create_club, ccfv_league_update_my_club e ccfv_league_register_my_club são conhecidas, porém ainda é necessário revisar os corpos SQL, as permissões e o JSON de retorno para confirmar:
+1. se a RPC deriva o proprietário usando auth.uid() e o vínculo ACTIVE (sem aceitar owner_player_id do navegador);
+2. se o participante só consegue editar o próprio clube;
+3. quais estados de clube e temporada permitem inscrição;
+4. qual é o formato do retorno e quais colunas as consultas próprias podem ler por RLS.
+
+PRÓXIMO PASSO DE BANCO
+Execute no SQL Editor do Supabase o arquivo supabase/DIAGNOSTICO_PAINEL_JOGADOR.sql e compartilhe o resultado. É somente leitura.
+
+O QUE O PAINEL JÁ MOSTRA
+- Visão geral e etapas da jornada.
+- Dados do jogador e status do vínculo.
+- Meu clube: dados, escudo, banner, paleta e prévia visual.
+- Temporadas com inscrições abertas e histórico de inscrições, se as policies autorizarem.
+- Espaços de campeonato, copas e histórico, ainda sem motor de partidas/estatísticas/conquistas.
+- Conta e encerramento de sessão.
+
+Não inclui transferências de jogadores entre clubes. A Liga CCFV é individual no eFootball.

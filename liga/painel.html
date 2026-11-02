@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#06100b">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Painel do Participante — Liga CCFV</title>
+  <link rel="icon" href="logos/01_logo_liga_ccfv.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/painel.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/painel.js" defer></script>
+</head>
+<body>
+  <div class="demo-ribbon" id="demo-ribbon" hidden>MODO DEMONSTRAÇÃO · DADOS FICTÍCIOS · NENHUMA ALTERAÇÃO SERÁ SALVA</div>
+  <div class="gate" id="gate">
+    <div class="gate-card">
+      <img src="logos/01_logo_liga_ccfv.png" alt="Liga CCFV">
+      <span class="eyebrow">PORTAL DO PARTICIPANTE</span>
+      <h1 id="gate-title">Verificando seu acesso</h1>
+      <p id="gate-message">Conferindo sua sessão e seu vínculo de jogador CCFV.</p>
+      <div class="gate-actions" id="gate-actions"><a class="btn primary" href="/liga/login.html?view=login">ENTRAR NA MINHA CONTA</a><a class="btn ghost" href="/liga/index.html">VOLTAR À LIGA</a></div>
+    </div>
+  </div>
+
+  <div class="app" id="app" hidden>
+    <aside class="sidebar">
+      <a class="brand" href="/liga/index.html"><img src="logos/01_logo_liga_ccfv.png" alt="Liga CCFV"><span><b>CCFV <i>/ LIGA</i></b><small>ÁREA DO PARTICIPANTE</small></span></a>
+      <div class="sidebar-caption">MEU ESPAÇO</div>
+      <nav class="nav" aria-label="Menu do participante">
+        <button class="nav-item active" data-tab="overview"><span>⌂</span>Visão geral</button>
+        <button class="nav-item" data-tab="club"><span>♜</span>Meu clube</button>
+        <button class="nav-item" data-tab="seasons"><span>▦</span>Temporadas</button>
+        <button class="nav-item" data-tab="championship"><span>⚔</span>Campeonato</button>
+        <button class="nav-item" data-tab="cups"><span>🏆</span>Copas</button>
+        <button class="nav-item" data-tab="history"><span>◷</span>Meu histórico</button>
+        <button class="nav-item" data-tab="account"><span>◎</span>Minha conta</button>
+      </nav>
+      <div class="sidebar-bottom"><a href="/liga/index.html">← PORTAL DA LIGA</a><a href="/admin/">ADMIN PRINCIPAL CCFV ↗</a></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar"><div><span class="top-kicker">CCFV / LIGA / PARTICIPANTE</span><strong id="top-player">Minha área</strong></div><div class="top-actions"><span class="online"><i></i> CONTA CONECTADA</span><button id="logout" class="btn small ghost">SAIR</button></div></header>
+
+      <section class="view active" data-view="overview">
+        <div class="page-heading"><div><span class="eyebrow">CENTRAL DO PARTICIPANTE</span><h1>SEU CLUBE.<br><em>SUA HISTÓRIA.</em></h1><p>Acompanhe sua trajetória, cuide da identidade do seu clube e gerencie sua participação na Liga CCFV.</p></div><div class="season-pill" id="season-pill">TEMPORADA · A DEFINIR</div></div>
+        <div class="welcome-card"><div><span class="welcome-label">BEM-VINDO À LIGA CCFV</span><h2 id="welcome-name">Sua jornada começa aqui.</h2><p id="welcome-copy">Organize seu clube, acompanhe as competições e construa seu legado.</p></div><div class="welcome-mark">CCFV</div></div>
+        <div class="stats-grid">
+          <article class="stat"><span>STATUS DO VÍNCULO</span><b id="stat-link">—</b><small>Identidade CCFV</small></article>
+          <article class="stat"><span>MEU CLUBE</span><b id="stat-club">—</b><small>Identidade esportiva</small></article>
+          <article class="stat"><span>TEMPORADA</span><b id="stat-season">—</b><small>Participação atual</small></article>
+          <article class="stat"><span>DIVISÃO</span><b id="stat-division">—</b><small>Categoria competitiva</small></article>
+        </div>
+        <div class="content-grid">
+          <article class="panel"><div class="panel-heading"><div><span class="eyebrow">PRÓXIMA ETAPA</span><h3 id="next-title">Prepare a identidade do seu clube</h3></div><span class="panel-icon">↗</span></div><p id="next-copy">Cadastre o nome, escudo, cores e apresentação do seu clube para enviar à análise administrativa.</p><button class="btn primary" data-open-tab="club" id="next-action">ACESSAR CRIAÇÃO DO CLUBE</button></article>
+          <article class="panel status-panel"><div class="panel-heading"><div><span class="eyebrow">MINHA SITUAÇÃO</span><h3>Etapas da jornada</h3></div><span class="panel-icon">◎</span></div><ol class="steps" id="journey-steps"><li class="done"><i>1</i><span><b>Conta criada</b><small>Cadastro no portal da Liga</small></span></li><li><i>2</i><span><b>Vínculo CCFV</b><small>Confirmação do jogador oficial</small></span></li><li><i>3</i><span><b>Clube criado</b><small>Identidade e análise administrativa</small></span></li><li><i>4</i><span><b>Inscrição na temporada</b><small>Solicitar participação no ciclo</small></span></li></ol></article>
+        </div>
+      </section>
+
+      <section class="view" data-view="club">
+        <div class="page-heading compact"><div><span class="eyebrow">IDENTIDADE ESPORTIVA</span><h1>MEU <em>CLUBE.</em></h1><p>Crie a identidade do seu clube. O escudo e os dados enviados passarão pela análise da administração da Liga.</p></div><span class="status-chip" id="club-status">CLUBE NÃO CRIADO</span></div>
+        <div class="club-editor-grid">
+          <form class="panel form-panel" id="club-form">
+            <div class="panel-heading"><div><span class="eyebrow">ETAPA 01 · IDENTIDADE</span><h3>Dados do clube</h3></div><span class="required-note">* OBRIGATÓRIO</span></div>
+            <div class="fields two">
+              <label class="field full"><span>NOME OFICIAL DO CLUBE *</span><input id="club-name" name="name" minlength="3" maxlength="80" placeholder="Ex.: Aurora Esporte Clube" required></label>
+              <label class="field"><span>ABREVIAÇÃO</span><input id="club-short" name="short_name" maxlength="12" placeholder="Ex.: AUR"></label>
+              <label class="field"><span>IDENTIFICADOR (SLUG) *</span><input id="club-slug" name="slug" maxlength="80" placeholder="aurora-esporte-clube" required></label>
+              <label class="field"><span>CIDADE</span><input id="club-city" name="city" maxlength="80" placeholder="Sua cidade"></label>
+              <label class="field"><span>ANO DE FUNDAÇÃO</span><input id="club-founded" name="founded_year" type="number" min="1900" max="2100" placeholder="2026"></label>
+              <label class="field full"><span>LEMA DO CLUBE</span><input id="club-motto" name="motto" maxlength="120" placeholder="Uma frase que representa sua identidade"></label>
+              <label class="field full"><span>APRESENTAÇÃO</span><textarea id="club-description" name="description" rows="3" maxlength="500" placeholder="Conte um pouco sobre a história e a identidade do clube..."></textarea></label>
+            </div>
+            <div class="panel-heading subheading"><div><span class="eyebrow">ETAPA 02 · IDENTIDADE VISUAL</span><h3>Escudo e materiais</h3></div></div>
+            <div class="fields two">
+              <label class="field full"><span>URL DO ESCUDO * (HTTPS)</span><input id="club-crest" name="crest_url" type="url" placeholder="https://.../escudo.png" required></label>
+              <label class="field full"><span>URL DO BANNER (HTTPS)</span><input id="club-banner" name="banner_url" type="url" placeholder="https://.../banner.jpg"></label>
+            </div>
+            <div class="panel-heading subheading"><div><span class="eyebrow">ETAPA 03 · CORES OFICIAIS</span><h3>Paleta do clube</h3></div></div>
+            <div class="color-fields">
+              <label class="color-field"><span>PRIMÁRIA</span><input id="club-primary" type="color" value="#1F8F5F"><b id="club-primary-code">#1F8F5F</b></label>
+              <label class="color-field"><span>SECUNDÁRIA</span><input id="club-secondary" type="color" value="#0B1210"><b id="club-secondary-code">#0B1210</b></label>
+              <label class="color-field"><span>DESTAQUE</span><input id="club-accent" type="color" value="#D6B45A"><b id="club-accent-code">#D6B45A</b></label>
+            </div>
+            <div class="form-feedback" id="club-feedback" role="status">A criação real será liberada após a conferência final da função segura do banco.</div>
+            <button class="btn primary wide" id="club-save" type="submit" disabled>GRAVAÇÃO AGUARDANDO VALIDAÇÃO DA RPC</button>
+          </form>
+          <aside class="preview-column">
+            <article class="club-preview" id="club-preview">
+              <div class="club-preview-banner" id="club-preview-banner"></div>
+              <div class="club-preview-body"><div class="crest-frame"><img id="club-preview-crest" src="logos/01_logo_liga_ccfv.png" alt="Prévia do escudo"></div><span class="eyebrow">CLUB IDENTITY PREVIEW</span><h2 id="preview-name">NOME DO CLUBE</h2><p id="preview-motto">UMA IDENTIDADE. UM LEGADO.</p><div class="preview-colors"><i id="preview-primary"></i><i id="preview-secondary"></i><i id="preview-accent"></i></div><span class="preview-city" id="preview-city">CIDADE · BRASIL</span></div>
+            </article>
+            <article class="panel checklist"><span class="eyebrow">ANTES DE ENVIAR</span><h3>Checklist do clube</h3><ul><li>Nome oficial revisado</li><li>Escudo em boa resolução</li><li>Cores definidas</li><li>Dados do responsável conferidos</li><li>Identidade própria, sem duplicidade</li></ul><p>Depois do envio, a administração poderá aprovar ou rejeitar o cadastro. Clube aprovado ainda precisa solicitar inscrição em uma temporada.</p></article>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" data-view="seasons">
+        <div class="page-heading compact"><div><span class="eyebrow">PARTICIPAÇÃO OFICIAL</span><h1>MINHAS <em>TEMPORADAS.</em></h1><p>Consulte os ciclos com inscrições disponíveis e acompanhe as participações do seu clube.</p></div></div>
+        <div class="notice" id="season-notice">A inscrição do clube é uma etapa independente da aprovação do vínculo do jogador e da aprovação do próprio clube.</div>
+        <div id="season-list" class="cards-list"><div class="empty-state">Carregando temporadas disponíveis...</div></div>
+        <div class="panel"><div class="panel-heading"><div><span class="eyebrow">MEU HISTÓRICO DE INSCRIÇÕES</span><h3>Participações registradas</h3></div></div><div id="my-registrations" class="table-scroll"><div class="empty-state">Nenhuma participação consultada.</div></div></div>
+      </section>
+
+      <section class="view" data-view="championship">
+        <div class="page-heading compact"><div><span class="eyebrow">COMPETIÇÃO REGULAR</span><h1>MEU <em>CAMPEONATO.</em></h1><p>Acompanhe calendário, rodadas, tabela e desempenho do seu clube.</p></div></div>
+        <div class="feature-grid"><article class="feature-card"><span>01</span><h3>Calendário de jogos</h3><p>Próximas rodadas e confrontos da sua divisão.</p><b>AGUARDANDO MOTOR DE RODADAS</b></article><article class="feature-card"><span>02</span><h3>Tabela de classificação</h3><p>Pontos, vitórias, empates, derrotas e saldo.</p><b>AGUARDANDO MOTOR DE CLASSIFICAÇÃO</b></article><article class="feature-card"><span>03</span><h3>Desempenho</h3><p>Histórico de resultados e campanha da temporada.</p><b>AGUARDANDO REGISTRO DE RESULTADOS</b></article></div>
+      </section>
+
+      <section class="view" data-view="cups">
+        <div class="page-heading compact"><div><span class="eyebrow">COMPETIÇÕES ESPECIAIS</span><h1>MINHAS <em>COPAS.</em></h1><p>Veja as copas da Liga e acompanhe sua participação quando a temporada estiver configurada.</p></div></div>
+        <div class="cup-grid"><article class="cup-card"><span>CCFV · 36 CLUBES</span><h3>Copa Interdivisional</h3><p>Competição com representantes das três divisões.</p><b>ESTRUTURA A IMPLEMENTAR</b></article><article class="cup-card"><span>CCFV · SÉRIE A</span><h3>Copa Elite</h3><p>Oito primeiros colocados da Série A após a 11ª rodada.</p><b>ESTRUTURA A IMPLEMENTAR</b></article><article class="cup-card"><span>CCFV · SÉRIES B + C</span><h3>Copa Integração</h3><p>Vinte e quatro clubes das divisões de acesso.</p><b>ESTRUTURA A IMPLEMENTAR</b></article></div>
+      </section>
+
+      <section class="view" data-view="history">
+        <div class="page-heading compact"><div><span class="eyebrow">TRAJETÓRIA E CONQUISTAS</span><h1>MEU <em>HISTÓRICO.</em></h1><p>Conquistas, campanhas, divisões disputadas e temporadas anteriores.</p></div></div>
+        <div class="panel"><div class="empty-state">Seu histórico aparecerá aqui após a conclusão das primeiras temporadas da Liga e a implantação dos registros de conquistas.</div></div>
+      </section>
+
+      <section class="view" data-view="account">
+        <div class="page-heading compact"><div><span class="eyebrow">DADOS PESSOAIS</span><h1>MINHA <em>CONTA.</em></h1><p>Informações da conta e vínculo com o cadastro esportivo oficial da CCFV.</p></div></div>
+        <div class="panel account-panel"><div class="account-row"><span>E-MAIL DA CONTA</span><b id="account-email">—</b></div><div class="account-row"><span>JOGADOR CCFV</span><b id="account-player">—</b></div><div class="account-row"><span>CÓDIGO CCFV</span><b id="account-code">—</b></div><div class="account-row"><span>STATUS DO VÍNCULO</span><b id="account-link-status">—</b></div><div class="account-row"><span>ORIGEM</span><b>PORTAL DA LIGA CCFV</b></div><a class="btn ghost" href="/liga/login.html">GERENCIAR ACESSO E SENHA</a></div>
+      </section>
+      <footer class="footer"><span>CCFV · CONFEDERAÇÕES COLISEU DE FUTEBOL VIRTUAL</span><span>PARTICIPANTE · COMPETITIVIDADE · IDENTIDADE · LEGADO</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" hidden></div>
+</body>
+</html>
