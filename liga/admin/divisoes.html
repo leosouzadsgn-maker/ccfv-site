@@ -1,51 +1,24 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#030805">
-  <meta name="robots" content="noindex,nofollow">
-  <title>DIVISÕES DA LIGA. — CCFV Liga Admin</title>
-  <link rel="stylesheet" href="css/modulos.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/modulos.js" defer></script>
-</head>
-<body data-page="divisoes">
-  <div class="access-screen" id="access-screen"><div class="access-card"><h2 id="access-title">Verificando acesso</h2><p id="access-message">Conferindo sua sessão e suas permissões administrativas.</p><a href="/admin/login.html" id="access-login" hidden>ACESSAR ADMIN CCFV →</a></div></div>
-  <div class="admin-layout" id="admin-layout" hidden>
-    <aside class="sidebar">
-      <a class="brand" href="/liga/index.html"><img src="../logos/01_logo_liga_ccfv.png" alt="Liga CCFV"><span><strong>CCFV <em>/ LIGA</em></strong><small>ADMINISTRAÇÃO DA LIGA</small></span></a>
-      <div class="nav-label">CENTRAL DA LIGA</div><nav class="nav">
-<a href="/liga/admin/index.html"><span>⌂</span>Visão geral</a>
-<a href="/liga/admin/vinculos.html"><span>◈</span>Vínculos de jogadores</a>
-</nav>
-<div class="nav-label">GESTÃO DOS CLUBES</div><nav class="nav">
-<a href="/liga/admin/clubes.html"><span>♜</span>Clubes</a>
-<a href="/liga/admin/temporadas.html"><span>▦</span>Temporadas</a>
-<a href="/liga/admin/inscricoes.html"><span>＋</span>Inscrições</a>
-<a href="/liga/admin/divisoes.html" class="active"><span>◉</span>Divisões</a>
-</nav>
-<div class="nav-label">COMPETIÇÕES</div><nav class="nav">
-<a href="/liga/admin/campeonato.html"><span>⚔</span>Campeonato</a>
-<a href="/liga/admin/copas.html"><span>🏆</span>Copas</a>
-<a href="/liga/admin/resultados.html"><span>▤</span>Resultados</a>
-</nav>
-<div class="nav-label">ADMINISTRAÇÃO</div><nav class="nav">
-<a href="/liga/admin/premiacoes.html"><span>✧</span>Premiações</a>
-<a href="/liga/admin/historico.html"><span>◷</span>Histórico</a>
-<a href="/liga/admin/configuracoes.html"><span>⚙</span>Configurações</a>
-</nav>
-      <div class="sidebar-bottom"><a href="/admin/">← ADMIN PRINCIPAL CCFV</a><a href="/liga/index.html">PORTAL DA LIGA ↗</a></div>
-    </aside>
-    <main class="main">
-      <header class="topbar"><span class="topbar-label">CCFV / ADMINISTRAÇÃO / LIGA</span><div class="topbar-account"><div class="account-info"><strong id="admin-email">Administrador</strong><small>ACESSO ADMINISTRATIVO</small></div><button class="logout" id="logout-button" type="button">SAIR</button></div></header>
-      <section class="page-heading"><div><div class="eyebrow">CCFV // DIVISION MANAGEMENT</div><h1>DIVISÕES <em>DA LIGA.</em></h1><p>Organize os 36 clubes em três divisões, acompanhe posições e prepare a movimentação entre Série A, Série B e Série C.</p></div><div class="page-actions"><span class="status">ESTRUTURA INICIAL</span></div></section>
-      <div class="stats"><div class="stat"><span>SÉRIE A</span><strong class="green">12</strong></div><div class="stat"><span>SÉRIE B</span><strong>12</strong></div><div class="stat"><span>SÉRIE C</span><strong>12</strong></div><div class="stat"><span>TOTAL DE VAGAS</span><strong class="gold">36</strong></div></div>
-<div class="notice"><div class="notice-icon">◉</div><div><b>COMPOSIÇÃO DAS DIVISÕES</b><p>Cada temporada comporta 36 clubes: 12 em cada série. A movimentação prevista é de três promovidos e três rebaixados entre divisões, conforme as regras da Liga.</p></div></div>
-<div class="grid-3"><section class="division"><h3>SÉRIE A <span>12 VAGAS</span></h3><div class="slots"><div class="slot">01 · Vaga livre</div><div class="slot">02 · Vaga livre</div><div class="slot">03 · Vaga livre</div><div class="slot">04 · Vaga livre</div><div class="slot">05 · Vaga livre</div><div class="slot">06 · Vaga livre</div><div class="slot">07 · Vaga livre</div><div class="slot">08 · Vaga livre</div><div class="slot">09 · Vaga livre</div><div class="slot">10 · Vaga livre</div><div class="slot">11 · Vaga livre</div><div class="slot">12 · Vaga livre</div></div></section><section class="division"><h3>SÉRIE B <span>12 VAGAS</span></h3><div class="slots"><div class="slot">01 · Vaga livre</div><div class="slot">02 · Vaga livre</div><div class="slot">03 · Vaga livre</div><div class="slot">04 · Vaga livre</div><div class="slot">05 · Vaga livre</div><div class="slot">06 · Vaga livre</div><div class="slot">07 · Vaga livre</div><div class="slot">08 · Vaga livre</div><div class="slot">09 · Vaga livre</div><div class="slot">10 · Vaga livre</div><div class="slot">11 · Vaga livre</div><div class="slot">12 · Vaga livre</div></div></section><section class="division"><h3>SÉRIE C <span>12 VAGAS</span></h3><div class="slots"><div class="slot">01 · Vaga livre</div><div class="slot">02 · Vaga livre</div><div class="slot">03 · Vaga livre</div><div class="slot">04 · Vaga livre</div><div class="slot">05 · Vaga livre</div><div class="slot">06 · Vaga livre</div><div class="slot">07 · Vaga livre</div><div class="slot">08 · Vaga livre</div><div class="slot">09 · Vaga livre</div><div class="slot">10 · Vaga livre</div><div class="slot">11 · Vaga livre</div><div class="slot">12 · Vaga livre</div></div></section></div>
-<section class="panel" style="margin-top:16px"><div class="panel-head"><strong>DISTRIBUIÇÃO DA TEMPORADA</strong><span>ASSOCIAÇÃO DE CLUBES E SÉRIES</span></div><div class="panel-body"><p style="margin:0;color:rgba(255,255,255,.38);font-size:8px;line-height:1.8">A distribuição automática só será liberada depois da aprovação das inscrições e da validação dos critérios de classificação. Nesta etapa, nenhum clube será movido ou alterado.</p><div style="margin-top:14px"><button class="btn" disabled>GERAR DISTRIBUIÇÃO</button> <button class="btn secondary" disabled>SALVAR AJUSTES</button></div></div></section>
-      <footer class="footer"><span>CCFV // CONFEDERAÇÕES COLISEU DE FUTEBOL VIRTUAL</span><span>LIGA ADMINISTRATIVA · MÓDULO DIVISOES</span></footer>
-    </main>
-  </div>
-</body>
-</html>
+<html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#030805"><meta name="robots" content="noindex,nofollow">
+<title>Divisões da Liga — CCFV Liga Admin</title><link rel="stylesheet" href="css/modulos.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/modulos.js" defer></script></head>
+<body data-page="divisoes"><div class="access-screen" id="access-screen"><div class="access-card"><h2 id="access-title">Verificando acesso</h2><p id="access-message">Conferindo sua sessão e suas permissões administrativas.</p><a href="/admin/login.html" id="access-login" hidden>ACESSAR ADMIN CCFV →</a></div></div>
+<div class="admin-layout" id="admin-layout" hidden><aside class="sidebar">
+<a class="brand" href="/liga/index.html"><img src="../logos/01_logo_liga_ccfv.png" alt="Liga CCFV"><span><strong>CCFV <em>/ LIGA</em></strong><small>ADMINISTRAÇÃO DA LIGA</small></span></a>
+<div class="nav-label">CENTRAL DA LIGA</div><nav class="nav"><a href="/liga/admin/index.html"><span>⌂</span>Visão geral</a><a href="/liga/admin/vinculos.html"><span>◈</span>Vínculos de jogadores</a></nav>
+<div class="nav-label">GESTÃO DOS CLUBES</div><nav class="nav"><a href="/liga/admin/clubes.html"><span>♜</span>Clubes</a><a href="/liga/admin/temporadas.html" ><span>▦</span>Temporadas</a><a href="/liga/admin/inscricoes.html" ><span>＋</span>Inscrições</a><a href="/liga/admin/divisoes.html" class="active"><span>◉</span>Divisões</a></nav>
+<div class="nav-label">COMPETIÇÕES</div><nav class="nav"><a href="/liga/admin/campeonato.html"><span>⚔</span>Campeonato</a><a href="/liga/admin/copas.html"><span>🏆</span>Copas</a><a href="/liga/admin/resultados.html"><span>▤</span>Resultados</a></nav>
+<div class="nav-label">ADMINISTRAÇÃO</div><nav class="nav"><a href="/liga/admin/premiacoes.html"><span>✧</span>Premiações</a><a href="/liga/admin/historico.html" ><span>◷</span>Histórico</a><a href="/liga/admin/configuracoes.html"><span>⚙</span>Configurações</a></nav>
+<div class="sidebar-bottom"><a href="/admin/">← ADMIN PRINCIPAL CCFV</a><a href="/liga/index.html">PORTAL DA LIGA ↗</a></div></aside><main class="main">
+<header class="topbar"><span class="topbar-label">CCFV / ADMINISTRAÇÃO / LIGA</span><div class="topbar-account"><div class="account-info"><strong id="admin-email">Administrador</strong><small>ACESSO ADMINISTRATIVO</small></div><button class="logout" id="logout-button" type="button">SAIR</button></div></header>
+<section class="page-heading"><div><div class="eyebrow">CCFV // DIVISION MANAGEMENT</div><h1>DIVISÕES <em>DA LIGA.</em></h1><p>Confira a composição da Série A, Série B e Série C por temporada, com posição e situação de cada clube.</p></div><div class="page-actions"><button class="btn" id="division-refresh" type="button">↻ ATUALIZAR</button></div></section>
+
+<section class="stats"><div class="stat"><span>CLUBES NA TEMPORADA</span><strong id="division-stat-total">—</strong></div><div class="stat"><span>SÉRIE A</span><strong class="green" id="division-stat-a">—</strong></div><div class="stat"><span>SÉRIE B</span><strong id="division-stat-b">—</strong></div><div class="stat"><span>SÉRIE C</span><strong class="gold" id="division-stat-c">—</strong></div></section>
+<div class="notice"><div class="notice-icon">◉</div><div><b>36 CLUBES · 3 DIVISÕES · 12 VAGAS</b><p>A composição abaixo vem da listagem administrativa de inscrições da temporada. A distribuição ou reclassificação permanece bloqueada até validar o formato esperado por `ccfv_league_admin_assign_divisions`.</p></div></div>
+<section class="panel"><div class="panel-head"><strong>TEMPORADA ANALISADA</strong><span>ESCOLHA O CICLO</span></div><div class="panel-body"><div class="field-grid"><div class="field"><label for="division-season">TEMPORADA</label><select id="division-season"><option value="">Carregando temporadas...</option></select></div></div></div></section>
+<div id="divisions-grid" class="division-admin-grid"><div class="empty"><h3>Selecione uma temporada</h3><p>A composição das três séries aparecerá aqui.</p></div></div>
+<section class="panel"><div class="panel-head"><strong>CLUBES SEM DIVISÃO ATRIBUÍDA</strong><span>LISTA DE CONFERÊNCIA</span></div><div class="panel-body"><div id="division-unassigned" class="unassigned-list"><span class="muted-inline">Aguardando consulta.</span></div></div></section>
+<section class="panel"><div class="panel-head"><strong>DISTRIBUIÇÃO AUTOMÁTICA</strong><span>EXECUÇÃO BLOQUEADA ATÉ VALIDAR RPC</span></div><div class="panel-body"><p class="muted-paragraph">A função recebe `p_season_id` e `p_ranked_enrollment_ids` em JSONB. Precisamos conferir no corpo SQL como a lista deve ser formada e qual critério de ordenação será usado antes de permitir qualquer gravação.</p><button class="btn secondary" type="button" disabled>DISTRIBUIÇÃO AINDA NÃO LIBERADA</button></div></section>
+
+<footer class="footer"><span>CCFV // CONFEDERAÇÕES COLISEU DE FUTEBOL VIRTUAL</span><span>LIGA ADMINISTRATIVA · DIVISOES</span></footer></main></div></body></html>

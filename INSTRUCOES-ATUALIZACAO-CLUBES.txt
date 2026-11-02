@@ -1,0 +1,25 @@
+ATUALIZACAO DO MODULO CLUBES — LIGA CCFV
+
+Arquivos deste pacote:
+- liga/admin/clubes.html
+- liga/admin/css/modulos.css
+- liga/admin/js/modulos.js
+
+INSTALACAO
+1. Extraia o ZIP na raiz do projeto CCFV (a mesma pasta que contém index.html e a pasta liga).
+2. Permita substituir os tres arquivos acima.
+3. Nao substitua liga/admin/index.html nem liga/admin/vinculos.html.
+4. Publique normalmente pelo Git.
+
+O QUE ESTA ATIVO
+- Validacao de sessao e permissao administrativa via ccfv_is_admin().
+- Consulta da listagem pela RPC ccfv_league_admin_list_clubs com p_status, p_search, p_limit e p_offset.
+- Indicadores, filtros locais, pesquisa e modal de detalhes.
+- A listagem e somente leitura nesta etapa.
+
+O QUE AINDA NAO ESTA ATIVO
+- Aprovar/rejeitar clube.
+- Alterar status do clube.
+- Criar ou editar cadastro de clube no painel administrativo.
+
+Essas acoes dependem da confirmacao dos valores aceitos por p_decision e p_action, alem do formato exato de retorno da RPC. Nenhum botao de gravacao foi colocado nesta versao.
