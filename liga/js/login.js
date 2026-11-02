@@ -1,7 +1,6 @@
 
 /* =========================================================
-   CCFV LIGA — SISTEMA DE AUTENTICAÇÃO
-   Login, cadastro, sessão e recuperação de senha
+   CCFV LIGA — AUTENTICAÇÃO E VÍNCULO DO JOGADOR
    Supabase Auth v2
    ========================================================= */
 
@@ -9,11 +8,8 @@
 
     "use strict";
 
-
     /* =====================================================
-       CONFIGURAÇÃO SUPABASE
-       Mesmas credenciais públicas utilizadas pelo CCFV
-       Nunca inserir service_role ou chave secreta aqui.
+       CONFIGURAÇÃO
        ===================================================== */
 
     const SUPABASE_URL =
@@ -22,10 +18,6 @@
     const SUPABASE_PUBLISHABLE_KEY =
         "sb_publishable_sanJ5WpLoquv4JH2ryYR6w_LxdaS2Q2";
 
-
-    /* =====================================================
-       ESTADO DA APLICAÇÃO
-       ===================================================== */
 
     let supabaseClient = null;
     let supabasePromise = null;
@@ -38,22 +30,18 @@
 
 
     /* =====================================================
-       ELEMENTOS E UTILITÁRIOS
+       UTILITÁRIOS
        ===================================================== */
 
-    const allowedViews = [
-        "login",
-        "register",
-        "forgot",
-        "new-password",
-        "session"
-    ];
-
-
     function getElement(selector) {
-
         return document.querySelector(selector);
+    }
 
+
+    function normalizeEmail(value) {
+        return String(value || "")
+            .trim()
+            .toLowerCase();
     }
 
 
@@ -67,17 +55,8 @@
     }
 
 
-    function normalizeEmail(value) {
-
-        return String(value || "")
-            .trim()
-            .toLowerCase();
-
-    }
-
-
     /* =====================================================
-       CARREGAMENTO DO SUPABASE JS
+       CARREGAR SUPABASE
        ===================================================== */
 
     function loadSupabaseLibrary() {
@@ -91,18 +70,16 @@
 
         }
 
-
         return new Promise((resolve, reject) => {
 
-            const existingScript =
+            const existing =
                 document.querySelector(
                     "script[data-ccfv-supabase]"
                 );
 
+            if (existing) {
 
-            if (existingScript) {
-
-                existingScript.addEventListener(
+                existing.addEventListener(
                     "load",
                     () => {
 
@@ -117,7 +94,7 @@
 
                             reject(
                                 new Error(
-                                    "A biblioteca Supabase não disponibilizou createClient."
+                                    "Biblioteca Supabase indisponível."
                                 )
                             );
 
@@ -127,18 +104,13 @@
                     { once: true }
                 );
 
-
-                existingScript.addEventListener(
+                existing.addEventListener(
                     "error",
-                    () => {
-
-                        reject(
-                            new Error(
-                                "Não foi possível carregar o Supabase."
-                            )
-                        );
-
-                    },
+                    () => reject(
+                        new Error(
+                            "Não foi possível carregar o Supabase."
+                        )
+                    ),
                     { once: true }
                 );
 
@@ -146,18 +118,14 @@
 
             }
 
-
             const script =
                 document.createElement("script");
-
 
             script.src =
                 "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
 
             script.async = true;
-
             script.dataset.ccfvSupabase = "true";
-
 
             script.onload = () => {
 
@@ -168,19 +136,17 @@
 
                     resolve(window.supabase);
 
-                    return;
+                } else {
+
+                    reject(
+                        new Error(
+                            "Supabase carregou sem disponibilizar createClient."
+                        )
+                    );
 
                 }
 
-
-                reject(
-                    new Error(
-                        "Supabase carregou, mas createClient não está disponível."
-                    )
-                );
-
             };
-
 
             script.onerror = () => {
 
@@ -192,7 +158,6 @@
 
             };
 
-
             document.head.appendChild(script);
 
         });
@@ -201,24 +166,18 @@
 
 
     /* =====================================================
-       CRIAÇÃO DO CLIENTE
+       CLIENTE SUPABASE
        ===================================================== */
 
     async function getSupabaseClient() {
 
         if (supabaseClient) {
-
             return supabaseClient;
-
         }
-
 
         if (supabasePromise) {
-
             return supabasePromise;
-
         }
-
 
         supabasePromise = (async () => {
 
@@ -228,15 +187,13 @@
             ) {
 
                 throw new Error(
-                    "A configuração do Supabase está incompleta."
+                    "Configuração do Supabase incompleta."
                 );
 
             }
 
-
             const library =
                 await loadSupabaseLibrary();
-
 
             supabaseClient =
                 library.createClient(
@@ -251,18 +208,15 @@
                     }
                 );
 
-
-            // Identificador próprio para a Liga.
-            // Não sobrescreve o cliente utilizado pelo Admin CCFV.
+            // Cliente exclusivo da Liga.
+            // Não sobrescreve o cliente do Admin CCFV.
 
             window.CCFVLigaSupabase =
                 supabaseClient;
 
-
             return supabaseClient;
 
         })();
-
 
         try {
 
@@ -290,7 +244,6 @@
             .forEach(element => {
 
                 element.textContent = "";
-
                 element.className = "auth-message";
 
             });
@@ -298,27 +251,24 @@
     }
 
 
-    function showMessage(elementId, message, type = "info") {
+    function showMessage(
+        elementId,
+        message,
+        type = "info"
+    ) {
 
         const element =
             document.getElementById(elementId);
 
-
         if (!element) return;
 
-
-        const allowedTypes = [
+        const safeType = [
             "success",
             "error",
             "info"
-        ];
-
-
-        const safeType =
-            allowedTypes.includes(type)
-                ? type
-                : "info";
-
+        ].includes(type)
+            ? type
+            : "info";
 
         element.textContent = message;
 
@@ -328,155 +278,106 @@
     }
 
 
-    /* =====================================================
-       TRADUÇÃO DE ERROS
-       ===================================================== */
-
     function friendlyError(error) {
 
         const message =
             String(error?.message || error || "")
                 .toLowerCase();
 
-
         if (
             message.includes("invalid login credentials")
         ) {
-
-            return "E-mail ou senha incorretos. Confira seus dados e tente novamente.";
-
+            return "E-mail ou senha incorretos.";
         }
-
 
         if (
             message.includes("email not confirmed")
         ) {
-
-            return "Seu e-mail ainda não foi confirmado. Verifique sua caixa de entrada.";
-
+            return "O e-mail da conta ainda não está confirmado.";
         }
-
 
         if (
             message.includes("user already registered") ||
             message.includes("already registered") ||
             message.includes("user already exists")
         ) {
-
             return "Já existe uma conta cadastrada com esse e-mail.";
-
         }
-
 
         if (
-            message.includes("password should be at least")
+            message.includes("invalid email")
         ) {
-
-            return "A senha não atende aos requisitos mínimos de segurança.";
-
+            return "Informe um endereço de e-mail válido.";
         }
-
-
-        if (
-            message.includes("new password should be different")
-        ) {
-
-            return "Sua nova senha precisa ser diferente da senha atual.";
-
-        }
-
 
         if (
             message.includes("rate limit") ||
             error?.status === 429
         ) {
-
-            return "Muitas tentativas foram realizadas. Aguarde um pouco e tente novamente.";
-
+            return "Muitas tentativas. Aguarde um pouco e tente novamente.";
         }
-
 
         if (
             message.includes("failed to fetch") ||
-            message.includes("networkerror") ||
-            message.includes("fetch")
+            message.includes("networkerror")
         ) {
-
-            return "Não foi possível conectar ao servidor. Verifique sua internet.";
-
+            return "Falha de conexão. Verifique sua internet.";
         }
-
-
-        if (
-            message.includes("invalid email")
-        ) {
-
-            return "Informe um endereço de e-mail válido.";
-
-        }
-
-
-        if (
-            message.includes("session")
-        ) {
-
-            return "Sua sessão não está disponível ou expirou. Entre novamente.";
-
-        }
-
 
         return error?.message ||
-            "Ocorreu um problema inesperado. Tente novamente.";
+            "Ocorreu um erro inesperado. Tente novamente.";
 
     }
 
 
     /* =====================================================
-       CONTROLE DAS TELAS
+       NAVEGAÇÃO ENTRE TELAS
        ===================================================== */
 
-    function showView(viewName, options = {}) {
+    const allowedViews = [
+        "login",
+        "register",
+        "forgot",
+        "new-password",
+        "session"
+    ];
 
-        const updateUrl =
-            options.updateUrl === true;
 
+    function showView(
+        viewName,
+        options = {}
+    ) {
 
         const target =
             allowedViews.includes(viewName)
                 ? viewName
                 : "login";
 
+        document
+            .querySelectorAll("[data-view]")
+            .forEach(view => {
 
-        const views =
-            document.querySelectorAll("[data-view]");
+                view.hidden =
+                    view.dataset.view !== target;
 
-
-        views.forEach(view => {
-
-            const active =
-                view.dataset.view === target;
-
-            view.hidden = !active;
-
-        });
-
+            });
 
         clearMessages();
 
-
-        if (updateUrl) {
+        if (options.updateUrl === true) {
 
             const url =
                 new URL(window.location.href);
 
-
             if (
-                target === "login" ||
-                target === "register" ||
-                target === "forgot"
+                ["login", "register", "forgot"]
+                    .includes(target)
             ) {
 
-                url.searchParams.set("view", target);
+                url.searchParams.set(
+                    "view",
+                    target
+                );
 
             } else {
 
@@ -484,9 +385,7 @@
 
             }
 
-
             url.hash = "";
-
 
             window.history.replaceState(
                 {},
@@ -496,44 +395,27 @@
 
         }
 
-
-        const panel =
-            document.querySelector(".auth-panel");
-
-
-        if (panel) {
-
-            panel.dataset.activeView = target;
-
-        }
-
     }
 
-
-    /* =====================================================
-       IDENTIFICA A TELA PELO ENDEREÇO
-       ===================================================== */
 
     function getRequestedView() {
 
         const params =
-            new URLSearchParams(window.location.search);
-
+            new URLSearchParams(
+                window.location.search
+            );
 
         const requested =
             params.get("view");
 
-
         if (
-            requested === "register" ||
-            requested === "login" ||
-            requested === "forgot"
+            ["login", "register", "forgot"]
+                .includes(requested)
         ) {
 
             return requested;
 
         }
-
 
         return "login";
 
@@ -541,7 +423,7 @@
 
 
     /* =====================================================
-       ATUALIZAÇÃO DE BOTÕES
+       BOTÕES DE PROCESSAMENTO
        ===================================================== */
 
     function setButtonLoading(
@@ -552,19 +434,15 @@
 
         if (!button) return;
 
-
         const label =
             button.querySelector("span");
-
 
         if (!label) {
 
             button.disabled = loading;
-
             return;
 
         }
-
 
         if (!button.dataset.originalLabel) {
 
@@ -573,14 +451,12 @@
 
         }
 
-
         button.disabled = loading;
 
         button.setAttribute(
             "aria-busy",
             loading ? "true" : "false"
         );
-
 
         label.textContent =
             loading
@@ -591,37 +467,660 @@
 
 
     /* =====================================================
-       MOSTRAR DADOS DA SESSÃO
+       VÍNCULO — INTERFACE
+       Cria a interface dentro da tela de sessão existente.
+       ===================================================== */
+
+    function buildPlayerLinkInterface() {
+
+        const container =
+            document.querySelector(
+                ".auth-session-next"
+            );
+
+        if (!container) {
+
+            console.warn(
+                "CCFV LIGA // Área de vínculo não encontrada."
+            );
+
+            return;
+
+        }
+
+        if (container.dataset.linkReady === "true") {
+            return;
+        }
+
+        container.dataset.linkReady = "true";
+
+        container.innerHTML = `
+
+            <span>VÍNCULO COM JOGADOR CCFV</span>
+
+            <strong id="player-link-title">
+                Vincule seu cadastro esportivo
+            </strong>
+
+            <p id="player-link-description">
+                Informe o código oficial do jogador que
+                já está cadastrado na CCFV.
+                Sua solicitação será analisada pela administração.
+            </p>
+
+            <form
+                class="auth-form"
+                id="player-link-form"
+                novalidate
+            >
+
+                <label class="auth-field">
+
+                    <span>CÓDIGO DO JOGADOR CCFV</span>
+
+                    <div class="auth-input">
+
+                        <span class="auth-input__icon">#</span>
+
+                        <input
+                            type="text"
+                            id="player-link-code"
+                            name="player_code"
+                            placeholder="Ex.: CCFV-000"
+                            minlength="3"
+                            maxlength="40"
+                            autocomplete="off"
+                            spellcheck="false"
+                            required
+                        >
+
+                    </div>
+
+                </label>
+
+                <div
+                    class="auth-message"
+                    id="player-link-message"
+                    role="alert"
+                    aria-live="polite"
+                ></div>
+
+                <button
+                    type="submit"
+                    class="auth-submit auth-submit--secondary"
+                    id="player-link-submit"
+                >
+
+                    <span>SOLICITAR VÍNCULO</span>
+
+                    <strong>↗</strong>
+
+                </button>
+
+            </form>
+
+            <div
+                class="auth-message"
+                id="player-link-status"
+                role="status"
+                aria-live="polite"
+                hidden
+            ></div>
+
+            <button
+                type="button"
+                id="player-link-refresh"
+                class="auth-link-refresh"
+            >
+                ATUALIZAR SITUAÇÃO DO VÍNCULO ↻
+            </button>
+
+        `;
+
+        bindPlayerLinkForm();
+        bindPlayerLinkRefresh();
+
+    }
+
+
+    /* =====================================================
+       VÍNCULO — ATUALIZAR ESTADO VISUAL
+       ===================================================== */
+
+    function renderPlayerLinkStatus(record) {
+
+        const form =
+            getElement("#player-link-form");
+
+        const title =
+            getElement("#player-link-title");
+
+        const description =
+            getElement("#player-link-description");
+
+        const statusBox =
+            getElement("#player-link-status");
+
+        const refreshButton =
+            getElement("#player-link-refresh");
+
+
+        if (
+            !form ||
+            !title ||
+            !description ||
+            !statusBox
+        ) {
+            return;
+        }
+
+
+        form.hidden = false;
+        statusBox.hidden = true;
+
+        refreshButton.hidden = false;
+
+
+        if (!record) {
+
+            title.textContent =
+                "Vincule seu cadastro esportivo";
+
+            description.textContent =
+                "Informe seu código oficial de jogador CCFV. " +
+                "A administração verificará sua solicitação.";
+
+            form.hidden = false;
+
+            refreshButton.hidden = true;
+
+            return;
+
+        }
+
+
+        const status =
+            String(record.link_status || "")
+                .toUpperCase();
+
+
+        if (status === "PENDING") {
+
+            title.textContent =
+                "Solicitação em análise";
+
+            description.textContent =
+                "Sua solicitação foi recebida. " +
+                "Aguarde a análise da administração da Liga.";
+
+            form.hidden = true;
+
+            statusBox.hidden = false;
+            statusBox.className =
+                "auth-message is-visible is-info";
+
+            statusBox.textContent =
+                "VÍNCULO PENDENTE — AGUARDANDO APROVAÇÃO.";
+
+            return;
+
+        }
+
+
+        if (status === "ACTIVE") {
+
+            title.textContent =
+                "Jogador vinculado com sucesso";
+
+            description.textContent =
+                "Seu cadastro esportivo foi aprovado. " +
+                "Sua conta já está associada ao jogador CCFV.";
+
+            form.hidden = true;
+
+            statusBox.hidden = false;
+            statusBox.className =
+                "auth-message is-visible is-success";
+
+            statusBox.textContent =
+                "VÍNCULO APROVADO. VOCÊ JÁ PODE AVANÇAR PARA A CRIAÇÃO DO SEU CLUBE.";
+
+            refreshButton.hidden = true;
+
+            return;
+
+        }
+
+
+        if (status === "REJECTED") {
+
+            title.textContent =
+                "Solicitação não aprovada";
+
+            description.textContent =
+                "A solicitação anterior foi rejeitada. " +
+                "Confira seu código e poderá enviar uma nova solicitação.";
+
+            form.hidden = false;
+
+            statusBox.hidden = false;
+            statusBox.className =
+                "auth-message is-visible is-error";
+
+            statusBox.textContent =
+                "VÍNCULO REJEITADO — UMA NOVA SOLICITAÇÃO PODE SER ENVIADA.";
+
+            return;
+
+        }
+
+
+        if (status === "BLOCKED") {
+
+            title.textContent =
+                "Vínculo bloqueado";
+
+            description.textContent =
+                "Sua conta está bloqueada para novas solicitações. " +
+                "Entre em contato com a administração da CCFV.";
+
+            form.hidden = true;
+
+            statusBox.hidden = false;
+            statusBox.className =
+                "auth-message is-visible is-error";
+
+            statusBox.textContent =
+                "ACESSO AO VÍNCULO BLOQUEADO.";
+
+            refreshButton.hidden = true;
+
+            return;
+
+        }
+
+
+        title.textContent =
+            "Situação do vínculo";
+
+        description.textContent =
+            "Não foi possível identificar a situação atual. Atualize a consulta.";
+
+        statusBox.hidden = false;
+        statusBox.className =
+            "auth-message is-visible is-info";
+
+        statusBox.textContent =
+            "STATUS NÃO RECONHECIDO.";
+
+    }
+
+
+    /* =====================================================
+       VÍNCULO — CONSULTAR CONTA ATUAL
+       ===================================================== */
+
+    async function loadPlayerLinkStatus(
+        authUserId
+    ) {
+
+        const client =
+            await getSupabaseClient();
+
+
+        const { data, error } =
+            await client
+                .from("ccfv_league_player_accounts")
+                .select(
+                    "auth_user_id, player_id, link_status, requested_at, verified_at"
+                )
+                .eq("auth_user_id", authUserId)
+                .maybeSingle();
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        renderPlayerLinkStatus(data || null);
+
+        return data || null;
+
+    }
+
+
+    /* =====================================================
+       VÍNCULO — ENVIAR SOLICITAÇÃO
+       RPC:
+       ccfv_league_request_player_link(p_player_code text)
+       ===================================================== */
+
+    function bindPlayerLinkForm() {
+
+        const form =
+            getElement("#player-link-form");
+
+        if (!form) return;
+
+
+        const input =
+            getElement("#player-link-code");
+
+        const button =
+            getElement("#player-link-submit");
+
+
+        form.addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+
+                const playerCode =
+                    String(input?.value || "")
+                        .trim()
+                        .toUpperCase();
+
+
+                if (playerCode.length < 3) {
+
+                    showMessage(
+                        "player-link-message",
+                        "Informe seu código de jogador CCFV.",
+                        "error"
+                    );
+
+                    input?.focus();
+
+                    return;
+
+                }
+
+
+                clearMessages();
+
+
+                setButtonLoading(
+                    button,
+                    true,
+                    "ENVIANDO SOLICITAÇÃO..."
+                );
+
+
+                try {
+
+                    const client =
+                        await getSupabaseClient();
+
+
+                    const {
+                        data,
+                        error
+                    } = await client.rpc(
+                        "ccfv_league_request_player_link",
+                        {
+                            p_player_code: playerCode
+                        }
+                    );
+
+
+                    if (error) {
+
+                        throw error;
+
+                    }
+
+
+                    if (
+                        data?.success !== true
+                    ) {
+
+                        throw new Error(
+                            data?.message ||
+                            "Não foi possível concluir a solicitação."
+                        );
+
+                    }
+
+
+                    input.value = "";
+
+
+                    const sessionResult =
+                        await client.auth.getSession();
+
+
+                    const session =
+                        sessionResult?.data?.session;
+
+
+                    if (session?.user?.id) {
+
+                        await loadPlayerLinkStatus(
+                            session.user.id
+                        );
+
+                    }
+
+
+                    const message =
+                        data?.message ||
+                        "Solicitação enviada para análise.";
+
+
+                    const currentStatus =
+                        getElement("#player-link-status");
+
+
+                    if (currentStatus) {
+
+                        currentStatus.hidden = false;
+
+                        currentStatus.textContent =
+                            message;
+
+                    }
+
+
+                    console.log(
+                        "CCFV LIGA // SOLICITAÇÃO DE VÍNCULO:",
+                        data
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "CCFV LIGA // ERRO AO SOLICITAR VÍNCULO",
+                        error
+                    );
+
+
+                    showMessage(
+                        "player-link-message",
+                        friendlyError(error),
+                        "error"
+                    );
+
+                } finally {
+
+                    setButtonLoading(
+                        button,
+                        false
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       VÍNCULO — ATUALIZAR SITUAÇÃO
+       ===================================================== */
+
+    function bindPlayerLinkRefresh() {
+
+        const button =
+            getElement("#player-link-refresh");
+
+        if (!button) return;
+
+
+        button.addEventListener(
+            "click",
+            async () => {
+
+                setButtonLoading(
+                    button,
+                    true,
+                    "CONSULTANDO..."
+                );
+
+
+                try {
+
+                    const client =
+                        await getSupabaseClient();
+
+
+                    const { data, error } =
+                        await client.auth.getSession();
+
+
+                    if (error) {
+                        throw error;
+                    }
+
+
+                    const userId =
+                        data?.session?.user?.id;
+
+
+                    if (!userId) {
+
+                        throw new Error(
+                            "Sua sessão expirou. Entre novamente."
+                        );
+
+                    }
+
+
+                    await loadPlayerLinkStatus(
+                        userId
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "CCFV LIGA // ERRO AO ATUALIZAR VÍNCULO",
+                        error
+                    );
+
+
+                    showMessage(
+                        "player-link-status",
+                        friendlyError(error),
+                        "error"
+                    );
+
+                } finally {
+
+                    setButtonLoading(
+                        button,
+                        false
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       SESSÃO AUTENTICADA
        ===================================================== */
 
     function showSession(session) {
 
         const emailElement =
-            document.getElementById("session-email");
+            getElement("#session-email");
 
 
         if (emailElement) {
 
             emailElement.textContent =
-                session?.user?.email || "Conta autenticada";
+                session?.user?.email ||
+                "Conta autenticada";
 
         }
 
 
         showView("session");
 
+
+        // Evita executar uma chamada Supabase dentro
+        // do callback direto de onAuthStateChange.
+
+        if (session?.user?.id) {
+
+            window.setTimeout(async () => {
+
+                try {
+
+                    await loadPlayerLinkStatus(
+                        session.user.id
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "CCFV LIGA // ERRO AO CONSULTAR VÍNCULO",
+                        error
+                    );
+
+
+                    const statusBox =
+                        getElement("#player-link-status");
+
+
+                    if (statusBox) {
+
+                        showMessage(
+                            "player-link-status",
+                            "Não foi possível consultar seu vínculo. " +
+                            friendlyError(error),
+                            "error"
+                        );
+
+                    }
+
+                }
+
+            }, 0);
+
+        }
+
     }
 
 
     /* =====================================================
-       FORMULÁRIO DE LOGIN
+       LOGIN
        ===================================================== */
 
     function bindLoginForm() {
 
         const form =
             getElement("#login-form");
-
 
         if (!form) return;
 
@@ -636,114 +1135,111 @@
             getElement("#login-submit");
 
 
-        form.addEventListener("submit", async event => {
+        form.addEventListener(
+            "submit",
+            async event => {
 
-            event.preventDefault();
+                event.preventDefault();
 
-
-            clearMessages();
-
-
-            const email =
-                normalizeEmail(emailInput?.value);
-
-            const password =
-                passwordInput?.value || "";
+                clearMessages();
 
 
-            if (!email || !password) {
+                const email =
+                    normalizeEmail(emailInput?.value);
 
-                showMessage(
-                    "login-message",
-                    "Preencha seu e-mail e sua senha.",
-                    "error"
-                );
-
-                return;
-
-            }
+                const password =
+                    passwordInput?.value || "";
 
 
-            setButtonLoading(
-                button,
-                true,
-                "AUTENTICANDO..."
-            );
+                if (!email || !password) {
 
+                    showMessage(
+                        "login-message",
+                        "Preencha seu e-mail e sua senha.",
+                        "error"
+                    );
 
-            try {
-
-                const client =
-                    await getSupabaseClient();
-
-
-                const { data, error } =
-                    await client.auth.signInWithPassword({
-
-                        email,
-                        password
-
-                    });
-
-
-                if (error) {
-
-                    throw error;
+                    return;
 
                 }
 
 
-                if (!data?.session) {
+                setButtonLoading(
+                    button,
+                    true,
+                    "AUTENTICANDO..."
+                );
 
-                    throw new Error(
-                        "O acesso não gerou uma sessão válida."
+
+                try {
+
+                    const client =
+                        await getSupabaseClient();
+
+
+                    const { data, error } =
+                        await client.auth.signInWithPassword({
+
+                            email,
+                            password
+
+                        });
+
+
+                    if (error) {
+                        throw error;
+                    }
+
+
+                    if (!data?.session) {
+
+                        throw new Error(
+                            "O acesso não gerou uma sessão válida."
+                        );
+
+                    }
+
+
+                    showSession(data.session);
+
+
+                } catch (error) {
+
+                    console.error(
+                        "CCFV LIGA // ERRO LOGIN",
+                        error
+                    );
+
+
+                    showMessage(
+                        "login-message",
+                        friendlyError(error),
+                        "error"
+                    );
+
+                } finally {
+
+                    setButtonLoading(
+                        button,
+                        false
                     );
 
                 }
 
-
-                passwordRecoveryMode = false;
-
-                showSession(data.session);
-
-
-            } catch (error) {
-
-                console.error(
-                    "CCFV LIGA // ERRO LOGIN",
-                    error
-                );
-
-
-                showMessage(
-                    "login-message",
-                    friendlyError(error),
-                    "error"
-                );
-
-            } finally {
-
-                setButtonLoading(
-                    button,
-                    false
-                );
-
             }
-
-        });
+        );
 
     }
 
 
     /* =====================================================
-       FORMULÁRIO DE CADASTRO
+       CADASTRO
        ===================================================== */
 
     function bindRegisterForm() {
 
         const form =
             getElement("#register-form");
-
 
         if (!form) return;
 
@@ -764,165 +1260,165 @@
             getElement("#register-submit");
 
 
-        form.addEventListener("submit", async event => {
+        form.addEventListener(
+            "submit",
+            async event => {
 
-            event.preventDefault();
+                event.preventDefault();
 
-
-            clearMessages();
-
-
-            const name =
-                String(nameInput?.value || "").trim();
-
-            const email =
-                normalizeEmail(emailInput?.value);
-
-            const password =
-                passwordInput?.value || "";
-
-            const confirmation =
-                confirmInput?.value || "";
+                clearMessages();
 
 
-            if (name.length < 3) {
+                const name =
+                    String(nameInput?.value || "").trim();
 
-                showMessage(
-                    "register-message",
-                    "Informe seu nome completo.",
-                    "error"
-                );
+                const email =
+                    normalizeEmail(emailInput?.value);
 
-                return;
+                const password =
+                    passwordInput?.value || "";
 
-            }
-
-
-            if (!email) {
-
-                showMessage(
-                    "register-message",
-                    "Informe um e-mail válido.",
-                    "error"
-                );
-
-                return;
-
-            }
+                const confirmation =
+                    confirmInput?.value || "";
 
 
-            if (password.length < 8) {
+                if (name.length < 3) {
 
-                showMessage(
-                    "register-message",
-                    "Sua senha precisa ter pelo menos 8 caracteres.",
-                    "error"
-                );
-
-                return;
-
-            }
-
-
-            if (password !== confirmation) {
-
-                showMessage(
-                    "register-message",
-                    "As senhas informadas não são iguais.",
-                    "error"
-                );
-
-                confirmInput?.focus();
-
-                return;
-
-            }
-
-
-            setButtonLoading(
-                button,
-                true,
-                "CRIANDO CONTA..."
-            );
-
-
-            try {
-
-                const client =
-                    await getSupabaseClient();
-
-
-                const { data, error } =
-                    await client.auth.signUp({
-
-                        email,
-                        password,
-
-                        options: {
-
-                            data: {
-                                name,
-                                account_origin: "ccfv_liga"
-                            },
-
-                            emailRedirectTo:
-                                getRedirectUrl()
-
-                        }
-
-                    });
-
-
-                if (error) {
-
-                    throw error;
-
-                }
-
-
-                if (data?.session) {
-
-                    showSession(data.session);
+                    showMessage(
+                        "register-message",
+                        "Informe seu nome completo.",
+                        "error"
+                    );
 
                     return;
 
                 }
 
 
-                showMessage(
-                    "register-message",
-                    "Cadastro iniciado! Enviamos um link de confirmação para seu e-mail. Confirme o endereço para ativar sua conta e depois entre na Liga.",
-                    "success"
-                );
+                if (!email) {
+
+                    showMessage(
+                        "register-message",
+                        "Informe um e-mail válido.",
+                        "error"
+                    );
+
+                    return;
+
+                }
 
 
-                form.reset();
+                if (password.length < 8) {
+
+                    showMessage(
+                        "register-message",
+                        "A senha precisa ter pelo menos 8 caracteres.",
+                        "error"
+                    );
+
+                    return;
+
+                }
 
 
-            } catch (error) {
+                if (password !== confirmation) {
 
-                console.error(
-                    "CCFV LIGA // ERRO CADASTRO",
-                    error
-                );
+                    showMessage(
+                        "register-message",
+                        "As senhas informadas não são iguais.",
+                        "error"
+                    );
 
+                    confirmInput?.focus();
 
-                showMessage(
-                    "register-message",
-                    friendlyError(error),
-                    "error"
-                );
+                    return;
 
-            } finally {
+                }
+
 
                 setButtonLoading(
                     button,
-                    false
+                    true,
+                    "CRIANDO CONTA..."
                 );
 
-            }
 
-        });
+                try {
+
+                    const client =
+                        await getSupabaseClient();
+
+
+                    const { data, error } =
+                        await client.auth.signUp({
+
+                            email,
+                            password,
+
+                            options: {
+
+                                data: {
+                                    name,
+                                    account_origin: "ccfv_liga"
+                                },
+
+                                emailRedirectTo:
+                                    getRedirectUrl()
+
+                            }
+
+                        });
+
+
+                    if (error) {
+                        throw error;
+                    }
+
+
+                    form.reset();
+
+
+                    if (data?.session) {
+
+                        showSession(data.session);
+
+                        return;
+
+                    }
+
+
+                    showMessage(
+                        "register-message",
+                        "A conta foi criada, mas o Supabase não retornou uma sessão. Confira se a confirmação de e-mail continua desativada nas configurações.",
+                        "info"
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "CCFV LIGA // ERRO CADASTRO",
+                        error
+                    );
+
+
+                    showMessage(
+                        "register-message",
+                        friendlyError(error),
+                        "error"
+                    );
+
+                } finally {
+
+                    setButtonLoading(
+                        button,
+                        false
+                    );
+
+                }
+
+            }
+        );
 
     }
 
@@ -936,7 +1432,6 @@
         const form =
             getElement("#forgot-form");
 
-
         if (!form) return;
 
 
@@ -947,90 +1442,85 @@
             getElement("#forgot-submit");
 
 
-        form.addEventListener("submit", async event => {
+        form.addEventListener(
+            "submit",
+            async event => {
 
-            event.preventDefault();
+                event.preventDefault();
 
-
-            clearMessages();
-
-
-            const email =
-                normalizeEmail(emailInput?.value);
+                clearMessages();
 
 
-            if (!email) {
-
-                showMessage(
-                    "forgot-message",
-                    "Informe o e-mail cadastrado.",
-                    "error"
-                );
-
-                return;
-
-            }
+                const email =
+                    normalizeEmail(emailInput?.value);
 
 
-            setButtonLoading(
-                button,
-                true,
-                "ENVIANDO..."
-            );
+                if (!email) {
 
-
-            try {
-
-                const client =
-                    await getSupabaseClient();
-
-
-                const { error } =
-                    await client.auth.resetPasswordForEmail(
-                        email,
-                        {
-                            redirectTo: getRedirectUrl()
-                        }
+                    showMessage(
+                        "forgot-message",
+                        "Informe seu e-mail.",
+                        "error"
                     );
 
-
-                if (error) {
-
-                    throw error;
+                    return;
 
                 }
 
 
-                showMessage(
-                    "forgot-message",
-                    "Se houver uma conta vinculada a esse endereço, você receberá um e-mail com as instruções para redefinir sua senha.",
-                    "success"
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "CCFV LIGA // ERRO RECUPERAÇÃO",
-                    error
-                );
-
-
-                showMessage(
-                    "forgot-message",
-                    friendlyError(error),
-                    "error"
-                );
-
-            } finally {
-
                 setButtonLoading(
                     button,
-                    false
+                    true,
+                    "ENVIANDO..."
                 );
 
-            }
 
-        });
+                try {
+
+                    const client =
+                        await getSupabaseClient();
+
+
+                    const { error } =
+                        await client.auth.resetPasswordForEmail(
+                            email,
+                            {
+                                redirectTo: getRedirectUrl()
+                            }
+                        );
+
+
+                    if (error) {
+                        throw error;
+                    }
+
+
+                    showMessage(
+                        "forgot-message",
+                        "Se houver uma conta vinculada a esse endereço, você receberá as instruções de recuperação.",
+                        "success"
+                    );
+
+
+                } catch (error) {
+
+                    showMessage(
+                        "forgot-message",
+                        friendlyError(error),
+                        "error"
+                    );
+
+                } finally {
+
+                    setButtonLoading(
+                        button,
+                        false
+                    );
+
+                }
+
+            }
+        );
 
     }
 
@@ -1043,7 +1533,6 @@
 
         const form =
             getElement("#new-password-form");
-
 
         if (!form) return;
 
@@ -1058,125 +1547,117 @@
             getElement("#new-password-submit");
 
 
-        form.addEventListener("submit", async event => {
+        form.addEventListener(
+            "submit",
+            async event => {
 
-            event.preventDefault();
+                event.preventDefault();
 
-
-            clearMessages();
-
-
-            const password =
-                passwordInput?.value || "";
-
-            const confirmation =
-                confirmInput?.value || "";
+                clearMessages();
 
 
-            if (password.length < 8) {
+                const password =
+                    passwordInput?.value || "";
 
-                showMessage(
-                    "new-password-message",
-                    "A nova senha precisa ter pelo menos 8 caracteres.",
-                    "error"
-                );
-
-                return;
-
-            }
+                const confirmation =
+                    confirmInput?.value || "";
 
 
-            if (password !== confirmation) {
+                if (password.length < 8) {
 
-                showMessage(
-                    "new-password-message",
-                    "As senhas informadas não são iguais.",
-                    "error"
-                );
+                    showMessage(
+                        "new-password-message",
+                        "A senha precisa ter pelo menos 8 caracteres.",
+                        "error"
+                    );
 
-                confirmInput?.focus();
-
-                return;
-
-            }
-
-
-            setButtonLoading(
-                button,
-                true,
-                "ATUALIZANDO..."
-            );
-
-
-            try {
-
-                const client =
-                    await getSupabaseClient();
-
-
-                const { error } =
-                    await client.auth.updateUser({
-
-                        password
-
-                    });
-
-
-                if (error) {
-
-                    throw error;
+                    return;
 
                 }
 
 
-                form.reset();
+                if (password !== confirmation) {
 
-                passwordRecoveryMode = false;
+                    showMessage(
+                        "new-password-message",
+                        "As senhas não são iguais.",
+                        "error"
+                    );
 
+                    return;
 
-                showView(
-                    "login",
-                    { updateUrl: true }
-                );
+                }
 
-
-                showMessage(
-                    "login-message",
-                    "Sua senha foi atualizada com sucesso. Você já pode entrar na Liga.",
-                    "success"
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "CCFV LIGA // ERRO NOVA SENHA",
-                    error
-                );
-
-
-                showMessage(
-                    "new-password-message",
-                    friendlyError(error),
-                    "error"
-                );
-
-            } finally {
 
                 setButtonLoading(
                     button,
-                    false
+                    true,
+                    "ATUALIZANDO..."
                 );
 
-            }
 
-        });
+                try {
+
+                    const client =
+                        await getSupabaseClient();
+
+
+                    const { error } =
+                        await client.auth.updateUser({
+
+                            password
+
+                        });
+
+
+                    if (error) {
+                        throw error;
+                    }
+
+
+                    passwordRecoveryMode = false;
+
+                    form.reset();
+
+
+                    showView(
+                        "login",
+                        { updateUrl: true }
+                    );
+
+
+                    showMessage(
+                        "login-message",
+                        "Sua senha foi atualizada com sucesso.",
+                        "success"
+                    );
+
+
+                } catch (error) {
+
+                    showMessage(
+                        "new-password-message",
+                        friendlyError(error),
+                        "error"
+                    );
+
+                } finally {
+
+                    setButtonLoading(
+                        button,
+                        false
+                    );
+
+                }
+
+            }
+        );
 
     }
 
 
     /* =====================================================
-       ENCERRAR SESSÃO
+       SAIR DA CONTA
        ===================================================== */
 
     function bindLogoutButton() {
@@ -1184,81 +1665,75 @@
         const button =
             getElement("#logout-button");
 
-
         if (!button) return;
 
 
-        button.addEventListener("click", async () => {
-
-            setButtonLoading(
-                button,
-                true,
-                "SAINDO..."
-            );
-
-
-            try {
-
-                const client =
-                    await getSupabaseClient();
-
-
-                const { error } =
-                    await client.auth.signOut();
-
-
-                if (error) {
-
-                    throw error;
-
-                }
-
-
-                passwordRecoveryMode = false;
-
-                showView(
-                    "login",
-                    { updateUrl: true }
-                );
-
-
-                showMessage(
-                    "login-message",
-                    "Você saiu da sua conta com segurança.",
-                    "success"
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "CCFV LIGA // ERRO AO SAIR",
-                    error
-                );
-
-
-                showMessage(
-                    "login-message",
-                    friendlyError(error),
-                    "error"
-                );
-
-            } finally {
+        button.addEventListener(
+            "click",
+            async () => {
 
                 setButtonLoading(
                     button,
-                    false
+                    true,
+                    "SAINDO..."
                 );
 
-            }
 
-        });
+                try {
+
+                    const client =
+                        await getSupabaseClient();
+
+
+                    const { error } =
+                        await client.auth.signOut();
+
+
+                    if (error) {
+                        throw error;
+                    }
+
+
+                    passwordRecoveryMode = false;
+
+                    showView(
+                        "login",
+                        { updateUrl: true }
+                    );
+
+
+                    showMessage(
+                        "login-message",
+                        "Você saiu da sua conta com segurança.",
+                        "success"
+                    );
+
+
+                } catch (error) {
+
+                    showMessage(
+                        "login-message",
+                        friendlyError(error),
+                        "error"
+                    );
+
+                } finally {
+
+                    setButtonLoading(
+                        button,
+                        false
+                    );
+
+                }
+
+            }
+        );
 
     }
 
 
     /* =====================================================
-       TROCA ENTRE AS TELAS
+       TROCA DE TELAS
        ===================================================== */
 
     function bindViewNavigation() {
@@ -1267,27 +1742,29 @@
             .querySelectorAll("[data-go]")
             .forEach(button => {
 
-                button.addEventListener("click", () => {
+                button.addEventListener(
+                    "click",
+                    () => {
 
-                    const destination =
-                        button.dataset.go;
+                        const destination =
+                            button.dataset.go;
 
+                        if (
+                            allowedViews.includes(destination) &&
+                            destination !== "session"
+                        ) {
 
-                    if (
-                        allowedViews.includes(destination) &&
-                        destination !== "session"
-                    ) {
+                            passwordRecoveryMode = false;
 
-                        passwordRecoveryMode = false;
+                            showView(
+                                destination,
+                                { updateUrl: true }
+                            );
 
-                        showView(
-                            destination,
-                            { updateUrl: true }
-                        );
+                        }
 
                     }
-
-                });
+                );
 
             });
 
@@ -1304,32 +1781,34 @@
             .querySelectorAll("[data-toggle-password]")
             .forEach(button => {
 
-                button.addEventListener("click", () => {
+                button.addEventListener(
+                    "click",
+                    () => {
 
-                    const inputId =
-                        button.dataset.togglePassword;
+                        const input =
+                            document.getElementById(
+                                button.dataset.togglePassword
+                            );
 
-                    const input =
-                        document.getElementById(inputId);
-
-
-                    if (!input) return;
-
-
-                    const showing =
-                        input.type === "text";
+                        if (!input) return;
 
 
-                    input.type =
-                        showing ? "password" : "text";
+                        const showing =
+                            input.type === "text";
+
+                        input.type =
+                            showing ? "password" : "text";
 
 
-                    button.setAttribute(
-                        "aria-label",
-                        showing ? "Mostrar senha" : "Ocultar senha"
-                    );
+                        button.setAttribute(
+                            "aria-label",
+                            showing
+                                ? "Mostrar senha"
+                                : "Ocultar senha"
+                        );
 
-                });
+                    }
+                );
 
             });
 
@@ -1337,7 +1816,7 @@
 
 
     /* =====================================================
-       OBSERVAR ALTERAÇÕES DA AUTENTICAÇÃO
+       EVENTOS DE AUTENTICAÇÃO
        ===================================================== */
 
     function bindAuthState(client) {
@@ -1345,7 +1824,7 @@
         if (authSubscription) return;
 
 
-        const { data, error } =
+        const result =
             client.auth.onAuthStateChange(
                 (event, session) => {
 
@@ -1388,20 +1867,8 @@
             );
 
 
-        if (error) {
-
-            console.error(
-                "CCFV LIGA // ERRO OBSERVADOR DE SESSÃO",
-                error
-            );
-
-            return;
-
-        }
-
-
         authSubscription =
-            data?.subscription || null;
+            result?.data?.subscription || null;
 
     }
 
@@ -1418,26 +1885,20 @@
         );
 
 
-        // Liga primeiro apresenta a tela solicitada pelo endereço.
+        buildPlayerLinkInterface();
+
+        bindLoginForm();
+        bindRegisterForm();
+        bindForgotForm();
+        bindNewPasswordForm();
+        bindLogoutButton();
+        bindViewNavigation();
+        bindPasswordToggles();
+
 
         showView(
             getRequestedView()
         );
-
-
-        bindLoginForm();
-
-        bindRegisterForm();
-
-        bindForgotForm();
-
-        bindNewPasswordForm();
-
-        bindLogoutButton();
-
-        bindViewNavigation();
-
-        bindPasswordToggles();
 
 
         try {
@@ -1454,9 +1915,7 @@
 
 
             if (error) {
-
                 throw error;
-
             }
 
 
@@ -1491,14 +1950,15 @@
         } catch (error) {
 
             console.error(
-                "CCFV LIGA // FALHA NA INICIALIZAÇÃO",
+                "CCFV LIGA // ERRO NA INICIALIZAÇÃO",
                 error
             );
 
 
             showMessage(
                 "login-message",
-                "Não foi possível conectar ao sistema de autenticação. Atualize a página e tente novamente. Detalhe: " + friendlyError(error),
+                "Não foi possível conectar ao sistema: " +
+                friendlyError(error),
                 "error"
             );
 
@@ -1524,6 +1984,5 @@
         init();
 
     }
-
 
 })();
