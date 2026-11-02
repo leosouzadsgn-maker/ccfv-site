@@ -7,9 +7,23 @@
   <link rel="icon" href="../logos/01_logo_liga_ccfv.png">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/competicoes.css">
+  <link rel="stylesheet" href="css/competicoes.css?v=20261102-02">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/competicoes.js?v=20261102-01" defer></script>
+  <script src="js/competicoes.js?v=20261102-02" defer></script>
+  <script>
+    (() => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("embed") === "1") {
+        document.documentElement.classList.add("embed-mode");
+      } else {
+        const allowed = new Set(["season", "enrollments", "divisions", "championship", "cups", "matches", "standings"]);
+        const requested = params.get("tab");
+        const tab = allowed.has(requested) ? requested : "season";
+        document.documentElement.style.visibility = "hidden";
+        window.location.replace(`/liga/admin/index.html?module=competicoes&tab=${tab}`);
+      }
+    })();
+  </script>
 </head>
 <body>
   <div class="gate" id="gate"><div class="gate-card"><img src="../logos/01_logo_liga_ccfv.png" alt="Liga CCFV"><span class="eyebrow">CENTRAL ADMINISTRATIVA</span><h1 id="gate-title">Verificando acesso</h1><p id="gate-message">Validando sua sessão e autorização administrativa.</p><a class="btn primary" href="/admin/login.html">ENTRAR NO ADMIN CCFV</a></div></div>

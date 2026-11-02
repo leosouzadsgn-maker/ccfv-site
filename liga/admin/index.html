@@ -26,6 +26,11 @@
     .access-screen{position:fixed;z-index:999;inset:0;display:grid;place-items:center;padding:24px;background:#030805}.access-card{width:min(420px,100%);padding:28px;border:1px solid rgba(214,180,90,.2);border-radius:14px;background:#08130d;text-align:center}.access-card h2{margin:0 0 9px;font-family:'Playfair Display',Georgia,serif;font-size:26px}.access-card p{color:var(--muted);font-size:10px;line-height:1.7}.access-card a{display:inline-block;margin-top:10px;color:var(--green2);font-size:9px;font-weight:900}
     @media(max-width:1100px){.modules{grid-template-columns:repeat(2,minmax(0,1fr))}.main{padding-right:22px;padding-left:22px}}
     @media(max-width:720px){.admin-layout{grid-template-columns:1fr}.sidebar{position:relative;width:100%;height:auto;max-height:none;overflow:visible;padding:14px;border-right:0;border-bottom:1px solid var(--border)}.brand{padding-bottom:12px}.nav-label{margin-top:13px}.nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.sidebar-bottom{flex-direction:row;justify-content:space-between;margin-top:14px;padding-top:12px}.main{padding:0 14px 25px}.topbar{min-height:60px}.page-heading{align-items:flex-start;flex-direction:column;margin-top:25px}.season-chip{align-self:flex-start}.modules{grid-template-columns:1fr}.module{min-height:130px}.welcome{padding:20px}.footer{flex-direction:column;text-align:center}}
+  
+    .admin-module-frame{width:100%;height:calc(100vh - 70px);min-height:760px;margin:0;padding:0;overflow:hidden}
+    .admin-module-frame iframe{display:block;width:100%;height:100%;min-height:760px;border:0;background:transparent}
+    .admin-module-frame[hidden]{display:none!important}
+    @media(max-width:720px){.admin-module-frame{height:calc(100vh - 60px);min-height:820px}.admin-module-frame iframe{min-height:820px}}
   </style>
 </head>
 <body>
@@ -43,15 +48,16 @@
       <div class="nav-label">GESTÃO DOS CLUBES</div>
       <nav class="nav">
         <a href="/liga/admin/clubes.html"><span>♜</span>Clubes</a>
-        <a href="/liga/admin/temporadas.html"><span>▦</span>Temporadas</a>
-        <a href="/liga/admin/inscricoes.html"><span>＋</span>Inscrições</a>
-        <a href="/liga/admin/divisoes.html"><span>◉</span>Divisões</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=season"><span>▦</span>Temporadas</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=enrollments"><span>＋</span>Inscrições</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=divisions"><span>◉</span>Divisões</a>
       </nav>
       <div class="nav-label">COMPETIÇÕES</div>
       <nav class="nav">
-        <a href="/liga/admin/campeonato.html"><span>⚔</span>Campeonato</a>
-        <a href="/liga/admin/copas.html"><span>🏆</span>Copas</a>
-        <a href="/liga/admin/resultados.html"><span>▤</span>Resultados</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=championship"><span>⚔</span>Campeonato</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=cups"><span>🏆</span>Copas</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=matches"><span>▤</span>Resultados</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=standings"><span>▥</span>Classificação</a>
       </nav>
       <div class="nav-label">ADMINISTRAÇÃO</div>
       <nav class="nav">
@@ -63,24 +69,30 @@
     </aside>
     <main class="main">
       <header class="topbar"><span class="topbar-label">CCFV / ADMINISTRAÇÃO / LIGA</span><div class="topbar-account"><div class="account-info"><strong id="admin-email">Administrador</strong><small>ADMINISTRADOR AUTORIZADO</small></div><button class="logout" id="logout-button" type="button">SAIR</button></div></header>
+      <div id="admin-home-content">
       <section class="page-heading"><div><div class="eyebrow">CCFV // LEAGUE MANAGEMENT</div><h1>CENTRAL DA<br><em>LIGA CCFV.</em></h1><p>Todos os módulos administrativos da Liga ficam reunidos neste painel. Use o menu lateral ou os atalhos abaixo para navegar entre as áreas.</p></div><div class="season-chip">PAINEL ADMINISTRATIVO</div></section>
       <section class="welcome"><div class="welcome-content"><span class="welcome-kicker">CENTRAL DE OPERAÇÕES DA LIGA</span><h2>Uma estrutura única.<br>Um novo legado.</h2><p>A navegação é compartilhada entre todos os módulos. Ao abrir Clubes, Temporadas, Inscrições ou qualquer outra área, o menu lateral continua disponível para voltar à Visão geral ou seguir para outro módulo.</p></div></section>
       <div class="section-heading"><h2>MÓDULOS ADMINISTRATIVOS</h2><span>ATALHOS PARA TODAS AS ÁREAS</span></div>
       <section class="modules">
         <a class="module available" href="/liga/admin/vinculos.html"><span class="module-arrow">↗</span><span class="module-icon">◈</span><h3>Vínculos de jogadores</h3><p>Analise solicitações de associação entre contas e cadastros existentes da CCFV.</p><span class="module-status">ACESSAR MÓDULO →</span></a>
         <a class="module available" href="/liga/admin/clubes.html"><span class="module-arrow">↗</span><span class="module-icon">♜</span><h3>Gestão de clubes</h3><p>Consulte clubes, responsáveis, identidade visual e situação cadastral.</p><span class="module-status">ACESSAR MÓDULO →</span></a>
-        <a class="module available" href="/liga/admin/temporadas.html"><span class="module-arrow">↗</span><span class="module-icon">▦</span><h3>Temporadas</h3><p>Consulte ciclos, calendário, mensalidade e situação de cada temporada.</p><span class="module-status">ACESSAR MÓDULO →</span></a>
-        <a class="module available" href="/liga/admin/inscricoes.html"><span class="module-arrow">↗</span><span class="module-icon">＋</span><h3>Inscrições</h3><p>Acompanhe clubes inscritos, responsáveis, vagas e confirmações.</p><span class="module-status">ACESSAR MÓDULO →</span></a>
-        <a class="module available" href="/liga/admin/divisoes.html"><span class="module-arrow">↗</span><span class="module-icon">◉</span><h3>Divisões</h3><p>Confira a composição das Séries A, B e C e as posições dos clubes.</p><span class="module-status">ACESSAR MÓDULO →</span></a>
-        <a class="module available" href="/liga/admin/campeonato.html"><span class="module-arrow">↗</span><span class="module-icon">⚔</span><h3>Campeonato</h3><p>Área de organização de rodadas, confrontos e classificação.</p><span class="module-status">ACESSAR ESTRUTURA →</span></a>
-        <a class="module available" href="/liga/admin/copas.html"><span class="module-arrow">↗</span><span class="module-icon">🏆</span><h3>Copas</h3><p>Área de organização das competições eliminatórias e interdivisionais.</p><span class="module-status">ACESSAR ESTRUTURA →</span></a>
-        <a class="module available" href="/liga/admin/resultados.html"><span class="module-arrow">↗</span><span class="module-icon">▤</span><h3>Resultados</h3><p>Área de registro e conferência das partidas e resultados oficiais.</p><span class="module-status">ACESSAR ESTRUTURA →</span></a>
-        <a class="module available" href="/liga/admin/premiacoes.html"><span class="module-arrow">↗</span><span class="module-icon">✧</span><h3>Premiações</h3><p>Área de consulta e controle de campeões, valores e entregas.</p><span class="module-status">ACESSAR ESTRUTURA →</span></a>
+        <a class="module available" href="/liga/admin/index.html?module=competicoes&tab=season"><span class="module-arrow">↗</span><span class="module-icon">▦</span><h3>Temporadas</h3><p>Consulte ciclos, calendário, mensalidade e situação de cada temporada.</p><span class="module-status">ACESSAR MÓDULO →</span></a>
+        <a class="module available" href="/liga/admin/index.html?module=competicoes&tab=enrollments"><span class="module-arrow">↗</span><span class="module-icon">＋</span><h3>Inscrições</h3><p>Acompanhe clubes inscritos, responsáveis, vagas e confirmações.</p><span class="module-status">ACESSAR MÓDULO →</span></a>
+        <a class="module available" href="/liga/admin/index.html?module=competicoes&tab=divisions"><span class="module-arrow">↗</span><span class="module-icon">◉</span><h3>Divisões</h3><p>Confira a composição das Séries A, B e C e as posições dos clubes.</p><span class="module-status">ACESSAR MÓDULO →</span></a>
+        <a class="module available" href="/liga/admin/index.html?module=competicoes&tab=championship"><span class="module-arrow">↗</span><span class="module-icon">⚔</span><h3>Campeonato</h3><p>Área de organização de rodadas, confrontos e classificação.</p><span class="module-status">ACESSAR MÓDULO →</span></a>
+        <a class="module available" href="/liga/admin/index.html?module=competicoes&tab=cups"><span class="module-arrow">↗</span><span class="module-icon">🏆</span><h3>Copas</h3><p>Área de organização das competições eliminatórias e interdivisionais.</p><span class="module-status">ACESSAR MÓDULO →</span></a>
+        <a class="module available" href="/liga/admin/index.html?module=competicoes&tab=matches"><span class="module-arrow">↗</span><span class="module-icon">▤</span><h3>Resultados</h3><p>Área de registro e conferência das partidas e resultados oficiais.</p><span class="module-status">ACESSAR MÓDULO →</span></a>
+        <a class="module available" href="/liga/admin/index.html?module=competicoes&tab=standings"><span class="module-arrow">↗</span><span class="module-icon">▥</span><h3>Classificação</h3><p>Consulte as tabelas oficiais das Séries A, B e C e a evolução dos clubes.</p><span class="module-status">ACESSAR MÓDULO →</span></a>
+        <a class="module available" href="/liga/admin/premiacoes.html"><span class="module-arrow">↗</span><span class="module-icon">✧</span><h3>Premiações</h3><p>Área de consulta e controle de campeões, valores e entregas.</p><span class="module-status">ACESSAR MÓDULO →</span></a>
         <a class="module available" href="/liga/admin/historico.html"><span class="module-arrow">↗</span><span class="module-icon">◷</span><h3>Histórico</h3><p>Consulte a trilha de auditoria e os eventos administrativos.</p><span class="module-status">ACESSAR MÓDULO →</span></a>
-        <a class="module available" href="/liga/admin/configuracoes.html"><span class="module-arrow">↗</span><span class="module-icon">⚙</span><h3>Configurações</h3><p>Área de parâmetros gerais e regras operacionais da Liga.</p><span class="module-status">ACESSAR ESTRUTURA →</span></a>
+        <a class="module available" href="/liga/admin/configuracoes.html"><span class="module-arrow">↗</span><span class="module-icon">⚙</span><h3>Configurações</h3><p>Área de parâmetros gerais e regras operacionais da Liga.</p><span class="module-status">ACESSAR MÓDULO →</span></a>
       </section>
-      <div class="notice"><span class="notice-icon">ⓘ</span><p>As páginas de Campeonato, Copas, Resultados, Premiações e Configurações já abrem pela navegação comum, mas seus processos de gravação ainda serão implementados nas próximas etapas. As áreas de consulta permanecem protegidas pela autorização administrativa da CCFV.</p></div>
+      <div class="notice"><span class="notice-icon">ⓘ</span><p>O motor competitivo abre dentro desta Central, com o mesmo menu lateral. Temporadas, inscrições, divisões, Brasileirão, copas, partidas e classificação compartilham a navegação e a autorização administrativa da CCFV.</p></div>
       <footer class="footer"><span>CCFV // CONFEDERAÇÕES COLISEU DE FUTEBOL VIRTUAL</span><span>LIGA CCFV · CENTRAL ADMINISTRATIVA</span></footer>
+      </div>
+      <section id="admin-module-frame" class="admin-module-frame" hidden aria-label="Módulo de competições">
+        <iframe id="admin-module-iframe" title="Operação competitiva da Liga CCFV" loading="eager"></iframe>
+      </section>
     </main>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -115,6 +127,23 @@
         $("admin-email").textContent = session.user?.email || "Administrador";
         screen.hidden = true;
         layout.hidden = false;
+
+        const routeParams = new URLSearchParams(window.location.search);
+        const competitionTabs = new Set(["season", "enrollments", "divisions", "championship", "cups", "matches", "standings"]);
+        const requestedTab = routeParams.get("tab");
+        if (routeParams.get("module") === "competicoes") {
+          const activeTab = competitionTabs.has(requestedTab) ? requestedTab : "season";
+          $("admin-home-content").hidden = true;
+          $("admin-module-frame").hidden = false;
+          $("admin-module-iframe").src = `/liga/admin/competicoes.html?embed=1&tab=${activeTab}&v=20261102-02`;
+          document.querySelectorAll(".nav a").forEach((link) => link.classList.remove("active"));
+          const activeLink = Array.from(document.querySelectorAll(".nav a")).find((link) => link.href.includes(`tab=${activeTab}`));
+          if (activeLink) activeLink.classList.add("active");
+        } else {
+          $("admin-home-content").hidden = false;
+          $("admin-module-frame").hidden = true;
+        }
+
         $("logout-button").addEventListener("click", async () => {
           const button = $("logout-button"); button.disabled = true; button.textContent = "SAINDO...";
           try { const {error} = await client.auth.signOut(); if (error) throw error; window.location.replace("/admin/login.html"); }
