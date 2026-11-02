@@ -8,6 +8,7 @@
 
     "use strict";
 
+
     /* =====================================================
        CONFIGURAÇÃO
        ===================================================== */
@@ -29,19 +30,32 @@
         ).get("type") === "recovery";
 
 
+    const allowedViews = [
+        "login",
+        "register",
+        "forgot",
+        "new-password",
+        "session"
+    ];
+
+
     /* =====================================================
        UTILITÁRIOS
        ===================================================== */
 
     function getElement(selector) {
+
         return document.querySelector(selector);
+
     }
 
 
     function normalizeEmail(value) {
+
         return String(value || "")
             .trim()
             .toLowerCase();
+
     }
 
 
@@ -56,7 +70,7 @@
 
 
     /* =====================================================
-       CARREGAR SUPABASE
+       CARREGAMENTO DO SUPABASE
        ===================================================== */
 
     function loadSupabaseLibrary() {
@@ -70,12 +84,14 @@
 
         }
 
+
         return new Promise((resolve, reject) => {
 
             const existing =
                 document.querySelector(
                     "script[data-ccfv-supabase]"
                 );
+
 
             if (existing) {
 
@@ -104,28 +120,38 @@
                     { once: true }
                 );
 
+
                 existing.addEventListener(
                     "error",
-                    () => reject(
-                        new Error(
-                            "Não foi possível carregar o Supabase."
-                        )
-                    ),
+                    () => {
+
+                        reject(
+                            new Error(
+                                "Não foi possível carregar o Supabase."
+                            )
+                        );
+
+                    },
                     { once: true }
                 );
+
 
                 return;
 
             }
 
+
             const script =
                 document.createElement("script");
+
 
             script.src =
                 "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
 
             script.async = true;
+
             script.dataset.ccfvSupabase = "true";
+
 
             script.onload = () => {
 
@@ -148,6 +174,7 @@
 
             };
 
+
             script.onerror = () => {
 
                 reject(
@@ -157,6 +184,7 @@
                 );
 
             };
+
 
             document.head.appendChild(script);
 
@@ -172,12 +200,18 @@
     async function getSupabaseClient() {
 
         if (supabaseClient) {
+
             return supabaseClient;
+
         }
 
+
         if (supabasePromise) {
+
             return supabasePromise;
+
         }
+
 
         supabasePromise = (async () => {
 
@@ -192,8 +226,10 @@
 
             }
 
+
             const library =
                 await loadSupabaseLibrary();
+
 
             supabaseClient =
                 library.createClient(
@@ -208,15 +244,18 @@
                     }
                 );
 
+
             // Cliente exclusivo da Liga.
-            // Não sobrescreve o cliente do Admin CCFV.
+            // Não substitui o cliente do Admin CCFV.
 
             window.CCFVLigaSupabase =
                 supabaseClient;
 
+
             return supabaseClient;
 
         })();
+
 
         try {
 
@@ -244,6 +283,7 @@
             .forEach(element => {
 
                 element.textContent = "";
+
                 element.className = "auth-message";
 
             });
@@ -260,7 +300,9 @@
         const element =
             document.getElementById(elementId);
 
+
         if (!element) return;
+
 
         const safeType = [
             "success",
@@ -270,13 +312,20 @@
             ? type
             : "info";
 
+
         element.textContent = message;
 
         element.className =
             `auth-message is-visible is-${safeType}`;
 
+        element.hidden = false;
+
     }
 
+
+    /* =====================================================
+       TRADUÇÃO DE ERROS
+       ===================================================== */
 
     function friendlyError(error) {
 
@@ -284,45 +333,109 @@
             String(error?.message || error || "")
                 .toLowerCase();
 
+
         if (
             message.includes("invalid login credentials")
         ) {
+
             return "E-mail ou senha incorretos.";
+
         }
+
 
         if (
             message.includes("email not confirmed")
         ) {
+
             return "O e-mail da conta ainda não está confirmado.";
+
         }
+
 
         if (
             message.includes("user already registered") ||
             message.includes("already registered") ||
             message.includes("user already exists")
         ) {
+
             return "Já existe uma conta cadastrada com esse e-mail.";
+
         }
+
 
         if (
             message.includes("invalid email")
         ) {
+
             return "Informe um endereço de e-mail válido.";
+
         }
+
 
         if (
             message.includes("rate limit") ||
             error?.status === 429
         ) {
+
             return "Muitas tentativas. Aguarde um pouco e tente novamente.";
+
         }
+
 
         if (
             message.includes("failed to fetch") ||
             message.includes("networkerror")
         ) {
+
             return "Falha de conexão. Verifique sua internet.";
+
         }
+
+
+        if (
+            message.includes("código não encontrado")
+        ) {
+
+            return "Não encontramos um jogador ativo com esse código. Confira os dados.";
+
+        }
+
+
+        if (
+            message.includes("já possui um jogador vinculado")
+        ) {
+
+            return "Esta conta já possui um jogador CCFV vinculado.";
+
+        }
+
+
+        if (
+            message.includes("solicitação pendente")
+        ) {
+
+            return "Você já possui uma solicitação aguardando análise.";
+
+        }
+
+
+        if (
+            message.includes("já está associado")
+        ) {
+
+            return "Este cadastro já possui uma solicitação ou associação com outra conta.";
+
+        }
+
+
+        if (
+            message.includes("bloqueada")
+        ) {
+
+            return "Esta conta está bloqueada para novas solicitações.";
+
+        }
+
 
         return error?.message ||
             "Ocorreu um erro inesperado. Tente novamente.";
@@ -334,15 +447,6 @@
        NAVEGAÇÃO ENTRE TELAS
        ===================================================== */
 
-    const allowedViews = [
-        "login",
-        "register",
-        "forgot",
-        "new-password",
-        "session"
-    ];
-
-
     function showView(
         viewName,
         options = {}
@@ -353,6 +457,7 @@
                 ? viewName
                 : "login";
 
+
         document
             .querySelectorAll("[data-view]")
             .forEach(view => {
@@ -362,12 +467,15 @@
 
             });
 
+
         clearMessages();
+
 
         if (options.updateUrl === true) {
 
             const url =
                 new URL(window.location.href);
+
 
             if (
                 ["login", "register", "forgot"]
@@ -385,7 +493,9 @@
 
             }
 
+
             url.hash = "";
+
 
             window.history.replaceState(
                 {},
@@ -405,8 +515,10 @@
                 window.location.search
             );
 
+
         const requested =
             params.get("view");
+
 
         if (
             ["login", "register", "forgot"]
@@ -416,6 +528,7 @@
             return requested;
 
         }
+
 
         return "login";
 
@@ -434,15 +547,19 @@
 
         if (!button) return;
 
+
         const label =
             button.querySelector("span");
+
 
         if (!label) {
 
             button.disabled = loading;
+
             return;
 
         }
+
 
         if (!button.dataset.originalLabel) {
 
@@ -451,12 +568,14 @@
 
         }
 
+
         button.disabled = loading;
 
         button.setAttribute(
             "aria-busy",
             loading ? "true" : "false"
         );
+
 
         label.textContent =
             loading
@@ -467,8 +586,7 @@
 
 
     /* =====================================================
-       VÍNCULO — INTERFACE
-       Cria a interface dentro da tela de sessão existente.
+       INTERFACE DO VÍNCULO
        ===================================================== */
 
     function buildPlayerLinkInterface() {
@@ -478,21 +596,29 @@
                 ".auth-session-next"
             );
 
+
         if (!container) {
 
             console.warn(
-                "CCFV LIGA // Área de vínculo não encontrada."
+                "CCFV LIGA // ÁREA DE VÍNCULO NÃO ENCONTRADA."
             );
 
             return;
 
         }
 
-        if (container.dataset.linkReady === "true") {
+
+        if (
+            container.dataset.linkReady === "true"
+        ) {
+
             return;
+
         }
 
+
         container.dataset.linkReady = "true";
+
 
         container.innerHTML = `
 
@@ -503,9 +629,8 @@
             </strong>
 
             <p id="player-link-description">
-                Informe o código oficial do jogador que
-                já está cadastrado na CCFV.
-                Sua solicitação será analisada pela administração.
+                Informe seu código oficial de jogador CCFV.
+                A administração verificará sua solicitação.
             </p>
 
             <form
@@ -526,7 +651,7 @@
                             type="text"
                             id="player-link-code"
                             name="player_code"
-                            placeholder="Ex.: CCFV-000"
+                            placeholder="Ex.: CCFV-001"
                             minlength="3"
                             maxlength="40"
                             autocomplete="off"
@@ -577,14 +702,16 @@
 
         `;
 
+
         bindPlayerLinkForm();
+
         bindPlayerLinkRefresh();
 
     }
 
 
     /* =====================================================
-       VÍNCULO — ATUALIZAR ESTADO VISUAL
+       RENDERIZAR SITUAÇÃO DO VÍNCULO
        ===================================================== */
 
     function renderPlayerLinkStatus(record) {
@@ -611,17 +738,31 @@
             !description ||
             !statusBox
         ) {
+
             return;
+
         }
 
 
         form.hidden = false;
+
         statusBox.hidden = true;
 
         refreshButton.hidden = false;
 
 
-        if (!record) {
+        const status =
+            String(record?.link_status || "NOT_LINKED")
+                .toUpperCase();
+
+
+        const playerName =
+            record?.player?.name || "";
+
+
+        if (
+            status === "NOT_LINKED"
+        ) {
 
             title.textContent =
                 "Vincule seu cadastro esportivo";
@@ -639,46 +780,51 @@
         }
 
 
-        const status =
-            String(record.link_status || "")
-                .toUpperCase();
-
-
-        if (status === "PENDING") {
+        if (
+            status === "PENDING"
+        ) {
 
             title.textContent =
                 "Solicitação em análise";
 
             description.textContent =
-                "Sua solicitação foi recebida. " +
-                "Aguarde a análise da administração da Liga.";
+                playerName
+                    ? `Cadastro identificado: ${playerName}. Aguarde a análise da administração.`
+                    : "Sua solicitação foi recebida. Aguarde a análise da administração da Liga.";
 
             form.hidden = true;
 
             statusBox.hidden = false;
+
             statusBox.className =
                 "auth-message is-visible is-info";
 
             statusBox.textContent =
                 "VÍNCULO PENDENTE — AGUARDANDO APROVAÇÃO.";
 
+            refreshButton.hidden = false;
+
             return;
 
         }
 
 
-        if (status === "ACTIVE") {
+        if (
+            status === "ACTIVE"
+        ) {
 
             title.textContent =
                 "Jogador vinculado com sucesso";
 
             description.textContent =
-                "Seu cadastro esportivo foi aprovado. " +
-                "Sua conta já está associada ao jogador CCFV.";
+                playerName
+                    ? `Seu cadastro esportivo ${playerName} foi aprovado e está associado à sua conta.`
+                    : "Seu cadastro esportivo foi aprovado e está associado à sua conta.";
 
             form.hidden = true;
 
             statusBox.hidden = false;
+
             statusBox.className =
                 "auth-message is-visible is-success";
 
@@ -692,7 +838,9 @@
         }
 
 
-        if (status === "REJECTED") {
+        if (
+            status === "REJECTED"
+        ) {
 
             title.textContent =
                 "Solicitação não aprovada";
@@ -704,18 +852,23 @@
             form.hidden = false;
 
             statusBox.hidden = false;
+
             statusBox.className =
                 "auth-message is-visible is-error";
 
             statusBox.textContent =
                 "VÍNCULO REJEITADO — UMA NOVA SOLICITAÇÃO PODE SER ENVIADA.";
 
+            refreshButton.hidden = true;
+
             return;
 
         }
 
 
-        if (status === "BLOCKED") {
+        if (
+            status === "BLOCKED"
+        ) {
 
             title.textContent =
                 "Vínculo bloqueado";
@@ -727,6 +880,7 @@
             form.hidden = true;
 
             statusBox.hidden = false;
+
             statusBox.className =
                 "auth-message is-visible is-error";
 
@@ -744,11 +898,14 @@
             "Situação do vínculo";
 
         description.textContent =
-            "Não foi possível identificar a situação atual. Atualize a consulta.";
+            "Não foi possível identificar a situação atual.";
+
+        form.hidden = true;
 
         statusBox.hidden = false;
+
         statusBox.className =
-            "auth-message is-visible is-info";
+            "auth-message is-visible is-error";
 
         statusBox.textContent =
             "STATUS NÃO RECONHECIDO.";
@@ -757,25 +914,20 @@
 
 
     /* =====================================================
-       VÍNCULO — CONSULTAR CONTA ATUAL
+       CONSULTAR VÍNCULO PELA RPC SEGURA
+       Não consultar a tabela diretamente.
        ===================================================== */
 
-    async function loadPlayerLinkStatus(
-        authUserId
-    ) {
+    async function loadPlayerLinkStatus() {
 
         const client =
             await getSupabaseClient();
 
 
         const { data, error } =
-            await client
-                .from("ccfv_league_player_accounts")
-                .select(
-                    "auth_user_id, player_id, link_status, requested_at, verified_at"
-                )
-                .eq("auth_user_id", authUserId)
-                .maybeSingle();
+            await client.rpc(
+                "ccfv_league_get_my_player_link"
+            );
 
 
         if (error) {
@@ -785,15 +937,26 @@
         }
 
 
-        renderPlayerLinkStatus(data || null);
+        if (
+            data?.success !== true
+        ) {
 
-        return data || null;
+            throw new Error(
+                "Não foi possível consultar a situação do vínculo."
+            );
+
+        }
+
+
+        renderPlayerLinkStatus(data);
+
+        return data;
 
     }
 
 
     /* =====================================================
-       VÍNCULO — ENVIAR SOLICITAÇÃO
+       SOLICITAR VÍNCULO
        RPC:
        ccfv_league_request_player_link(p_player_code text)
        ===================================================== */
@@ -802,6 +965,7 @@
 
         const form =
             getElement("#player-link-form");
+
 
         if (!form) return;
 
@@ -857,15 +1021,13 @@
                         await getSupabaseClient();
 
 
-                    const {
-                        data,
-                        error
-                    } = await client.rpc(
-                        "ccfv_league_request_player_link",
-                        {
-                            p_player_code: playerCode
-                        }
-                    );
+                    const { data, error } =
+                        await client.rpc(
+                            "ccfv_league_request_player_link",
+                            {
+                                p_player_code: playerCode
+                            }
+                        );
 
 
                     if (error) {
@@ -890,38 +1052,27 @@
                     input.value = "";
 
 
-                    const sessionResult =
-                        await client.auth.getSession();
+                    // A solicitação pode ter sido gravada.
+                    // Agora consultamos o status pela RPC segura.
+
+                    try {
+
+                        await loadPlayerLinkStatus();
 
 
-                    const session =
-                        sessionResult?.data?.session;
+                    } catch (statusError) {
 
-
-                    if (session?.user?.id) {
-
-                        await loadPlayerLinkStatus(
-                            session.user.id
+                        console.error(
+                            "CCFV LIGA // ERRO AO ATUALIZAR STATUS",
+                            statusError
                         );
 
-                    }
 
-
-                    const message =
-                        data?.message ||
-                        "Solicitação enviada para análise.";
-
-
-                    const currentStatus =
-                        getElement("#player-link-status");
-
-
-                    if (currentStatus) {
-
-                        currentStatus.hidden = false;
-
-                        currentStatus.textContent =
-                            message;
+                        showMessage(
+                            "player-link-status",
+                            "Sua solicitação foi enviada, mas não conseguimos atualizar o status agora. Use o botão de atualização.",
+                            "info"
+                        );
 
                     }
 
@@ -962,13 +1113,14 @@
 
 
     /* =====================================================
-       VÍNCULO — ATUALIZAR SITUAÇÃO
+       ATUALIZAR SITUAÇÃO DO VÍNCULO
        ===================================================== */
 
     function bindPlayerLinkRefresh() {
 
         const button =
             getElement("#player-link-refresh");
+
 
         if (!button) return;
 
@@ -995,15 +1147,13 @@
 
 
                     if (error) {
+
                         throw error;
+
                     }
 
 
-                    const userId =
-                        data?.session?.user?.id;
-
-
-                    if (!userId) {
+                    if (!data?.session) {
 
                         throw new Error(
                             "Sua sessão expirou. Entre novamente."
@@ -1012,9 +1162,7 @@
                     }
 
 
-                    await loadPlayerLinkStatus(
-                        userId
-                    );
+                    await loadPlayerLinkStatus();
 
 
                 } catch (error) {
@@ -1068,18 +1216,15 @@
         showView("session");
 
 
-        // Evita executar uma chamada Supabase dentro
-        // do callback direto de onAuthStateChange.
-
         if (session?.user?.id) {
+
+            // Fora do callback de onAuthStateChange.
 
             window.setTimeout(async () => {
 
                 try {
 
-                    await loadPlayerLinkStatus(
-                        session.user.id
-                    );
+                    await loadPlayerLinkStatus();
 
                 } catch (error) {
 
@@ -1089,20 +1234,12 @@
                     );
 
 
-                    const statusBox =
-                        getElement("#player-link-status");
-
-
-                    if (statusBox) {
-
-                        showMessage(
-                            "player-link-status",
-                            "Não foi possível consultar seu vínculo. " +
-                            friendlyError(error),
-                            "error"
-                        );
-
-                    }
+                    showMessage(
+                        "player-link-status",
+                        "Não foi possível consultar seu vínculo. " +
+                        friendlyError(error),
+                        "error"
+                    );
 
                 }
 
@@ -1121,6 +1258,7 @@
 
         const form =
             getElement("#login-form");
+
 
         if (!form) return;
 
@@ -1187,7 +1325,9 @@
 
 
                     if (error) {
+
                         throw error;
+
                     }
 
 
@@ -1240,6 +1380,7 @@
 
         const form =
             getElement("#register-form");
+
 
         if (!form) return;
 
@@ -1371,7 +1512,9 @@
 
 
                     if (error) {
+
                         throw error;
+
                     }
 
 
@@ -1389,7 +1532,7 @@
 
                     showMessage(
                         "register-message",
-                        "A conta foi criada, mas o Supabase não retornou uma sessão. Confira se a confirmação de e-mail continua desativada nas configurações.",
+                        "A conta foi criada, mas não recebemos uma sessão. Confira se a confirmação de e-mail continua desativada no Supabase.",
                         "info"
                     );
 
@@ -1431,6 +1574,7 @@
 
         const form =
             getElement("#forgot-form");
+
 
         if (!form) return;
 
@@ -1491,7 +1635,9 @@
 
 
                     if (error) {
+
                         throw error;
+
                     }
 
 
@@ -1533,6 +1679,7 @@
 
         const form =
             getElement("#new-password-form");
+
 
         if (!form) return;
 
@@ -1611,7 +1758,9 @@
 
 
                     if (error) {
+
                         throw error;
+
                     }
 
 
@@ -1665,6 +1814,7 @@
         const button =
             getElement("#logout-button");
 
+
         if (!button) return;
 
 
@@ -1690,7 +1840,9 @@
 
 
                     if (error) {
+
                         throw error;
+
                     }
 
 
@@ -1733,7 +1885,7 @@
 
 
     /* =====================================================
-       TROCA DE TELAS
+       NAVEGAÇÃO DOS BOTÕES
        ===================================================== */
 
     function bindViewNavigation() {
@@ -1748,6 +1900,7 @@
 
                         const destination =
                             button.dataset.go;
+
 
                         if (
                             allowedViews.includes(destination) &&
@@ -1790,11 +1943,13 @@
                                 button.dataset.togglePassword
                             );
 
+
                         if (!input) return;
 
 
                         const showing =
                             input.type === "text";
+
 
                         input.type =
                             showing ? "password" : "text";
@@ -1816,7 +1971,7 @@
 
 
     /* =====================================================
-       EVENTOS DE AUTENTICAÇÃO
+       OBSERVAR AUTENTICAÇÃO
        ===================================================== */
 
     function bindAuthState(client) {
@@ -1828,7 +1983,9 @@
             client.auth.onAuthStateChange(
                 (event, session) => {
 
-                    if (event === "PASSWORD_RECOVERY") {
+                    if (
+                        event === "PASSWORD_RECOVERY"
+                    ) {
 
                         passwordRecoveryMode = true;
 
@@ -1852,7 +2009,9 @@
                     }
 
 
-                    if (event === "SIGNED_OUT") {
+                    if (
+                        event === "SIGNED_OUT"
+                    ) {
 
                         passwordRecoveryMode = false;
 
@@ -1888,11 +2047,17 @@
         buildPlayerLinkInterface();
 
         bindLoginForm();
+
         bindRegisterForm();
+
         bindForgotForm();
+
         bindNewPasswordForm();
+
         bindLogoutButton();
+
         bindViewNavigation();
+
         bindPasswordToggles();
 
 
@@ -1915,7 +2080,9 @@
 
 
             if (error) {
+
                 throw error;
+
             }
 
 
@@ -1971,7 +2138,9 @@
        DOM READY
        ===================================================== */
 
-    if (document.readyState === "loading") {
+    if (
+        document.readyState === "loading"
+    ) {
 
         document.addEventListener(
             "DOMContentLoaded",
@@ -1984,5 +2153,6 @@
         init();
 
     }
+
 
 })();
