@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#030805">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Organização Esportiva — CCFV Liga Admin</title>
+  <link rel="stylesheet" href="css/modulos.css">
+  <link rel="stylesheet" href="css/organizacao.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/organizacao.js" defer></script>
+</head>
+<body>
+  <div class="access-screen" id="access-screen">
+    <div class="access-card">
+      <h2 id="access-title">Verificando acesso</h2>
+      <p id="access-message">Conferindo sua sessão e suas permissões administrativas.</p>
+      <a href="/admin/login.html" id="access-login" hidden>ACESSAR ADMIN CCFV →</a>
+    </div>
+  </div>
+
+  <div class="admin-layout" id="admin-layout" hidden>
+    <aside class="sidebar">
+      <a class="brand" href="/liga/index.html">
+        <img src="../logos/01_logo_liga_ccfv.png" alt="Liga CCFV">
+        <span><strong>CCFV <em>/ LIGA</em></strong><small>ADMINISTRAÇÃO DA LIGA</small></span>
+      </a>
+      <div class="nav-label">CENTRAL DA LIGA</div>
+      <nav class="nav">
+        <a href="/liga/admin/index.html"><span>⌂</span>Visão geral</a>
+        <a href="/liga/admin/vinculos.html"><span>◈</span>Vínculos de jogadores</a>
+      </nav>
+      <div class="nav-label">GESTÃO DOS CLUBES</div>
+      <nav class="nav">
+        <a href="/liga/admin/clubes.html"><span>♜</span>Clubes</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=season"><span>▦</span>Temporadas</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=enrollments"><span>＋</span>Inscrições</a>
+        <a href="/liga/admin/organizacao.html" class="active"><span>◉</span>Divisões e copas</a>
+      </nav>
+      <div class="nav-label">COMPETIÇÕES</div>
+      <nav class="nav">
+        <a href="/liga/admin/index.html?module=competicoes&tab=championship"><span>⚔</span>Campeonato CCFV</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=cups"><span>🏆</span>Copas</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=matches"><span>▤</span>Partidas e resultados</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=standings"><span>▥</span>Classificação</a>
+      </nav>
+      <div class="nav-label">ADMINISTRAÇÃO</div>
+      <nav class="nav">
+        <a href="/liga/admin/premiacoes.html"><span>✧</span>Premiações</a>
+        <a href="/liga/admin/historico.html"><span>◷</span>Histórico</a>
+        <a href="/liga/admin/configuracoes.html"><span>⚙</span>Configurações</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <a href="/admin/">← ADMIN PRINCIPAL CCFV</a>
+        <a href="/liga/index.html">PORTAL DA LIGA ↗</a>
+      </div>
+    </aside>
+
+    <main class="main org-main">
+      <header class="topbar">
+        <span class="topbar-label">CCFV / ADMINISTRAÇÃO / ORGANIZAÇÃO ESPORTIVA</span>
+        <div class="topbar-account">
+          <div class="account-info"><strong id="admin-email">Administrador</strong><small>ACESSO ADMINISTRATIVO</small></div>
+          <button class="logout" id="logout-button" type="button">SAIR</button>
+        </div>
+      </header>
+
+      <section class="page-heading org-heading">
+        <div>
+          <div class="eyebrow">CCFV // SPORTS OPERATIONS</div>
+          <h1>ORGANIZAÇÃO <em>ESPORTIVA.</em></h1>
+          <p>Importe a classificação do Campeonato Classificatório, distribua os 36 clubes nas divisões e prepare as copas oficiais da temporada.</p>
+        </div>
+        <div class="org-season-picker">
+          <label for="season-select">TEMPORADA</label>
+          <select id="season-select"><option value="">Carregando temporadas...</option></select>
+          <small id="season-status">Selecione uma temporada</small>
+        </div>
+      </section>
+
+      <div class="org-notice" id="global-notice">
+        <strong>IMPORTANTE</strong>
+        <span>As operações abaixo usam inscrições confirmadas. A importação do classificatório é apenas uma prévia até você confirmar a distribuição. Nenhum clube será movido sem sua confirmação.</span>
+      </div>
+
+      <div class="org-tabs" role="tablist">
+        <button class="org-tab active" type="button" data-view-tab="divisions">01 · DISTRIBUIÇÃO DAS DIVISÕES</button>
+        <button class="org-tab" type="button" data-view-tab="cups">02 · COPAS E SORTEIOS</button>
+      </div>
+
+      <section class="org-view active" data-view="divisions">
+        <div class="org-section-head">
+          <div><span class="eyebrow">01 / CLASSIFICAÇÃO EXTERNA</span><h2>IMPORTAR <em>CLASSIFICATÓRIO.</em></h2><p>Use o arquivo CSV exportado pela ferramenta local do Campeonato Classificatório CCFV.</p></div>
+          <div class="org-stat"><strong id="confirmed-count">—</strong><span>INSCRIÇÕES CONFIRMADAS</span></div>
+        </div>
+
+        <section class="panel org-panel">
+          <div class="panel-head"><strong>ARQUIVO DE CLASSIFICAÇÃO</strong><span>CSV · 36 CLUBES</span></div>
+          <div class="panel-body">
+            <div class="org-upload-row">
+              <div class="org-file-wrap">
+                <label for="ranking-file" class="org-file-label"><span>↥</span><b>SELECIONAR CSV</b><small>CCFV_Classificacao_Final.csv</small></label>
+                <input id="ranking-file" type="file" accept=".csv,text/csv">
+              </div>
+              <div class="org-upload-copy">
+                <strong>Como funciona?</strong>
+                <p>O aplicativo local gera as colunas “Posição” e “Clube”. O sistema cruza os nomes com as inscrições confirmadas desta temporada. Nomes ausentes, duplicados ou divergentes serão destacados e bloqueiam a confirmação.</p>
+              </div>
+            </div>
+            <div id="import-message" class="org-message" hidden></div>
+          </div>
+        </section>
+
+        <section class="panel org-panel" id="ranking-panel" hidden>
+          <div class="panel-head"><strong>PRÉVIA DA DISTRIBUIÇÃO</strong><span id="ranking-counter">0 / 36 CLUBES</span></div>
+          <div class="panel-body">
+            <div class="division-summary org-division-summary">
+              <div><b id="count-colosseum">0 / 12</b><span>SÉRIE COLOSSEUM</span></div>
+              <div><b id="count-gladiadores">0 / 12</b><span>SÉRIE GLADIADORES</span></div>
+              <div><b id="count-legionarios">0 / 12</b><span>SÉRIE LEGIONÁRIOS</span></div>
+            </div>
+            <div class="org-table-wrap">
+              <table class="org-table">
+                <thead><tr><th>POS.</th><th>CLUBE NO CSV</th><th>CLUBE CADASTRADO</th><th>GRUPO</th><th>PTS</th><th>DESTINO</th><th>ORDEM</th></tr></thead>
+                <tbody id="ranking-body"><tr><td colspan="7" class="org-empty">Importe o CSV para visualizar os 36 clubes.</td></tr></tbody>
+              </table>
+            </div>
+            <label class="org-review-check"><input type="checkbox" id="tie-review"><span>Revisei a classificação, inclusive os casos sinalizados como empate técnico, e confirmo que a ordem final está correta.</span></label>
+            <div class="org-actions">
+              <button class="btn ghost" id="clear-ranking" type="button">LIMPAR PRÉVIA</button>
+              <button class="btn primary" id="assign-divisions" type="button" disabled>CONFIRMAR DISTRIBUIÇÃO 12 / 12 / 12</button>
+            </div>
+            <p class="org-footnote">Use as setas para ajustar a ordem final antes de confirmar. A posição 1–12 vai para Colosseum, 13–24 para Gladiadores e 25–36 para Legionários. A operação registra a posição da classificação no banco e é auditada.</p>
+          </div>
+        </section>
+
+        <section class="panel org-panel">
+          <div class="panel-head"><strong>DIVISÕES DA TEMPORADA</strong><span id="division-state">AGUARDANDO DISTRIBUIÇÃO</span></div>
+          <div class="panel-body">
+            <div class="org-divisions-grid" id="division-rosters">
+              <div class="org-empty-card">Selecione uma temporada e distribua os clubes para preencher as três divisões.</div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="org-view" data-view="cups" hidden>
+        <div class="org-section-head">
+          <div><span class="eyebrow">02 / COMPETIÇÕES ELIMINATÓRIAS</span><h2>COPAS <em>CCFV.</em></h2><p>Confira os participantes previstos e realize o sorteio oficial da primeira fase.</p></div>
+          <a class="btn ghost" href="/liga/admin/index.html?module=competicoes&tab=matches">ABRIR PARTIDAS E RESULTADOS ↗</a>
+        </div>
+        <div class="org-cup-grid">
+          <article class="org-cup-card">
+            <div class="org-cup-top"><span>36 CLUBES · TODAS AS DIVISÕES</span><b id="cup-inter-count">0 / 36</b></div>
+            <h3>COPA INTERDIVISIONAL</h3>
+            <p>Participação das 36 equipes classificadas e distribuídas entre Colosseum, Gladiadores e Legionários.</p>
+            <div class="org-participant-list" id="cup-inter-list"><div class="org-empty-card">Aguardando a distribuição das divisões.</div></div>
+            <div class="org-cup-actions"><button class="btn primary" type="button" data-generate-draw="INTERDIVISIONAL" disabled>SORTEAR INTERDIVISIONAL</button></div>
+            <div class="org-cup-result" id="cup-inter-result"></div>
+          </article>
+          <article class="org-cup-card">
+            <div class="org-cup-top"><span>8 CLUBES · COLOSSEUM</span><b id="cup-elite-count">0 / 8</b></div>
+            <h3>COPA ELITE</h3>
+            <p>Os oito primeiros da Colosseum após a 22ª rodada do Campeonato CCFV. A seleção será calculada pela classificação oficial.</p>
+            <div class="org-participant-list" id="cup-elite-list"><div class="org-empty-card">A Copa Elite será liberada após os 132 resultados da Colosseum.</div></div>
+            <div class="org-cup-actions"><button class="btn primary" type="button" data-generate-draw="ELITE" disabled>SORTEAR COPA ELITE</button></div>
+            <div class="org-cup-result" id="cup-elite-result"></div>
+          </article>
+          <article class="org-cup-card">
+            <div class="org-cup-top"><span>24 CLUBES · GLADIADORES + LEGIONÁRIOS</span><b id="cup-integ-count">0 / 24</b></div>
+            <h3>COPA INTEGRAÇÃO</h3>
+            <p>Participação dos 24 clubes das divisões Gladiadores e Legionários.</p>
+            <div class="org-participant-list" id="cup-integ-list"><div class="org-empty-card">Aguardando a distribuição das divisões.</div></div>
+            <div class="org-cup-actions"><button class="btn primary" type="button" data-generate-draw="INTEGRACAO" disabled>SORTEAR INTEGRAÇÃO</button></div>
+            <div class="org-cup-result" id="cup-integ-result"></div>
+          </article>
+        </div>
+        <div class="org-notice org-notice-warning">
+          <strong>FORMATO TÉCNICO V1</strong>
+          <span>O sorteio usa a estrutura provisória já preparada no motor: Interdivisional com 4 preliminares e 28 vagas diretas para a fase de 32; Integração com 8 preliminares e 8 vagas diretas para as oitavas; Elite com quartas de final. Jogos únicos, pênaltis em caso de empate. Confirme esses regulamentos antes de gerar uma copa oficial. Depois do sorteio, a chave fica congelada.</span>
+        </div>
+        <section class="panel org-panel">
+          <div class="panel-head"><strong>CHAVES GERADAS</strong><span id="cup-history-count">0 COPAS</span></div>
+          <div class="panel-body" id="cup-history"><div class="org-empty-card">Nenhuma copa gerada nesta temporada.</div></div>
+        </section>
+      </section>
+
+      <footer class="footer"><span>CCFV // CONFEDERAÇÕES COLISEU DE FUTEBOL VIRTUAL</span><span>ORGANIZAÇÃO ESPORTIVA · DISTRIBUIÇÃO · SORTEIOS</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="module-toast" hidden></div>
+</body>
+</html>
