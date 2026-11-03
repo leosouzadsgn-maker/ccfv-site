@@ -83,10 +83,12 @@
     select.innerHTML = `<option value="">Selecione uma temporada</option>` + seasons.map(item => `<option value="${esc(item.id)}">${esc(item.name || item.season_code || "Temporada")} · ${esc(statusLabel(item.status))}</option>`).join("");
     const target = seasons.find(item => String(item.id) === previous) || seasons.find(item => item.status === "REGISTRATION") || seasons.find(item => item.status === "ACTIVE") || seasons[0];
     if (target) {
+      $("#create-season-link").hidden = true;
       select.value = target.id;
       await selectSeason(target.id);
     } else {
-      $("#season-status").textContent = "Nenhuma temporada encontrada";
+      $("#season-status").textContent = "Nenhuma temporada cadastrada";
+      $("#create-season-link").hidden = false;
       clearSeasonViews();
     }
   }
@@ -109,7 +111,13 @@
 
   async function selectSeason(id) {
     season = seasons.find(item => String(item.id) === String(id)) || null;
-    if (!season) { clearSeasonViews(); return; }
+    if (!season) {
+      $("#season-status").textContent = seasons.length ? "Selecione uma temporada" : "Nenhuma temporada cadastrada";
+      $("#create-season-link").hidden = seasons.length > 0;
+      clearSeasonViews();
+      return;
+    }
+    $("#create-season-link").hidden = true;
     $("#season-status").textContent = `${statusLabel(season.status)} · ${season.starts_on || "sem início"} até ${season.ends_on || "sem término"}`;
     await Promise.all([loadEnrollments(), loadCompetitions()]);
     renderDivisionRosters();
@@ -438,6 +446,35 @@
     setCupCount("ELITE",eliteParticipants.length,8);
   }
 
+  function activateView(tab, syncParent = false) {
+    const allowed = new Set(["divisions", "cups"]);
+    const activeTab = allowed.has(tab) ? tab : "divisions";
+    $$('[data-view-tab]').forEach(button => button.classList.toggle("active", button.dataset.viewTab === activeTab));
+    $$('[data-view]').forEach(view => {
+      const active = view.dataset.view === activeTab;
+      view.classList.toggle("active", active);
+      view.hidden = !active;
+    });
+
+    if (syncParent && window.parent && window.parent !== window) {
+      try {
+        const parentWindow = window.parent;
+        const url = new URL(parentWindow.location.href);
+        url.searchParams.set("module", "organizacao");
+        url.searchParams.set("tab", activeTab);
+        parentWindow.history.replaceState({}, "", url.pathname + url.search + url.hash);
+        parentWindow.document.querySelectorAll(".sidebar .nav a").forEach(link => link.classList.remove("active"));
+        const activeLink = [...parentWindow.document.querySelectorAll(".sidebar .nav a")].find(link => {
+          const linkUrl = new URL(link.href, parentWindow.location.origin);
+          return linkUrl.searchParams.get("module") === "organizacao" && linkUrl.searchParams.get("tab") === activeTab;
+        });
+        if (activeLink) activeLink.classList.add("active");
+      } catch (error) {
+        console.warn("CCFV ORGANIZAÇÃO: não foi possível sincronizar a navegação principal.", error);
+      }
+    }
+  }
+
   function bind() {
     $("#season-select").addEventListener("change", async event => {
       try { await selectSeason(event.target.value); }
@@ -465,13 +502,8 @@
       if (busy) return;
       try { await assignDivisions(); } catch (error) { toast(error.message || "Falha na distribuição.", true); }
     });
-    $$("[data-view-tab]").forEach(button => button.addEventListener("click", () => {
-      $$("[data-view-tab]").forEach(item => item.classList.toggle("active", item === button));
-      $$("[data-view]").forEach(view => {
-        const active = view.dataset.view === button.dataset.viewTab;
-        view.classList.toggle("active", active);
-        view.hidden = !active;
-      });
+    $$('[data-view-tab]').forEach(button => button.addEventListener("click", () => {
+      activateView(button.dataset.viewTab, true);
     }));
     $$('[data-generate-draw]').forEach(button => button.addEventListener("click", async () => {
       if (busy) return;
@@ -493,6 +525,8 @@
   }
 
   async function init() {
+    const routeParams = new URLSearchParams(window.location.search);
+    activateView(routeParams.get("tab") || "divisions", false);
     bind();
     try {
       if (!window.supabase?.createClient) throw new Error("Biblioteca Supabase indisponível.");

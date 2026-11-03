@@ -5,11 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#030805">
   <meta name="robots" content="noindex,nofollow">
+  <script>
+    (() => {
+      const params = new URLSearchParams(window.location.search);
+      const allowedTabs = new Set(["divisions", "cups"]);
+      const requestedTab = params.get("tab");
+      const activeTab = allowedTabs.has(requestedTab) ? requestedTab : "divisions";
+
+      if (params.get("embed") === "1") {
+        document.documentElement.classList.add("org-embed-mode");
+      } else {
+        window.location.replace(`/liga/admin/index.html?module=organizacao&tab=${activeTab}`);
+      }
+    })();
+  </script>
   <title>Organização Esportiva — CCFV Liga Admin</title>
   <link rel="stylesheet" href="css/modulos.css">
-  <link rel="stylesheet" href="css/organizacao.css">
+  <link rel="stylesheet" href="css/organizacao.css?v=20261103-04">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/organizacao.js" defer></script>
+  <script src="js/organizacao.js?v=20261103-04" defer></script>
 </head>
 <body>
   <div class="access-screen" id="access-screen">
@@ -22,38 +36,38 @@
 
   <div class="admin-layout" id="admin-layout" hidden>
     <aside class="sidebar">
-      <a class="brand" href="/liga/index.html">
+      <a class="brand" href="/liga/index.html" target="_top">
         <img src="../logos/01_logo_liga_ccfv.png" alt="Liga CCFV">
         <span><strong>CCFV <em>/ LIGA</em></strong><small>ADMINISTRAÇÃO DA LIGA</small></span>
       </a>
       <div class="nav-label">CENTRAL DA LIGA</div>
       <nav class="nav">
-        <a href="/liga/admin/index.html"><span>⌂</span>Visão geral</a>
-        <a href="/liga/admin/vinculos.html"><span>◈</span>Vínculos de jogadores</a>
+        <a href="/liga/admin/index.html" target="_top"><span>⌂</span>Visão geral</a>
+        <a href="/liga/admin/vinculos.html" target="_top"><span>◈</span>Vínculos de jogadores</a>
       </nav>
       <div class="nav-label">GESTÃO DOS CLUBES</div>
       <nav class="nav">
-        <a href="/liga/admin/clubes.html"><span>♜</span>Clubes</a>
-        <a href="/liga/admin/index.html?module=competicoes&tab=season"><span>▦</span>Temporadas</a>
-        <a href="/liga/admin/index.html?module=competicoes&tab=enrollments"><span>＋</span>Inscrições</a>
-        <a href="/liga/admin/organizacao.html" class="active"><span>◉</span>Divisões e copas</a>
+        <a href="/liga/admin/clubes.html" target="_top"><span>♜</span>Clubes</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=season" target="_top"><span>▦</span>Temporadas</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=enrollments" target="_top"><span>＋</span>Inscrições</a>
+        <a href="/liga/admin/index.html?module=organizacao&tab=divisions" target="_top" class="active"><span>◉</span>Divisões</a>
       </nav>
       <div class="nav-label">COMPETIÇÕES</div>
       <nav class="nav">
-        <a href="/liga/admin/index.html?module=competicoes&tab=championship"><span>⚔</span>Campeonato CCFV</a>
-        <a href="/liga/admin/index.html?module=competicoes&tab=cups"><span>🏆</span>Copas</a>
-        <a href="/liga/admin/index.html?module=competicoes&tab=matches"><span>▤</span>Partidas e resultados</a>
-        <a href="/liga/admin/index.html?module=competicoes&tab=standings"><span>▥</span>Classificação</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=championship" target="_top"><span>⚔</span>Campeonato CCFV</a>
+        <a href="/liga/admin/index.html?module=organizacao&tab=cups" target="_top"><span>🏆</span>Copas e sorteios</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=matches" target="_top"><span>▤</span>Partidas e resultados</a>
+        <a href="/liga/admin/index.html?module=competicoes&tab=standings" target="_top"><span>▥</span>Classificação</a>
       </nav>
       <div class="nav-label">ADMINISTRAÇÃO</div>
       <nav class="nav">
-        <a href="/liga/admin/premiacoes.html"><span>✧</span>Premiações</a>
-        <a href="/liga/admin/historico.html"><span>◷</span>Histórico</a>
-        <a href="/liga/admin/configuracoes.html"><span>⚙</span>Configurações</a>
+        <a href="/liga/admin/premiacoes.html" target="_top"><span>✧</span>Premiações</a>
+        <a href="/liga/admin/historico.html" target="_top"><span>◷</span>Histórico</a>
+        <a href="/liga/admin/configuracoes.html" target="_top"><span>⚙</span>Configurações</a>
       </nav>
       <div class="sidebar-bottom">
-        <a href="/admin/">← ADMIN PRINCIPAL CCFV</a>
-        <a href="/liga/index.html">PORTAL DA LIGA ↗</a>
+        <a href="/admin/" target="_top">← ADMIN PRINCIPAL CCFV</a>
+        <a href="/liga/index.html" target="_top">PORTAL DA LIGA ↗</a>
       </div>
     </aside>
 
@@ -76,6 +90,7 @@
           <label for="season-select">TEMPORADA</label>
           <select id="season-select"><option value="">Carregando temporadas...</option></select>
           <small id="season-status">Selecione uma temporada</small>
+          <a class="org-create-season-link" id="create-season-link" href="/liga/admin/index.html?module=competicoes&tab=season" target="_top" hidden>CRIAR OU ABRIR TEMPORADA →</a>
         </div>
       </section>
 
@@ -148,7 +163,7 @@
       <section class="org-view" data-view="cups" hidden>
         <div class="org-section-head">
           <div><span class="eyebrow">02 / COMPETIÇÕES ELIMINATÓRIAS</span><h2>COPAS <em>CCFV.</em></h2><p>Confira os participantes previstos e realize o sorteio oficial da primeira fase.</p></div>
-          <a class="btn ghost" href="/liga/admin/index.html?module=competicoes&tab=matches">ABRIR PARTIDAS E RESULTADOS ↗</a>
+          <a class="btn ghost" href="/liga/admin/index.html?module=competicoes&tab=matches" target="_top">ABRIR PARTIDAS E RESULTADOS ↗</a>
         </div>
         <div class="org-cup-grid">
           <article class="org-cup-card">
