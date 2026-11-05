@@ -25,6 +25,7 @@
         players: [],
         playerCompetitions: [],
         matches: [],
+        completedMatchCount: 0,
         nightMatches: [],
         ranking: [],
         updatedAt: null
@@ -247,6 +248,115 @@
         }
 
         return data || [];
+    }
+
+    /* =========================================================
+       TOTAL DE PARTIDAS OFICIAIS CONCLUÍDAS
+       Soma as fontes independentes de cada competição.
+       Não conta jogos agendados ou pendentes.
+       ========================================================= */
+
+    async function loadCompletedMatchCount(client) {
+
+        const sources = [
+            {
+                table: "matches",
+                statuses: [
+                    "FINAL",
+                    "FINALIZADO",
+                    "FINALIZADA",
+                    "FINISHED",
+                    "COMPLETED",
+                    "CONCLUIDA",
+                    "CONCLUÍDA",
+                    "ENCERRADA",
+                    "ENCERRADO",
+                    "VALIDATED",
+                    "WO",
+                    "ADMIN_DECISION",
+                    "PLAYED"
+                ]
+            },
+            {
+                table: "championship_public_matches",
+                statuses: ["VALIDATED", "WO", "ADMIN_DECISION"]
+            },
+            {
+                table: "ccfv_libertadores_public_matches",
+                statuses: ["VALIDATED", "WO", "ADMIN_DECISION"]
+            },
+            {
+                table: "ccfv_world_cup_public_matches",
+                statuses: ["VALIDATED", "WO", "ADMIN_DECISION"]
+            },
+            {
+                table: "night_cup_matches",
+                statuses: [
+                    "FINAL",
+                    "FINISHED",
+                    "COMPLETED",
+                    "CONCLUIDA",
+                    "CONCLUÍDA",
+                    "ENCERRADA",
+                    "ENCERRADO"
+                ]
+            },
+            {
+                table: "night_cup_coop_matches",
+                statuses: ["FINAL"]
+            },
+            {
+                table: "ccfv_league_matches",
+                statuses: ["PLAYED"]
+            }
+        ];
+
+        const results = await Promise.allSettled(
+            sources.map(async source => {
+
+                const { count, error } = await client
+                    .from(source.table)
+                    .select("id", {
+                        count: "exact",
+                        head: true
+                    })
+                    .in("status", source.statuses);
+
+                if (error) {
+                    throw new Error(
+                        source.table + ": " + error.message
+                    );
+                }
+
+                return {
+                    table: source.table,
+                    count: Number(count || 0)
+                };
+
+            })
+        );
+
+        let total = 0;
+
+        results.forEach((result, index) => {
+
+            if (result.status === "fulfilled") {
+
+                total += result.value.count;
+
+            } else {
+
+                console.warn(
+                    "CCFV // CONTADOR: fonte não contabilizada:",
+                    sources[index].table,
+                    result.reason
+                );
+
+            }
+
+        });
+
+        return total;
     }
 
     /* =========================================================
@@ -1837,7 +1947,7 @@
 
                     element.textContent =
                         String(
-                            state.matches.length
+                            state.completedMatchCount
                         );
 
                 }
@@ -1959,6 +2069,7 @@
                     loadPlayerCompetitions(client),
                     loadMatches(client),
                     loadNightMatches(client),
+                    loadCompletedMatchCount(client),
                     loadRanking(client)
                 ]);
 
@@ -1967,6 +2078,7 @@
                 playerCompetitionsResult,
                 matchesResult,
                 nightMatchesResult,
+                matchCountResult,
                 rankingResult
             ] = results;
 
@@ -1990,6 +2102,11 @@
 
             state.nightMatches =
                 readResult(nightMatchesResult, "NIGHT CUP");
+
+            state.completedMatchCount =
+                matchCountResult.status === "fulfilled"
+                    ? Number(matchCountResult.value || 0)
+                    : 0;
 
             const officialRanking =
                 readResult(rankingResult, "RANKING");
@@ -2025,7 +2142,7 @@
                         state.ranking.length,
 
                     matches:
-                        state.matches.length,
+                        state.completedMatchCount,
 
                     night:
                         state.nightMatches.length
