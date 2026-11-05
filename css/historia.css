@@ -25,3 +25,296 @@
 .ccfv-history-entry__trophy{width:62px;height:62px;border-radius:12px;display:grid;place-items:center;border:1px solid rgba(67,223,145,.18);background:rgba(67,223,145,.04);overflow:hidden}.ccfv-history-entry__trophy img{display:block;width:52px;height:56px;object-fit:contain;filter:drop-shadow(0 0 10px rgba(67,223,145,.12))}
 .ccfv-history-entry__competition{color:#43df91;font-size:7px;font-weight:900;letter-spacing:.14em}.ccfv-history-entry__name{margin-top:5px;font-size:18px;font-weight:950}.ccfv-history-entry__meta{margin-top:4px;color:rgba(255,255,255,.30);font-size:9px}.ccfv-history-entry__season{text-align:right;color:rgba(255,255,255,.28);font-size:8px;font-weight:900;letter-spacing:.12em}.ccfv-history-entry__season strong{display:block;margin-top:7px;color:#fff;font-size:11px;letter-spacing:.04em}.ccfv-history-empty{padding:45px 20px;text-align:center;border:1px dashed rgba(67,223,145,.16);border-radius:14px;color:rgba(255,255,255,.25);font-size:9px;font-weight:900;letter-spacing:.12em}
 @media(max-width:1050px){.ccfv-trophy-grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:800px){.ccfv-history-hero__inner{grid-template-columns:1fr;gap:35px;padding-top:130px}.ccfv-history-seal{width:190px;height:190px;margin:0}.ccfv-history-seal strong{font-size:38px}.ccfv-history-heading{display:block}.ccfv-history-heading p{margin-top:20px}.ccfv-trophy-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.ccfv-history-container{width:min(calc(100% - 28px),1240px)}.ccfv-history-section{padding:70px 0}.ccfv-history-hero h1{font-size:54px}.ccfv-trophy-grid{grid-template-columns:1fr}.ccfv-history-stats{grid-template-columns:1fr}.ccfv-history-entry{grid-template-columns:54px minmax(0,1fr)}.ccfv-history-entry__trophy{width:54px;height:54px}.ccfv-history-entry__season{grid-column:2;text-align:left}}
+
+/* =========================================================
+   CCFV // HISTÓRICO PAGINADO
+   HALL DOS CAMPEÕES — ARQUIVO VISUAL
+   ========================================================= */
+
+.ccfv-history-filters {
+    margin-bottom: 15px;
+}
+
+.ccfv-history-toolbar {
+    display: grid;
+    grid-template-columns: minmax(260px,1.5fr) minmax(200px,.8fr) auto;
+    gap: 12px;
+    align-items: end;
+    margin: 0 0 22px;
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 14px;
+    background: linear-gradient(135deg,rgba(67,223,145,.045),rgba(255,255,255,.012));
+}
+
+.ccfv-history-control {
+    display: grid;
+    gap: 7px;
+    min-width: 0;
+}
+
+.ccfv-history-control > span {
+    color: rgba(255,255,255,.42);
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .13em;
+}
+
+.ccfv-history-control input,
+.ccfv-history-control select {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 13px;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 8px;
+    outline: none;
+    background: #050a07;
+    color: #fff;
+    font-family: inherit;
+    font-size: 11px;
+}
+
+.ccfv-history-control input::placeholder {
+    color: rgba(255,255,255,.28);
+}
+
+.ccfv-history-control input:focus,
+.ccfv-history-control select:focus {
+    border-color: rgba(67,223,145,.55);
+    box-shadow: 0 0 0 3px rgba(67,223,145,.07);
+}
+
+.ccfv-history-results-info {
+    align-self: center;
+    color: #43df91;
+    font-size: 9px;
+    font-weight: 900;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.ccfv-history-list {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    align-items: stretch;
+    gap: 13px;
+}
+
+.ccfv-history-entry {
+    position: relative;
+    display: grid;
+    grid-template-columns: 54px minmax(0,1fr);
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    min-height: 145px;
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,.075);
+    border-radius: 15px;
+    background:
+        radial-gradient(circle at 100% 0%,rgba(67,223,145,.065),transparent 48%),
+        linear-gradient(145deg,#08110b,#030604);
+    overflow: hidden;
+    transition: transform .2s ease,border-color .2s ease,background .2s ease;
+}
+
+.ccfv-history-entry:hover {
+    transform: translateY(-3px);
+    border-color: rgba(67,223,145,.28);
+    background:
+        radial-gradient(circle at 100% 0%,rgba(67,223,145,.10),transparent 50%),
+        linear-gradient(145deg,#0a160e,#030604);
+}
+
+.ccfv-history-entry__trophy {
+    width: 52px;
+    height: 64px;
+    border: 1px solid rgba(67,223,145,.17);
+    border-radius: 11px;
+    background: rgba(67,223,145,.035);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+}
+
+.ccfv-history-entry__trophy img {
+    width: 46px;
+    height: 56px;
+    object-fit: contain;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,.45));
+}
+
+.ccfv-history-entry__content {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+}
+
+.ccfv-history-entry__competition {
+    color: #43df91;
+    font-size: 8px;
+    font-weight: 950;
+    letter-spacing: .13em;
+    line-height: 1.4;
+}
+
+.ccfv-history-entry__name {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 950;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+}
+
+.ccfv-history-entry__meta {
+    margin-top: 1px;
+    color: rgba(255,255,255,.43);
+    font-size: 9px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.ccfv-history-entry__season {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 7px;
+    margin-top: 7px;
+    padding-top: 9px;
+    border-top: 1px solid rgba(255,255,255,.07);
+    text-align: left;
+}
+
+.ccfv-history-entry__season span {
+    color: rgba(255,255,255,.47);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: .04em;
+}
+
+.ccfv-history-entry__season strong {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 5px 7px;
+    border: 1px solid rgba(67,223,145,.17);
+    border-radius: 5px;
+    background: rgba(67,223,145,.06);
+    color: #43df91;
+    font-size: 7px;
+    letter-spacing: .1em;
+}
+
+.ccfv-history-entry__date {
+    color: rgba(255,255,255,.25);
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: .09em;
+}
+
+.ccfv-history-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 22px;
+    margin-top: 24px;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,.065);
+    border-radius: 12px;
+    background: rgba(255,255,255,.012);
+}
+
+.ccfv-history-pagination button {
+    min-height: 38px;
+    padding: 0 14px;
+    border: 1px solid rgba(67,223,145,.22);
+    border-radius: 7px;
+    background: rgba(67,223,145,.055);
+    color: #43df91;
+    font-family: inherit;
+    font-size: 8px;
+    font-weight: 950;
+    letter-spacing: .08em;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.ccfv-history-pagination button:hover:not(:disabled) {
+    background: #43df91;
+    color: #031008;
+}
+
+.ccfv-history-pagination button:disabled {
+    opacity: .28;
+    cursor: not-allowed;
+}
+
+.ccfv-history-pagination > span {
+    display: grid;
+    gap: 4px;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 950;
+    text-align: center;
+    letter-spacing: .08em;
+}
+
+.ccfv-history-pagination > span small {
+    color: rgba(255,255,255,.35);
+    font-size: 7px;
+    font-weight: 700;
+}
+
+@media(max-width:1100px) {
+    .ccfv-history-list {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+    }
+
+    .ccfv-history-toolbar {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .ccfv-history-results-info {
+        grid-column: 1/-1;
+        text-align: left;
+    }
+}
+
+@media(max-width:650px) {
+    .ccfv-history-list {
+        grid-template-columns: 1fr;
+        gap: 9px;
+    }
+
+    .ccfv-history-toolbar {
+        grid-template-columns: 1fr;
+        padding: 12px;
+    }
+
+    .ccfv-history-results-info {
+        grid-column: auto;
+        text-align: left;
+    }
+
+    .ccfv-history-entry {
+        min-height: 125px;
+    }
+
+    .ccfv-history-pagination {
+        gap: 9px;
+        padding: 12px 7px;
+    }
+
+    .ccfv-history-pagination button {
+        min-height: 35px;
+        padding: 0 9px;
+        font-size: 7px;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    .ccfv-history-entry {
+        transition: none;
+    }
+}

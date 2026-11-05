@@ -1,4 +1,4 @@
-﻿/* =========================================================
+/* =========================================================
    CCFV // HISTÃ“RIA â€” LIVRO OFICIAL DOS CAMPEÃ•ES
    ========================================================= */
 
@@ -7,7 +7,11 @@
 
     const state = {
         all: [],
-        filter: "TODOS"
+        filter: "TODOS",
+        search: "",
+        season: "TODAS",
+        page: 1,
+        pageSize: 12
     };
 
     const $ = selector =>
@@ -30,9 +34,12 @@
 
     function competitionKey(value) {
 
-        const n =
-            norm(value)
-                .replaceAll(" ", "_");
+        const n = norm(value).replace(/[^A-Z0-9]/g, "");
+
+        // A CO-OP PRECISA SER IDENTIFICADA ANTES DA NIGHT CUP INDIVIDUAL.
+        if (n.includes("NIGHTCUPCOOP") || n.includes("NIGHTCOOP")) {
+            return "NIGHT_CUP_COOP";
+        }
 
         if (n.includes("CHAMPIONS")) {
             return "CHAMPIONS";
@@ -50,10 +57,7 @@
             return "LIBERTADORES";
         }
 
-        if (
-            n.includes("MUNDO") ||
-            n.includes("WORLD")
-        ) {
+        if (n.includes("MUNDO") || n.includes("WORLD")) {
             return "COPA_DO_MUNDO";
         }
 
@@ -75,6 +79,9 @@
 
             NIGHT_CUP:
                 "../assets/images/historia/trofeus/night-cup.png",
+
+            NIGHT_CUP_COOP:
+                "../assets/images/night-cup-coop-logo.png",
 
             LIBERTADORES:
                 "../assets/images/historia/trofeus/libertadores.png",
@@ -246,185 +253,283 @@
 
     function render() {
 
-        const list =
-            $("#history-list");
+        const list = $("#history-list");
 
-        if (!list) {
-            return;
+        if (!list) return;
+
+        const seasonSelect = $("#history-season-filter");
+
+        // Atualiza as opções de temporadas sem apagar a seleção atual.
+        const seasons = Array.from(
+            new Set(
+                state.all.map(item =>
+                    String(
+                        item.season ||
+                        item.season_label ||
+                        "TEMPORADA"
+                    )
+                )
+            )
+        ).sort((a, b) => b.localeCompare(a, "pt-BR", {
+            numeric: true
+        }));
+
+        if (seasonSelect) {
+
+            const signature = JSON.stringify(seasons);
+
+            if (seasonSelect.dataset.signature !== signature) {
+
+                const previous = state.season;
+
+                seasonSelect.innerHTML =
+                    '<option value="TODAS">TODAS AS TEMPORADAS</option>' +
+                    seasons.map(season =>
+                        '<option value="' + esc(season) + '">' +
+                        esc(season) +
+                        '</option>'
+                    ).join("");
+
+                seasonSelect.dataset.signature = signature;
+
+                state.season = seasons.includes(previous)
+                    ? previous
+                    : "TODAS";
+
+                seasonSelect.value = state.season;
+            }
         }
 
-        const filtered =
-            state.filter === "TODOS"
+        const query = norm(state.search);
 
-                ? state.all
+        const filtered = state.all.filter(item => {
 
-                : state.all.filter(
-                    item =>
+            const competition = competitionKey(
+                item.competition_code ||
+                item.competition_name
+            );
+
+            const season = String(
+                item.season ||
+                item.season_label ||
+                "TEMPORADA"
+            );
+
+            const player = item.player_name ||
+                item.participant_name ||
+                "";
+
+            const team = item.team_name ||
+                item.club_name ||
+                "";
+
+            const matchesCompetition =
+                state.filter === "TODOS" ||
+                competition === state.filter;
+
+            const matchesSeason =
+                state.season === "TODAS" ||
+                season === state.season;
+
+            const searchText = norm([
+                player,
+                team,
+                item.competition_name,
+                competition,
+                season,
+                item.title
+            ].join(" "));
+
+            const matchesSearch =
+                !query || searchText.includes(query);
+
+            return matchesCompetition &&
+                matchesSeason &&
+                matchesSearch;
+        });
+
+        // ESTATÍSTICAS
+        const total = $("#history-total");
+        const players = $("#history-players");
+        const competitions = $("#history-competitions");
+
+        if (total) total.textContent = String(filtered.length);
+
+        if (players) {
+            players.textContent = String(
+                new Set(
+                    filtered.map(item =>
+                        item.player_id ||
+                        item.participant_id ||
+                        item.player_name
+                    )
+                ).size
+            );
+        }
+
+        if (competitions) {
+            competitions.textContent = String(
+                new Set(
+                    filtered.map(item =>
                         competitionKey(
                             item.competition_code ||
                             item.competition_name
-                        ) ===
-                        state.filter
-                );
-
-
-        const total =
-            $("#history-total");
-
-        const players =
-            $("#history-players");
-
-        const competitions =
-            $("#history-competitions");
-
-
-        if (total) {
-
-            total.textContent =
-                String(
-                    filtered.length
-                );
-
-        }
-
-
-        if (players) {
-
-            players.textContent =
-                String(
-                    new Set(
-                        filtered.map(
-                            item =>
-                                item.player_id ||
-                                item.participant_id ||
-                                item.player_name
                         )
-                    ).size
-                );
-
+                    )
+                ).size
+            );
         }
 
+        const resultsInfo = $("#history-results-info");
 
-        if (competitions) {
-
-            competitions.textContent =
-                String(
-                    new Set(
-                        filtered.map(
-                            item =>
-                                competitionKey(
-                                    item.competition_code ||
-                                    item.competition_name
-                                )
-                        )
-                    ).size
-                );
-
+        if (resultsInfo) {
+            resultsInfo.textContent =
+                filtered.length +
+                (filtered.length === 1
+                    ? " conquista encontrada"
+                    : " conquistas encontradas");
         }
 
+        // PAGINAÇÃO
+        const pageCount = Math.max(
+            1,
+            Math.ceil(filtered.length / state.pageSize)
+        );
+
+        state.page = Math.min(
+            Math.max(1, state.page),
+            pageCount
+        );
+
+        const start = (state.page - 1) * state.pageSize;
+        const end = Math.min(
+            start + state.pageSize,
+            filtered.length
+        );
+
+        const pageItems = filtered.slice(start, end);
 
         if (!filtered.length) {
 
             list.innerHTML = `
-                <div
-                    class="ccfv-history-empty"
-                >
-                    NENHUM TÃTULO REGISTRADO NESTE FILTRO.
+                <div class="ccfv-history-empty">
+                    NENHUMA CONQUISTA ENCONTRADA.
+                    <br>
+                    AJUSTE OS FILTROS OU A BUSCA.
                 </div>
             `;
 
-            return;
+        } else {
+
+            list.innerHTML = pageItems.map(item => {
+
+                const competition =
+                    item.competition_name ||
+                    "COMPETIÇÃO CCFV";
+
+                const player =
+                    item.player_name ||
+                    item.participant_name ||
+                    "CAMPEÃO";
+
+                const season =
+                    item.season ||
+                    item.season_label ||
+                    "TEMPORADA";
+
+                const team =
+                    item.team_name ||
+                    item.club_name ||
+                    "CCFV";
+
+                const awarded = item.awarded_at
+                    ? new Date(item.awarded_at)
+                    : null;
+
+                const dateLabel =
+                    awarded && !Number.isNaN(awarded.getTime())
+                        ? awarded.toLocaleDateString("pt-BR")
+                        : "";
+
+                return `
+                    <article class="ccfv-history-entry">
+
+                        <div class="ccfv-history-entry__trophy">
+                            ${trophy(
+                                item.competition_code || competition,
+                                "Troféu " + competition + " CCFV"
+                            )}
+                        </div>
+
+                        <div class="ccfv-history-entry__content">
+
+                            <div class="ccfv-history-entry__competition">
+                                ${esc(competition)}
+                            </div>
+
+                            <div class="ccfv-history-entry__name">
+                                ${esc(player)}
+                            </div>
+
+                            <div class="ccfv-history-entry__meta">
+                                ${esc(team)}
+                            </div>
+
+                            <div class="ccfv-history-entry__season">
+                                <span>
+                                    ${esc(season)}
+                                </span>
+
+                                <strong>CAMPEÃO</strong>
+                            </div>
+
+                            ${dateLabel ? `
+                                <div class="ccfv-history-entry__date">
+                                    REGISTRADO EM ${esc(dateLabel)}
+                                </div>
+                            ` : ""}
+
+                        </div>
+
+                    </article>
+                `;
+
+            }).join("");
         }
 
+        // CONTROLES DE PÁGINAS
+        const pagination = $("#history-pagination");
 
-        list.innerHTML =
-            filtered
-                .map(item => {
+        if (pagination) {
 
-                    const competition =
-                        item.competition_name ||
-                        "COMPETIÃ‡ÃƒO CCFV";
+            const first = filtered.length
+                ? start + 1
+                : 0;
 
-                    const player =
-                        item.player_name ||
-                        item.participant_name ||
-                        "CAMPEÃƒO";
+            pagination.innerHTML = `
+                <button
+                    type="button"
+                    data-history-page="${state.page - 1}"
+                    ${state.page <= 1 ? "disabled" : ""}
+                >
+                    ← ANTERIOR
+                </button>
 
-                    const season =
-                        item.season ||
-                        item.season_label ||
-                        "TEMPORADA";
+                <span>
+                    PÁGINA ${state.page} DE ${pageCount}
+                    <small>${first}–${end} DE ${filtered.length} TÍTULOS</small>
+                </span>
 
-                    const team =
-                        item.team_name ||
-                        item.club_name ||
-                        "CCFV";
-
-
-                    return `
-                        <article
-                            class="ccfv-history-entry"
-                        >
-
-                            <div
-                                class="ccfv-history-entry__trophy"
-                            >
-                                ${trophy(
-                                    item.competition_code ||
-                                    competition,
-                                    `TrofÃ©u ${competition} CCFV`
-                                )}
-                            </div>
-
-                            <div>
-
-                                <div
-                                    class="ccfv-history-entry__competition"
-                                >
-                                    ${esc(
-                                        competition
-                                    )}
-                                </div>
-
-                                <div
-                                    class="ccfv-history-entry__name"
-                                >
-                                    ${esc(
-                                        player
-                                    )}
-                                </div>
-
-                                <div
-                                    class="ccfv-history-entry__meta"
-                                >
-                                    ${esc(
-                                        team
-                                    )}
-                                    Â·
-                                    CAMPEÃO
-                                </div>
-
-                            </div>
-
-                            <div
-                                class="ccfv-history-entry__season"
-                            >
-                                TEMPORADA
-
-                                <strong>
-                                    ${esc(
-                                        season
-                                    )}
-                                </strong>
-                            </div>
-
-                        </article>
-                    `;
-
-                })
-                .join("");
+                <button
+                    type="button"
+                    data-history-page="${state.page + 1}"
+                    ${state.page >= pageCount ? "disabled" : ""}
+                >
+                    PRÓXIMA →
+                </button>
+            `;
+        }
     }
-
 
     /* =========================================================
        SUPABASE
@@ -894,44 +999,82 @@
     function bindFilters() {
 
         document
-            .querySelectorAll(
-                "[data-filter]"
-            )
+            .querySelectorAll("[data-filter]")
             .forEach(button => {
 
-                button.addEventListener(
-                    "click",
-                    () => {
+                button.addEventListener("click", () => {
 
-                        document
-                            .querySelectorAll(
-                                "[data-filter]"
-                            )
-                            .forEach(item =>
-                                item.classList.remove(
-                                    "is-active"
-                                )
-                            );
-
-
-                        button.classList.add(
-                            "is-active"
+                    document
+                        .querySelectorAll("[data-filter]")
+                        .forEach(item =>
+                            item.classList.remove("is-active")
                         );
 
+                    button.classList.add("is-active");
 
-                        state.filter =
-                            button.dataset.filter ||
-                            "TODOS";
+                    state.filter =
+                        button.dataset.filter || "TODOS";
 
+                    state.page = 1;
 
-                        render();
-
-                    }
-                );
+                    render();
+                });
 
             });
-    }
 
+        const search = $("#history-search");
+
+        if (search) {
+
+            search.addEventListener("input", () => {
+
+                state.search = search.value || "";
+                state.page = 1;
+
+                render();
+
+            });
+        }
+
+        const season = $("#history-season-filter");
+
+        if (season) {
+
+            season.addEventListener("change", () => {
+
+                state.season = season.value || "TODAS";
+                state.page = 1;
+
+                render();
+
+            });
+        }
+
+        const pagination = $("#history-pagination");
+
+        if (pagination) {
+
+            pagination.addEventListener("click", event => {
+
+                const button = event.target.closest(
+                    "[data-history-page]"
+                );
+
+                if (!button || button.disabled) return;
+
+                const nextPage = Number(
+                    button.dataset.historyPage
+                );
+
+                if (!Number.isInteger(nextPage)) return;
+
+                state.page = nextPage;
+
+                render();
+
+            });
+        }
+    }
 
     /* =========================================================
        INIT

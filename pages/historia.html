@@ -683,6 +683,13 @@
                         NIGHT CUP
                     </button>
 
+                    <button
+                        type="button"
+                        data-filter="NIGHT_CUP_COOP"
+                    >
+                        NIGHT CUP CO-OP
+                    </button>
+
 
                     <button
                         type="button"
@@ -702,6 +709,37 @@
                 </div>
 
 
+
+                <!-- BUSCA E TEMPORADA -->
+
+                <div class="ccfv-history-toolbar">
+
+                    <label class="ccfv-history-control">
+                        <span>BUSCAR CONQUISTA</span>
+                        <input
+                            type="search"
+                            id="history-search"
+                            placeholder="Jogador, dupla ou competição..."
+                            autocomplete="off"
+                        >
+                    </label>
+
+                    <label class="ccfv-history-control">
+                        <span>FILTRAR TEMPORADA</span>
+                        <select id="history-season-filter">
+                            <option value="TODAS">TODAS AS TEMPORADAS</option>
+                        </select>
+                    </label>
+
+                    <div
+                        id="history-results-info"
+                        class="ccfv-history-results-info"
+                        aria-live="polite"
+                    >
+                        CARREGANDO CONQUISTAS
+                    </div>
+
+                </div>
 
                 <!-- ESTATÍSTICAS -->
 
@@ -772,6 +810,11 @@
 
                 </div>
 
+                <div
+                    id="history-pagination"
+                    class="ccfv-history-pagination"
+                    aria-label="Paginação do histórico"
+                ></div>
 
             </div>
 
