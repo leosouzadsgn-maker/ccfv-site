@@ -624,12 +624,18 @@
             `;
         }
 
+        const goalsFor = Number(
+            row.goals_for ?? row.gf ?? 0
+        );
+
+        const goalsAgainst = Number(
+            row.goals_against ?? row.ga ?? 0
+        );
+
         const gd = Number(
             row.goal_difference ??
-            (
-                (row.goals_for || 0) -
-                (row.goals_against || 0)
-            )
+            row.gd ??
+            (goalsFor - goalsAgainst)
         );
 
         return `
@@ -676,8 +682,8 @@
                 <span>${esc(row.wins ?? 0)}</span>
                 <span>${esc(row.draws ?? 0)}</span>
                 <span>${esc(row.losses ?? 0)}</span>
-                <span>${esc(row.goals_for ?? 0)}</span>
-                <span>${esc(row.goals_against ?? 0)}</span>
+                <span>${esc(goalsFor)}</span>
+                <span>${esc(goalsAgainst)}</span>
 
                 <span>
                     ${gd > 0 ? "+" : ""}
