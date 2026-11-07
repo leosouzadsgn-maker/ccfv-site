@@ -1774,21 +1774,7 @@
         );
 
 
-    const games =
-        Number(
-            leader.matches ??
-            (
-                Number(
-                    leader.wins || 0
-                ) +
-                Number(
-                    leader.draws || 0
-                ) +
-                Number(
-                    leader.losses || 0
-                )
-            )
-        );
+    const games = getPlayerGames(leader);
 
 
     const wins =
@@ -2433,16 +2419,18 @@
         const direct = Number(
             player?.matches_played ??
             player?.matches ??
-            NaN
+            0
         );
 
-        if (Number.isFinite(direct)) {
-            return direct;
-        }
-
-        return Number(player?.wins || 0) +
+        const resultsTotal =
+            Number(player?.wins || 0) +
             Number(player?.draws || 0) +
             Number(player?.losses || 0);
+
+        return Math.max(
+            Number.isFinite(direct) ? direct : 0,
+            resultsTotal
+        );
 
     }
 
@@ -3221,7 +3209,7 @@
         const rank = getRankByPoints(elo);
         const photo = leader.photo || leader.photo_url || "";
         const initials = String(leader.name || "CC").trim().slice(0, 2).toUpperCase();
-        const games = Number(leader.matches ?? (Number(leader.wins || 0) + Number(leader.draws || 0) + Number(leader.losses || 0)));
+        const games = getPlayerGames(leader);
         const wins = Number(leader.wins || 0);
         const titles = Number(leader.titles || 0);
         const photoHTML = photo
