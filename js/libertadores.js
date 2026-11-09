@@ -1117,9 +1117,9 @@
             .slice(0, 1);
 
         el.innerHTML = `
-            ${renderRound("ROUND_OF_16", 8, "OITAVAS")}
-            ${renderRound("QUARTERFINALS", 4, "QUARTAS")}
-            ${renderRound("SEMIFINALS", 2, "SEMIFINAIS")}
+            ${renderRound("ROUND_OF_16", 16, "OITAVAS")}
+            ${renderRound("QUARTERFINALS", 8, "QUARTAS")}
+            ${renderRound("SEMIFINALS", 4, "SEMIFINAIS")}
 
             <div class="
                 ccfv-champions-round
