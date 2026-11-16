@@ -52,6 +52,11 @@
   function bindNavigation() {
     document.querySelectorAll("[data-tab]").forEach(button => button.addEventListener("click", () => openTab(button.dataset.tab)));
     document.querySelectorAll("[data-open-tab]").forEach(button => button.addEventListener("click", () => openTab(button.dataset.openTab)));
+    $("#season-list")?.addEventListener("click", async event => {
+      const button = event.target.closest("[data-register-season]");
+      if (!button || button.disabled) return;
+      await requestSeasonRegistration(button.dataset.registerSeason, button);
+    });
   }
   function bindClubPreview() {
     const fields = ["club-name","club-short","club-slug","club-city","club-motto","club-primary","club-secondary","club-accent"];
@@ -179,7 +184,61 @@
   function renderSeasons() {
     const list = $("#season-list");
     if (!seasons.length) { list.innerHTML = `<div class="empty-state">Nenhuma temporada com inscrições abertas foi retornada pelo banco neste momento.</div>`; return; }
-    list.innerHTML = seasons.map(season => `<article class="season-card"><div><span class="season-meta">${escapeHTML(season.season_code || "TEMPORADA CCFV")} · ${season.is_test ? "TESTE" : "OFICIAL"}</span><h3>${escapeHTML(season.name || "Temporada")}</h3><p>${escapeHTML(season.starts_on || "Data a definir")} até ${escapeHTML(season.ends_on || "Data a definir")} · ${Number(season.monthly_fee || 0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</p></div><span class="status">${escapeHTML(statusLabel(season.status))}</span></article>`).join("");
+    list.innerHTML = seasons.map(season => {
+      const registration = registrations.find(item => String(item.season_id) === String(season.id));
+      const clubStatus = String(myClub?.status || "").toUpperCase();
+      let action = "";
+
+      if (registration) {
+        action = `<span class="status">INSCRIÇÃO: ${escapeHTML(statusLabel(registration.status))}</span>`;
+      } else if (!myClub) {
+        action = `<button class="btn" type="button" disabled>CRIE SEU CLUBE PRIMEIRO</button>`;
+      } else if (clubStatus !== "ACTIVE") {
+        action = `<button class="btn" type="button" disabled>AGUARDANDO APROVAÇÃO DO CLUBE</button>`;
+      } else {
+        action = `<button class="btn primary" type="button" data-register-season="${escapeHTML(season.id)}">SOLICITAR INSCRIÇÃO</button>`;
+      }
+
+      return `<article class="season-card"><div><span class="season-meta">${escapeHTML(season.season_code || "TEMPORADA CCFV")} · ${season.is_test ? "TESTE" : "OFICIAL"}</span><h3>${escapeHTML(season.name || "Temporada")}</h3><p>${escapeHTML(season.starts_on || "Data a definir")} até ${escapeHTML(season.ends_on || "Data a definir")} · ${Number(season.monthly_fee || 0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</p><span class="status">${escapeHTML(statusLabel(season.status))}</span></div><div class="season-card-action">${action}</div></article>`;
+    }).join("");
+  }
+  async function requestSeasonRegistration(seasonId, button) {
+    if (DEMO) { toast("Modo demonstração: nenhuma inscrição foi enviada."); return; }
+    if (!authUser?.id || !myClub?.id) { toast("Entre na sua conta e cadastre seu clube antes de solicitar inscrição."); return; }
+    if (String(myClub.status || "").toUpperCase() !== "ACTIVE") {
+      toast("Seu clube precisa ser aprovado pela administração antes da inscrição.");
+      return;
+    }
+    const selectedSeason = seasons.find(item => String(item.id) === String(seasonId));
+    if (!selectedSeason || String(selectedSeason.status).toUpperCase() !== "REGISTRATION") {
+      toast("Esta temporada não está recebendo inscrições neste momento.");
+      await refreshLiveData();
+      return;
+    }
+    const existing = registrations.find(item => String(item.season_id) === String(seasonId));
+    if (existing) {
+      toast("Seu clube já possui um registro nesta temporada. Consulte a situação no histórico.");
+      return;
+    }
+    if (!window.confirm(`Deseja solicitar a inscrição do clube ${myClub.name} na temporada ${selectedSeason.name}?`)) return;
+
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = "ENVIANDO...";
+    try {
+      const { data, error } = await supabase.rpc("ccfv_league_register_my_club", {
+        p_season_id: seasonId
+      });
+      if (error) throw error;
+      if (data?.success === false) throw new Error(data.message || "O banco não confirmou a inscrição.");
+      await refreshLiveData();
+      toast("Solicitação de inscrição enviada. Acompanhe a análise no seu painel.");
+    } catch (error) {
+      console.error("CCFV SEASON REGISTRATION", error);
+      toast(error.message || "Não foi possível solicitar a inscrição.");
+      button.disabled = false;
+      button.textContent = originalText;
+    }
   }
   function renderRegistrations() {
     const node = $("#my-registrations");

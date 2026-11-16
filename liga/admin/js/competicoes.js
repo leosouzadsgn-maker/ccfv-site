@@ -245,13 +245,6 @@
     catch(error){toast(error.message || "Falha ao gerar o calendário.");}
     finally{button.disabled=false;button.textContent="GERAR 396 PARTIDAS";}
   }
-  async function generateCup(code) {
-    if (!currentSeasonId()) { toast("Selecione uma temporada."); return; }
-    const labels={INTERDIVISIONAL:"Copa Interdivisional",ELITE:"Copa Elite",INTEGRACAO:"Copa Integração"};
-    if (!window.confirm(`Gerar ${labels[code]} para esta temporada? A chave será congelada a partir dos participantes e critérios atuais.`)) return;
-    try { const result=await rpc("ccfv_league_admin_generate_cup_v2",{p_season_id:currentSeasonId(),p_cup_code:code}); toast(`${labels[code]} gerada. Partidas da primeira fase: ${result.first_round_matches}.`); await loadCompetitions(); }
-    catch(error){toast(error.message || "Falha ao gerar a copa.");}
-  }
   async function advanceCup(id) {
     if (!window.confirm("Gerar a próxima fase? Todas as partidas da fase atual precisam ter resultado registrado.")) return;
     try { const result=await rpc("ccfv_league_admin_advance_cup_v2",{p_competition_id:id}); toast(result.completed ? "Copa concluída. Campeão registrado." : `Próxima fase gerada: ${result.stage_code}.`); await loadCompetitions(); }
@@ -362,7 +355,6 @@
     $("#season-list").addEventListener("click",event=>{const f=event.target.closest("[data-season-finalize]");if(f){finalizeSeason(f.dataset.seasonFinalize);return;}const b=event.target.closest("[data-season-status]");if(b)changeSeasonStatus(b.dataset.seasonId,b.dataset.seasonStatus);});
     $("#enrollment-list").addEventListener("click",event=>{const b=event.target.closest("[data-enrollment-decision]");if(b)decideEnrollment(b.dataset.enrollmentId,b.dataset.enrollmentDecision);});
     $("#division-list").addEventListener("click",event=>{const b=event.target.closest("[data-move-rank]");if(b)moveRank(Number(b.dataset.index),b.dataset.moveRank);});
-    document.querySelectorAll("[data-generate-cup]").forEach(b=>b.addEventListener("click",()=>generateCup(b.dataset.generateCup)));
     document.body.addEventListener("click",event=>{
       const adv=event.target.closest("[data-advance-cup]");if(adv){advanceCup(adv.dataset.advanceCup);return;}
       const open=event.target.closest("[data-open-competition]");if(open){
