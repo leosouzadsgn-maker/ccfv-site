@@ -2,13 +2,13 @@
 (() => {
   "use strict";
   const requested = new URLSearchParams(location.search).get("tab");
-  if (requested !== "club") return;
+  if (!["club", "clubs"].includes(requested)) return;
   let done = false;
   const check = () => {
     if (done) return;
     const app = document.getElementById("app");
     if (!app || app.hidden) return;
-    const button = document.querySelector('[data-tab="club"]');
+    const button = document.querySelector(`[data-tab="${requested}"]`);
     if (!button) return;
     done = true;
     button.click();

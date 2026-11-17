@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#06100b">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Perfil do Clube — Liga CCFV</title>
+  <link rel="icon" href="logos/01_logo_liga_ccfv.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/painel.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/clube-publico.js?v=20261117-01" defer></script>
+</head>
+<body class="public-club-body">
+  <div class="gate" id="profile-gate">
+    <div class="gate-card">
+      <img src="logos/01_logo_liga_ccfv.png" alt="Liga CCFV">
+      <span class="eyebrow">CCFV / PERFIL DO CLUBE</span>
+      <h1 id="profile-gate-title">Carregando perfil</h1>
+      <p id="profile-gate-copy">Consultando a identidade pública do clube.</p>
+      <div class="gate-actions" id="profile-gate-actions"><a class="btn ghost" href="/liga/painel.html?tab=clubs">VOLTAR AOS CLUBES</a></div>
+    </div>
+  </div>
+
+  <div class="public-profile-page" id="public-profile-page" hidden>
+    <header class="public-profile-topbar">
+      <a href="/liga/painel.html?tab=clubs" class="public-back-link">← VOLTAR AOS CLUBES</a>
+      <a href="/liga/index.html" class="public-brand"><img src="logos/01_logo_liga_ccfv.png" alt=""><span>CCFV <i>/ LIGA</i></span></a>
+      <span class="public-profile-label"><i></i> PERFIL OFICIAL</span>
+    </header>
+
+    <main class="public-profile-content">
+      <section class="public-profile-cover" id="public-profile-cover">
+        <img id="public-banner" alt="Capa do clube" hidden>
+        <span>CCFV / CLUB PROFILE</span>
+      </section>
+
+      <section class="public-profile-identity">
+        <div class="public-profile-crest">
+          <img id="public-crest" alt="Escudo do clube" hidden>
+          <span id="public-crest-fallback">CC</span>
+        </div>
+        <div class="public-profile-main-copy">
+          <span class="eyebrow">IDENTIDADE ESPORTIVA</span>
+          <h1 id="public-club-name">Clube CCFV</h1>
+          <p id="public-club-motto" hidden></p>
+          <div class="public-profile-meta">
+            <span id="public-club-city">Cidade não informada</span>
+            <span id="public-club-division">Divisão a definir</span>
+            <span id="public-club-founded" hidden></span>
+          </div>
+        </div>
+        <div class="public-player-card">
+          <div class="public-player-photo">
+            <img id="public-player-photo" alt="Foto do jogador responsável" hidden>
+            <span id="public-player-fallback">CC</span>
+          </div>
+          <div><small>JOGADOR RESPONSÁVEL</small><strong id="public-player-name">Participante CCFV</strong></div>
+        </div>
+      </section>
+
+      <section class="public-profile-details">
+        <article class="public-profile-panel public-about-panel">
+          <span class="eyebrow">SOBRE O CLUBE</span>
+          <h2>Uma identidade. Uma história.</h2>
+          <p id="public-club-description">Este clube ainda não adicionou uma apresentação.</p>
+        </article>
+        <article class="public-profile-panel public-colors-panel">
+          <span class="eyebrow">CORES OFICIAIS</span>
+          <h2>Identidade visual</h2>
+          <div class="public-colors"><i id="public-color-primary"></i><i id="public-color-secondary"></i><i id="public-color-accent"></i></div>
+          <small id="public-club-short">SIGLA DO CLUBE</small>
+        </article>
+      </section>
+
+      <footer class="public-profile-footer"><span>CCFV · CONFEDERAÇÕES COLISEU DE FUTEBOL VIRTUAL</span><span>COMPETITIVIDADE · IDENTIDADE · LEGADO</span></footer>
+    </main>
+  </div>
+</body>
+</html>

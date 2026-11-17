@@ -48,16 +48,141 @@
     document.querySelectorAll("[data-view]").forEach(view => view.classList.toggle("active", view.dataset.view === tab));
     document.querySelectorAll("[data-tab]").forEach(button => button.classList.toggle("active", button.dataset.tab === tab));
     window.scrollTo({top:0,behavior:"smooth"});
+    if (tab === "clubs" && supabase) loadPublicClubs();
   }
   function bindNavigation() {
     document.querySelectorAll("[data-tab]").forEach(button => button.addEventListener("click", () => openTab(button.dataset.tab)));
     document.querySelectorAll("[data-open-tab]").forEach(button => button.addEventListener("click", () => openTab(button.dataset.openTab)));
+    $("#public-clubs-search")?.addEventListener("input", renderPublicClubs);
     $("#season-list")?.addEventListener("click", async event => {
       const button = event.target.closest("[data-register-season]");
       if (!button || button.disabled) return;
       await requestSeasonRegistration(button.dataset.registerSeason, button);
     });
   }
+  function safePublicImageUrl(value) {
+    const url = String(value || "").trim();
+    return /^https:\/\//i.test(url) || /^http:\/\//i.test(url) || url.startsWith("/") ? url : "";
+  }
+  function initialsFor(value) {
+    return String(value || "CC").trim().split(/\s+/).slice(0, 2).map(part => part[0] || "").join("").toUpperCase() || "CC";
+  }
+  function setSocialImage(imageSelector, fallbackSelector, url, alt) {
+    const image = $(imageSelector);
+    const fallback = $(fallbackSelector);
+    const safeUrl = safePublicImageUrl(url);
+    if (safeUrl) {
+      image.src = safeUrl;
+      image.alt = alt;
+      image.hidden = false;
+      if (fallback) fallback.hidden = true;
+      image.addEventListener("error", () => {
+        image.hidden = true;
+        if (fallback) fallback.hidden = false;
+      }, { once: true });
+    } else {
+      image.removeAttribute("src");
+      image.hidden = true;
+      if (fallback) fallback.hidden = false;
+    }
+  }
+  function renderSocialProfile() {
+    const card = $("#social-profile-card");
+    const welcome = $("#welcome-card");
+    if (!card || !welcome) return;
+    if (!myClub) {
+      card.hidden = true;
+      welcome.hidden = false;
+      return;
+    }
+    welcome.hidden = true;
+    card.hidden = false;
+
+    const cover = $("#social-cover");
+    const bannerUrl = safePublicImageUrl(myClub.banner_url);
+    const coverImage = $("#social-cover-image");
+    if (bannerUrl) {
+      coverImage.src = bannerUrl;
+      coverImage.hidden = false;
+      cover.classList.add("has-cover");
+    } else {
+      coverImage.removeAttribute("src");
+      coverImage.hidden = true;
+      cover.classList.remove("has-cover");
+      const primary = /^#[0-9a-f]{6}$/i.test(String(myClub.primary_color || "")) ? myClub.primary_color : "#16452e";
+      const secondary = /^#[0-9a-f]{6}$/i.test(String(myClub.secondary_color || "")) ? myClub.secondary_color : "#09140e";
+      cover.style.background = `linear-gradient(115deg,${primary},${secondary})`;
+    }
+
+    $("#social-crest-fallback").textContent = initialsFor(myClub.short_name || myClub.name);
+    setSocialImage("#social-crest-img", "#social-crest-fallback", myClub.crest_url, `Escudo do ${myClub.name}`);
+    $("#social-player-fallback").textContent = initialsFor(player?.name);
+    setSocialImage("#social-player-photo", "#social-player-fallback", player?.photo_url, `Foto de ${player?.name || "jogador"}`);
+    $("#social-club-name").textContent = myClub.name || "Meu clube";
+    $("#social-club-motto").textContent = myClub.motto || "Identidade, competitividade e legado.";
+    $("#social-club-city").textContent = myClub.city || "Cidade não informada";
+    $("#social-club-status").textContent = statusLabel(myClub.status);
+    $("#social-player-name").textContent = player?.name || "Participante CCFV";
+
+    const approved = String(myClub.status || "").toUpperCase() === "ACTIVE" && Boolean(myClub.slug);
+    const profileLink = $("#social-profile-link");
+    const privateNote = $("#social-private-note");
+    profileLink.hidden = !approved;
+    privateNote.hidden = approved;
+    if (approved) profileLink.href = `/liga/clube.html?slug=${encodeURIComponent(myClub.slug)}`;
+  }
+
+  let publicClubs = [];
+  let publicClubsLoaded = false;
+  function divisionName(value) {
+    return ({SERIE_A:"SÉRIE COLOSSEUM",SERIE_B:"SÉRIE GLADIADORES",SERIE_C:"SÉRIE LEGIONÁRIOS"})[String(value || "").toUpperCase()] || "DIVISÃO A DEFINIR";
+  }
+  function renderPublicClubs() {
+    const host = $("#public-clubs-list");
+    if (!host) return;
+    const term = String($("#public-clubs-search")?.value || "").trim().toLocaleLowerCase("pt-BR");
+    const rows = publicClubs.filter(club => [club.name,club.short_name,club.player_name,club.city,club.motto].filter(Boolean).join(" ").toLocaleLowerCase("pt-BR").includes(term));
+    if (!rows.length) {
+      host.innerHTML = `<div class="empty-state">${publicClubs.length ? "Nenhum clube corresponde à sua busca." : "Ainda não há clubes aprovados para exibir."}</div>`;
+      return;
+    }
+    host.innerHTML = rows.map(club => {
+      const crest = safePublicImageUrl(club.crest_url);
+      const banner = safePublicImageUrl(club.banner_url);
+      const primary = /^#[0-9a-f]{6}$/i.test(String(club.primary_color || "")) ? club.primary_color : "#16452e";
+      const secondary = /^#[0-9a-f]{6}$/i.test(String(club.secondary_color || "")) ? club.secondary_color : "#09140e";
+      const crestMarkup = crest
+        ? `<img src="${escapeHTML(crest)}" alt="Escudo de ${escapeHTML(club.name)}" loading="lazy">`
+        : `<span>${escapeHTML(initialsFor(club.short_name || club.name))}</span>`;
+      const coverMarkup = banner
+        ? `<img src="${escapeHTML(banner)}" alt="" loading="lazy">`
+        : `<div class="public-club-card-cover-fallback" style="background:linear-gradient(115deg,${escapeHTML(primary)},${escapeHTML(secondary)})"></div>`;
+      return `<a class="public-club-card" href="/liga/clube.html?slug=${encodeURIComponent(club.slug || "")}">
+        <div class="public-club-card-cover">${coverMarkup}</div>
+        <div class="public-club-card-body"><div class="public-club-card-crest">${crestMarkup}</div>
+          <div class="public-club-card-content"><span class="eyebrow">${escapeHTML(divisionName(club.division))}</span><h3>${escapeHTML(club.name || "Clube CCFV")}</h3>
+            <p>${escapeHTML(club.motto || club.city || "Perfil oficial do clube")}</p><small>RESPONSÁVEL · ${escapeHTML(club.player_name || "Participante CCFV")}</small>
+          </div><span class="public-club-card-arrow">↗</span></div>
+      </a>`;
+    }).join("");
+  }
+  async function loadPublicClubs(force = false) {
+    const host = $("#public-clubs-list");
+    if (!host || !supabase || (publicClubsLoaded && !force)) return;
+    host.innerHTML = `<div class="empty-state">Carregando clubes aprovados...</div>`;
+    try {
+      const { data, error } = await supabase.rpc("ccfv_league_get_public_clubs");
+      if (error) throw error;
+      if (data?.success !== true) throw new Error(data?.message || "Não foi possível consultar os clubes.");
+      publicClubs = Array.isArray(data.clubs) ? data.clubs : [];
+      publicClubsLoaded = true;
+      renderPublicClubs();
+    } catch (error) {
+      console.error("CCFV PUBLIC CLUB DIRECTORY", error);
+      host.innerHTML = `<div class="empty-state">${escapeHTML(error?.message || "Não foi possível carregar os clubes.")}<br>Confira se a atualização SQL dos perfis públicos já foi executada no Supabase.</div>`;
+    }
+  }
+
   function bindClubPreview() {
     const fields = ["club-name","club-short","club-slug","club-city","club-motto","club-primary","club-secondary","club-accent"];
     fields.forEach(id => $("#"+id)?.addEventListener("input", updatePreview));
@@ -180,6 +305,7 @@
     }
     const steps = $("#journey-steps");
     steps.querySelectorAll("li").forEach((li,index) => li.classList.toggle("done", index <= (myClub ? 2 : 1)));
+    renderSocialProfile();
   }
   function renderSeasons() {
     const list = $("#season-list");
@@ -348,6 +474,10 @@
 
     playerLink=data;
     player=data.player || null;
+    try {
+      const {data: profileData,error: profileError}=await supabase.rpc("ccfv_league_get_my_player_profile");
+      if (!profileError && profileData?.success === true && profileData.player) player={...player,...profileData.player};
+    } catch (profileError) { console.warn("CCFV PLAYER PHOTO", profileError); }
     const status=String(data.link_status || "NOT_LINKED").toUpperCase();
     if(status!=="ACTIVE") return showLinkGate(status,player?.name);
 

@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/painel.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/painel.js?v=20261116-02" defer></script>
+  <script src="js/painel.js?v=20261117-01" defer></script>
   <script src="js/painel-tab-redirect.js" defer></script>
 </head>
 <body>
@@ -34,6 +34,7 @@
       <nav class="nav" aria-label="Menu do participante">
         <button class="nav-item active" data-tab="overview"><span>⌂</span>Visão geral</button>
         <button class="nav-item" data-tab="club"><span>♜</span>Meu clube</button>
+        <button class="nav-item" data-tab="clubs"><span>◎</span>Clubes</button>
         <button class="nav-item" data-tab="seasons"><span>▦</span>Temporadas</button>
         <button class="nav-item" data-tab="championship"><span>⚔</span>Campeonato</button>
         <button class="nav-item" data-tab="cups"><span>🏆</span>Copas</button>
@@ -48,7 +49,35 @@
 
       <section class="view active" data-view="overview">
         <div class="page-heading"><div><span class="eyebrow">CENTRAL DO PARTICIPANTE</span><h1>SEU CLUBE.<br><em>SUA HISTÓRIA.</em></h1><p>Acompanhe sua trajetória, cuide da identidade do seu clube e gerencie sua participação na Liga CCFV.</p></div><div class="season-pill" id="season-pill">TEMPORADA · A DEFINIR</div></div>
-        <div class="welcome-card"><div><span class="welcome-label">BEM-VINDO À LIGA CCFV</span><h2 id="welcome-name">Sua jornada começa aqui.</h2><p id="welcome-copy">Organize seu clube, acompanhe as competições e construa seu legado.</p></div><div class="welcome-mark">CCFV</div></div>
+        <div class="welcome-card" id="welcome-card"><div><span class="welcome-label">BEM-VINDO À LIGA CCFV</span><h2 id="welcome-name">Sua jornada começa aqui.</h2><p id="welcome-copy">Organize seu clube, acompanhe as competições e construa seu legado.</p></div><div class="welcome-mark">CCFV</div></div>
+        <article class="social-profile-card" id="social-profile-card" hidden>
+          <div class="social-cover" id="social-cover">
+            <img id="social-cover-image" alt="Capa do clube" hidden>
+            <span class="social-cover-tag">CCFV / IDENTIDADE OFICIAL</span>
+            <span class="social-cover-watermark">CCFV</span>
+          </div>
+          <div class="social-profile-body">
+            <div class="social-crest-wrap">
+              <img id="social-crest-img" alt="Escudo do clube" hidden>
+              <span id="social-crest-fallback">CC</span>
+            </div>
+            <div class="social-profile-copy">
+              <span class="eyebrow">PERFIL DO CLUBE</span>
+              <h2 id="social-club-name">Meu clube</h2>
+              <p id="social-club-motto"></p>
+              <div class="social-profile-meta"><span id="social-club-city"></span><span id="social-club-status"></span></div>
+              <a id="social-profile-link" class="social-profile-link" href="#" hidden>VER PERFIL PÚBLICO ↗</a>
+              <small id="social-private-note" class="social-private-note" hidden>Seu clube ficará visível para os demais participantes após a aprovação.</small>
+            </div>
+            <div class="social-player-card">
+              <div class="social-player-photo">
+                <img id="social-player-photo" alt="Foto do jogador responsável" hidden>
+                <span id="social-player-fallback">LS</span>
+              </div>
+              <div><small>JOGADOR RESPONSÁVEL</small><strong id="social-player-name">Participante CCFV</strong></div>
+            </div>
+          </div>
+        </article>
         <div class="stats-grid">
           <article class="stat"><span>STATUS DO VÍNCULO</span><b id="stat-link">—</b><small>Identidade CCFV</small></article>
           <article class="stat"><span>MEU CLUBE</span><b id="stat-club">—</b><small>Identidade esportiva</small></article>
@@ -105,6 +134,12 @@
             <article class="panel checklist"><span class="eyebrow">ANTES DE ENVIAR</span><h3>Checklist do clube</h3><ul><li>Nome oficial revisado</li><li>Escudo em boa resolução</li><li>Cores definidas</li><li>Dados do responsável conferidos</li><li>Identidade própria, sem duplicidade</li></ul><p>Depois do envio, a administração poderá aprovar ou rejeitar o cadastro. Clube aprovado ainda precisa solicitar inscrição em uma temporada.</p></article>
           </aside>
         </div>
+      </section>
+
+      <section class="view" data-view="clubs">
+        <div class="page-heading compact"><div><span class="eyebrow">COMUNIDADE CCFV</span><h1>CLUBES <em>DA LIGA.</em></h1><p>Conheça os clubes participantes, seus jogadores e suas identidades. Clique em um clube para abrir o perfil completo.</p></div></div>
+        <div class="public-clubs-toolbar"><div><span class="eyebrow">DIRETÓRIO OFICIAL</span><strong>Clubes aprovados</strong></div><label class="public-clubs-search"><span>⌕</span><input id="public-clubs-search" type="search" placeholder="Buscar clube, jogador ou cidade..." autocomplete="off"></label></div>
+        <div id="public-clubs-list" class="public-clubs-grid"><div class="empty-state">Abra esta área para carregar os clubes aprovados.</div></div>
       </section>
 
       <section class="view" data-view="seasons">
