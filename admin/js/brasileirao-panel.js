@@ -2,264 +2,534 @@
   "use strict";
 
   const TEAMS = [
-    "ATHLETICO-PR","ATLÉTICO-MG","BAHIA","BOTAFOGO","BRAGANTINO",
-    "CHAPECOENSE","CORINTHIANS","CORITIBA","CRUZEIRO","FLAMENGO",
-    "FLUMINENSE","GRÊMIO","INTERNACIONAL","MIRASSOL","PALMEIRAS",
-    "REMO","SANTOS","SÃO PAULO","VASCO","VITÓRIA"
+    "ATHLETICO-PR", "ATLÉTICO-MG", "BAHIA", "BOTAFOGO", "BRAGANTINO",
+    "CHAPECOENSE", "CORINTHIANS", "CORITIBA", "CRUZEIRO", "FLAMENGO",
+    "FLUMINENSE", "GRÊMIO", "INTERNACIONAL", "MIRASSOL", "PALMEIRAS",
+    "REMO", "SANTOS", "SÃO PAULO", "VASCO", "VITÓRIA"
   ];
 
+  // A lista administrativa continua em ordem alfabética, mas o calendário
+  // precisa seguir exatamente a ordem/rodízio da página pública.
+  const FIXTURE_ORDER = [
+    "PALMEIRAS", "FLAMENGO", "ATHLETICO-PR", "FLUMINENSE", "CRUZEIRO",
+    "BAHIA", "CORINTHIANS", "BRAGANTINO", "BOTAFOGO", "CORITIBA",
+    "ATLÉTICO-MG", "SÃO PAULO", "VITÓRIA", "GRÊMIO", "MIRASSOL",
+    "INTERNACIONAL", "SANTOS", "VASCO", "REMO", "CHAPECOENSE"
+  ];
+  const BATCH_SIZE = 10;
   const state = {
-    client:null, players:[], regs:[], matches:[], standings:[],
-    round:1, selectedMatch:null
+    client: null,
+    players: [],
+    regs: [],
+    matches: [],
+    standings: [],
+    round: 1,
+    selectedMatch: null,
+    generating: false
   };
 
-  const $ = (s) => document.querySelector(s);
-  const esc = (v) => String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
-  const done = ["VALIDATED","WO","ADMIN_DECISION"];
+  const $ = (selector) => document.querySelector(selector);
+  const esc = (value) => String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+  const done = ["VALIDATED", "WO", "ADMIN_DECISION"];
 
-  function msg(text,error=false){
-    const el=$("#message"); if(!el)return;
-    el.hidden=false; el.textContent=text; el.classList.toggle("error",error);
-    clearTimeout(msg.t); msg.t=setTimeout(()=>el.hidden=true,4500);
+  function msg(text, error = false) {
+    const element = $("#message");
+    if (!element) return;
+    element.hidden = false;
+    element.textContent = text;
+    element.classList.toggle("error", error);
+    clearTimeout(msg.timer);
+    msg.timer = setTimeout(() => { element.hidden = true; }, 6500);
   }
 
-  async function client(){
-    if(state.client)return state.client;
-    state.client=await window.CCFVAuth.getClient();
+  async function client() {
+    if (state.client) return state.client;
+    if (!window.CCFVAuth || typeof window.CCFVAuth.getClient !== "function") {
+      throw new Error("Sistema de autenticação não disponível.");
+    }
+    state.client = await window.CCFVAuth.getClient();
     return state.client;
   }
 
-  async function load(){
-    const c=await client();
-    const [p,r,m] = await Promise.all([
-      c.from("players").select("id,name,platform,elo,status,team_name,photo_url").eq("status","ACTIVE").order("name"),
-      c.from("player_competitions").select("*").eq("competition","BRASILEIRAO"),
-      c.from("matches").select("id,competition,stage,round_number,home_player_id,away_player_id,home_team,away_team,home_score,away_score,status,played_at,created_at").eq("competition","BRASILEIRAO").order("round_number").order("created_at"),
+  function norm(value) {
+    return String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toUpperCase();
+  }
+
+  function regForTeam(team) {
+    return state.regs.find((registration) => norm(registration.team_name) === norm(team));
+  }
+
+  async function load() {
+    const db = await client();
+    const [playersResult, registrationsResult, matchesResult] = await Promise.all([
+      db.from("players")
+        .select("id,name,platform,elo,status,team_name,photo_url")
+        .eq("status", "ACTIVE")
+        .order("name"),
+      db.from("player_competitions")
+        .select("*")
+        .eq("competition", "BRASILEIRAO"),
+      db.from("matches")
+        .select("id,competition,stage,round_number,home_player_id,away_player_id,home_team,away_team,home_score,away_score,status,played_at,created_at")
+        .eq("competition", "BRASILEIRAO")
+        .order("round_number")
+        .order("created_at")
     ]);
-    const first=[p,r,m].find(x=>x.error); if(first)throw first.error;
-    state.players=p.data||[]; state.regs=r.data||[]; state.matches=m.data||[];
+
+    const firstError = [playersResult, registrationsResult, matchesResult].find((result) => result.error);
+    if (firstError) throw firstError.error;
+
+    state.players = playersResult.data || [];
+    state.regs = registrationsResult.data || [];
+    state.matches = matchesResult.data || [];
     await loadStandings();
     renderAll();
   }
 
-  async function loadStandings(){
-    const c=await client();
-    const r=await c.rpc("get_brasileirao_standings",{p_round_number:state.round});
-    if(r.error){ state.standings=[]; return; }
-    state.standings=Array.isArray(r.data)?r.data:[];
+  async function loadStandings() {
+    const db = await client();
+    const result = await db.rpc("get_brasileirao_standings", { p_round_number: state.round });
+    if (result.error) {
+      state.standings = [];
+      console.warn("CCFV // BRASILEIRÃO: não foi possível atualizar a classificação:", result.error);
+      return;
+    }
+    state.standings = Array.isArray(result.data) ? result.data : [];
   }
 
-  function regForTeam(team){ return state.regs.find(r=>norm(r.team_name)===norm(team)); }
-  function norm(v){return String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim().toUpperCase();}
-
-  function renderRegistrations(){
-    const list=$("#registration-list");
-    const used=new Set(state.regs.map(r=>String(r.player_id)));
-    list.innerHTML=TEAMS.map((team,i)=>{
-      const reg=regForTeam(team);
-      const options=['<option value="">A DEFINIR</option>'].concat(
-        state.players.map(p=>{
-          const usedOther=used.has(String(p.id)) && String(p.id)!==String(reg?.player_id||"");
-          return `<option value="${esc(p.id)}" ${String(p.id)===String(reg?.player_id||"")?"selected":""} ${usedOther?"disabled":""}>${esc(p.name)}${usedOther?" — JÁ INSCRITO":""}</option>`;
+  function renderRegistrations() {
+    const list = $("#registration-list");
+    const usedPlayers = new Set(state.regs.map((registration) => String(registration.player_id)));
+    list.innerHTML = TEAMS.map((team, index) => {
+      const registration = regForTeam(team);
+      const options = ['<option value="">A DEFINIR</option>'].concat(
+        state.players.map((player) => {
+          const usedElsewhere = usedPlayers.has(String(player.id)) &&
+            String(player.id) !== String(registration?.player_id || "");
+          const selected = String(player.id) === String(registration?.player_id || "") ? "selected" : "";
+          const disabled = usedElsewhere ? "disabled" : "";
+          return `<option value="${esc(player.id)}" ${selected} ${disabled}>${esc(player.name)}${usedElsewhere ? " — JÁ INSCRITO" : ""}</option>`;
         })
       ).join("");
+
       return `<div class="ccfv-row">
-        <span class="slot">${String(i+1).padStart(2,"0")}</span>
-        <div><strong>${esc(team)}</strong><small>${reg?.player_id ? "INSCRITO" : "AGUARDANDO"}</small></div>
+        <span class="slot">${String(index + 1).padStart(2, "0")}</span>
+        <div><strong>${esc(team)}</strong><small>${registration?.player_id ? "INSCRITO" : "AGUARDANDO"}</small></div>
         <select data-team="${esc(team)}">${options}</select>
         <div class="actions">
-          <button class="ccfv-btn" data-save="${esc(team)}">${reg?.player_id?"ATUALIZAR":"INSCREVER"}</button>
-          ${reg?.player_id ? `<button class="ccfv-btn danger" data-remove="${esc(reg.id)}">REMOVER</button>` : ""}
+          <button class="ccfv-btn" data-save="${esc(team)}">${registration?.player_id ? "ATUALIZAR" : "INSCREVER"}</button>
+          ${registration?.player_id ? `<button class="ccfv-btn danger" data-remove="${esc(registration.id)}">REMOVER</button>` : ""}
         </div>
       </div>`;
     }).join("");
-    $("#stat-registered").textContent=`${state.regs.length}/20`;
-    $("#registration-status").textContent=state.regs.length===20?"PRONTA":"CONFIGURANDO";
+
+    $("#stat-registered").textContent = `${state.regs.length}/20`;
+    $("#registration-status").textContent = state.regs.length === 20 ? "PRONTA" : "CONFIGURANDO";
   }
 
-  async function saveRegistration(team){
-    const select=document.querySelector(`select[data-team="${CSS.escape(team)}"]`);
-    const playerId=select?.value||"";
-    if(!playerId){msg("Selecione um jogador para este clube.",true);return;}
-    try{
-      const c=await client();
-      const existing=state.regs.find(r=>String(r.player_id)===String(playerId));
-      if(existing && norm(existing.team_name)!==norm(team)){
-        msg("Este jogador já está inscrito em outro clube.",true); return;
+  async function saveRegistration(team) {
+    const select = document.querySelector(`select[data-team="${CSS.escape(team)}"]`);
+    const playerId = select?.value || "";
+    if (!playerId) {
+      msg("Selecione um jogador para este clube.", true);
+      return;
+    }
+
+    try {
+      const db = await client();
+      const existingPlayerRegistration = state.regs.find((registration) =>
+        String(registration.player_id) === String(playerId)
+      );
+      if (existingPlayerRegistration && norm(existingPlayerRegistration.team_name) !== norm(team)) {
+        msg("Este jogador já está inscrito em outro clube.", true);
+        return;
       }
-      const sameTeam=regForTeam(team);
-      if(sameTeam){
-        const {error}=await c.from("player_competitions").update({player_id:playerId,team_name:team}).eq("id",sameTeam.id);
-        if(error)throw error;
-      }else{
-        const {error}=await c.from("player_competitions").insert({player_id:playerId,competition:"BRASILEIRAO",team_name:team});
-        if(error)throw error;
+
+      const sameTeam = regForTeam(team);
+      if (sameTeam) {
+        const { error } = await db.from("player_competitions")
+          .update({ player_id: playerId, team_name: team })
+          .eq("id", sameTeam.id);
+        if (error) throw error;
+      } else {
+        const { error } = await db.from("player_competitions").insert({
+          player_id: playerId,
+          competition: "BRASILEIRAO",
+          team_name: team
+        });
+        if (error) throw error;
       }
       msg("Clube inscrito com sucesso.");
       await load();
-    }catch(e){msg(e.message||"Não foi possível salvar a inscrição.",true)}
+    } catch (error) {
+      msg(error.message || "Não foi possível salvar a inscrição.", true);
+    }
   }
 
-  async function removeRegistration(id){
-    if(!id) return;
-    if(!window.confirm("Remover esta inscrição do Brasileirão?")) return;
-    try{
-      const c=await client();
-      const {error}=await c.from("player_competitions").delete().eq("id",id).eq("competition","BRASILEIRAO");
-      if(error)throw error;
+  async function removeRegistration(id) {
+    if (!id || !window.confirm("Remover esta inscrição do Brasileirão?")) return;
+    try {
+      const db = await client();
+      const { error } = await db.from("player_competitions")
+        .delete()
+        .eq("id", id)
+        .eq("competition", "BRASILEIRAO");
+      if (error) throw error;
       msg("Inscrição removida.");
       await load();
-    }catch(e){msg(e.message||"Não foi possível remover a inscrição.",true)}
+    } catch (error) {
+      msg(error.message || "Não foi possível remover a inscrição.", true);
+    }
   }
 
-  function buildSchedule(teams){
-    let arr=teams.map(x=>({...x}));
-    if(arr.length%2)arr.push(null);
-    const n=arr.length, half=n/2, rounds=[];
-    let fixed=arr[0], rotating=arr.slice(1);
-    for(let round=0;round<n-1;round++){
-      const line=[fixed,...rotating];
-      const pairs=[];
-      for(let i=0;i<half;i++){
-        const a=line[i], b=line[n-1-i];
-        if(!a||!b)continue;
-        const home=(round%2===0)?a:b, away=(round%2===0)?b:a;
-        pairs.push({round:round+1,home,away});
+  // Reproduz exatamente o algoritmo de generateFixtures() em
+  // /js/brasileirao.js para que a página pública reconheça cada jogo.
+  function buildSchedule(teams) {
+    let rotation = [...teams];
+    const firstHalf = [];
+
+    for (let round = 1; round <= 19; round += 1) {
+      const games = [];
+      for (let index = 0; index < rotation.length / 2; index += 1) {
+        games.push({
+          round,
+          match: index + 1,
+          home: rotation[index],
+          away: rotation[rotation.length - 1 - index]
+        });
       }
-      rounds.push(pairs);
-      rotating=[rotating[rotating.length-1],...rotating.slice(0,-1)];
+      firstHalf.push(games);
+
+      const fixed = rotation[0];
+      const moving = rotation.slice(1);
+      moving.unshift(moving.pop());
+      rotation = [fixed, ...moving];
     }
-    return rounds;
+
+    const secondHalf = firstHalf.map((games) => games.map((game) => ({
+      round: game.round + 19,
+      match: game.match,
+      home: game.away,
+      away: game.home
+    })));
+
+    return [...firstHalf, ...secondHalf];
   }
 
-  async function generate(){
-    if(state.regs.length!==20){msg("Inscreva os 20 clubes antes de gerar a competição.",true);return;}
-    if(state.matches.some(m=>done.includes(String(m.status||"")))){msg("Já existem resultados oficiais. Não é permitido regenerar a tabela.",true);return;}
-    if(state.matches.length>0){msg("A tabela já foi gerada. Use as rodadas e registre os resultados.",true);return;}
-    const teams=TEAMS.map(name=>{
-      const r=regForTeam(name);
-      const p=state.players.find(x=>String(x.id)===String(r?.player_id));
-      return {name,playerId:p.id};
-    });
-    const schedule=buildSchedule(teams);
-    const rows=[];
-    for(const pairs of schedule){
-      for(const g of pairs){
-        rows.push({
-          competition:"BRASILEIRAO",
-          stage:`RODADA_${String(g.round).padStart(2,"0")}`,
-          round_number:g.round,
-          home_player_id:g.home.playerId,
-          away_player_id:g.away.playerId,
-          home_team:g.home.name,
-          away_team:g.away.name
-        });
-      }
-      for(const g of pairs){
-        rows.push({
-          competition:"BRASILEIRAO",
-          stage:`RODADA_${String(g.round+19).padStart(2,"0")}`,
-          round_number:g.round+19,
-          home_player_id:g.away.playerId,
-          away_player_id:g.home.playerId,
-          home_team:g.away.name,
-          away_team:g.home.name
-        });
-      }
+  function matchKey(match) {
+    return [
+      Number(match.round_number),
+      String(match.home_player_id),
+      String(match.away_player_id)
+    ].join("|");
+  }
+
+  function makeExpectedMatches(teams) {
+    const schedule = buildSchedule(teams);
+    return schedule.flatMap((games) => games.map((game) => ({
+      competition: "BRASILEIRAO",
+      stage: `RODADA_${String(game.round).padStart(2, "0")}`,
+      round_number: game.round,
+      home_player_id: game.home.playerId,
+      away_player_id: game.away.playerId,
+      home_team: game.home.name,
+      away_team: game.away.name
+    })));
+  }
+
+  function resolveRegisteredTeams() {
+    if (state.regs.length !== 20) {
+      throw new Error(`Existem ${state.regs.length}/20 inscrições. Complete os 20 clubes antes de gerar a tabela.`);
     }
-    try{
-      const c=await client();
-      const {error}=await c.from("matches").insert(rows);
-      if(error)throw error;
-      msg("38 rodadas geradas com sucesso.");
+
+    const registeredByTeam = new Map();
+    for (const name of FIXTURE_ORDER) {
+      const registrations = state.regs.filter((registration) => norm(registration.team_name) === norm(name));
+      if (registrations.length !== 1) {
+        throw new Error(`${name}: esperado 1 jogador inscrito, encontrado(s) ${registrations.length}. Confira as inscrições.`);
+      }
+
+      const registration = registrations[0];
+      const player = state.players.find((item) => String(item.id) === String(registration.player_id));
+      if (!player) {
+        throw new Error(`${name}: o jogador vinculado não foi encontrado como ATIVO na tabela de jogadores. Atualize o cadastro antes de gerar.`);
+      }
+      registeredByTeam.set(norm(name), { name, playerId: player.id });
+    }
+
+    // A ordem é idêntica à página pública, não à ordem visual do formulário.
+    const teams = FIXTURE_ORDER.map((name) => registeredByTeam.get(norm(name)));
+
+    const playerIds = teams.map((team) => String(team.playerId));
+    if (new Set(playerIds).size !== 20) {
+      throw new Error("Há jogador repetido em mais de um clube. Cada treinador precisa ocupar apenas um clube.");
+    }
+    return teams;
+  }
+
+  async function refreshMatchesAfterGeneration() {
+    try {
       await load();
-    }catch(e){msg(e.message||"Não foi possível gerar a tabela. O motor do banco não foi alterado.",true)}
+    } catch (error) {
+      console.warn("CCFV // BRASILEIRÃO: partidas foram enviadas, mas a atualização da tela falhou:", error);
+      msg("Partidas enviadas ao banco. A atualização da tela falhou; clique em ATUALIZAR PARTIDAS para recarregar.", true);
+    }
   }
 
-  async function openResult(id){
-    const m=state.matches.find(x=>String(x.id)===String(id)); if(!m)return;
-    state.selectedMatch=m;
-    $("#home-team").value=m.home_team||"";
-    $("#away-team").value=m.away_team||"";
-    $("#home-score").value=m.home_score??0;
-    $("#away-score").value=m.away_score??0;
-    if(m.played_at){const d=new Date(m.played_at); const pad=n=>String(n).padStart(2,"0"); $("#played-at").value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;}
-    $("#result-modal").hidden=false;
+  async function generate() {
+    if (state.generating) return;
+
+    let insertedThisRun = 0;
+    let totalToInsert = 0;
+    const button = $("#generate");
+
+    try {
+      const teams = resolveRegisteredTeams();
+
+      if (state.matches.some((match) => done.includes(String(match.status || "")))) {
+        throw new Error("Já existem resultados oficiais. A tabela não será regenerada para proteger o campeonato.");
+      }
+
+      const expected = makeExpectedMatches(teams);
+      if (expected.length !== 380) {
+        throw new Error(`Falha na conferência do calendário: foram montadas ${expected.length} partidas, mas o esperado é 380.`);
+      }
+
+      const expectedKeys = new Set(expected.map(matchKey));
+      const existingKeys = new Set();
+      const unexpected = [];
+      for (const match of state.matches) {
+        const key = matchKey(match);
+        if (!expectedKeys.has(key)) unexpected.push(match);
+        existingKeys.add(key);
+      }
+
+      if (unexpected.length) {
+        throw new Error(`Já existem ${unexpected.length} partida(s) com clubes/participantes diferentes do cadastro atual. Não vou duplicar nem sobrescrever esses jogos. Envie este aviso para conferirmos o banco.`);
+      }
+
+      const missing = expected.filter((match) => !existingKeys.has(matchKey(match)));
+      totalToInsert = missing.length;
+
+      if (totalToInsert === 0) {
+        msg("Calendário já está completo: 380/380 partidas cadastradas.");
+        await refreshMatchesAfterGeneration();
+        return;
+      }
+
+      state.generating = true;
+      button.disabled = true;
+      button.textContent = "PREPARANDO LOTES...";
+      $("#stat-matches").textContent = String(state.matches.length).padStart(3, "0");
+      msg(`Conferência concluída: 20 clubes válidos. Serão enviados ${totalToInsert} jogos em lotes de até ${BATCH_SIZE}.`);
+
+      const db = await client();
+      for (let offset = 0; offset < missing.length; offset += BATCH_SIZE) {
+        const batch = missing.slice(offset, offset + BATCH_SIZE);
+        const batchNumber = Math.floor(offset / BATCH_SIZE) + 1;
+        const totalBatches = Math.ceil(missing.length / BATCH_SIZE);
+        button.textContent = `GERANDO ${Math.min(offset + batch.length, missing.length)}/${missing.length}`;
+        msg(`Gerando partidas: lote ${batchNumber}/${totalBatches} — ${insertedThisRun + batch.length} de ${totalToInsert} nesta tentativa.`);
+
+        const { error } = await db.from("matches").insert(batch);
+        if (error) {
+          const detail = error.message || "Erro desconhecido do Supabase.";
+          throw new Error(`O lote ${batchNumber}/${totalBatches} falhou: ${detail}`);
+        }
+
+        insertedThisRun += batch.length;
+        const totalKnown = state.matches.length + insertedThisRun;
+        $("#stat-matches").textContent = String(totalKnown).padStart(3, "0");
+      }
+
+      msg("380 partidas enviadas com sucesso. Atualizando painel e classificação...");
+      await refreshMatchesAfterGeneration();
+      if (state.matches.length >= 380) {
+        msg("BRASILEIRÃO GERADO! 20 clubes, 38 rodadas e 380 partidas cadastradas.");
+      }
+    } catch (error) {
+      console.error("CCFV // BRASILEIRÃO GENERATE ERROR:", error);
+      if (insertedThisRun > 0) {
+        msg(`Geração parcial: ${insertedThisRun} jogo(s) foram salvos nesta tentativa. Nenhum resultado foi apagado. Clique novamente em GERAR 38 RODADAS para continuar de onde parou. Detalhe: ${error.message}`, true);
+        await refreshMatchesAfterGeneration();
+      } else {
+        msg(error.message || "Não foi possível gerar a tabela. Nenhum jogo foi apagado.", true);
+      }
+    } finally {
+      state.generating = false;
+      if (button) {
+        button.disabled = false;
+        button.textContent = "GERAR 38 RODADAS";
+      }
+    }
   }
 
-  async function submitResult(e){
-    e.preventDefault();
-    const m=state.selectedMatch; if(!m)return;
-    try{
-      const c=await client();
-      const homeId=m.home_player_id, awayId=m.away_player_id;
-      const pHome=state.players.find(p=>String(p.id)===String(homeId));
-      const pAway=state.players.find(p=>String(p.id)===String(awayId));
-      const r=await c.rpc("register_ccfv_match",{
-        p_competition:"BRASILEIRAO",
-        p_stage:m.stage,
-        p_round_number:Number(m.round_number)||1,
-        p_home_player_id:homeId,
-        p_away_player_id:awayId,
-        p_home_team:m.home_team,
-        p_away_team:m.away_team,
-        p_home_score:Math.max(0,Number($("#home-score").value||0)),
-        p_away_score:Math.max(0,Number($("#away-score").value||0)),
-        p_played_at:$("#played-at").value?new Date($("#played-at").value).toISOString():new Date().toISOString()
+  async function openResult(id) {
+    const match = state.matches.find((item) => String(item.id) === String(id));
+    if (!match) return;
+    state.selectedMatch = match;
+    $("#home-team").value = match.home_team || "";
+    $("#away-team").value = match.away_team || "";
+    $("#home-score").value = match.home_score ?? 0;
+    $("#away-score").value = match.away_score ?? 0;
+    if (match.played_at) {
+      const date = new Date(match.played_at);
+      const pad = (value) => String(value).padStart(2, "0");
+      $("#played-at").value = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    } else {
+      $("#played-at").value = "";
+    }
+    $("#result-modal").hidden = false;
+  }
+
+  async function submitResult(event) {
+    event.preventDefault();
+    const match = state.selectedMatch;
+    if (!match) return;
+
+    try {
+      const db = await client();
+      const result = await db.rpc("register_ccfv_match", {
+        p_competition: "BRASILEIRAO",
+        p_stage: match.stage,
+        p_round_number: Number(match.round_number) || 1,
+        p_home_player_id: match.home_player_id,
+        p_away_player_id: match.away_player_id,
+        p_home_team: match.home_team,
+        p_away_team: match.away_team,
+        p_home_score: Math.max(0, Number($("#home-score").value || 0)),
+        p_away_score: Math.max(0, Number($("#away-score").value || 0)),
+        p_played_at: $("#played-at").value
+          ? new Date($("#played-at").value).toISOString()
+          : new Date().toISOString()
       });
-      if(r.error)throw r.error;
-      $("#result-modal").hidden=true;
-      msg(`Resultado registrado. Elo: ${r.data?.home_elo_change>=0?"+":""}${r.data?.home_elo_change||0} / ${r.data?.away_elo_change>=0?"+":""}${r.data?.away_elo_change||0}`);
+
+      if (result.error) throw result.error;
+      $("#result-modal").hidden = true;
+      const homeChange = Number(result.data?.home_elo_change || 0);
+      const awayChange = Number(result.data?.away_elo_change || 0);
+      msg(`Resultado registrado. Elo: ${homeChange >= 0 ? "+" : ""}${homeChange} / ${awayChange >= 0 ? "+" : ""}${awayChange}`);
       await load();
-    }catch(e){msg(e.message||"Não foi possível registrar o resultado.",true)}
+    } catch (error) {
+      msg(error.message || "Não foi possível registrar o resultado.", true);
+    }
   }
 
-  function renderRound(){
-    const list=$("#round-list");
-    const matches=state.matches.filter(m=>Number(m.round_number)===state.round);
-    list.innerHTML=matches.map(m=>`
+  function renderRound() {
+    const list = $("#round-list");
+    const matches = state.matches.filter((match) => Number(match.round_number) === state.round);
+    list.innerHTML = matches.map((match) => `
       <article class="ccfv-match">
-        <div><small>RODADA ${String(m.round_number).padStart(2,"0")}</small><strong>${esc(m.home_team)}</strong><small>vs</small><strong>${esc(m.away_team)}</strong></div>
-        <div class="score">${done.includes(String(m.status||""))?`${m.home_score} × ${m.away_score}`:"—"}</div>
-        <div><small>${done.includes(String(m.status||""))?"ENCERRADA":"PENDENTE"}</small></div>
-        <button class="ccfv-btn" data-result="${esc(m.id)}">${done.includes(String(m.status||""))?"EDITAR":"RESULTADO"}</button>
+        <div>
+          <small>RODADA ${String(match.round_number).padStart(2, "0")}</small>
+          <strong>${esc(match.home_team)}</strong>
+          <small>vs</small>
+          <strong>${esc(match.away_team)}</strong>
+        </div>
+        <div class="score">${done.includes(String(match.status || "")) ? `${match.home_score} × ${match.away_score}` : "—"}</div>
+        <div><small>${done.includes(String(match.status || "")) ? "ENCERRADA" : "PENDENTE"}</small></div>
+        <button class="ccfv-btn" data-result="${esc(match.id)}">${done.includes(String(match.status || "")) ? "EDITAR" : "RESULTADO"}</button>
       </article>
     `).join("") || '<div class="ccfv-empty">Nenhuma partida encontrada para esta rodada.</div>';
-    $("#stat-matches").textContent=String(state.matches.length).padStart(3,"0");
-    const finished=state.matches.filter(m=>done.includes(String(m.status||""))).length;
-    $("#stat-finished").textContent=String(finished).padStart(3,"0");
-    $("#stat-round").textContent=String(state.round).padStart(2,"0");
+
+    $("#stat-matches").textContent = String(state.matches.length).padStart(3, "0");
+    const finished = state.matches.filter((match) => done.includes(String(match.status || ""))).length;
+    $("#stat-finished").textContent = String(finished).padStart(3, "0");
+    $("#stat-round").textContent = String(state.round).padStart(2, "0");
   }
 
-  function renderStandings(){
-    const body=$("#standings");
-    body.innerHTML=state.standings.map(t=>`
-      <tr><td>${String(t.position||0).padStart(2,"0")}</td><td><strong>${esc(t.team_name)}</strong></td><td>${t.played||0}</td><td>${t.wins||0}</td><td>${t.draws||0}</td><td>${t.losses||0}</td><td>${t.goals_for||0}</td><td>${t.goals_against||0}</td><td>${t.goal_difference>0?"+":""}${t.goal_difference||0}</td><td><strong>${t.points||0}</strong></td></tr>
+  function renderStandings() {
+    const body = $("#standings");
+    body.innerHTML = state.standings.map((team) => `
+      <tr>
+        <td>${String(team.position || 0).padStart(2, "0")}</td>
+        <td><strong>${esc(team.team_name)}</strong></td>
+        <td>${team.played || 0}</td>
+        <td>${team.wins || 0}</td>
+        <td>${team.draws || 0}</td>
+        <td>${team.losses || 0}</td>
+        <td>${team.goals_for || 0}</td>
+        <td>${team.goals_against || 0}</td>
+        <td>${team.goal_difference > 0 ? "+" : ""}${team.goal_difference || 0}</td>
+        <td><strong>${team.points || 0}</strong></td>
+      </tr>
     `).join("") || '<tr><td colspan="10">Classificação aguardando resultados.</td></tr>';
   }
 
-  function renderAll(){renderRegistrations();renderRound();renderStandings();$("#admin-user").textContent="Sessão autenticada";}
+  function renderAll() {
+    renderRegistrations();
+    renderRound();
+    renderStandings();
+    $("#admin-user").textContent = "Sessão autenticada";
+  }
 
-  function bind(){
-    $("#registration-list").addEventListener("click",e=>{
-      const b=e.target.closest("[data-save]");
-      if(b){saveRegistration(b.dataset.save);return;}
-      const r=e.target.closest("[data-remove]");
-      if(r)removeRegistration(r.dataset.remove);
+  function bind() {
+    $("#registration-list").addEventListener("click", (event) => {
+      const saveButton = event.target.closest("[data-save]");
+      if (saveButton) {
+        saveRegistration(saveButton.dataset.save);
+        return;
+      }
+      const removeButton = event.target.closest("[data-remove]");
+      if (removeButton) removeRegistration(removeButton.dataset.remove);
     });
-    $("#generate").addEventListener("click",generate);
-    $("#load-round").addEventListener("click",load);
-    $("#show-round").addEventListener("click",async()=>{state.round=Math.max(1,Math.min(38,Number($("#round").value)||1));await loadStandings();renderRound();renderStandings();});
-    $("#round").addEventListener("change",async()=>{state.round=Math.max(1,Math.min(38,Number($("#round").value)||1));await loadStandings();renderRound();renderStandings();});
-    $("#round-list").addEventListener("click",e=>{const b=e.target.closest("[data-result]");if(b)openResult(b.dataset.result);});
-    $("#refresh").addEventListener("click",load);
-    $("#close-result").addEventListener("click",()=>$("#result-modal").hidden=true);
-    $("#result-form").addEventListener("submit",submitResult);
+
+    $("#generate").addEventListener("click", generate);
+    $("#load-round").addEventListener("click", async () => {
+      try {
+        await load();
+        msg("Partidas atualizadas.");
+      } catch (error) {
+        msg(error.message || "Não foi possível atualizar as partidas.", true);
+      }
+    });
+    $("#show-round").addEventListener("click", async () => {
+      state.round = Math.max(1, Math.min(38, Number($("#round").value) || 1));
+      await loadStandings();
+      renderRound();
+      renderStandings();
+    });
+    $("#round").addEventListener("change", async () => {
+      state.round = Math.max(1, Math.min(38, Number($("#round").value) || 1));
+      await loadStandings();
+      renderRound();
+      renderStandings();
+    });
+    $("#round-list").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-result]");
+      if (button) openResult(button.dataset.result);
+    });
+    $("#refresh").addEventListener("click", async () => {
+      try {
+        await load();
+        msg("Painel atualizado.");
+      } catch (error) {
+        msg(error.message || "Não foi possível atualizar o painel.", true);
+      }
+    });
+    $("#close-result").addEventListener("click", () => { $("#result-modal").hidden = true; });
+    $("#result-form").addEventListener("submit", submitResult);
   }
 
-  async function init(){
-    try{await client();bind();await load();}
-    catch(e){msg(e.message||"Falha ao carregar painel do Brasileirão.",true)}
+  async function init() {
+    try {
+      await client();
+      bind();
+      await load();
+    } catch (error) {
+      console.error("CCFV // BRASILEIRÃO INIT ERROR:", error);
+      msg(error.message || "Falha ao carregar painel do Brasileirão.", true);
+    }
   }
-  document.addEventListener("DOMContentLoaded",init,{once:true});
+
+  document.addEventListener("DOMContentLoaded", init, { once: true });
 })();
