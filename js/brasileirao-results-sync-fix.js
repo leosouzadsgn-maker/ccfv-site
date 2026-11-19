@@ -80,8 +80,8 @@
       for (let i = 0; i < 10; i += 1) {
         const a = line[i];
         const b = line[line.length - 1 - i];
-        const home = roundIndex % 2 === 0 ? a : b;
-        const away = roundIndex % 2 === 0 ? b : a;
+        const home = a;
+const away = b;
         games.push({ round: roundIndex + 1, match: i + 1, home, away });
       }
       firstHalf.push(games);

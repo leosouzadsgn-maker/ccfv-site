@@ -30,11 +30,11 @@
     "VITÓRIA": "vitoria.png"
   };
 
-  const CLOSED = new Set([
-    "VALIDATED", "WO", "ADMIN_DECISION", "FINAL", "FINALIZADO",
-    "FINALIZADA", "FINISHED", "COMPLETED", "CONCLUIDA", "CONCLUÍDA",
-    "ENCERRADA", "ENCERRADO", "PLAYED"
-  ]);
+ const CLOSED = new Set([
+  "VALIDATED",
+  "WO",
+  "ADMIN_DECISION"
+]);
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const esc = (value) => String(value ?? "")
