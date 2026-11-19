@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   "use strict";
 
   const TEAMS = [
@@ -432,8 +432,8 @@ away_score: 0
 
       if (result.error) throw result.error;
       $("#result-modal").hidden = true;
-      const homeChange = Number(result.data?.home_elo_change || 0);
-      const awayChange = Number(result.data?.away_elo_change || 0);
+      const homeChange = Number(result.data?.home_elo_change ?? result.data?.home_delta ?? 0);
+      const awayChange = Number(result.data?.away_elo_change ?? result.data?.away_delta ?? 0);
       msg(`Resultado registrado. Elo: ${homeChange >= 0 ? "+" : ""}${homeChange} / ${awayChange >= 0 ? "+" : ""}${awayChange}`);
       await load();
     } catch (error) {
@@ -550,3 +550,4 @@ away_score: 0
 
   document.addEventListener("DOMContentLoaded", init, { once: true });
 })();
+

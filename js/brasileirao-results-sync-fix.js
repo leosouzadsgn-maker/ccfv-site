@@ -1,4 +1,4 @@
-/* =========================================================
+﻿/* =========================================================
    CCFV // BRASILEIRÃO — PÁGINA PÚBLICA + JOGADORES + RESULTADOS
    Substitui a versão anterior deste arquivo.
    Carregar DEPOIS de /js/brasileirao-live.js.
@@ -23,10 +23,10 @@
   "ENCERRADO"
 ]);
   const ADMIN_TEAM_ORDER = [
-    "ATHLETICO-PR", "ATLÉTICO-MG", "BAHIA", "BOTAFOGO", "BRAGANTINO",
-    "CHAPECOENSE", "CORINTHIANS", "CORITIBA", "CRUZEIRO", "FLAMENGO",
-    "FLUMINENSE", "GRÊMIO", "INTERNACIONAL", "MIRASSOL", "PALMEIRAS",
-    "REMO", "SANTOS", "SÃO PAULO", "VASCO", "VITÓRIA"
+    "PALMEIRAS", "FLAMENGO", "ATHLETICO-PR", "FLUMINENSE", "CRUZEIRO",
+    "BAHIA", "CORINTHIANS", "BRAGANTINO", "BOTAFOGO", "CORITIBA",
+    "ATLÃ‰TICO-MG", "SÃƒO PAULO", "VITÃ“RIA", "GRÃŠMIO", "MIRASSOL",
+    "INTERNACIONAL", "SANTOS", "VASCO", "REMO", "CHAPECOENSE"
   ];
 
   let refreshTimer = null;
@@ -204,7 +204,16 @@ const away = b;
       });
     });
 
-    results.sort((a, b) => a.round - b.round || a.match - b.match);
+    const uniqueResults = new Map();
+    results.forEach((item) => {
+      const key = `${item.round}|${item.match}`;
+      const previous = uniqueResults.get(key);
+      const itemDate = Date.parse(item.date || "") || 0;
+      const previousDate = Date.parse(previous?.date || "") || 0;
+      if (!previous || itemDate >= previousDate) uniqueResults.set(key, item);
+    });
+    const orderedResults = [...uniqueResults.values()]
+      .sort((a, b) => a.round - b.round || a.match - b.match);
     if (unmatched.length) {
       console.warn("CCFV // BRASILEIRÃO: jogos homologados sem correspondência no calendário:", unmatched.map(match => ({
         round: match.round_number,
@@ -213,7 +222,7 @@ const away = b;
         status: match.status
       })));
     }
-    return results;
+    return orderedResults;
   }
 
   function appendPlayerLabel(container, className, playerName) {
@@ -363,3 +372,5 @@ const away = b;
     init();
   }
 })();
+
+

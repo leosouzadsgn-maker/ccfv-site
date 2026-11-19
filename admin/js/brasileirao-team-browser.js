@@ -1,4 +1,4 @@
-/* =========================================================
+﻿/* =========================================================
    CCFV // BRASILEIRÃO — BUSCA DE PARTIDAS POR CLUBE
    Adicionar depois de brasileirao-results-ui.js em admin/brasileirao.html.
    Não altera o motor de resultados: usa o modal e o evento data-result já existentes.
@@ -60,8 +60,9 @@
   let refreshTimer = null;
 
   function crest(team) {
-    const file = CLUBS[norm(team)];
-    return file ? `/assets/images/clubs/${file}` : "";
+    const key = Object.keys(CLUBS).find((name) => norm(name) === norm(team));
+    const file = key ? CLUBS[key] : "";
+    return file ? "/assets/images/clubs/" + file : "";
   }
 
   async function getClient() {
@@ -215,19 +216,44 @@
     }
   }
 
-  function selectedTeamMatches() {
-    const selected = $("#br-team-select")?.value || "";
-    if (!selected) return [];
-    let matches = cache.matches.filter((match) =>
-      norm(match.home_team) === norm(selected) || norm(match.away_team) === norm(selected)
-    );
-    const statusFilter = $("#br-team-status")?.value || "ALL";
-    if (statusFilter === "PENDING") matches = matches.filter((match) => !isClosed(match));
-    if (statusFilter === "DONE") matches = matches.filter(isClosed);
-    return matches.sort((a, b) =>
+  function uniqueClubFixtures(source) {
+    const grouped = new Map();
+    for (const match of source) {
+      const key = [
+        Number(match.round_number),
+        norm(match.home_team),
+        norm(match.away_team)
+      ].join("|");
+      const previous = grouped.get(key);
+      if (!previous) {
+        grouped.set(key, match);
+        continue;
+      }
+      const currentClosed = isClosed(match);
+      const previousClosed = isClosed(previous);
+      const currentDate = Date.parse(match.played_at || match.created_at || "") || 0;
+      const previousDate = Date.parse(previous.played_at || previous.created_at || "") || 0;
+      if ((currentClosed && !previousClosed) ||
+          (currentClosed === previousClosed && currentDate > previousDate)) {
+        grouped.set(key, match);
+      }
+    }
+    return [...grouped.values()].sort((a, b) =>
       Number(a.round_number) - Number(b.round_number) ||
       Number(a.match_number || 0) - Number(b.match_number || 0)
     );
+  }
+
+  function selectedTeamMatches() {
+    const selected = $("#br-team-select")?.value || "";
+    if (!selected) return [];
+    let matches = uniqueClubFixtures(cache.matches.filter((match) =>
+      norm(match.home_team) === norm(selected) || norm(match.away_team) === norm(selected)
+    ));
+    const statusFilter = $("#br-team-status")?.value || "ALL";
+    if (statusFilter === "PENDING") matches = matches.filter((match) => !isClosed(match));
+    if (statusFilter === "DONE") matches = matches.filter(isClosed);
+    return matches;
   }
 
   function renderTeamView() {
@@ -243,9 +269,9 @@
       return;
     }
 
-    const allTeamMatches = cache.matches.filter((match) =>
+    const allTeamMatches = uniqueClubFixtures(cache.matches.filter((match) =>
       norm(match.home_team) === norm(selected) || norm(match.away_team) === norm(selected)
-    );
+    ));
     const matches = selectedTeamMatches();
     const finished = allTeamMatches.filter(isClosed).length;
     const pending = allTeamMatches.length - finished;
@@ -388,7 +414,21 @@
   async function init() {
     ensureControls();
     await refreshData(true);
-    // Carga conservadora para que la lista por club muestre siempre el estado más reciente.
+    setMode("team");
+    renderTeamView();
+
+    // Se o painel da rodada redesenhar a lista depois do carregamento,
+    // volta a mostrar a visÃ£o por clube sem criar ciclos de atualizaÃ§Ã£o.
+    const list = $("#round-list");
+    if (list) {
+      const observer = new MutationObserver(() => {
+        if (mode === "team" && !list.querySelector(".br-team-turn, .br-team-empty")) {
+          renderTeamView();
+        }
+      });
+      observer.observe(list, { childList: true, subtree: true });
+    }
+
     window.setInterval(async () => {
       if (mode === "team" && !document.hidden) {
         await refreshData(true);
@@ -403,3 +443,4 @@
     init();
   }
 })();
+
