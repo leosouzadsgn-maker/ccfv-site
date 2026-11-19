@@ -30,7 +30,9 @@
     "VITÓRIA": "vitoria.png"
   };
 
- const CLOSED = new Set([
+const CLOSED = new Set([
+  "FINALIZADA",
+  "FINALIZADO",
   "VALIDATED",
   "WO",
   "ADMIN_DECISION"

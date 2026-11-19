@@ -8,7 +8,20 @@
 
   // Estes são os únicos estados que o admin considera homologados.
   // PLAYED foi removido propositalmente: partidas pendentes não contam como 0x0.
-  const COMPLETED_STATUSES = new Set(["VALIDATED", "WO", "ADMIN_DECISION"]);
+  const COMPLETED_STATUSES = new Set([
+  "FINALIZADA",
+  "FINALIZADO",
+  "FINAL",
+  "VALIDATED",
+  "WO",
+  "ADMIN_DECISION",
+  "FINISHED",
+  "COMPLETED",
+  "CONCLUIDA",
+  "CONCLUIDO",
+  "ENCERRADA",
+  "ENCERRADO"
+]);
   const ADMIN_TEAM_ORDER = [
     "ATHLETICO-PR", "ATLÉTICO-MG", "BAHIA", "BOTAFOGO", "BRAGANTINO",
     "CHAPECOENSE", "CORINTHIANS", "CORITIBA", "CRUZEIRO", "FLAMENGO",

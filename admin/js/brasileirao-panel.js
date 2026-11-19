@@ -35,7 +35,13 @@
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
-  const done = ["VALIDATED", "WO", "ADMIN_DECISION"];
+  const done = [
+  "FINALIZADA",
+  "FINALIZADO",
+  "VALIDATED",
+  "WO",
+  "ADMIN_DECISION"
+];
 
   function msg(text, error = false) {
     const element = $("#message");
@@ -233,18 +239,29 @@
     ].join("|");
   }
 
-  function makeExpectedMatches(teams) {
-    const schedule = buildSchedule(teams);
-    return schedule.flatMap((games) => games.map((game) => ({
+ function makeExpectedMatches(teams) {
+  const schedule = buildSchedule(teams);
+  
+
+  return schedule.flatMap((games) =>
+    games.map((game) => ({
       competition: "BRASILEIRAO",
       stage: `RODADA_${String(game.round).padStart(2, "0")}`,
       round_number: game.round,
+
       home_player_id: game.home.playerId,
       away_player_id: game.away.playerId,
+
       home_team: game.home.name,
-      away_team: game.away.name
-    })));
-  }
+      away_team: game.away.name,
+
+      // Toda partida nova começa pendente.
+      status: "PENDENTE",
+home_score: 0,
+away_score: 0
+    }))
+  );
+}
 
   function resolveRegisteredTeams() {
     if (state.regs.length !== 20) {
