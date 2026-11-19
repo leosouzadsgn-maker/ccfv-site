@@ -1,4 +1,4 @@
-﻿/* =========================================================
+/* =========================================================
    CCFV // BRASILEIRÃO — BUSCA DE PARTIDAS POR CLUBE
    Adicionar depois de brasileirao-results-ui.js em admin/brasileirao.html.
    Não altera o motor de resultados: usa o modal e o evento data-result já existentes.
@@ -58,6 +58,7 @@
   let mode = "round";
   let loading = false;
   let refreshTimer = null;
+  let loadError = null;
 
   function crest(team) {
     const key = Object.keys(CLUBS).find((name) => norm(name) === norm(team));
@@ -79,7 +80,7 @@
     const client = await getClient();
     const [matches, players, regs] = await Promise.all([
       client.from("matches")
-        .select("id,competition,stage,round_number,match_number,home_player_id,away_player_id,home_team,away_team,home_score,away_score,status,played_at,created_at")
+        .select("id,competition,stage,round_number,home_player_id,away_player_id,home_team,away_team,home_score,away_score,status,played_at,created_at")
         .eq("competition", "BRASILEIRAO")
         .order("round_number", { ascending: true })
         .order("created_at", { ascending: true }),
@@ -94,6 +95,7 @@
     for (const result of [matches, players, regs]) {
       if (result.error) throw result.error;
     }
+    loadError = null;
     cache = {
       matches: matches.data || [],
       players: players.data || [],
@@ -262,6 +264,13 @@
     const summary = $("#br-team-summary");
     const selected = $("#br-team-select")?.value || "";
     if (!list || !summary) return;
+
+    
+    if (loadError) {
+      summary.innerHTML = "";
+      list.innerHTML = `<div class="br-team-empty">ERRO AO CARREGAR OS JOGOS: ${esc(loadError.message || loadError)}. Clique em ATUALIZAR LISTA ou confira o console do navegador.</div>`;
+      return;
+    }
 
     if (!selected) {
       summary.innerHTML = "";

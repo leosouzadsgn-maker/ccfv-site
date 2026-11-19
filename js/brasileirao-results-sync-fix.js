@@ -1,4 +1,4 @@
-﻿/* =========================================================
+/* =========================================================
    CCFV // BRASILEIRÃO — PÁGINA PÚBLICA + JOGADORES + RESULTADOS
    Substitui a versão anterior deste arquivo.
    Carregar DEPOIS de /js/brasileirao-live.js.
