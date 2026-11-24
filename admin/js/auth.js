@@ -1,976 +1,287 @@
 /* =========================================================
-   CCFV — AUTHENTICATION
-   SUPABASE LOGIN + PROTEÇÃO DO ADMIN
+   CCFV — AUTENTICAÇÃO GLOBAL DA ÁREA ADMINISTRATIVA
+   Substitui: /admin/js/auth.js
+
+   AUTORIDADE GLOBAL: public.ccfv_is_admin()
+   Essa é a mesma RPC utilizada pelo painel /liga/admin/.
+
+   - Jogadores mantêm contas Supabase normais para acessar a Liga.
+   - Somente contas autorizadas no cadastro administrativo global
+     conseguem abrir qualquer rota dentro de /admin/.
+   - O banco decide; o navegador não mantém uma segunda allowlist.
+   - Falha fechada: se não for possível validar o acesso, o Admin
+     não é exibido.
    ========================================================= */
 
 (() => {
-
     "use strict";
 
-
-    /* =====================================================
-       SUPABASE
-       ===================================================== */
-
-    const SUPABASE_URL =
-        "https://msqvkcnywokhakmqgiso.supabase.co";
-
-
-    /*
-     * COLE AQUI A SUA CHAVE:
-     *
-     * sb_publishable_...
-     *
-     * NÃO USE sb_secret_...
-     */
-
-    const SUPABASE_PUBLISHABLE_KEY =
-        "sb_publishable_sanJ5WpLoquv4JH2ryYR6w_LxdaS2Q2";
-
+    const SUPABASE_URL = "https://msqvkcnywokhakmqgiso.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_sanJ5WpLoquv4JH2ryYR6w_LxdaS2Q2";
+    const ADMIN_CHECK_RPC = "ccfv_is_admin";
+    const ADMIN_HOME = "/admin/";
+    const ADMIN_LOGIN = "/admin/login.html";
+    const LEAGUE_HOME = "/liga/index.html";
 
     let supabaseClient = null;
-
     let clientPromise = null;
 
-
-    /* =====================================================
-       PÁGINAS
-       ===================================================== */
+    function currentPath() {
+        return window.location.pathname.replace(/\/+$/, "") || "/";
+    }
 
     function isLoginPage() {
-
-        return window.location.pathname.endsWith(
-            "/admin/login.html"
-        );
-
+        return currentPath() === ADMIN_LOGIN;
     }
 
-
-   function isAdminPage() {
-
-    const path =
-        window.location.pathname
-            .replace(/\/+$/, "");
-
-    /*
-     * Tudo dentro de /admin/ é área administrativa,
-     * exceto a própria página de login.
-     *
-     * Assim ficam protegidos:
-     * /admin/
-     * /admin/index.html
-     * /admin/champions.html
-     * /admin/libertadores.html
-     * e futuras páginas administrativas.
-     */
-
-    if (
-        path === "/admin/login.html"
-    ) {
-        return false;
+    // Protege todas as competições e páginas centrais em /admin/.
+    function isAdminPage() {
+        const path = currentPath();
+        return path === "/admin" || path.startsWith("/admin/");
     }
-
-    return (
-        path === "/admin" ||
-        path === "/admin/index.html" ||
-        path.startsWith("/admin/")
-    );
-
-}
-
-
-    /* =====================================================
-       VISIBILIDADE
-       ===================================================== */
 
     function hidePage() {
-
-        document.documentElement.style.visibility =
-            "hidden";
-
+        document.documentElement.style.visibility = "hidden";
     }
-
 
     function showPage() {
-
-        document.documentElement.style.visibility =
-            "visible";
-
+        document.documentElement.style.visibility = "visible";
     }
-
-
-    /* =====================================================
-       CARREGAR SUPABASE
-       ===================================================== */
 
     function loadSupabase() {
-
-        return new Promise(
-            (
-                resolve,
-                reject
-            ) => {
-
-                if (
-                    window.supabase &&
-                    typeof window.supabase.createClient ===
-                        "function"
-                ) {
-
-                    resolve(
-                        window.supabase
-                    );
-
-                    return;
-
-                }
-
-
-                const existing =
-                    document.querySelector(
-                        'script[data-ccfv-supabase]'
-                    );
-
-
-                if (
-                    existing
-                ) {
-
-                    existing.addEventListener(
-                        "load",
-                        () => {
-
-                            resolve(
-                                window.supabase
-                            );
-
-                        }
-                    );
-
-
-                    existing.addEventListener(
-                        "error",
-                        () => {
-
-                            reject(
-                                new Error(
-                                    "Falha ao carregar o Supabase."
-                                )
-                            );
-
-                        }
-                    );
-
-
-                    return;
-
-                }
-
-
-                const script =
-                    document.createElement(
-                        "script"
-                    );
-
-
-                script.src =
-                    "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-
-
-                script.async =
-                    true;
-
-
-                script.dataset.ccfvSupabase =
-                    "true";
-
-
-                script.onload =
-                    () => {
-
-                        if (
-                            window.supabase &&
-                            typeof window.supabase.createClient ===
-                                "function"
-                        ) {
-
-                            resolve(
-                                window.supabase
-                            );
-
-                            return;
-
-                        }
-
-
-                        reject(
-                            new Error(
-                                "Supabase carregou, mas createClient não está disponível."
-                            )
-                        );
-
-                    };
-
-
-                script.onerror =
-                    () => {
-
-                        reject(
-                            new Error(
-                                "Não foi possível carregar a biblioteca do Supabase."
-                            )
-                        );
-
-                    };
-
-
-                document.head.appendChild(
-                    script
-                );
-
+        return new Promise((resolve, reject) => {
+            if (window.supabase?.createClient) {
+                resolve(window.supabase);
+                return;
             }
-        );
 
+            const existing = document.querySelector("script[data-ccfv-supabase]");
+            if (existing) {
+                existing.addEventListener("load", () => {
+                    if (window.supabase?.createClient) resolve(window.supabase);
+                    else reject(new Error("Biblioteca Supabase não ficou disponível."));
+                }, { once: true });
+                existing.addEventListener("error", () => reject(new Error("Falha ao carregar o Supabase.")), { once: true });
+                return;
+            }
+
+            const script = document.createElement("script");
+            script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+            script.async = true;
+            script.dataset.ccfvSupabase = "true";
+            script.onload = () => window.supabase?.createClient
+                ? resolve(window.supabase)
+                : reject(new Error("Supabase carregou sem createClient."));
+            script.onerror = () => reject(new Error("Não foi possível carregar a biblioteca do Supabase."));
+            document.head.appendChild(script);
+        });
     }
-
-
-    /* =====================================================
-       CLIENTE
-       ===================================================== */
 
     async function getClient() {
+        if (supabaseClient) return supabaseClient;
+        if (clientPromise) return clientPromise;
 
-        if (
-            supabaseClient
-        ) {
-
+        clientPromise = (async () => {
+            const supabase = await loadSupabase();
+            if (!SUPABASE_PUBLISHABLE_KEY) throw new Error("Publishable Key do Supabase ausente.");
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+            window.CCFVSupabase = supabaseClient;
             return supabaseClient;
+        })();
 
-        }
-
-
-        if (
-            clientPromise
-        ) {
-
-            return clientPromise;
-
-        }
-
-
-        clientPromise =
-            (async () => {
-
-                const supabase =
-                    await loadSupabase();
-
-
-                if (
-                    !SUPABASE_PUBLISHABLE_KEY ||
-                    SUPABASE_PUBLISHABLE_KEY ===
-                        "COLE_AQUI_SUA_SB_PUBLISHABLE"
-                ) {
-
-                    throw new Error(
-                        "A Publishable Key não foi colocada no auth.js."
-                    );
-
-                }
-
-
-                supabaseClient =
-                    supabase.createClient(
-                        SUPABASE_URL,
-                        SUPABASE_PUBLISHABLE_KEY
-                    );
-
-
-                window.CCFVSupabase =
-                    supabaseClient;
-
-
-                return supabaseClient;
-
-            })();
-
-
-        return clientPromise;
-
-    }
-
-
-    /* =====================================================
-       LOGIN
-       ===================================================== */
-
-    async function login(
-        email,
-        password
-    ) {
-
-        const client =
-            await getClient();
-
-
-        console.log(
-            "CCFV // TENTANDO LOGIN:",
-            email
-        );
-
-
-        const {
-            data,
-            error
-        } =
-            await client.auth.signInWithPassword({
-
-                email:
-                    email,
-
-                password:
-                    password
-
-            });
-
-
-        console.log(
-            "CCFV // LOGIN DATA:",
-            data
-        );
-
-
-        console.log(
-            "CCFV // LOGIN ERROR:",
-            error
-        );
-
-
-        if (
-            error
-        ) {
-
+        try {
+            return await clientPromise;
+        } catch (error) {
+            clientPromise = null;
             throw error;
-
         }
-
-
-        return data;
-
     }
 
-
-    /* =====================================================
-       SESSION
-       ===================================================== */
+    async function login(email, password) {
+        const client = await getClient();
+        const { data, error } = await client.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        return data;
+    }
 
     async function getSession() {
-
-        const client =
-            await getClient();
-
-
-        const {
-            data,
-            error
-        } =
-            await client.auth.getSession();
-
-
-        if (
-            error
-        ) {
-
-            throw error;
-
-        }
-
-
+        const client = await getClient();
+        const { data, error } = await client.auth.getSession();
+        if (error) throw error;
         return data?.session || null;
-
     }
 
+    // Usa exatamente o mesmo verificador global do Admin da Liga CCFV.
+    async function isAdmin() {
+        const session = await getSession();
+        if (!session?.user?.id) return false;
 
-    /* =====================================================
-       LOGOUT
-       ===================================================== */
+        const client = await getClient();
+        const { data, error } = await client.rpc(ADMIN_CHECK_RPC);
+        if (error) throw new Error(`Falha ao validar administrador: ${error.message}`);
+        return data === true || data?.is_admin === true;
+    }
 
     async function logout() {
-
-        const client =
-            await getClient();
-
-
-        const {
-            error
-        } =
-            await client.auth.signOut();
-
-
-        if (
-            error
-        ) {
-
-            throw error;
-
-        }
-
-
-        window.location.href =
-            "/admin/login.html";
-
+        const client = await getClient();
+        const { error } = await client.auth.signOut();
+        if (error) throw error;
+        window.location.replace(ADMIN_LOGIN);
     }
-
-
-    /* =====================================================
-       REDIRECT
-       ===================================================== */
 
     function redirectToLogin() {
-
-        if (
-            isLoginPage()
-        ) {
-
-            return;
-
-        }
-
-
-        window.location.replace(
-            "/admin/login.html"
-        );
-
+        if (!isLoginPage()) window.location.replace(ADMIN_LOGIN);
     }
 
-
-    function redirectToAdmin() {
-
-        window.location.replace(
-            "/admin/"
-        );
-
+    function redirectNonAdminToLeague() {
+        // Não apaga nem encerra a conta do jogador; apenas sai da área Admin.
+        window.location.replace(`${LEAGUE_HOME}?access=admin-denied`);
     }
 
-
-    /* =====================================================
-       ERRO AMIGÁVEL
-       ===================================================== */
-
-    function getFriendlyError(
-        error
-    ) {
-
-        const message =
-            String(
-                error?.message ||
-                ""
-            );
-
-
-        const lower =
-            message.toLowerCase();
-
-
-        if (
-            lower.includes(
-                "invalid login credentials"
-            )
-        ) {
-
-            return (
-                "SUPABASE: EMAIL OU SENHA INCORRETOS."
-            );
-
+    function getFriendlyError(error) {
+        const message = String(error?.message || "");
+        const lower = message.toLowerCase();
+        if (lower.includes("invalid login credentials")) return "EMAIL OU SENHA INCORRETOS.";
+        if (lower.includes("email not confirmed")) return "O EMAIL AINDA NÃO FOI CONFIRMADO.";
+        if (lower.includes("invalid api key")) return "CHAVE DE CONEXÃO DO SUPABASE INVÁLIDA.";
+        if (lower.includes("failed to fetch")) return "NÃO FOI POSSÍVEL CONECTAR AO SERVIDOR.";
+        if (lower.includes("ccfv_is_admin") || lower.includes("validar administrador")) {
+            return "NÃO FOI POSSÍVEL VALIDAR SUA PERMISSÃO ADMINISTRATIVA. CONFIRA A FUNÇÃO GLOBAL CCFV_IS_ADMIN().";
         }
-
-
-        if (
-            lower.includes(
-                "email not confirmed"
-            )
-        ) {
-
-            return (
-                "SUPABASE: O EMAIL DO USUÁRIO NÃO ESTÁ CONFIRMADO."
-            );
-
-        }
-
-
-        if (
-            lower.includes(
-                "invalid api key"
-            )
-        ) {
-
-            return (
-                "SUPABASE: PUBLISHABLE KEY INVÁLIDA."
-            );
-
-        }
-
-
-        if (
-            lower.includes(
-                "failed to fetch"
-            )
-        ) {
-
-            return (
-                "SUPABASE: NÃO FOI POSSÍVEL CONECTAR AO SERVIDOR."
-            );
-
-        }
-
-
-        return (
-            "SUPABASE: " +
-            (
-                message ||
-                "ERRO DESCONHECIDO."
-            )
-        );
-
+        return message || "ERRO DESCONHECIDO.";
     }
 
-
-    /* =====================================================
-       ERRO LOGIN
-       ===================================================== */
-
-    function showLoginError(
-        error
-    ) {
-
-        const element =
-            document.querySelector(
-                "#ccfv-login-error"
-            );
-
-
-        if (
-            !element
-        ) {
-
-            return;
-
-        }
-
-
-        element.textContent =
-            getFriendlyError(
-                error
-            );
-
-
-        element.classList.add(
-            "is-visible"
-        );
-
+    function showLoginError(error) {
+        const element = document.querySelector("#ccfv-login-error");
+        if (!element) return;
+        element.textContent = getFriendlyError(error);
+        element.classList.add("is-visible");
     }
-
 
     function clearLoginError() {
-
-        const element =
-            document.querySelector(
-                "#ccfv-login-error"
-            );
-
-
-        if (
-            !element
-        ) {
-
-            return;
-
-        }
-
-
-        element.textContent =
-            "";
-
-
-        element.classList.remove(
-            "is-visible"
-        );
-
+        const element = document.querySelector("#ccfv-login-error");
+        if (!element) return;
+        element.textContent = "";
+        element.classList.remove("is-visible");
     }
-
-
-    /* =====================================================
-       FORM LOGIN
-       ===================================================== */
 
     function bindLoginForm() {
+        const form = document.querySelector("#ccfv-login-form");
+        if (!form) return;
 
-        const form =
-            document.querySelector(
-                "#ccfv-login-form"
-            );
+        const email = document.querySelector("#ccfv-login-email");
+        const password = document.querySelector("#ccfv-login-password");
+        const button = document.querySelector("#ccfv-login-button");
 
+        form.addEventListener("submit", async event => {
+            event.preventDefault();
+            clearLoginError();
 
-        if (
-            !form
-        ) {
-
-            return;
-
-        }
-
-
-        const email =
-            document.querySelector(
-                "#ccfv-login-email"
-            );
-
-
-        const password =
-            document.querySelector(
-                "#ccfv-login-password"
-            );
-
-
-        const button =
-            document.querySelector(
-                "#ccfv-login-button"
-            );
-
-
-        form.addEventListener(
-            "submit",
-            async event => {
-
-                event.preventDefault();
-
-
-                clearLoginError();
-
-
-                const emailValue =
-                    email?.value.trim() ||
-                    "";
-
-
-                const passwordValue =
-                    password?.value ||
-                    "";
-
-
-                if (
-                    !emailValue ||
-                    !passwordValue
-                ) {
-
-                    showLoginError(
-                        new Error(
-                            "PREENCHA EMAIL E SENHA."
-                        )
-                    );
-
-                    return;
-
-                }
-
-
-                button.disabled =
-                    true;
-
-
-                button.textContent =
-                    "AUTENTICANDO...";
-
-
-                try {
-
-                    await login(
-                        emailValue,
-                        passwordValue
-                    );
-
-
-                    button.textContent =
-                        "ACESSO LIBERADO...";
-
-
-                    window.location.replace(
-                        "/admin/"
-                    );
-
-                }
-
-                catch (
-                    error
-                ) {
-
-                    console.error(
-                        "CCFV // LOGIN ERROR",
-                        error
-                    );
-
-
-                    showLoginError(
-                        error
-                    );
-
-
-                    button.disabled =
-                        false;
-
-
-                    button.textContent =
-                        "ENTRAR NO PAINEL";
-
-                }
-
+            const emailValue = email?.value.trim() || "";
+            const passwordValue = password?.value || "";
+            if (!emailValue || !passwordValue) {
+                showLoginError(new Error("PREENCHA EMAIL E SENHA."));
+                return;
             }
-        );
 
+            if (button) {
+                button.disabled = true;
+                button.textContent = "AUTENTICANDO...";
+            }
+
+            try {
+                await login(emailValue, passwordValue);
+                const allowed = await isAdmin();
+                if (!allowed) {
+                    redirectNonAdminToLeague();
+                    return;
+                }
+                if (button) button.textContent = "ACESSO LIBERADO...";
+                window.location.replace(ADMIN_HOME);
+            } catch (error) {
+                console.error("CCFV // ADMIN LOGIN:", error);
+                showLoginError(error);
+                if (button) {
+                    button.disabled = false;
+                    button.textContent = "ENTRAR NO PAINEL";
+                }
+            }
+        });
     }
-
-
-    /* =====================================================
-       PROTEGER ADMIN
-       ===================================================== */
 
     async function protectAdmin() {
-
-        if (
-            !isAdminPage()
-        ) {
-
-            return;
-
-        }
-
-
+        if (!isAdminPage()) return;
         hidePage();
 
-
         try {
-
-            const session =
-                await getSession();
-
-
-            if (
-                !session
-            ) {
-
+            const session = await getSession();
+            if (!session) {
                 redirectToLogin();
-
                 return;
-
             }
 
+            if (!(await isAdmin())) {
+                redirectNonAdminToLeague();
+                return;
+            }
 
             showPage();
-
+        } catch (error) {
+            console.error("CCFV // ADMIN ACCESS DENIED:", error);
+            window.location.replace(`${ADMIN_LOGIN}?error=admin-check`);
         }
-
-        catch (
-            error
-        ) {
-
-            console.error(
-                "CCFV // PROTECTION ERROR",
-                error
-            );
-
-
-            redirectToLogin();
-
-        }
-
     }
-
-
-    /* =====================================================
-       PROTEGER LOGIN
-       ===================================================== */
 
     async function protectLogin() {
-
-        if (
-            !isLoginPage()
-        ) {
-
-            return;
-
-        }
-
-
+        if (!isLoginPage()) return;
         hidePage();
 
-
         try {
-
-            const session =
-                await getSession();
-
-
-            if (
-                session
-            ) {
-
-                redirectToAdmin();
-
+            const session = await getSession();
+            if (!session) {
+                showPage();
                 return;
-
             }
 
+            if (await isAdmin()) {
+                window.location.replace(ADMIN_HOME);
+                return;
+            }
 
+            redirectNonAdminToLeague();
+        } catch (error) {
+            console.error("CCFV // ADMIN LOGIN CHECK:", error);
             showPage();
-
         }
-
-        catch (
-            error
-        ) {
-
-            console.error(
-                "CCFV // LOGIN PAGE ERROR",
-                error
-            );
-
-
-            showPage();
-
-        }
-
     }
-
-
-    /* =====================================================
-       AUTH STATE
-       ===================================================== */
 
     async function bindAuthState() {
-
-        const client =
-            await getClient();
-
-
-        client.auth.onAuthStateChange(
-            (
-                event,
-                session
-            ) => {
-
-                console.log(
-                    "CCFV // AUTH EVENT:",
-                    event
-                );
-
-
-                if (
-                    event ===
-                    "SIGNED_OUT"
-                ) {
-
-                    redirectToLogin();
-
-                }
-
-            }
-        );
-
+        const client = await getClient();
+        client.auth.onAuthStateChange(event => {
+            if (event === "SIGNED_OUT" && isAdminPage()) redirectToLogin();
+        });
     }
 
-
-    /* =====================================================
-       API GLOBAL
-       ===================================================== */
-
-    window.CCFVAuth = {
-
-        login,
-
-        logout,
-
-        getSession,
-
-        getClient
-
-    };
-
-
-    /* =====================================================
-       INIT
-       ===================================================== */
+    window.CCFVAuth = { login, logout, getSession, getClient, isAdmin };
 
     async function init() {
-
-        console.log(
-            "%cCCFV // AUTH SYSTEM",
-            "color:#43df91;font-weight:900;font-size:18px;"
-        );
-
-
         bindLoginForm();
-
-
         try {
-
             await getClient();
-
             await protectAdmin();
-
             await protectLogin();
-
             await bindAuthState();
-
-
-            console.log(
-                "CCFV // SUPABASE CONECTADO"
-            );
-
+            console.info("CCFV // AUTH GLOBAL // PRONTO");
+        } catch (error) {
+            console.error("CCFV // AUTH INIT ERROR:", error);
+            if (isAdminPage()) window.location.replace(ADMIN_LOGIN);
+            else showPage();
         }
-
-        catch (
-            error
-        ) {
-
-            console.error(
-                "CCFV // AUTH INIT ERROR",
-                error
-            );
-
-
-            if (
-                isAdminPage()
-            ) {
-
-                redirectToLogin();
-
-                return;
-
-            }
-
-
-            showPage();
-
-        }
-
     }
 
-
-    if (
-        document.readyState ===
-        "loading"
-    ) {
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            init
-        );
-
-    }
-
-    else {
-
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init, { once: true });
+    } else {
         init();
-
     }
-
 })();
