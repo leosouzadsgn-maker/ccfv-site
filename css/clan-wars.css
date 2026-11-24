@@ -155,3 +155,27 @@ body.cw-page {
 @media(max-width:700px){.cw-clans-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.cw-toolbar{align-items:flex-start;flex-direction:column}.cw-help-text{display:none}.cw-people-grid{grid-template-columns:1fr}.cw-staff-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cw-person-card__photo{width:58px;height:58px}.cw-hall-grid{grid-template-columns:1fr}.cw-public-match{grid-template-columns:minmax(0,1fr) 48px minmax(0,1fr)}.cw-public-match small{grid-column:1/-1;text-align:center}.cw-footer{flex-wrap:wrap}.cw-modal__head{align-items:flex-start}.cw-modal__head h2{font-size:17px}}
 .cw-emblem-img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 20px rgba(168,85,247,.38))}.cw-playoffs-public-wrap{margin-top:25px;padding:20px;border:1px solid rgba(192,132,252,.17);border-radius:14px;background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(20,13,29,.75))}.cw-playoffs-public-wrap h3{margin-top:5px;font-size:18px}.cw-playoffs-public-wrap h3 strong{color:#c084fc}.cw-playoff-public{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:15px}.cw-playoff-stage{padding:11px;border:1px solid rgba(192,132,252,.18);border-radius:10px;background:rgba(14,9,20,.55)}.cw-playoff-stage>strong{display:block;margin-bottom:10px;color:#c084fc;font-size:9px;letter-spacing:.1em}.cw-playoff-game{padding:9px 0;border-top:1px solid rgba(255,255,255,.06)}.cw-playoff-game span,.cw-playoff-game b,.cw-playoff-game small{display:block}.cw-playoff-game span{font-size:9px;line-height:1.45}.cw-playoff-game b{margin:5px 0;text-align:center;font-size:13px}.cw-playoff-game small{color:#9f91b1;font-size:8px;text-align:center}.cw-playoff-game--winner{color:#e6d5ff}.cw-modal__crest img{width:100%;height:100%;object-fit:contain}
 @media(max-width:950px){.cw-playoff-public{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:650px){.cw-playoff-public{grid-template-columns:repeat(2,minmax(0,1fr))}.cw-playoffs-public-wrap{padding:14px}}
+
+/* CCFV CLAN WARS LOGO — BRAND UPDATE */
+.cw-hero { min-height: 405px; }
+.cw-hero__identity { gap: 20px; }
+.cw-emblem { width: clamp(205px, 21vw, 270px); flex: 0 0 clamp(205px, 21vw, 270px); filter: drop-shadow(0 14px 34px rgba(0,0,0,.42)); }
+.cw-emblem-img { display:block; width:100%; height:auto; object-fit:contain; filter: drop-shadow(0 0 22px rgba(168,85,247,.34)); }
+.cw-visually-hidden { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; }
+.cw-hero__wordmark { max-width:260px; }
+.cw-hero__wordmark p { margin-top:0; max-width:260px; font-size:12px; line-height:1.65; }
+@media(max-width:1100px) {
+  .cw-hero { min-height:0; }
+  .cw-emblem { width:230px; flex-basis:230px; }
+}
+@media(max-width:600px) {
+  .cw-hero__identity { align-items:center; gap:12px; }
+  .cw-emblem { width:155px; flex-basis:155px; }
+  .cw-hero__wordmark { max-width:170px; }
+  .cw-hero__wordmark p { max-width:170px; font-size:9px; line-height:1.5; }
+}
+@media(max-width:380px) {
+  .cw-emblem { width:128px; flex-basis:128px; }
+  .cw-hero__identity { gap:9px; }
+  .cw-hero__wordmark p { font-size:8px; }
+}

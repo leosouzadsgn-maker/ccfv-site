@@ -5,3 +5,6 @@
 @media(max-width:430px){.cw-admin-nav{grid-template-columns:repeat(4,minmax(0,1fr))}.cw-admin-kpis{gap:8px}.cw-admin-kpis article{padding:12px}.cw-admin-kpis strong{font-size:19px}.cw-admin-card{padding:14px}.cw-admin-match-top{font-size:8px}.cw-admin-side strong{font-size:9px}.cw-admin-score input{width:27px!important}}
 
 .cw-admin-existing-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;margin-bottom:9px}.cw-admin-existing-clan>small{color:var(--cw-muted);font-size:9px;line-height:1.6}@media(max-width:650px){.cw-admin-existing-row{grid-template-columns:1fr}}
+
+/* CCFV CLAN WARS LOGO — ADMIN BRAND UPDATE */
+.cw-admin-brand img { width:58px; height:58px; flex:0 0 58px; object-fit:contain; background:transparent; border-radius:0; }
