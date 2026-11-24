@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 420" role="img" aria-labelledby="title desc">
+  <title id="title">CCFV Clan Wars</title><desc id="desc">Escudo roxo e prata da competição Clan Wars da CCFV.</desc>
+  <defs>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8f5ff"/><stop offset=".28" stop-color="#a99bbd"/><stop offset=".53" stop-color="#fff"/><stop offset=".78" stop-color="#7f718f"/><stop offset="1" stop-color="#e8def5"/></linearGradient>
+    <linearGradient id="violet" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d8b4fe"/><stop offset=".35" stop-color="#9333ea"/><stop offset="1" stop-color="#3b0764"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="7" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <g opacity=".9" stroke="url(#metal)" stroke-width="9" stroke-linecap="round" fill="none">
+    <path d="M53 75 309 333M307 75 51 333"/>
+    <path d="m37 58 32 3-3 32M323 58l-32 3 3 32M37 350l32-3-3-32M323 350l-32-3 3-32"/>
+  </g>
+  <path d="M180 20 322 72v116c0 105-59 168-142 211C97 356 38 293 38 188V72Z" fill="#170e24" stroke="url(#metal)" stroke-width="12"/>
+  <path d="M180 42 299 86v100c0 89-48 144-119 184C109 330 61 275 61 186V86Z" fill="url(#violet)" stroke="#c4b5fd" stroke-width="5"/>
+  <path d="M180 60 281 97v88c0 75-39 123-101 159-62-36-101-84-101-159V97Z" fill="#21142f" stroke="#e9d5ff" stroke-opacity=".65" stroke-width="3"/>
+  <path d="M104 152h152" stroke="#c4b5fd" stroke-width="4" opacity=".8"/>
+  <text x="180" y="137" fill="#f7f1ff" text-anchor="middle" font-family="Arial,sans-serif" font-size="27" font-weight="900" letter-spacing="7">CCFV</text>
+  <g filter="url(#glow)"><path d="m116 218 42 43 88-91" fill="none" stroke="url(#metal)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <path d="M102 298h156" stroke="#a855f7" stroke-width="6"/>
+  <text x="180" y="328" fill="#f6edff" text-anchor="middle" font-family="Arial,sans-serif" font-size="25" font-weight="900" letter-spacing="3">CLAN WARS</text>
+  <circle cx="180" cy="374" r="17" fill="#160d21" stroke="url(#metal)" stroke-width="4"/>
+  <path d="M163 374h34M180 357v34M168 362l24 24M192 362l-24 24" stroke="#c4b5fd" stroke-width="2"/>
+</svg>

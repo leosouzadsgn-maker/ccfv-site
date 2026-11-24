@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#171020">
+  <meta name="description" content="CCFV Clan Wars — campeonato oficial entre clãs de eFootball. 16 organizações, dois grupos e uma disputa pelo título.">
+  <meta property="og:title" content="CCFV Clan Wars">
+  <meta property="og:description" content="A batalha entre os clãs começa aqui.">
+  <title>CCFV Clan Wars — Temporada Oficial</title>
+  <link rel="icon" type="image/png" href="../assets/images/logo/ccfv-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/header.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/clan-wars.css">
+</head>
+<body class="cw-page" data-page="clan-wars">
+<header class="ccfv-header" id="site-header">
+  <div class="ccfv-header__inner">
+    <a href="../index.html" class="ccfv-header__brand" aria-label="CCFV — início">
+      <img src="../assets/images/logo/ccfv-logo.png" alt="CCFV" class="ccfv-header__logo">
+      <span class="ccfv-header__brand-text"><span class="ccfv-header__brand-name">CCFV</span><span class="ccfv-header__brand-subtitle">Confederação Coliseu de Futebol Virtual</span></span>
+    </a>
+    <nav class="ccfv-header__nav" aria-label="Navegação principal">
+      <a href="../index.html" class="ccfv-header__link">Início</a>
+      <a href="brasileirao.html" class="ccfv-header__link">Brasileirão</a>
+      <a href="champions.html" class="ccfv-header__link">Champions</a>
+      <a href="night.html" class="ccfv-header__link">Night Cup</a>
+      <a href="libertadores.html" class="ccfv-header__link">Libertadores</a>
+      <a href="ranking.html" class="ccfv-header__link">Ranking</a>
+      <a href="clan-wars.html" class="ccfv-header__link is-active">Clan Wars</a>
+    </nav>
+    <a href="#cw-main" class="ccfv-header__action">Acessar competição</a>
+    <button type="button" class="ccfv-header__menu" aria-label="Abrir menu" aria-expanded="false"><span class="ccfv-header__menu-lines"><span></span><span></span><span></span></span></button>
+  </div>
+</header>
+
+<main class="cw-main" id="cw-main">
+  <section class="cw-hero" aria-labelledby="cw-title">
+    <div class="cw-hero__texture" aria-hidden="true"></div>
+    <div class="cw-hero__inner">
+      <div class="cw-hero__identity">
+        <div class="cw-emblem" aria-hidden="true">
+          <img src="../assets/images/clan-wars-crest.svg" alt="" class="cw-emblem-img">
+        </div>
+        <div class="cw-hero__wordmark"><span class="cw-eyebrow"><i></i> CCFV APRESENTA</span><h1 id="cw-title">CLAN <strong>WARS</strong></h1><p>A batalha entre os clãs começa aqui.</p></div>
+      </div>
+      <div class="cw-hero__side">
+        <div class="cw-season-pill"><span class="cw-live-dot"></span><span id="cw-season-name">SEASON 01</span><span class="cw-season-pill__line"></span><span id="cw-season-status">TEMPORADA EM PREPARAÇÃO</span></div>
+        <div class="cw-hero__stats"><div><strong id="cw-stat-clans">16</strong><span>CLÃS</span></div><div><strong>02</strong><span>GRUPOS</span></div><div><strong>12</strong><span>CLASSIFICAM</span></div><div><strong id="cw-stat-fee">R$ 50</strong><span>POR CLÃ</span></div></div>
+      </div>
+    </div>
+    <div class="cw-hero__bottomline"><span>PC + CONSOLE</span><span>•</span><span>1X1 INDIVIDUAL</span><span>•</span><span>UMA ORGANIZAÇÃO. UM LEGADO.</span></div>
+  </section>
+
+  <div class="cw-container">
+    <div class="cw-live-message" id="cw-live-message" role="status" aria-live="polite">Conectando à competição oficial...</div>
+    <nav class="cw-tabs" aria-label="Seções da Clan Wars" role="tablist">
+      <button class="cw-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="cw-panel-table" data-tab="table"><span class="cw-tab__icon">▦</span><span>Tabela</span></button>
+      <button class="cw-tab" type="button" role="tab" aria-selected="false" aria-controls="cw-panel-clans" data-tab="clans"><span class="cw-tab__icon">⬡</span><span>Clãs</span></button>
+      <button class="cw-tab" type="button" role="tab" aria-selected="false" aria-controls="cw-panel-ranking" data-tab="ranking"><span class="cw-tab__icon">↗</span><span>Ranking dos jogadores</span></button>
+      <button class="cw-tab" type="button" role="tab" aria-selected="false" aria-controls="cw-panel-hall" data-tab="hall"><span class="cw-tab__icon">♜</span><span>Hall da Fama</span></button>
+    </nav>
+
+    <section class="cw-panel is-active" id="cw-panel-table" role="tabpanel" data-panel="table">
+      <div class="cw-section-heading"><div><span class="cw-kicker">CCFV // TEMPORADA OFICIAL</span><h2>TABELA DE <strong>CLASSIFICAÇÃO</strong></h2><p>Dois grupos. Sete rodadas. Doze vagas na fase eliminatória.</p></div><span class="cw-status"><i></i><span id="cw-current-phase">AGUARDANDO TEMPORADA</span></span></div>
+      <div class="cw-table-layout">
+        <div class="cw-card cw-standings-card">
+          <div class="cw-card__header"><div><span class="cw-kicker">FASE DE GRUPOS</span><h3>Classificação geral</h3></div><span class="cw-card__mini">16 CLÃS</span></div>
+          <div class="cw-group-switch" role="tablist" aria-label="Selecionar grupo"><button type="button" class="is-active" data-group="A" aria-pressed="true">GRUPO A</button><button type="button" data-group="B" aria-pressed="false">GRUPO B</button></div>
+          <div class="cw-table-scroll"><table class="cw-table"><thead><tr><th>#</th><th>CLÃ</th><th>PTS</th><th>J</th><th>V</th><th>E</th><th>D</th><th>SG</th></tr></thead><tbody id="cw-standings-body"><tr><td colspan="8" class="cw-empty-cell">Carregando classificação...</td></tr></tbody></table></div>
+          <div class="cw-table-legend"><span><i class="cw-legend-direct"></i> 1º e 2º — Quartas direto</span><span><i class="cw-legend-playoff"></i> 3º ao 6º — Repescagem</span><span><i class="cw-legend-out"></i> 7º e 8º — Eliminados</span></div>
+        </div>
+        <aside class="cw-side-stack">
+          <article class="cw-card cw-format-card"><span class="cw-kicker">FORMATO DA COMPETIÇÃO</span><h3>CAMINHO ATÉ A TAÇA</h3><div class="cw-format-step"><b>01</b><div><strong>Fase de grupos</strong><small>2 grupos de 8 · todos contra todos</small></div><em>7 JOGOS</em></div><div class="cw-format-step"><b>02</b><div><strong>Repescagem</strong><small>3º ao 6º de cada grupo</small></div><em>4 JOGOS</em></div><div class="cw-format-step"><b>03</b><div><strong>Quartas de final</strong><small>Quatro líderes + quatro vencedores</small></div><em>8 CLÃS</em></div><div class="cw-format-step"><b>04</b><div><strong>Semifinais</strong><small>Quatro organizações restantes</small></div><em>4 CLÃS</em></div><div class="cw-format-step"><b>05</b><div><strong>Grande final</strong><small>Decisão do título da temporada</small></div><em>2 CLÃS</em></div></article>
+          <article class="cw-card cw-prize-card"><span class="cw-kicker">PREMIAÇÃO OFICIAL</span><div class="cw-prize-row"><span class="cw-prize-icon">♛</span><div><small>CAMPEÃO</small><strong id="cw-prize-champion">R$ 400,00</strong></div><span class="cw-prize-tag">TROFÉU FÍSICO</span></div><div class="cw-prize-row"><span class="cw-prize-icon cw-prize-icon--silver">◇</span><div><small>VICE-CAMPEÃO</small><strong id="cw-prize-runner">R$ 200,00</strong></div></div><p>Não haverá disputa ou premiação de terceiro lugar.</p></article>
+        </aside>
+      </div>
+      <div class="cw-rounds-strip"><div><span class="cw-kicker">CALENDÁRIO OFICIAL</span><h3>RODADAS E CONFRONTOS</h3></div><div id="cw-matches" class="cw-rounds-placeholder"><span class="cw-calendar-icon">▣</span><span>A agenda será publicada após o sorteio dos grupos.</span></div></div>
+      <div class="cw-playoffs-public-wrap"><div><span class="cw-kicker">CCFV // FASE ELIMINATÓRIA</span><h3>CAMINHO ATÉ A <strong>FINAL.</strong></h3></div><div id="cw-playoff-matches" class="cw-playoff-public"><div class="cw-empty-state">Os confrontos eliminatórios aparecerão após o encerramento dos grupos.</div></div></div>
+    </section>
+
+    <section class="cw-panel" id="cw-panel-clans" role="tabpanel" data-panel="clans" hidden>
+      <div class="cw-section-heading"><div><span class="cw-kicker">CCFV // ORGANIZAÇÕES</span><h2>OS <strong>CLÃS</strong></h2><p>Conheça as organizações, seus jogadores e a comissão de cada clã.</p></div><span class="cw-counter"><strong id="cw-clan-count">0</strong> / 16 CLÃS</span></div>
+      <div class="cw-toolbar"><label class="cw-search"><span>⌕</span><input type="search" id="cw-clan-search" placeholder="Buscar clã..." autocomplete="off"></label><span class="cw-help-text">Selecione um clã para abrir seu perfil.</span></div>
+      <div class="cw-clans-grid" id="cw-clans-grid"><div class="cw-empty-state">Os clãs aprovados aparecerão aqui.</div></div>
+    </section>
+
+    <section class="cw-panel" id="cw-panel-ranking" role="tabpanel" data-panel="ranking" hidden>
+      <div class="cw-section-heading"><div><span class="cw-kicker">CCFV // DESEMPENHO INDIVIDUAL</span><h2>RANKING DOS <strong>JOGADORES</strong></h2><p>Estatísticas calculadas a partir das partidas homologadas. Mínimo de três jogos para entrar na classificação.</p></div></div>
+      <div class="cw-card cw-ranking-card"><div class="cw-table-scroll"><table class="cw-table cw-ranking-table"><thead><tr><th>#</th><th>JOGADOR</th><th>CLÃ</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GP</th><th>SG</th><th>PTS</th><th>%</th></tr></thead><tbody id="cw-ranking-body"><tr><td colspan="11" class="cw-empty-cell">Carregando ranking...</td></tr></tbody></table></div></div>
+    </section>
+
+    <section class="cw-panel" id="cw-panel-hall" role="tabpanel" data-panel="hall" hidden>
+      <div class="cw-section-heading"><div><span class="cw-kicker">CCFV // LEGADO DAS ORGANIZAÇÕES</span><h2>HALL DA <strong>FAMA</strong></h2><p>Os campeões de cada temporada e o histórico de troféus da Clan Wars.</p></div></div>
+      <div class="cw-hall-summary" id="cw-hall-summary"><div><strong id="cw-hall-editions">0</strong><span>TEMPORADAS CONCLUÍDAS</span></div><div><strong id="cw-hall-champions">0</strong><span>CLÃS CAMPEÕES</span></div></div>
+      <div class="cw-hall-grid" id="cw-hall-grid"><div class="cw-empty-state">O Hall da Fama será preenchido após a primeira final.</div></div>
+    </section>
+    <footer class="cw-footer"><span>CCFV CLAN WARS</span><span>UMA ORGANIZAÇÃO. UM LEGADO.</span><a href="../index.html">VOLTAR À CCFV ↑</a></footer>
+  </div>
+</main>
+
+<div class="cw-modal" id="cw-clan-modal" aria-hidden="true"><div class="cw-modal__backdrop" data-modal-close></div><section class="cw-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="cw-modal-title"><button class="cw-modal__close" type="button" aria-label="Fechar perfil" data-modal-close>×</button><div id="cw-modal-content"></div></section></div>
+<script src="../js/main.js" defer></script>
+<script src="/admin/js/auth.js" defer></script>
+<script src="../js/clan-wars.js?v=20261124-1" defer></script>
+</body>
+</html>

@@ -25,6 +25,7 @@
         ["COPA DO MUNDO", "/pages/copa-do-mundo.html", "copa-do-mundo"],
         ["RANKING", "/pages/ranking.html", "ranking"],
         ["HISTÓRIA", "/pages/historia.html", "historia"]
+        ["CLAN WARS", "/pages/clan-wars.html", "clan-wars"],
     ];
 
 
@@ -53,6 +54,7 @@
         if (p.includes("ranking")) return "ranking";
         if (p.includes("historia")) return "historia";
         if (p.includes("competicoes")) return "competicoes";
+        if (p.includes("clan-wars")) return "clan-wars";
 
         return "home";
     }

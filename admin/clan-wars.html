@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#171020">
+  <title>Clan Wars — Administração CCFV</title>
+  <link rel="icon" type="image/png" href="../assets/images/logo/ccfv-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/css/competition-shell.css">
+  <link rel="stylesheet" href="/admin/css/clan-wars.css">
+</head>
+<body data-admin-page="clan-wars">
+<div class="cw-admin-shell">
+  <aside class="cw-admin-sidebar">
+    <a class="cw-admin-brand" href="/admin/competicoes.html"><img src="../assets/images/logo/ccfv-logo.png" alt="CCFV"><span><strong>CCFV ADMIN</strong><small>CLAN WARS</small></span></a>
+    <div class="cw-admin-nav-label">OPERAÇÃO</div>
+    <nav class="cw-admin-nav">
+      <button class="is-active" data-admin-tab="dashboard">▦ <span>Visão geral</span></button>
+      <button data-admin-tab="season">◷ <span>Temporada</span></button>
+      <button data-admin-tab="clans">⬡ <span>Cadastro de clãs</span></button>
+      <button data-admin-tab="groups">▤ <span>Grupos e calendário</span></button>
+      <button data-admin-tab="matches">⚔ <span>Resultados</span></button>
+      <button data-admin-tab="playoffs">♜ <span>Mata-mata</span></button>
+      <button data-admin-tab="hall">🏆 <span>Hall da Fama</span></button>
+    </nav>
+    <div class="cw-admin-sidebar-bottom"><a href="/pages/clan-wars.html" target="_blank">Abrir Clan Wars ↗</a><a href="/admin/competicoes.html">← Central de competições</a></div>
+  </aside>
+
+  <main class="cw-admin-main">
+    <header class="cw-admin-topbar"><div><span>CCFV // OPERAÇÃO OFICIAL</span><h1>CLAN WARS</h1></div><div class="cw-admin-top-actions"><span id="cw-admin-session">Verificando sessão...</span><button class="cw-admin-btn cw-admin-btn--ghost" id="cw-admin-refresh">Atualizar dados</button></div></header>
+    <div id="cw-admin-alert" class="cw-admin-alert" role="status" aria-live="polite" hidden></div>
+
+    <section class="cw-admin-panel is-active" data-admin-panel="dashboard">
+      <div class="cw-admin-heading"><div><span>CCFV // DASHBOARD</span><h2>CONTROLE DA <strong>CLAN WARS.</strong></h2><p>Resumo da temporada selecionada e acesso às operações.</p></div><select id="cw-admin-season-select" aria-label="Selecionar temporada"></select></div>
+      <div class="cw-admin-kpis"><article><span>CLÃS APROVADOS</span><strong id="cw-kpi-clans">0 / 16</strong></article><article><span>PAGAMENTOS CONFIRMADOS</span><strong id="cw-kpi-paid">0</strong></article><article><span>PARTIDAS HOMOLOGADAS</span><strong id="cw-kpi-matches">0</strong></article><article><span>FASE ATUAL</span><strong id="cw-kpi-phase">—</strong></article></div>
+      <div class="cw-admin-grid cw-admin-grid--2"><article class="cw-admin-card"><div class="cw-admin-card-head"><div><span>OPERAÇÃO</span><h3>AÇÕES RÁPIDAS</h3></div></div><div class="cw-admin-actions"><button class="cw-admin-btn cw-admin-btn--primary" data-jump="clans">+ Cadastrar clã</button><button class="cw-admin-btn" data-jump="groups">Sortear grupos</button><button class="cw-admin-btn" data-jump="groups">Gerar calendário</button><button class="cw-admin-btn" data-jump="matches">Homologar resultados</button></div></article><article class="cw-admin-card"><div class="cw-admin-card-head"><div><span>PADRÃO FINANCEIRO</span><h3>PREMIAÇÃO DA TEMPORADA</h3></div></div><div class="cw-admin-prizes"><div><span>Inscrição por clã</span><strong id="cw-admin-fee">R$ 50,00</strong></div><div><span>Campeão</span><strong id="cw-admin-champion-prize">R$ 400,00 + troféu</strong></div><div><span>Vice-campeão</span><strong id="cw-admin-runner-prize">R$ 200,00</strong></div></div><small>Não existe premiação ou disputa de terceiro lugar.</small></article></div>
+      <article class="cw-admin-card"><div class="cw-admin-card-head"><div><span>STATUS OPERACIONAL</span><h3>ÚLTIMAS PARTIDAS</h3></div><button class="cw-admin-btn cw-admin-btn--small" data-jump="matches">Ver todas</button></div><div id="cw-admin-recent-matches" class="cw-admin-empty">Nenhuma partida cadastrada.</div></article>
+    </section>
+
+    <section class="cw-admin-panel" data-admin-panel="season">
+      <div class="cw-admin-heading"><div><span>CCFV // CONFIGURAÇÃO</span><h2>GESTÃO DE <strong>TEMPORADAS.</strong></h2><p>Crie e configure a edição da Clan Wars.</p></div></div>
+      <div class="cw-admin-grid cw-admin-grid--2">
+        <article class="cw-admin-card"><div class="cw-admin-card-head"><div><span>NOVA EDIÇÃO</span><h3>CRIAR TEMPORADA</h3></div></div><form id="cw-season-form" class="cw-admin-form"><label>Número da temporada<input name="season_number" type="number" min="1" required placeholder="1"></label><label>Nome da temporada<input name="season_name" required placeholder="SEASON 01"></label><label>Inscrição por clã (R$)<input name="entry_fee" type="number" min="0" step="0.01" value="50.00" required></label><label>Prêmio do campeão (R$)<input name="champion_prize" type="number" min="0" step="0.01" value="400.00" required></label><label>Prêmio do vice (R$)<input name="runner_up_prize" type="number" min="0" step="0.01" value="200.00" required></label><label>Status inicial<select name="status"><option value="REGISTRATIONS">Inscrições abertas</option><option value="DRAFT">Rascunho</option></select></label><label class="cw-admin-check"><input name="trophy_physical" type="checkbox" checked> Troféu físico para o campeão</label><button class="cw-admin-btn cw-admin-btn--primary" type="submit">Criar temporada</button></form></article>
+        <article class="cw-admin-card"><div class="cw-admin-card-head"><div><span>EDIÇÃO ATUAL</span><h3>DETALHES E CONTROLE</h3></div></div><div id="cw-season-details" class="cw-admin-empty">Selecione ou crie uma temporada.</div><div class="cw-admin-actions cw-admin-actions--stack"><button class="cw-admin-btn" id="cw-season-open">Abrir inscrições</button></div><p class="cw-admin-help">O sorteio dos grupos encerra as inscrições e muda automaticamente a temporada para a fase de grupos.</p></article>
+      </div>
+    </section>
+
+    <section class="cw-admin-panel" data-admin-panel="clans">
+      <div class="cw-admin-heading"><div><span>CCFV // ORGANIZAÇÕES</span><h2>CADASTRO DE <strong>CLÃS.</strong></h2><p>Você cadastra os dados enviados pelos responsáveis. Cada clã possui três jogadores, treinador e dono.</p></div><span class="cw-admin-count" id="cw-clan-capacity">0 / 16</span></div>
+      <div class="cw-admin-card cw-admin-existing-clan"><div class="cw-admin-card-head"><div><span>REINSCRIÇÃO / TEMPORADAS FUTURAS</span><h3>CARREGAR CLÃ JÁ CADASTRADO</h3></div></div><div class="cw-admin-existing-row"><select id="cw-existing-clan-select"><option value="">Selecione uma organização cadastrada...</option></select><button type="button" class="cw-admin-btn" id="cw-load-existing-clan">Carregar dados do clã</button></div><small>Reutilize o cadastro de uma temporada anterior. A nova temporada terá um elenco próprio, preservando as estatísticas antigas.</small></div>
+      <div class="cw-admin-grid cw-admin-grid--form">
+        <article class="cw-admin-card"><div class="cw-admin-card-head"><div><span>CADASTRO / EDIÇÃO</span><h3>DADOS DA ORGANIZAÇÃO</h3></div><button type="button" class="cw-admin-btn cw-admin-btn--small" id="cw-clan-form-reset">Limpar</button></div>
+          <form id="cw-clan-form" class="cw-admin-form">
+            <input type="hidden" name="clan_id"><input type="hidden" name="registration_id">
+            <div class="cw-admin-form-grid"><label class="cw-admin-span-2">Nome oficial do clã<input name="clan_name" required maxlength="60" placeholder="Ex.: TITÃS E-SPORTS"></label><label class="cw-admin-span-2">Escudo do clã (PNG/JPG/WEBP)<input name="crest_file" type="file" accept="image/png,image/jpeg,image/webp"></label><label>Grupo do clã<input value="Definido pelo sorteio oficial" readonly></label><label>Status da inscrição<select name="registration_status"><option value="PENDING" selected>Pendente</option><option value="APPROVED">Aprovado</option><option value="REJECTED">Reprovado</option><option value="WITHDRAWN">Desistiu</option></select></label><label>Pagamento<select name="payment_status"><option value="PENDING">Pendente</option><option value="PAID">Pago</option><option value="WAIVED">Isento</option><option value="REFUNDED">Estornado</option></select></label><label>Descrição (opcional)<input name="description" maxlength="240" placeholder="História / apresentação do clã"></label></div>
+            <div class="cw-admin-subheading"><span>01 — JOGADORES</span><small>Três integrantes obrigatórios</small></div>
+            <div class="cw-admin-people-grid">
+              <fieldset><legend>JOGADOR 01</legend><label>Nome<input name="player1_name" required></label><label>Identificador do jogo<input name="player1_game_id" required></label><label>Instagram<input name="player1_instagram" placeholder="@usuario"></label><label>Idade<input name="player1_age" type="number" min="1" max="100"></label><label>Foto<input name="player1_photo" type="file" accept="image/png,image/jpeg,image/webp"></label></fieldset>
+              <fieldset><legend>JOGADOR 02</legend><label>Nome<input name="player2_name" required></label><label>Identificador do jogo<input name="player2_game_id" required></label><label>Instagram<input name="player2_instagram" placeholder="@usuario"></label><label>Idade<input name="player2_age" type="number" min="1" max="100"></label><label>Foto<input name="player2_photo" type="file" accept="image/png,image/jpeg,image/webp"></label></fieldset>
+              <fieldset><legend>JOGADOR 03</legend><label>Nome<input name="player3_name" required></label><label>Identificador do jogo<input name="player3_game_id" required></label><label>Instagram<input name="player3_instagram" placeholder="@usuario"></label><label>Idade<input name="player3_age" type="number" min="1" max="100"></label><label>Foto<input name="player3_photo" type="file" accept="image/png,image/jpeg,image/webp"></label></fieldset>
+            </div>
+            <div class="cw-admin-subheading"><span>02 — COMISSÃO DO CLÃ</span><small>Treinador e dono</small></div>
+            <div class="cw-admin-people-grid cw-admin-people-grid--staff">
+              <fieldset><legend>TREINADOR</legend><label>Nome<input name="coach_name" required></label><label>Instagram<input name="coach_instagram" placeholder="@usuario"></label><label>Idade<input name="coach_age" type="number" min="1" max="100"></label><label>Foto<input name="coach_photo" type="file" accept="image/png,image/jpeg,image/webp"></label></fieldset>
+              <fieldset><legend>DONO DO CLÃ</legend><label>Nome<input name="owner_name" required></label><label>Instagram<input name="owner_instagram" placeholder="@usuario"></label><label>Idade<input name="owner_age" type="number" min="1" max="100"></label><label>Foto<input name="owner_photo" type="file" accept="image/png,image/jpeg,image/webp"></label></fieldset>
+            </div>
+            <div class="cw-admin-form-actions"><button class="cw-admin-btn cw-admin-btn--primary" type="submit">Salvar cadastro do clã</button><span>Fotos com até 5 MB. Formatos PNG, JPG ou WEBP.</span></div>
+          </form>
+        </article>
+        <article class="cw-admin-card"><div class="cw-admin-card-head"><div><span>TEMPORADA SELECIONADA</span><h3>CLÃS CADASTRADOS</h3></div><span id="cw-clan-list-count" class="cw-admin-count">0 / 16</span></div><div class="cw-admin-clan-list" id="cw-admin-clan-list"><div class="cw-admin-empty">Nenhum clã cadastrado nesta temporada.</div></div></article>
+      </div>
+    </section>
+
+    <section class="cw-admin-panel" data-admin-panel="groups">
+      <div class="cw-admin-heading"><div><span>CCFV // FASE DE GRUPOS</span><h2>GRUPOS E <strong>CALENDÁRIO.</strong></h2><p>16 clãs aprovados. Sorteio em dois grupos de oito e sete rodadas em turno único.</p></div></div>
+      <article class="cw-admin-card"><div class="cw-admin-card-head"><div><span>ETAPA 01</span><h3>SORTEIO E GERAÇÃO DO CALENDÁRIO</h3></div></div><div class="cw-admin-actions"><button class="cw-admin-btn" id="cw-assign-groups">Sortear 2 grupos de 8</button><button class="cw-admin-btn cw-admin-btn--primary" id="cw-generate-schedule">Gerar 56 partidas</button><button class="cw-admin-btn cw-admin-btn--ghost" id="cw-refresh-groups">Atualizar grupos</button></div><p class="cw-admin-help">O sorteio só funciona com 16 inscrições aprovadas. Depois de gerar o calendário, o sorteio fica bloqueado para proteger a integridade dos resultados.</p></article>
+      <div class="cw-admin-grid cw-admin-grid--2"><article class="cw-admin-card"><div class="cw-admin-card-head"><div><span>GRUPO A</span><h3>OITO ORGANIZAÇÕES</h3></div></div><div id="cw-admin-group-a" class="cw-admin-group-list"></div></article><article class="cw-admin-card"><div class="cw-admin-card-head"><div><span>GRUPO B</span><h3>OITO ORGANIZAÇÕES</h3></div></div><div id="cw-admin-group-b" class="cw-admin-group-list"></div></article></div>
+    </section>
+
+    <section class="cw-admin-panel" data-admin-panel="matches">
+      <div class="cw-admin-heading"><div><span>CCFV // HOMOLOGAÇÃO</span><h2>RESULTADOS DAS <strong>PARTIDAS.</strong></h2><p>Selecione o representante de cada clã, informe o placar e homologue a partida.</p></div><select id="cw-match-filter"><option value="ALL">Todas as fases</option><option value="GROUP">Grupos</option><option value="REPECHAGE">Repescagem</option><option value="QUARTERFINAL">Quartas</option><option value="SEMIFINAL">Semifinais</option><option value="FINAL">Final</option></select></div>
+      <div id="cw-admin-matches" class="cw-admin-match-list"><div class="cw-admin-empty">Gere o calendário para cadastrar resultados.</div></div>
+    </section>
+
+    <section class="cw-admin-panel" data-admin-panel="playoffs">
+      <div class="cw-admin-heading"><div><span>CCFV // MATA-MATA</span><h2>CAMINHO ATÉ A <strong>FINAL.</strong></h2><p>Gere cada fase somente depois de homologar todos os confrontos da etapa anterior.</p></div></div>
+      <div class="cw-admin-playoff-actions"><article><span>01 / CLASSIFICAÇÃO</span><h3>REPESCAGEM</h3><p>3º ao 6º de cada grupo. Quatro partidas cruzadas.</p><button class="cw-admin-btn cw-admin-btn--primary" id="cw-generate-repechage">Gerar repescagem</button></article><article><span>02 / OITO CLÃS</span><h3>QUARTAS DE FINAL</h3><p>Quatro primeiros colocados + quatro vencedores da repescagem.</p><button class="cw-admin-btn" id="cw-generate-qf">Gerar quartas</button></article><article><span>03 / QUATRO CLÃS</span><h3>SEMIFINAIS</h3><p>Os quatro vencedores das quartas avançam.</p><button class="cw-admin-btn" id="cw-generate-sf">Gerar semifinais</button></article><article><span>04 / DECISÃO</span><h3>GRANDE FINAL</h3><p>Os vencedores das semifinais disputam o título.</p><button class="cw-admin-btn" id="cw-generate-final">Gerar final</button></article></div>
+      <article class="cw-admin-card cw-admin-finish-card"><div><span>ENCERRAMENTO</span><h3>HOMOLOGAR CAMPEÃO E ATUALIZAR O HALL DA FAMA</h3><p>Finalize somente depois de homologar a final e conferir campeão e vice.</p></div><button class="cw-admin-btn cw-admin-btn--primary" id="cw-finish-season">Finalizar temporada</button></article>
+    </section>
+
+    <section class="cw-admin-panel" data-admin-panel="hall">
+      <div class="cw-admin-heading"><div><span>CCFV // HISTÓRICO</span><h2>HALL DA <strong>FAMA.</strong></h2><p>Campeões, vice-campeões e registro da entrega do troféu e pagamentos.</p></div></div>
+      <div id="cw-admin-hall" class="cw-admin-hall-list"><div class="cw-admin-empty">Nenhuma temporada finalizada ainda.</div></div>
+    </section>
+
+  </main>
+</div>
+<script src="/admin/js/auth.js" defer></script>
+<script src="/admin/js/clan-wars-admin.js?v=20261124-1" defer></script>
+</body>
+</html>
