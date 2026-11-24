@@ -24,8 +24,8 @@
         ["NIGHT CUP CO-OP", "/pages/night-cup-coop.html", "night-coop"],
         ["COPA DO MUNDO", "/pages/copa-do-mundo.html", "copa-do-mundo"],
         ["RANKING", "/pages/ranking.html", "ranking"],
-        ["HISTÓRIA", "/pages/historia.html", "historia"]
-        ["CLAN WARS", "/pages/clan-wars.html", "clan-wars"],
+["HISTÓRIA", "/pages/historia.html", "historia"],
+["CLAN WARS", "/pages/clan-wars.html", "clan-wars"],
     ];
 
 
